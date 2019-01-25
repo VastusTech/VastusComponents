@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Label, Grid, Icon } from 'semantic-ui-react'
+ import React, { Component } from 'react';
+import { Label, Grid, Icon, Container, Divider, Message } from 'semantic-ui-react'
 import {fetchUserAttributes, forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import connect from "react-redux/es/connect/connect";
 import {Player} from "video-react";
@@ -29,7 +29,7 @@ export default (props: {message: any, userID: string}) => {
                                        onChange={this.setPicture}/>
                             </div>
                         </Label>
-                        <Grid.Column width={6}>
+                        <Grid.Column width={6} style={{rightMargin: '5px', leftMargin: '5px'}}>
                             <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
                         </Grid.Column>
                     </Grid>
@@ -97,38 +97,90 @@ export default (props: {message: any, userID: string}) => {
         if (ifSelf) {
             // Self text
             return (
-                <Grid>
+            <Grid>
+                {/*<Grid>
                     <Grid.Column floated='right' width={10}>
                         <div>
                             <Label pointing='right' size='large' color='purple'>
-                                {message}
+                                <Grid>
+                                    <Grid.Row centered>
+                                        <b>{name}</b>
+                                    </Grid.Row>
+                                    <Grid.Row centered>
+                                        <Container size='mini' color='purple'>
+                                        {message}
+                                        </Container>
+                                    </Grid.Row>
+                                </Grid>
                             </Label>
-                            <strong>{name}</strong>
                         </div>
-                    </Grid.Column>
-                    <Grid.Column width={1}>
+                    <Grid.Column floated='right' width={1}>
                         <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
                     </Grid.Column>
-                </Grid>
-            );
+                </Grid>*/}
+                <Grid.Column floated='right' width={10}>
+                    <Grid floated='right'>
+                        <Grid.Column style={{width: '70%'}}>
+                            <Grid.Row centered>
+                                <strong>{name}</strong>
+                            </Grid.Row>
+                            <div>
+                                <Label pointing='right' size='large' color='purple'>
+                                    {message}
+                                </Label>
+                            </div>
+                        </Grid.Column>
+                        <Grid.Column style={{width: '10%'}}>
+                            <div avatar className="ui u-avatar mini" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
+                        </Grid.Column>
+                    </Grid>
+                </Grid.Column>
+            </Grid>
+        );
         }
         else {
             // Other text
             return (
-                <Grid style={{marginLeft: '10px'}}>
-                    <Grid.Column width={1}>
+                <Grid>
+                {/*<Grid style={{marginLeft: '10px'}}>
+                    <Grid.Column floated='left' width={1}>
                         <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
                     </Grid.Column>
                     <Grid.Column floated='left' width={10}>
                         <div>
-                            <strong>{name}</strong>
                             <Label pointing='left' size='large'>
-                                {message}
+                                <Grid>
+                                    <Grid.Row centered>
+                                        {name}
+                                    </Grid.Row>
+                                    <Grid.Row centered>
+                                        {message}
+                                    </Grid.Row>
+                                </Grid>
                             </Label>
                         </div>
                     </Grid.Column>
+                </Grid>*/}
+                    <Grid.Column floated='left' width={10}>
+                        <Grid floated='left'>
+                            <Grid.Column style={{width: '30%'}}>
+                                <div avatar className="ui u-avatar mini" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
+                            </Grid.Column>
+                            <Grid.Column style={{width: '70%'}} floated='right'>
+                                <Grid.Row centered>
+                                    <strong>{name}</strong>
+                                </Grid.Row>
+                                <div>
+                                    <Label pointing='left' size='large' color='white'>
+                                        {message}
+                                    </Label>
+                                </div>
+                            </Grid.Column>
+                        </Grid>
+                    </Grid.Column>
                 </Grid>
-            );
+
+        );
         }
     }
 }

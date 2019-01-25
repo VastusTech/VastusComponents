@@ -135,8 +135,8 @@ class MessageBoard extends Component<Props> {
                     {this.loadHistory(this.state.isLoading)}
                     <ScrollView
                         class='chat'
-                        width='vw'
-                        height={'400px'}
+                        width='100%'
+                        height='400%'
                         ref={ref => (this.scrollView = ref)}
                         onScroll={this.handleScroll}
                     >
