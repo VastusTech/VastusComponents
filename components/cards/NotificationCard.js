@@ -14,7 +14,13 @@ import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
 type Props = {
     inviteID: string
 };
+
+/**
+ * Basically an InviteCard
+ */
 class NotificationCard extends Component<Props> {
+    static fetchVariableList = ["time_created", "from", "to", "inviteType", "about", "description"];
+
     state = {
         error: null,
         isLoading: false,

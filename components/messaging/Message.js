@@ -22,11 +22,11 @@ export default (props: {message: any, userID: string}) => {
                         <Label className='ui right fluid' pointing='right' color='purple'>
                             <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
                                  style={{backgroundImage: `url(${messageURL})`}}>
-                                <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
-                                    <Icon name="upload" className='u-margin-right--0' size="large" inverted/>
-                                </Label>
-                                <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true}
-                                       onChange={this.setPicture}/>
+                                {/*<Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">*/}
+                                    {/*<Icon name="upload" className='u-margin-right--0' size="large" inverted/>*/}
+                                {/*</Label>*/}
+                                {/*<input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true}*/}
+                                       {/*onChange={this.setPicture}/>*/}
                             </div>
                         </Label>
                         <Grid.Column width={6} style={{rightMargin: '5px', leftMargin: '5px'}}>
@@ -45,11 +45,11 @@ export default (props: {message: any, userID: string}) => {
                         <Label className='ui left fluid' pointing='left'>
                             <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
                                  style={{backgroundImage: `url(${messageURL})`}}>
-                                <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
-                                    <Icon name="upload" className='u-margin-right--0' size="large" inverted/>
-                                </Label>
-                                <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true}
-                                       onChange={this.setPicture}/>
+                                {/*<Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">*/}
+                                    {/*<Icon name="upload" className='u-margin-right--0' size="large" inverted/>*/}
+                                {/*</Label>*/}
+                                {/*<input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true}*/}
+                                       {/*onChange={this.setPicture}/>*/}
                             </div>
                         </Label>
                     </Grid>

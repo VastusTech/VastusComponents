@@ -17,6 +17,8 @@ type Props = {
 }
 
 class TrainerCard extends Component<Props> {
+    static fetchVariableList = ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"];
+
     constructor(props) {
         super(props);
         this.openTrainerModal = this.openTrainerModal.bind(this);

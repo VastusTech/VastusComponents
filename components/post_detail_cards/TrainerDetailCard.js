@@ -25,6 +25,8 @@ import {consoleLog} from "../../logic/DebuggingHelper";
 * to join the challenge.
  */
 class TrainerDetailCard extends Component {
+    static fetchVariableList = ["id", "profileImagePath", "name"];
+
     state = {
         // isLoading: false,
         postID: null,

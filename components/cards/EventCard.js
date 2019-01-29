@@ -16,6 +16,8 @@ type Props = {
 * It is used as a modal trigger in the feed.
  */
 class EventCard extends Component<Props> {
+    static fetchVariableList = ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty", "restriction", "access"];
+
     state = {
         error: null,
         eventID: null,

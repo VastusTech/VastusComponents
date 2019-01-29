@@ -15,9 +15,11 @@ import {consoleLog} from "../../logic/DebuggingHelper";
 type Props = {
     rank: number,
     clientID: string
-}
+};
 
 class ClientCard extends Component<Props> {
+    static fetchVariableList = ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture", "friendRequests"];
+
     constructor(props) {
         super(props);
         this.openClientModal = this.openClientModal.bind(this);

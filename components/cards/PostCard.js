@@ -27,6 +27,8 @@ type Props = {
 * It is used as a modal trigger in the feed.
  */
 class PostCard extends Component<Props> {
+    static fetchVariableList = ["id", "time_created", "by", "item_type", "postType", "about", "description", "videoPaths", "picturePaths"];
+
     state = {
         error: null,
         // isLoading: true,

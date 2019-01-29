@@ -38,7 +38,7 @@ class EventList extends Component<Props> {
 
     update(props) {
         for (let i = 0; i < props.eventIDs.length; i++) {
-            this.props.fetchEvent(props.eventIDs[i], ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty", "restriction", "access"], (event) => {
+            this.props.fetchEvent(props.eventIDs[i], EventCard.fetchVariableList, (event) => {
                 // Handle received data
                 if (event) {
                     this.state.events.push(event);

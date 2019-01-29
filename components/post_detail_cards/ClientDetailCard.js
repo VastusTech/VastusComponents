@@ -19,6 +19,8 @@ import {consoleLog} from "../../logic/DebuggingHelper";
 * to join the challenge.
  */
 class ClientDetailCard extends Component {
+    static fetchVariableList = ["id", "profileImagePath", "name"];
+
     state = {
         // isLoading: false,
         postID: null,

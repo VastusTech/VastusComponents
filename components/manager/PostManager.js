@@ -119,8 +119,8 @@ class PostManager extends Component {
 
     render() {
         return(
-            <Modal trigger={<Button primary fluid><Icon name='plus'/> Create Post</Button>} closeIcon>
-                <Modal.Header>Post Manager</Modal.Header>
+            <Modal trigger={<Button primary fluid><Icon name='plus'/> Create Challenge</Button>} closeIcon>
+                <Modal.Header>Challenge Manager</Modal.Header>
                 <Modal.Content>
                     {/*<Tab menu={{attached: "top", widths: 3, size: "small", inverted: true}} panes={
                         [
