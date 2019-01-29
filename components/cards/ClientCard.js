@@ -15,9 +15,11 @@ import {consoleLog} from "../../logic/DebuggingHelper";
 type Props = {
     rank: number,
     clientID: string
-}
+};
 
 class ClientCard extends Component<Props> {
+    static fetchVariableList = [];
+
     constructor(props) {
         super(props);
         this.openClientModal = this.openClientModal.bind(this);
