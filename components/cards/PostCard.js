@@ -331,7 +331,7 @@ class PostCard extends Component<Props> {
 
     closeTrainerModal = () => {
         consoleLog("Closing trainer modal");
-        this.setState({trainerModalOpen: false})
+        this.setState({trainerModalOpen: false});
     };
 
     openOnce = () => {
@@ -339,7 +339,7 @@ class PostCard extends Component<Props> {
             this.props.fetchTrainer(this.getPostAttribute("by"), ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
             this.setState({trainerModalOpened: true});
         }
-    }
+    };
 
 
     render() {
