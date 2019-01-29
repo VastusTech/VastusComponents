@@ -41,6 +41,8 @@ type Props = {
  * It is used as a modal trigger in the feed.
  */
 class ChallengeCard extends Component<Props> {
+    static fetchVariableList = ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "difficulty", "time_created", "capacity", "members", "prize", "goal", "owner", "access", "restriction", "submissions"];
+
     static pictures = {
         Performance: require('../../img/Performance_icon.png'),
         Strength: require('../../img/Strength_icon.png'),

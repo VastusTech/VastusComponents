@@ -47,13 +47,13 @@ class DatabaseObjectList extends Component<Props> {
                     const itemType = getItemTypeFromID(id);
                     if (!newProps.acceptedItemTypes || newProps.acceptedItemTypes.includes(itemType)) {
                         const variableList = switchReturnItemType(itemType,
-                            ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture"],
+                            ClientCard.fetchVariableList,
                             ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"],
                             null, null, null,
-                            ["id", "title", "time", "time_created", "owner", "members", "capacity"],
-                            ["id", "title", "endTime", "time_created", "owner", "members", "capacity", "difficulty"],
+                            EventCard.fetchVariableList,
+                            ChallengeCard.fetchVariableList,
                             null,
-                            ["id", "time_created", "by", "item_type", "postType", "about", "description", "videoPaths", "picturePaths"],
+                            PostCard.fetchVariableList,
                             null, null, null, null,
                             "Get variable list from item type not implemented!");
                         this.props.fetchItem(itemType, id, variableList, addObject);

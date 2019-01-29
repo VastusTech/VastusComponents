@@ -20,6 +20,8 @@ import ClientModal from "../modals/ClientModal";
 * to join the challenge.
  */
 class ChallengeDetailCard extends Component {
+    static fetchVariableList = ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "difficulty", "time_created", "capacity", "members", "prize", "goal", "owner", "access", "restriction", "submissions"];
+
     state = {
         // isLoading: false,
         postID: null,

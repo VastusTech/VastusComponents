@@ -23,6 +23,8 @@ import {consoleError} from "../../logic/DebuggingHelper";
 * to join the challenge.
  */
 class PostDetailCard extends Component {
+    static fetchVariableList = ["id", "time_created", "by", "item_type", "postType", "about", "description", "videoPaths", "picturePaths"];
+
     state = {
         error: null,
         // isLoading: false,

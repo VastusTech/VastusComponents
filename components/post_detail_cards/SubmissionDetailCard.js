@@ -16,6 +16,8 @@ import {consoleError} from "../../logic/DebuggingHelper";
 * to join the challenge.
  */
 class SubmissionDetailCard extends Component {
+    static fetchVariableList = [];
+
     state = {
         error: null,
         // isLoading: false,
