@@ -1,10 +1,12 @@
-import React, { Component } from 'react'
-import {Grid, Button, Message, Image, Modal, Form, Container, Checkbox, Header} from 'semantic-ui-react';
+import React, {Component, Fragment} from 'react'
+import {Grid, Button, Message, Image, Modal, Form, Container, Checkbox, Header, Card, Icon} from 'semantic-ui-react';
 import {connect} from "react-redux";
 import {setError} from "../../redux_actions/infoActions";
 import {clearChallengeQuery, fetchChallenge, putChallenge, putChallengeQuery} from "../../redux_actions/cacheActions";
 import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
 import PostFunctions from "../../database_functions/PostFunctions";
+import {consoleError} from "../../logic/DebuggingHelper";
+import {Player} from "video-react";
 
 // Take from StackOverflow, nice snippit!
 // https://stackoverflow.com/a/17415677
@@ -192,7 +194,7 @@ class CreateChallengeProp extends Component {
                         //console.log(data.data);
                         PostFunctions.createNewChallengePost(this.props.user.id, this.props.user.id, this.eventState.description, this.eventState.access, data.data, (data) => {
                             console.log("Successfully created automatic challenge Post");
-                            }, (error) => {
+                        }, (error) => {
                             //console.log(JSON.stringify(error));
                             this.setState({submitError: "*" + JSON.stringify(error)});
                             this.setState({isSubmitLoading: false});
@@ -255,7 +257,7 @@ class CreateChallengeProp extends Component {
         if(this.state.showSuccessModal) {
             return (
                 <Modal open={this.state.showSuccessModal}>
-                    <Modal.Header align='center'>Successfully Created Event!</Modal.Header>
+                    <Modal.Header align='center'>You Just Created A New Group!</Modal.Header>
                     <Modal.Content>
                         <Button fluid negative size="small" onClick={this.closeSuccessModal}>Ok</Button>
                     </Modal.Content>
@@ -264,26 +266,62 @@ class CreateChallengeProp extends Component {
         }
     }
 
-    createSuccessLabel() {
-        if(this.state.showSuccessLabel && this.state.showModal) {
-            this.setState({showSuccessLabel: false});
-        }
-        else if(this.state.showSuccessLabel) {
-            return (<Message positive>
-                <Message.Header>Success!</Message.Header>
-                <p>
-                    You just created a new Challenge!
-                </p>
-            </Message>);
-        }
-        else {
-            return null;
-        }
-    }
-
     closeSuccessModal = () => {
         this.setState({showSuccessModal: false});
     };
+
+    getPictures() {
+        const pictures = {};
+        for (let i = 0; i < this.state.pictures.length; i++) {
+            pictures["pictures/" + i] = this.state.pictures[i];
+        }
+        if (this.state.pictures.length > 0) {
+            return pictures;
+        }
+        return null;
+    }
+
+    setPicture = (event) => {
+        const index = this.state.pictures.length;
+        this.state.pictures.push(event.target.files[0]);
+        const path = "/" + this.props.user.id + "/temp/pictures/" + index;
+        Storage.put(path, event.target.files[0], { contentType: "image/*" })
+            .then(() => {
+                Storage.get(path).then((url) => {
+                    this.state.tempPictureURLs.push(url);
+                    this.setState({});
+                }).catch((error) => {
+                    consoleError(error);
+                })
+            }).catch((error) => {
+            consoleError(error);
+        });
+        this.setState({});
+    };
+
+    displaySubmission() {
+        if(this.state.notifySubmission) {
+            return (
+                <Message positive>
+                    <Message.Header>Success!</Message.Header>
+                    <p>
+                        You submitted an image to the challenge!
+                    </p>
+                </Message>
+            );
+        }
+    }
+
+    displayCurrentImage() {
+        if (this.state.tempPictureURLs && this.state.tempPictureURLs.length > 0) {
+            //console.log("Running cur image");
+            return(
+                <Image src={this.state.tempPictureURLs[0]} />
+            );
+        }
+        return null;
+    }
+
 
     displayError() {
         if(this.state.submitError !== "") {
@@ -304,13 +342,13 @@ class CreateChallengeProp extends Component {
                         <Grid.Row>
                             <Grid.Column width={8}>
                                 <Button inverted={this.state.hiitPressed} basic={!this.state.hiitPressed}>
-                                    <Image dark size='medium' src={require('../../img/vastus-tech-icons-03.svg')} onClick={() => {this.handleTag("HIIT")}}/>
+                                    <Image dark size='tiny' src={require('../../img/vastus-tech-icons-03.svg')} onClick={() => {this.handleTag("HIIT")}}/>
                                     <div style={{color: 'white'}}>HIIT</div>
                                 </Button>
                             </Grid.Column>
                             <Grid.Column width={8}>
                                 <Button inverted inverted={this.state.strengthPressed} basic={!this.state.strengthPressed}>
-                                    <Image size='medium' src={require('../../img/vastus-tech-icons-04.svg')} onClick={() => {this.handleTag("Strength")}}/>
+                                    <Image size='tiny' src={require('../../img/vastus-tech-icons-04.svg')} onClick={() => {this.handleTag("Strength")}}/>
                                     <div style={{color: 'white'}}>Strength</div>
                                 </Button>
                             </Grid.Column>
@@ -318,13 +356,13 @@ class CreateChallengeProp extends Component {
                         <Grid.Row>
                             <Grid.Column width={8}>
                                 <Button inverted inverted={this.state.performancePressed} basic={!this.state.performancePressed}>
-                                    <Image size='medium' src={require('../../img/vastus-tech-icons-02.svg')} onClick={() => {this.handleTag("Performance")}}/>
+                                    <Image size='tiny' src={require('../../img/vastus-tech-icons-02.svg')} onClick={() => {this.handleTag("Performance")}}/>
                                     <div style={{color: 'white'}}>Performance</div>
                                 </Button>
                             </Grid.Column>
                             <Grid.Column width={8}>
                                 <Button inverted inverted={this.state.endurancePressed} basic={!this.state.endurancePressed}>
-                                    <Image size='medium' src={require('../../img/vastus-tech-icons-01.svg')} onClick={() => {this.handleTag("Endurance")}}/>
+                                    <Image size='tiny' src={require('../../img/vastus-tech-icons-01.svg')} onClick={() => {this.handleTag("Endurance")}}/>
                                     <div style={{color: 'white'}}>Endurance</div>
                                 </Button>
                             </Grid.Column>
@@ -337,22 +375,27 @@ class CreateChallengeProp extends Component {
                                 <Grid.Column>
                                     <Form onSubmit={this.handleSubmit}>
                                         <Form.Input fluid label="Title" type="text" name="title" placeholder="Title" onChange={value => this.changeStateText("title", value)}/>
-                                        <div className="field" fluid>
-                                            <label>End Date & Time</label>
-                                            <input fluid type="datetime-local" name="challengeDate" onChange={value => this.changeStateText("eventDate", value)}/>
-                                        </div>
-                                        <Form.Input fluid label="Capacity" type="text" name="capacity" placeholder="Number of allowed attendees... " onChange={value => this.changeStateText("capacity", value)}/>
-                                        <Form.Input fluid label="Goal" type="text" name="goal" placeholder="Criteria the victor is decided on..." onChange={value => this.changeStateText("goal", value)}/>
-                                        <Form.Input fluid label="Prize" type="text" name="prize" placeholder="Prize for winning the event..." onChange={value => this.changeStateText("prize", value)}/>
-                                        {/*<Form.Field>
-                                            <div className="field" width={5}>
-                                                <label>Difficulty</label>
-                                                <Rating icon='star' defaultRating={1} maxRating={3} />
+
+                                        <Card color='purple' align='center'>
+                                            <Card.Header align='center' className="u-bg--bg">Group Photo</Card.Header>
+                                            <div align='center' className="u-bg--bg">
+                                                {this.displayCurrentImage()}
+                                                <Grid centered>
+                                                    <div className="uploadImage u-flex u-flex-align--center u-margin-top--2" align='center'>
+                                                        <div floated="center">
+                                                            <Button primary fluid as="label" htmlFor="picUpload" className="u-bg--primaryGradient">
+                                                                <Icon name="camera" className='u-margin-right--0' inverted />
+                                                                Upload Photo
+                                                            </Button>
+                                                            <input type="file" accept="image/*;capture=camcorder" id="picUpload" hidden={true} onChange={this.setPicture}/>
+                                                        </div>
+                                                    </div>
+                                                </Grid>
                                             </div>
-                                        </Form.Field>*/}
-                                        {/*<Form.Field width={12}>*/}
-                                            {/*<Checkbox toggle onClick={this.handleAccessSwitch} onChange={this.toggle} checked={this.state.checked} label={this.eventState.access} />*/}
-                                        {/*</Form.Field>*/}
+                                            <div>{this.displaySubmission()}</div>
+                                        </Card>
+
+                                        <Form.Input fluid label="Group Motto" type="text" name="capacity" placeholder="Number of allowed attendees... " onChange={value => this.changeStateText("capacity", value)}/>
                                         <Form.Field width={12}>
                                             <Checkbox toggle onClick={this.handleRestrictionSwitch} onChange={this.toggleRest} checked={this.state.checkedRest} label={this.showRestriction()} />
                                         </Form.Field>
@@ -383,18 +426,18 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(setError(error));
         },
         fetchChallenge: (id, variablesList) => {
-dispatch(fetchChallenge(id, variablesList));
-},
-putChallenge: (event) => {
-    dispatch(putChallenge(event));
-},
-    putChallengeQuery: (queryString, queryResult) => {
-    dispatch(putChallengeQuery(queryString, queryResult));
-},
-    clearChallengeQuery: () => {
-    dispatch(clearChallengeQuery());
-}
-}
+            dispatch(fetchChallenge(id, variablesList));
+        },
+        putChallenge: (event) => {
+            dispatch(putChallenge(event));
+        },
+        putChallengeQuery: (queryString, queryResult) => {
+            dispatch(putChallengeQuery(queryString, queryResult));
+        },
+        clearChallengeQuery: () => {
+            dispatch(clearChallengeQuery());
+        }
+    }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateChallengeProp);
