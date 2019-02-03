@@ -3,8 +3,7 @@ import {Grid, Button, Message, Image, Modal, Form, Container, Checkbox, Header, 
 import {connect} from "react-redux";
 import {setError} from "../../redux_actions/infoActions";
 import {clearChallengeQuery, fetchChallenge, putChallenge, putChallengeQuery} from "../../redux_actions/cacheActions";
-import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
-import PostFunctions from "../../database_functions/PostFunctions";
+import GroupFunctions from "../../database_functions/GroupFunctions";
 import {consoleError} from "../../logic/DebuggingHelper";
 import {Player} from "video-react";
 
@@ -45,56 +44,35 @@ function arrayRemove(arr, value) {
 * This is the modal for creating events. Every input is in the form of a normal text input.
 * Inputting the time and date utilizes the Semantic-ui Calendar React library which isn't vanilla Semantic.
  */
-class CreateChallengeProp extends Component {
+class CreateGroupProp extends Component {
     state = {
         checked: false,
         checkedRest: false,
+        title: "",
+        motto: "",
         isSubmitLoading: false,
         showModal: false,
         submitError: "",
         showSuccessModal: false,
         showSuccessLabel: false,
-        showSuccessLabelTimer: 0,
-        challengeType: "",
         tags: [],
         performancePressed: false,
         endurancePressed: false,
         hiitPressed: false,
         strengthPressed: false,
-        restriction: null
+        restriction: null,
+        access: 'private'
     };
 
     toggle = () => this.setState({ checked: !this.state.checked });
     toggleRest = () => this.setState({ checkedRest: !this.state.checkedRest });
 
-    eventState = {
-        title: "",
-        eventDate: null,
-        startTime: CreateChallengeProp.getNowTimeString(),
-        duration: '60',
-        location: "",
-        time: "",
-        time_created: "",
-        capacity: "",
-        goal: "",
-        prize: "",
-        description: "",
-        access: "public"
-    };
-
-    changeStateText(key, value) {
-        // TODO Sanitize this input
-        // TODO Check to see if this will, in fact, work.!
-        this.eventState[key] = value.target.value;
-        console.log("New " + key + " is equal to " + value.target.value);
-    }
-
     handleAccessSwitch = () => {
-        if(this.eventState.access === 'public') {
-            this.eventState.access = 'private';
+        if(this.state.access === 'public') {
+            this.setState({access: 'private'})
         }
-        else if (this.eventState.access === 'private') {
-            this.eventState.access = 'public';
+        else if (this.state.access === 'private') {
+            this.setState({access: 'public'})
         }
         else {
             console.error("Event access should be public or private");
@@ -185,38 +163,19 @@ class CreateChallengeProp extends Component {
         this.setState({isSubmitLoading: true});
 
         // TODO Check to see if valid inputs!
-        if (this.eventState.capacity && this.eventState.title && this.eventState.goal && this.state.tags) {
-            if (Number.isInteger(+this.eventState.capacity)) {
-                ChallengeFunctions.createChallengeOptional(this.props.user.id, this.props.user.id, this.eventState.eventDate, this.eventState.capacity,
-                    this.eventState.title, this.eventState.goal, "n/a",
-                    "3", [], this.state.tags, this.eventState.access, this.state.restriction, this.eventState.prize, (data) => {
-                        console.log("Successfully created a challenge!");
-                        //console.log(data.data);
-                        PostFunctions.createNewChallengePost(this.props.user.id, this.props.user.id, this.eventState.description, this.eventState.access, data.data, (data) => {
-                            console.log("Successfully created automatic challenge Post");
-                        }, (error) => {
-                            //console.log(JSON.stringify(error));
-                            this.setState({submitError: "*" + JSON.stringify(error)});
-                            this.setState({isSubmitLoading: false});
-                        });
-                        //This is the second call
-                        //this.props.clearChallengeQuery();
-                        //this.props.queryChallenges();
-                        this.setState({isSubmitLoading: false});
-                        this.closeModal();
-                        this.setState({showSuccessLabel: true});
-                        this.setState({showModal: false});
-                        //this.setState({showSuccessModal: true});
-
-                    }, (error) => {
-                        //console.log(JSON.stringify(error));
-                        this.setState({submitError: "*" + JSON.stringify(error)});
-                        this.setState({isSubmitLoading: false});
-                    });
-            }
-            else {
-                this.setState({isSubmitLoading: false, submitError: "Capacity needs to be an integer!"});
-            }
+        if (this.state.title && this.state.motto && this.state.tags) {
+            alert("Title: " + this.state.title + "Motto: " + this.state.motto);
+            GroupFunctions.createGroupOptional(this.props.user.id, this.state.title, this.state.motto, this.state.access,
+                this.state.restriction, [this.props.user.id], null, this.state.tags, (data) => {
+                    console.log("Successfully created a group!");
+                    this.setState({isSubmitLoading: false});
+                    this.closeModal();
+                    this.setState({showSuccessLabel: true});
+                    this.setState({showModal: false});
+                }, (error) => {
+                    this.setState({submitError: "*" + JSON.stringify(error)});
+                    this.setState({isSubmitLoading: false});
+                });
         }
         else {
             this.setState({isSubmitLoading: false, submitError: "All fields need to be filled out!"});
@@ -266,6 +225,23 @@ class CreateChallengeProp extends Component {
         }
     }
 
+    createSuccessLabel() {
+        if(this.state.showSuccessLabel && this.state.showModal) {
+            this.setState({showSuccessLabel: false});
+        }
+        else if(this.state.showSuccessLabel) {
+            return (<Message positive>
+                <Message.Header>Success!</Message.Header>
+                <p>
+                    You just created a new Group!
+                </p>
+            </Message>);
+        }
+        else {
+            return null;
+        }
+    }
+
     closeSuccessModal = () => {
         this.setState({showSuccessModal: false});
     };
@@ -305,7 +281,7 @@ class CreateChallengeProp extends Component {
                 <Message positive>
                     <Message.Header>Success!</Message.Header>
                     <p>
-                        You submitted an image to the challenge!
+                        You uploaded a group image!
                     </p>
                 </Message>
             );
@@ -332,52 +308,28 @@ class CreateChallengeProp extends Component {
         }
     }
 
+    setMotto(value) {
+        this.setState({motto: value.target.value});
+        console.log("New Motto is equal to " + value.target.value);
+    }
+
+    setTitle(value) {
+        this.setState({title: value.target.value});
+        console.log("New Title is equal to " + value.target.value);
+    }
+
     render() {
 
         return (
-            <div align='center'>
-                <Header align='center'>Challenge Builder</Header>
-                <div align='center'>
-                    <Grid align='center'>
-                        <Grid.Row>
-                            <Grid.Column width={8}>
-                                <Button inverted={this.state.hiitPressed} basic={!this.state.hiitPressed}>
-                                    <Image dark size='tiny' src={require('../../img/vastus-tech-icons-03.svg')} onClick={() => {this.handleTag("HIIT")}}/>
-                                    <div style={{color: 'white'}}>HIIT</div>
-                                </Button>
-                            </Grid.Column>
-                            <Grid.Column width={8}>
-                                <Button inverted inverted={this.state.strengthPressed} basic={!this.state.strengthPressed}>
-                                    <Image size='tiny' src={require('../../img/vastus-tech-icons-04.svg')} onClick={() => {this.handleTag("Strength")}}/>
-                                    <div style={{color: 'white'}}>Strength</div>
-                                </Button>
-                            </Grid.Column>
-                        </Grid.Row>
-                        <Grid.Row>
-                            <Grid.Column width={8}>
-                                <Button inverted inverted={this.state.performancePressed} basic={!this.state.performancePressed}>
-                                    <Image size='tiny' src={require('../../img/vastus-tech-icons-02.svg')} onClick={() => {this.handleTag("Performance")}}/>
-                                    <div style={{color: 'white'}}>Performance</div>
-                                </Button>
-                            </Grid.Column>
-                            <Grid.Column width={8}>
-                                <Button inverted inverted={this.state.endurancePressed} basic={!this.state.endurancePressed}>
-                                    <Image size='tiny' src={require('../../img/vastus-tech-icons-01.svg')} onClick={() => {this.handleTag("Endurance")}}/>
-                                    <div style={{color: 'white'}}>Endurance</div>
-                                </Button>
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-
-                    <Container align='center'>
+            <Grid centered>
+                <Header align='center'>Group Builder</Header>
                         <Grid centered>
-                            <Grid.Row centered>
                                 <Grid.Column>
                                     <Form onSubmit={this.handleSubmit}>
-                                        <Form.Input fluid label="Title" type="text" name="title" placeholder="Title" onChange={value => this.changeStateText("title", value)}/>
+                                        <Form.Input fluid label="Title" type="text" name="title" placeholder="Title" onChange={value => this.setTitle(value)}/>
+                                        <Form.Input fluid label="Group Motto" type="text" name="motto" placeholder="Add Motto Here..." onChange={value => this.setMotto(value)}/>
 
                                         <Card color='purple' align='center'>
-                                            <Card.Header align='center' className="u-bg--bg">Group Photo</Card.Header>
                                             <div align='center' className="u-bg--bg">
                                                 {this.displayCurrentImage()}
                                                 <Grid centered>
@@ -385,7 +337,7 @@ class CreateChallengeProp extends Component {
                                                         <div floated="center">
                                                             <Button primary fluid as="label" htmlFor="picUpload" className="u-bg--primaryGradient">
                                                                 <Icon name="camera" className='u-margin-right--0' inverted />
-                                                                Upload Photo
+                                                                Upload Group Photo
                                                             </Button>
                                                             <input type="file" accept="image/*;capture=camcorder" id="picUpload" hidden={true} onChange={this.setPicture}/>
                                                         </div>
@@ -394,22 +346,17 @@ class CreateChallengeProp extends Component {
                                             </div>
                                             <div>{this.displaySubmission()}</div>
                                         </Card>
-
-                                        <Form.Input fluid label="Group Motto" type="text" name="capacity" placeholder="Number of allowed attendees... " onChange={value => this.changeStateText("capacity", value)}/>
                                         <Form.Field width={12}>
                                             <Checkbox toggle onClick={this.handleRestrictionSwitch} onChange={this.toggleRest} checked={this.state.checkedRest} label={this.showRestriction()} />
                                         </Form.Field>
-                                        <div>{this.displayError()}{this.createSuccessLabel()}</div>
+                                        <div>{this.displayError()}</div>
                                     </Form>
-                                </Grid.Column>
-                            </Grid.Row>
+                            </Grid.Column>
                         </Grid>
-                    </Container>
-                </div>
-                <Modal.Actions>
-                    <Button loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} primary size="big" type='button' onClick={() => { this.handleSubmit()}}>Submit</Button>
-                </Modal.Actions>
-                {this.createSuccessLabel()}</div>
+                        <Modal.Actions>
+                            <Button loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} primary size="big" type='button' onClick={() => { this.handleSubmit()}}>Submit</Button>
+                        </Modal.Actions>
+                        {this.createSuccessLabel()}</Grid>
         );
     }
 }
@@ -440,4 +387,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateChallengeProp);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateGroupProp);
