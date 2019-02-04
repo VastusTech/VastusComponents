@@ -8,13 +8,13 @@ class MessageFunctions {
     // =============================================================================
     // Create Functions ============================================================
     static createTextMessage(fromID, from, name, profileImagePath, board, message, successHandler, failureHandler) {
-        this.create(fromID, board, from, name, profileImagePath, null, message, null, successHandler, failureHandler);
+        return this.create(fromID, board, from, name, profileImagePath, null, message, null, successHandler, failureHandler);
     }
     static createPictureMessage(fromID, from, name, profileImagePath, board, picture, picturePath, successHandler, failureHandler) {
-        this.create(fromID, board, from, name, profileImagePath, "picture", picturePath, picture, successHandler, failureHandler);
+        return this.create(fromID, board, from, name, profileImagePath, "picture", picturePath, picture, successHandler, failureHandler);
     }
     static createVideoMessage(fromID, from, name, profileImagePath, board, video, videoPath, successHandler, failureHandler) {
-        this.create(fromID, board, from, name, profileImagePath, "video", videoPath, video, successHandler, failureHandler);
+        return this.create(fromID, board, from, name, profileImagePath, "video", videoPath, video, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
@@ -24,7 +24,7 @@ class MessageFunctions {
     // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
     static create(fromID, board, from, name, profileImagePath, type, message, file, successHandler, failureHandler) {
-        Lambda.create(fromID, "Message", {
+        return Lambda.create(fromID, "Message", {
             from,
             name,
             profileImagePath,

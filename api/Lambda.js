@@ -134,7 +134,8 @@ class Lambda {
                 }
             }
         });
-        return request;
+        // console.log("Returning " + JSON.stpayload);
+        return JSON.stringify(payload);
     }
 }
 

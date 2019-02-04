@@ -8,10 +8,10 @@ class SponsorFunctions extends UserFunctions {
     // =============================================================================
     // Create Functions ============================================================
     static createSponsor(fromID, name, email, username, successHandler, failureHandler) {
-        this.create(fromID, name, null, null, email, username, null, successHandler, failureHandler);
+        return this.create(fromID, name, null, null, email, username, null, successHandler, failureHandler);
     }
     static createSponsorOptional(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
-        this.create(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler);
+        return this.create(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
@@ -19,7 +19,7 @@ class SponsorFunctions extends UserFunctions {
     // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
     static create(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
-        Lambda.create(fromID, itemType, {
+        return Lambda.create(fromID, itemType, {
             name,
             gender,
             birthday,
