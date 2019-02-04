@@ -150,6 +150,10 @@ class GraphQL {
         GraphQL.execute(GraphQL.constructQuery("GetMessage", "getMessage", {board, id}, variableList),
             "getMessage", successHandler, failureHandler);
     }
+    static getStreak(id, variableList, successHandler, failureHandler) {
+        GraphQL.execute(GraphQL.constructQuery("GetStreak", "getStreak", {id}, variableList),
+            "getStreak", successHandler, failureHandler);
+    }
     static getClients(ids, variableList, successHandler, failureHandler) {
         if (ids && ids.length > 100) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
@@ -267,6 +271,15 @@ class GraphQL {
         GraphQL.execute(GraphQL.constructQuery("GetMessages", "getSponsors", {board}, variableList, idList, true),
             "getSponsors", successHandler, failureHandler);
     }
+    static getStreaks(ids, variableList, successHandler, failureHandler) {
+        if (ids && ids.length > 100) {
+            // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
+            consoleLog("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
+        }
+        const idList = GraphQL.generateIDList(ids);
+        GraphQL.execute(GraphQL.constructQuery("GetStreaks", "getStreaks", null, variableList, idList, true),
+            "getStreaks", successHandler, failureHandler);
+    }
     static constructClientQuery(variableList, filter, limit, nextToken) {
         var inputVariables = {};
         if (limit) { inputVariables.limit = limit; }
@@ -345,6 +358,12 @@ class GraphQL {
         if (nextToken) { inputVariables.nextToken = nextToken; }
         return GraphQL.constructQuery("QueryMessages", "queryMessages", inputVariables, variableList, filter, false, true);
     }
+    static constructStreakQuery(variableList, filter, limit, nextToken) {
+        var inputVariables = {};
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QueryStreaks", "queryStreaks", inputVariables, variableList, filter, false, true);
+    }
     static queryClients(queryString, successHandler, failureHandler) {
         GraphQL.execute(queryString, "queryClients", successHandler, failureHandler);
     }
@@ -383,6 +402,9 @@ class GraphQL {
     }
     static queryMessages(queryString, successHandler, failureHandler) {
         GraphQL.execute(queryString, "queryMessages", successHandler, failureHandler);
+    }
+    static queryStreaks(queryString, successHandler, failureHandler) {
+        GraphQL.execute(queryString, "queryStreaks", successHandler, failureHandler);
     }
 
     /**

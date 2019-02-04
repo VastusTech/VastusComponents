@@ -14,6 +14,7 @@ const ItemType = {
     Comment: "Comment",
     Sponsor: "Sponsor",
     Message: "Message",
+    Streak: "Streak",
 };
 
 export function getItemTypeFromID(id) {
@@ -29,7 +30,7 @@ export function getItemTypeFromID(id) {
     return null;
 }
 
-export function switchReturnItemType(itemType, clientValue, trainerValue, gymValue, workoutValue, reviewValue, eventValue, challengeValue, inviteValue, postValue, groupValue, commentValue, sponsorValue, messageValue, errorMessage) {
+export function switchReturnItemType(itemType, clientValue, trainerValue, gymValue, workoutValue, reviewValue, eventValue, challengeValue, inviteValue, postValue, groupValue, commentValue, sponsorValue, messageValue, streakValue, errorMessage) {
     let returnValue = null;
     switch (itemType) {
         case "Client":
@@ -71,6 +72,9 @@ export function switchReturnItemType(itemType, clientValue, trainerValue, gymVal
         case "Message":
             returnValue = messageValue;
             break;
+        case "Streak":
+            returnValue = streakValue;
+            break;
         default:
             returnValue = null;
             break;
@@ -83,7 +87,7 @@ export function switchReturnItemType(itemType, clientValue, trainerValue, gymVal
         return null;
     }
 }
-export function switchHandleItemType(itemType, clientHandler, trainerHandler, gymHandler, workoutHandler, reviewHandler, eventHandler, challengeHandler, inviteHandler, postHandler, groupHandler, commentHandler, sponsorHandler, messageHandler, errorMessage) {
+export function switchHandleItemType(itemType, clientHandler, trainerHandler, gymHandler, workoutHandler, reviewHandler, eventHandler, challengeHandler, inviteHandler, postHandler, groupHandler, commentHandler, sponsorHandler, messageHandler, streakHandler, errorMessage) {
     let itemHandler = null;
     switch (itemType) {
         case "Client":
@@ -124,6 +128,9 @@ export function switchHandleItemType(itemType, clientHandler, trainerHandler, gy
             break;
         case "Message":
             itemHandler = messageHandler;
+            break;
+        case "Streak":
+            itemHandler = streakHandler;
             break;
         default:
             itemHandler = null;
