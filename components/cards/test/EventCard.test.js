@@ -1,6 +1,6 @@
 import React from 'react';
 import EventCard from "../EventCard";
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import TestConfig, {store} from "../../../../TestConfig";
 
 TestConfig();
