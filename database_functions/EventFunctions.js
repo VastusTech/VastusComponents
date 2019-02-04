@@ -8,21 +8,21 @@ class EventFunctions {
     // =============================================================================
     // Create Functions ============================================================
     static createEvent(fromID, owner, time, capacity, address, title, access, tags, successHandler, failureHandler) {
-        this.create(fromID, null, owner, time, capacity, address, title, null, null, access, tags, successHandler, failureHandler);
+        return this.create(fromID, null, owner, time, capacity, address, title, null, null, access, tags, successHandler, failureHandler);
     }
     static createEventOptional(fromID, owner, time, capacity, address, title, description, memberIDs, access, tags, successHandler, failureHandler) {
-        this.create(fromID, null, owner, time, capacity, address, title, description, memberIDs, access, tags, successHandler, failureHandler);
+        return this.create(fromID, null, owner, time, capacity, address, title, description, memberIDs, access, tags, successHandler, failureHandler);
     }
     static createChallengeEvent(fromID, challengeID, owner, time, capacity, address, title, access, tags, successHandler, failureHandler) {
-        this.create(fromID, challengeID, owner, time, capacity, address, title, tags, null, access, tags, successHandler, failureHandler);
+        return this.create(fromID, challengeID, owner, time, capacity, address, title, tags, null, access, tags, successHandler, failureHandler);
     }
     static createChallengeEventOptional(fromID, challengeID, owner, time, capacity, address, title, description, memberIDs, access, tags, successHandler, failureHandler) {
-        this.create(fromID, challengeID, owner, time, capacity, address, title, description, memberIDs, access, tags, successHandler, failureHandler);
+        return this.create(fromID, challengeID, owner, time, capacity, address, title, description, memberIDs, access, tags, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
     static updateWinner(fromID, eventID, winnerID, successHandler, failureHandler) {
-        this.updateSet(fromID, eventID, "winner", winnerID, successHandler, failureHandler);
+        return this.updateSet(fromID, eventID, "winner", winnerID, successHandler, failureHandler);
     };
     static updateToPrivate(fromID, eventID, successHandler, failureHandler) {
         this.updateSet(fromID, eventID, "access", "private", successHandler, failureHandler);

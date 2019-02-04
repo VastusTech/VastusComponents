@@ -1,6 +1,7 @@
 import * as AWS from "aws-sdk";
 import {ifDebug} from "../../Constants";
 import {consoleLog, consoleError} from "../logic/DebuggingHelper";
+import TestHelper from "../logic/TestHelper";
 
 /// Configure AWS SDK for JavaScript
 AWS.config.update({region: 'us-east-1'});
@@ -16,7 +17,7 @@ class Lambda {
     // All the basic CRUD Functions with my own personally defined JSONs
     // TODO Is there a case where we would need specify action yet?
     static create(fromID, itemType, createRequest, successHandler, failureHandler) {
-        this.invokeDatabaseLambda({
+        return this.invokeDatabaseLambda({
             fromID: fromID,
             action: "CREATE",
             itemType: itemType,
@@ -24,7 +25,7 @@ class Lambda {
         }, successHandler, failureHandler);
     }
     static updateSetAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
-        this.invokeDatabaseLambda({
+        return this.invokeDatabaseLambda({
             fromID: fromID,
             action: "UPDATESET",
             itemType: objectItemType,
@@ -38,7 +39,7 @@ class Lambda {
         }, successHandler, failureHandler);
     }
     static updateAddToAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
-        this.invokeDatabaseLambda({
+        return this.invokeDatabaseLambda({
             fromID,
             action: "UPDATEADD",
             itemType: objectItemType,
@@ -52,7 +53,7 @@ class Lambda {
         }, successHandler, failureHandler);
     }
     static updateRemoveFromAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
-        this.invokeDatabaseLambda({
+        return this.invokeDatabaseLambda({
             fromID,
             action: "UPDATEREMOVE",
             itemType: objectItemType,
@@ -66,7 +67,7 @@ class Lambda {
         }, successHandler, failureHandler);
     }
     static delete(fromID, objectID, objectItemType, successHandler, failureHandler) {
-        this.invokeDatabaseLambda({
+        return this.invokeDatabaseLambda({
             fromID,
             action: "DELETE",
             itemType: objectItemType,
@@ -76,33 +77,35 @@ class Lambda {
         }, successHandler, failureHandler)
     }
     static ping(successHandler, failureHandler) {
-        this.invokeDatabaseLambda({
+        return this.invokeDatabaseLambda({
             action: "PING"
         }, successHandler, failureHandler);
     }
     static invokeDatabaseLambda(payload, successHandler, failureHandler) {
-        this.invokeLambda("VastusDatabaseLambdaFunction", payload, successHandler, failureHandler);
+        return this.invokeLambda("VastusDatabaseLambdaFunction", payload, successHandler, failureHandler);
     }
     static invokePaymentLambda(payload, successHandler, failureHandler) {
-        this.invokeLambda("VastusPaymentLambdaFunction", payload, successHandler, failureHandler);
+        return this.invokeLambda("VastusPaymentLambdaFunction", payload, successHandler, failureHandler);
     }
     static invokeFirebaseLambda(payload, successHandler, failureHandler) {
-        this.invokeLambda("VastusFirebaseTokenFunction", payload, successHandler, failureHandler);
+        return this.invokeLambda("VastusFirebaseTokenFunction", payload, successHandler, failureHandler);
     }
     static invokeLambda(functionName, payload, successHandler, failureHandler) {
         consoleLog("Sending lambda payload: " + JSON.stringify(payload));
         if (ifDebug) {
             console.log("Sending lambda payload: " + JSON.stringify(payload));
         }
-        lambda.invoke({
-            FunctionName : functionName,
-            Payload: JSON.stringify(payload)
-        }, (error, data) => {
+        const request = {FunctionName: functionName, Payload: JSON.stringify(payload)};
+        TestHelper.ifTesting || lambda.invoke(request, (error, data) => {
             if (error) {
                 consoleError(error);
                 consoleError("Lambda failure: " + JSON.stringify(error));
-                if (ifDebug) { console.log("Lambda failure: " + JSON.stringify(error))}
-                if (failureHandler) { failureHandler(error); }
+                if (ifDebug) {
+                    console.log("Lambda failure: " + JSON.stringify(error))
+                }
+                if (failureHandler) {
+                    failureHandler(error);
+                }
             } else if (data.Payload) {
                 //consoleLog(data.Payload);
                 const payload = JSON.parse(data.Payload);
@@ -110,21 +113,28 @@ class Lambda {
                     consoleError("Bad payload!: " + JSON.stringify(payload));
                     consoleError(payload.errorMessage);
                     console.log("Bad payload!: " + JSON.stringify(payload));
-                    if (failureHandler) { failureHandler(payload.errorMessage); }
+                    if (failureHandler) {
+                        failureHandler(payload.errorMessage);
+                    }
                 }
                 else {
                     consoleLog("Successfully invoked lambda function!");
                     if (ifDebug) {
                         console.log("Successful Lambda, received " + JSON.stringify(payload));
                     }
-                    if (successHandler) { successHandler(payload); }
+                    if (successHandler) {
+                        successHandler(payload);
+                    }
                 }
             }
             else {
                 consoleError("Weird error: payload returned with nothing...");
-                if (failureHandler) { failureHandler("Payload returned with null"); }
+                if (failureHandler) {
+                    failureHandler("Payload returned with null");
+                }
             }
         });
+        return request;
     }
 }
 

@@ -1,10 +1,11 @@
  import React, { Component } from 'react';
 import { Label, Grid, Icon, Container, Divider, Message } from 'semantic-ui-react'
-import {fetchUserAttributes, forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
-import connect from "react-redux/es/connect/connect";
 import {Player} from "video-react";
 
 export default (props: {message: any, userID: string}) => {
+    if (!props.message) {
+        return null;
+    }
     const from = props.message.from;
     const name = props.message.name;
     const message = props.message.message;

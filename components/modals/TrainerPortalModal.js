@@ -6,7 +6,7 @@ import {fetchUserAttributes, forceFetchUserAttributes} from "../../../redux_help
 import { connect } from "react-redux";
 import TrainerFunctions from "../../database_functions/TrainerFunctions";
 import {calculateAge} from "../../logic/TimeHelper";
-import TrainerPostFeed from "../../../screens/profile_tab/TrainerPostFeed";
+import TrainerPostFeed from "../lists/TrainerPostFeed";
 import EventList from "../lists/EventList";
 
 type Props = {

@@ -3,9 +3,7 @@ import { ifDebug } from "../../Constants";
 import _ from 'lodash';
 import {switchReturnItemType} from "../logic/ItemType";
 import { consoleLog, consoleError } from "../logic/DebuggingHelper";
-import AppConfig from "../../AppConfig";
-
-// AppConfig();
+import TestHelper from "../logic/TestHelper";
 
 class GraphQL {
     // Gives back function with parameters (id, variablesList, successHandler, failureHandler)
@@ -575,7 +573,7 @@ class GraphQL {
             if (ifDebug) {
                 alert("Sending ql = " + query.query + "\nWith variables = " + JSON.stringify(query.variables));
             }
-            API.graphql(graphqlOperation(query.query, query.variables)).then((data) => {
+            TestHelper.ifTesting || API.graphql(graphqlOperation(query.query, query.variables)).then((data) => {
                 consoleLog("GraphQL operation succeeded!");
                 if (!data.data || !data.data[queryFunctionName]) {
                     consoleLog("Object returned nothing!!! Something wrong?");
@@ -603,6 +601,7 @@ class GraphQL {
                 if (failureHandler) { failureHandler(error); }
             });
         }
+        return query;
     }
 }
 

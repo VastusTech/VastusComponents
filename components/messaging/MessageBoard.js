@@ -10,7 +10,7 @@ import {
     addMessageFromNotification
 } from "../../redux_actions/messageActions";
 import {setHandlerToBoard} from "../../redux_actions/ablyActions";
-import connect from "react-redux/es/connect/connect";
+import {connect} from "react-redux";
 import ScrollView from "react-inverted-scrollview";
 
 type Props = {

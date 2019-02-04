@@ -7,13 +7,19 @@ import { convertFromISO } from "../../logic/TimeHelper";
 import { forceFetchUserAttributes } from "../../../redux_helpers/actions/userActions";
 import PostFunctions from "../../database_functions/PostFunctions";
 
+type Props = {
+    postID: string,
+    open: boolean,
+    onClose: any
+};
+
 /*
 * Event Description Modal
 *
 * This is the event description which displays more in depth information about a challenge, and allows the user
 * to join the challenge.
  */
-class PostDescriptionModal extends Component {
+class PostDescriptionModal extends Component<Props> {
     state = {
         // isLoading: false,
         postID: null,

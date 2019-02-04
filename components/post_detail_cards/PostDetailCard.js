@@ -16,13 +16,17 @@ import { Storage } from "aws-amplify";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import {consoleError} from "../../logic/DebuggingHelper";
 
+type Props = {
+    postID: string
+};
+
 /*
 * Event Description Modal
 *
 * This is the event description which displays more in depth information about a challenge, and allows the user
 * to join the challenge.
  */
-class PostDetailCard extends Component {
+class PostDetailCard extends Component<Props> {
     static fetchVariableList = ["id", "time_created", "by", "item_type", "postType", "about", "description", "videoPaths", "picturePaths"];
 
     state = {

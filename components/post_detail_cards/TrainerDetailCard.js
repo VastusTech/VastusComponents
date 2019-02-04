@@ -18,13 +18,17 @@ import PostFunctions from "../../database_functions/PostFunctions.js";
 import TrainerCard from "../cards/TrainerCard";
 import {consoleLog} from "../../logic/DebuggingHelper";
 
+type Props = {
+    postID: string
+};
+
 /*
 * Event Description Modal
 *
 * This is the event description which displays more in depth information about a challenge, and allows the user
 * to join the challenge.
  */
-class TrainerDetailCard extends Component {
+class TrainerDetailCard extends Component<Props> {
     static fetchVariableList = ["id", "profileImagePath", "name"];
 
     state = {

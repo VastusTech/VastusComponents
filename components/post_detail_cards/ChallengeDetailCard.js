@@ -13,28 +13,23 @@ import ChallengeCard from "../cards/ChallengeCard";
 import { Storage } from "aws-amplify";
 import ClientModal from "../modals/ClientModal";
 
+type Props = {
+    postID: string
+};
+
 /*
 * Event Description Modal
 *
 * This is the event description which displays more in depth information about a challenge, and allows the user
 * to join the challenge.
  */
-class ChallengeDetailCard extends Component {
+class ChallengeDetailCard extends Component<Props> {
     static fetchVariableList = ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "difficulty", "time_created", "capacity", "members", "prize", "goal", "owner", "access", "restriction", "submissions"];
 
     state = {
         // isLoading: false,
         postID: null,
-        // event: null,
-        // ownerName: null,
-        // members: {},
         clientModalOpen: false
-        // completeModalOpen: false,
-        // isLeaveLoading: false,
-        // isDeleteLoading: false,
-        // isJoinLoading: false,
-        // joinRequestSent: false,
-        // canCallChecks: true,
     };
 
     constructor(props) {

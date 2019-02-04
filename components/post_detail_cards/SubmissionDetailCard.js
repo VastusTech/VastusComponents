@@ -9,13 +9,17 @@ import {Player} from "video-react";
 import { Storage } from "aws-amplify";
 import {consoleError} from "../../logic/DebuggingHelper";
 
+type Props = {
+    postID: string
+};
+
 /*
 * Event Description Modal
 *
 * This is the event description which displays more in depth information about a challenge, and allows the user
 * to join the challenge.
  */
-class SubmissionDetailCard extends Component {
+class SubmissionDetailCard extends Component<Props> {
     static fetchVariableList = [];
 
     state = {

@@ -13,7 +13,7 @@ import {consoleLog} from "../../logic/DebuggingHelper";
  */
 
 type Props = {
-    rank: number,
+    rank?: number,
     clientID: string
 };
 

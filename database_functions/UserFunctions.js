@@ -48,6 +48,12 @@ class UserFunctions {
     static removeGroup(fromID, userID, groupID, successHandler, failureHandler) {
         this.updateRemove(fromID, userID, "groups", groupID, successHandler, failureHandler);
     }
+    static addMessageBoard(fromID, userID, messageBoard, successHandler, failureHandler) {
+        this.updateAdd(fromID, userID, "messageBoards", messageBoard, successHandler, failureHandler);
+    }
+    static removeMessageBoard(fromID, userID, messageBoard, successHandler, failureHandler) {
+        this.updateRemove(fromID, userID, "messageBoards", messageBoard, successHandler, failureHandler);
+    }
     static updateName(fromID, userID, name, successHandler, failureHandler) {
         this.updateSet(fromID, userID, "name", name, successHandler, failureHandler);
     }
