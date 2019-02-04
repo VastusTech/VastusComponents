@@ -13,6 +13,7 @@ const FETCH_POST = 'FETCH_POST';
 const FETCH_GROUP = 'FETCH_GROUP';
 const FETCH_COMMENT = 'FETCH_COMMENT';
 const FETCH_SPONSOR = 'FETCH_SPONSOR';
+const FETCH_STREAK = 'FETCH_STREAK';
 
 const REMOVE_CLIENT =    'REMOVE_CLIENT';
 const REMOVE_TRAINER =   'REMOVE_TRAINER';
@@ -26,6 +27,7 @@ const REMOVE_POST =      'REMOVE_POST';
 const REMOVE_GROUP =     'REMOVE_GROUP';
 const REMOVE_COMMENT =   'REMOVE_COMMENT';
 const REMOVE_SPONSOR =   'REMOVE_SPONSOR';
+const REMOVE_STREAK =    'REMOVE_STREAK';
 
 const FETCH_CLIENT_QUERY = 'FETCH_CLIENT_QUERY';
 const FETCH_TRAINER_QUERY = 'FETCH_TRAINER_QUERY';
@@ -39,6 +41,7 @@ const FETCH_POST_QUERY = 'FETCH_POST_QUERY';
 const FETCH_GROUP_QUERY = 'FETCH_GROUP_QUERY';
 const FETCH_COMMENT_QUERY = 'FETCH_COMMENT_QUERY';
 const FETCH_SPONSOR_QUERY = 'FETCH_SPONSOR_QUERY';
+const FETCH_STREAK_QUERY = 'FETCH_STREAK_QUERY';
 
 const CLEAR_NORMALIZED_CLIENT_QUERY =    'CLEAR_NORMALIZED_CLIENT_QUERY';
 const CLEAR_NORMALIZED_TRAINER_QUERY =   'CLEAR_NORMALIZED_TRAINER_QUERY';
@@ -52,6 +55,7 @@ const CLEAR_NORMALIZED_POST_QUERY =      'CLEAR_NORMALIZED_POST_QUERY';
 const CLEAR_NORMALIZED_GROUP_QUERY =     'CLEAR_NORMALIZED_GROUP_QUERY';
 const CLEAR_NORMALIZED_COMMENT_QUERY =   'CLEAR_NORMALIZED_COMMENT_QUERY';
 const CLEAR_NORMALIZED_SPONSOR_QUERY =   'CLEAR_NORMALIZED_SPONSOR_QUERY';
+const CLEAR_NORMALIZED_STREAK_QUERY =    'CLEAR_NORMALIZED_STREAK_QUERY';
 
 const CLEAR_CLIENT_QUERY = 'CLEAR_CLIENT_QUERY';
 const CLEAR_TRAINER_QUERY = 'CLEAR_TRAINER_QUERY';
@@ -65,6 +69,7 @@ const CLEAR_POST_QUERY = 'CLEAR_POST_QUERY';
 const CLEAR_GROUP_QUERY = 'CLEAR_GROUP_QUERY';
 const CLEAR_COMMENT_QUERY = 'CLEAR_COMMENT_QUERY';
 const CLEAR_SPONSOR_QUERY = 'CLEAR_SPONSOR_QUERY';
+const CLEAR_STREAK_QUERY = 'CLEAR_STREAK_QUERY';
 
 // TODO Play around with these values maybe? How do we decide this?
 const clientCacheSize = 100;
@@ -79,6 +84,7 @@ const postCacheSize = 2000;
 const groupCacheSize = 100;
 const commentCacheSize = 1000;
 const sponsorCacheSize = 100;
+const streakCacheSize = 100;
 
 // TODO The query cache sizes might be important if the user is searching for a lot
 const clientQueryCacheSize = 5;
@@ -93,6 +99,7 @@ const postQueryCacheSize = 5;
 const groupQueryCacheSize = 5;
 const commentQueryCacheSize = 5;
 const sponsorQueryCacheSize = 5;
+const streakQueryCacheSize = 10;
 
 const initialState = {
     // ID --> DatabaseObject
@@ -108,6 +115,7 @@ const initialState = {
     groups: {},
     comments: {},
     sponsors: {},
+    streaks: {},
 
     // List of IDs in order of least recently used
     clientLRUHandler: [],
@@ -122,6 +130,7 @@ const initialState = {
     groupLRUHandler: [],
     commentLRUHandler: [],
     sponsorLRUHandler: [],
+    streakLRUHandler: [],
 
     // Cached queries.
     clientQueries: {},
@@ -136,9 +145,8 @@ const initialState = {
     groupQueries: {},
     commentQueries: {},
     sponsorQueries: {},
+    streakQueries: {},
 
-    // TODO Include LRU Handlers for these as well!
-    // TODO Actually use these
     clientQueryLRUHandler: [],
     trainerQueryLRUHandler: [],
     gymQueryLRUHandler: [],
@@ -151,6 +159,7 @@ const initialState = {
     groupQueryLRUHandler: [],
     commentQueryLRUHandler: [],
     sponsorQueryLRUHandler: [],
+    streakQueryLRUHandler: [],
 };
 
 export default (state = initialState, action) => {
@@ -195,6 +204,9 @@ export default (state = initialState, action) => {
         case FETCH_SPONSOR:
             state = addObjectToCache(state, "sponsors", sponsorCacheSize, "sponsorLRUHandler", action.payload);
             break;
+        case FETCH_STREAK:
+            state = addObjectToCache(state, "streaks", streakCacheSize, "streakLRUHandler", action.payload);
+            break;
         case REMOVE_CLIENT:
             state = removeItem(state, "clients", action.payload);
             break;
@@ -231,7 +243,9 @@ export default (state = initialState, action) => {
         case REMOVE_SPONSOR:
             state = removeItem(state, "sponsors", action.payload);
             break;
-            // Connected these to LRU Handlers... important especially as we scale
+        case REMOVE_STREAK:
+            state = removeItem(state, "streaks", action.payload);
+            break;
         case FETCH_CLIENT_QUERY:
             state = addQueryToCache(state, "clientQueries", clientQueryCacheSize, "clientQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
@@ -267,6 +281,9 @@ export default (state = initialState, action) => {
             break;
         case FETCH_SPONSOR_QUERY:
             state = addQueryToCache(state, "sponsorQueries", sponsorQueryCacheSize, "sponsorQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            break;
+        case FETCH_STREAK_QUERY:
+            state = addQueryToCache(state, "streakQueries", streakQueryCacheSize, "streakQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case CLEAR_NORMALIZED_CLIENT_QUERY:
             state = clearNormalizedCache(state, "clientQueries", action.payload);
@@ -304,6 +321,9 @@ export default (state = initialState, action) => {
         case CLEAR_NORMALIZED_SPONSOR_QUERY:
             state = clearNormalizedCache(state, "sponsorQueries", action.payload);
             break;
+        case CLEAR_NORMALIZED_STREAK_QUERY:
+            state = clearNormalizedCache(state, "streakQueries", action.payload);
+            break;
         case CLEAR_CLIENT_QUERY:
             state = clearCache(state, "clientQueries");
             break;
@@ -339,6 +359,9 @@ export default (state = initialState, action) => {
             break;
         case CLEAR_SPONSOR_QUERY:
             state = clearCache(state, "sponsorQueries");
+            break;
+        case CLEAR_STREAK_QUERY:
+            state = clearCache(state, "streakQueries");
             break;
         default:
             state = {
