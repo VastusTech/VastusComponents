@@ -1,6 +1,6 @@
 import React from 'react';
 import NotificationCard from "../NotificationCard";
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import TestConfig, {store} from "../../../../TestConfig";
 
 TestConfig();

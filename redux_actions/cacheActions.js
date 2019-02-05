@@ -17,6 +17,7 @@ const FETCH_POST = 'FETCH_POST';
 const FETCH_GROUP = 'FETCH_GROUP';
 const FETCH_COMMENT = 'FETCH_COMMENT';
 const FETCH_SPONSOR = 'FETCH_SPONSOR';
+const FETCH_STREAK = 'FETCH_STREAK';
 
 const REMOVE_CLIENT =    'REMOVE_CLIENT';
 const REMOVE_TRAINER =   'REMOVE_TRAINER';
@@ -30,6 +31,7 @@ const REMOVE_POST =      'REMOVE_POST';
 const REMOVE_GROUP =     'REMOVE_GROUP';
 const REMOVE_COMMENT =   'REMOVE_COMMENT';
 const REMOVE_SPONSOR =   'REMOVE_SPONSOR';
+const REMOVE_STREAK =    'REMOVE_STREAK';
 
 const FETCH_CLIENT_QUERY = 'FETCH_CLIENT_QUERY';
 const FETCH_TRAINER_QUERY = 'FETCH_TRAINER_QUERY';
@@ -43,6 +45,7 @@ const FETCH_POST_QUERY = 'FETCH_POST_QUERY';
 const FETCH_GROUP_QUERY = 'FETCH_GROUP_QUERY';
 const FETCH_COMMENT_QUERY = 'FETCH_COMMENT_QUERY';
 const FETCH_SPONSOR_QUERY = 'FETCH_SPONSOR_QUERY';
+const FETCH_STREAK_QUERY = 'FETCH_STREAK_QUERY';
 
 const CLEAR_CLIENT_QUERY = 'CLEAR_CLIENT_QUERY';
 const CLEAR_TRAINER_QUERY = 'CLEAR_TRAINER_QUERY';
@@ -56,6 +59,7 @@ const CLEAR_POST_QUERY = 'CLEAR_POST_QUERY';
 const CLEAR_GROUP_QUERY = 'CLEAR_GROUP_QUERY';
 const CLEAR_COMMENT_QUERY = 'CLEAR_COMMENT_QUERY';
 const CLEAR_SPONSOR_QUERY = 'CLEAR_SPONSOR_QUERY';
+const CLEAR_STREAK_QUERY = 'CLEAR_STREAK_QUERY';
 
 // TODO Change this to using my S3Storage class
 function addProfilePictureToData(data, callback) {
@@ -520,6 +524,9 @@ export function fetchComment(id, variablesList, dataHandler, failureHandler) {
 export function fetchSponsor(id, variablesList, dataHandler, failureHandler) {
     return fetch(id, variablesList, "sponsors", "getSponsor", "FETCH_SPONSOR", dataHandler, failureHandler);
 }
+export function fetchStreak(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "streaks", "getStreaks", "FETCH_STREAK", dataHandler, failureHandler);
+}
 export function forceFetchItem(itemType, id, variablesList, dataHandler, failureHandler) {
     return getForceFetchItemFunction(itemType)(id, variablesList, dataHandler, failureHandler);
 }
@@ -559,6 +566,9 @@ export function forceFetchComment(id, variablesList, dataHandler, failureHandler
 export function forceFetchSponsor(id, variablesList, dataHandler, failureHandler) {
     return forceFetch(id, variablesList, "sponsors", "getSponsor", "FETCH_SPONSOR", dataHandler, failureHandler);
 }
+export function forceFetchStreak(id, variablesList, dataHandler, failureHandler) {
+    return forceFetch(id, variablesList, "streaks", "getStreak", "FETCH_STREAK", dataHandler, failureHandler);
+}
 export function fetchClients(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
     return batchFetch(ids, variablesList, "clients", "getClients", "FETCH_CLIENT", dataHandler, unretrievedDataHandler, failureHandler);
 }
@@ -595,6 +605,9 @@ export function fetchComments(ids, variablesList, dataHandler, unretrievedDataHa
 export function fetchSponsors(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
     return batchFetch(ids, variablesList, "sponsors", "getSponsors", "FETCH_SPONSOR", dataHandler, unretrievedDataHandler, failureHandler);
 }
+export function fetchStreaks(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchFetch(ids, variablesList, "streaks", "getStreaks", "FETCH_STREAK", dataHandler, unretrievedDataHandler, failureHandler);
+}
 export function forceFetchClients(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
     return batchForceFetch(ids, variablesList, "clients", "getClients", "FETCH_CLIENT", dataHandler, unretrievedDataHandler, failureHandler);
 }
@@ -630,6 +643,9 @@ export function forceFetchComments(ids, variablesList, dataHandler, unretrievedD
 }
 export function forceFetchSponsors(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
     return batchForceFetch(ids, variablesList, "sponsors", "getSponsors", "FETCH_SPONSOR", dataHandler, unretrievedDataHandler, failureHandler);
+}
+export function forceFetchStreaks(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchForceFetch(ids, variablesList, "streaks", "getStreaks", "FETCH_STREAK", dataHandler, unretrievedDataHandler, failureHandler);
 }
 export function fetchClientQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
     // console.log("fetching clients");
@@ -668,6 +684,9 @@ export function fetchCommentQuery(variablesList, filter, limit, nextToken, dataH
 export function fetchSponsorQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
     return fetchQuery("Sponsor", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
 }
+export function fetchStreakQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Streak", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
 export function forceFetchClientQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
     return forceFetchQuery("Client", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
 }
@@ -703,6 +722,9 @@ export function forceFetchCommentQuery(variablesList, filter, limit, nextToken, 
 }
 export function forceFetchSponsorQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
     return forceFetchQuery("Sponsor", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchStreakQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Streak", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
 }
 // TODO Consider how this might scale? Another LRU Cache here?
 export function putClientQuery(queryString, queryResult) {
@@ -811,6 +833,15 @@ export function putSponsorQuery(queryString, queryResult) {
         }
     };
 }
+export function putStreakQuery(queryString, queryResult) {
+    return {
+        type: "FETCH_STREAK_QUERY",
+        payload: {
+            queryString,
+            queryResult
+        }
+    };
+}
 export function clearClientQuery() {
     return {
         type: "CLEAR_CLIENT_QUERY",
@@ -871,9 +902,14 @@ export function clearSponsorQuery() {
         type: "CLEAR_SPONSOR_QUERY",
     };
 }
+export function clearStreakQuery() {
+    return {
+        type: "CLEAR_STREAK_QUERY",
+    };
+}
 export function removeItem(itemType, id) {
     const removeType = switchReturnItemType(itemType, REMOVE_CLIENT, REMOVE_TRAINER, REMOVE_GYM, REMOVE_WORKOUT, REMOVE_REVIEW, REMOVE_EVENT,
-        REMOVE_CHALLENGE, REMOVE_INVITE, REMOVE_POST, REMOVE_GROUP, REMOVE_COMMENT, REMOVE_SPONSOR, null,
+        REMOVE_CHALLENGE, REMOVE_INVITE, REMOVE_POST, REMOVE_GROUP, REMOVE_COMMENT, REMOVE_SPONSOR, null, REMOVE_STREAK,
         "Receive remove item type not implemented for type!");
     return {
         type: removeType,
@@ -1033,53 +1069,65 @@ export function putSponsor(sponsor) {
     }
     return {type: ""};
 }
+export function putStreak(streak) {
+    if (streak && streak.id) {
+        return {
+            type: "FETCH_SPONSOR",
+            payload: {
+                id: streak.id,
+                data: streak
+            }
+        };
+    }
+    return {type: ""};
+}
 export function getFetchType(itemType) {
     return switchReturnItemType(itemType, FETCH_CLIENT, FETCH_TRAINER, FETCH_GYM, FETCH_WORKOUT, FETCH_REVIEW,
         FETCH_EVENT, FETCH_CHALLENGE, FETCH_INVITE, FETCH_POST, FETCH_GROUP, FETCH_COMMENT, FETCH_SPONSOR,
-        null, "Retrieve fetch type not implemented for type.")
+        null, FETCH_STREAK, "Retrieve fetch type not implemented for type.")
 }
 export function getFetchQueryType(itemType) {
     return switchReturnItemType(itemType, FETCH_CLIENT_QUERY, FETCH_TRAINER_QUERY, FETCH_GYM_QUERY, FETCH_WORKOUT_QUERY,
         FETCH_REVIEW_QUERY, FETCH_EVENT_QUERY, FETCH_CHALLENGE_QUERY, FETCH_INVITE_QUERY, FETCH_POST_QUERY, FETCH_GROUP_QUERY,
-        FETCH_COMMENT_QUERY, FETCH_SPONSOR_QUERY, null, "Retrieve fetch query type not implemented for type");
+        FETCH_COMMENT_QUERY, FETCH_SPONSOR_QUERY, null, FETCH_STREAK_QUERY, "Retrieve fetch query type not implemented for type");
 }
 export function getCache(itemType, getStore) {
     const cache = getStore().cache;
     return switchReturnItemType(itemType, cache.clients, cache.trainers, cache.gyms, cache.workouts, cache.reviews,
         cache.events, cache.challenges, cache.invites, cache.posts, cache.groups, cache.comments, cache.sponsors,
-        null, "Retrieve cache not implemented");
+        null, cache.streaks, "Retrieve cache not implemented");
 }
 export function getQueryCache(itemType, getStore) {
     const cache = getStore().cache;
     return switchReturnItemType(itemType, cache.clientQueries, cache.trainerQueries, cache.gymQueries, cache.workoutQueries,
         cache.reviewQueries, cache.eventQueries, cache.challengeQueries, cache.inviteQueries, cache.postQueries, cache.groupQueries,
-        cache.commentQueries, cache.sponsorQueries, null, "Retrieve query cache not implemented");
+        cache.commentQueries, cache.sponsorQueries, null, cache.streakQueries, "Retrieve query cache not implemented");
 }
 export function getPutItemFunction(itemType) {
     return switchReturnItemType(itemType, putClient, putTrainer, putGym, putWorkout, putReview, putEvent, putChallenge, putInvite,
-        putPost, putGroup, putComment, putSponsor, null, "Retrieve put item function item type not implemented");
+        putPost, putGroup, putComment, putSponsor, null, putStreak, "Retrieve put item function item type not implemented");
 }
 function getFetchItemFunction(itemType) {
     return switchReturnItemType(itemType, fetchClient, fetchTrainer, fetchGym, fetchWorkout, fetchReview, fetchEvent,
-        fetchChallenge, fetchInvite, fetchPost, fetchGroup, fetchComment, fetchSponsor, null, "Retrieve fetch item function not implemented");
+        fetchChallenge, fetchInvite, fetchPost, fetchGroup, fetchComment, fetchSponsor, null, fetchStreak, "Retrieve fetch item function not implemented");
 }
 function getForceFetchItemFunction(itemType) {
     return switchReturnItemType(itemType, forceFetchClient, forceFetchTrainer, forceFetchGym, forceFetchWorkout, forceFetchReview,
         forceFetchEvent, forceFetchChallenge, forceFetchInvite, forceFetchPost, forceFetchGroup, forceFetchComment, forceFetchSponsor,
-        null, "Retrieve force fetch item function not implemented for item type");
+        null, forceFetchStreak, "Retrieve force fetch item function not implemented for item type");
 }
 export function getFetchQueryFunction(itemType) {
     return switchReturnItemType(itemType, fetchClientQuery, fetchTrainerQuery, fetchGymQuery, fetchWorkoutQuery,
         fetchReviewQuery, fetchEventQuery, fetchChallengeQuery, fetchInviteQuery, fetchPostQuery, fetchGroupQuery,
-        fetchCommentQuery, fetchSponsorQuery, null, "Retrieve fetch query function item type not implemented");
+        fetchCommentQuery, fetchSponsorQuery, null, fetchStreakQuery, "Retrieve fetch query function item type not implemented");
 }
 export function getPutQueryFunction(itemType) {
     return switchReturnItemType(itemType, putClientQuery, putTrainerQuery, putGymQuery, putWorkoutQuery, putReviewQuery,
         putEventQuery, putChallengeQuery, putInviteQuery, putPostQuery, putGroupQuery, putCommentQuery, putSponsorQuery,
-        null, "Retrieve Put Query Function not implemented");
+        null, putStreakQuery, "Retrieve Put Query Function not implemented");
 }
 export function getClearQueryFunction(itemType) {
     return switchReturnItemType(itemType, clearClientQuery, clearTrainerQuery, clearGymQuery, clearWorkoutQuery, clearReviewQuery,
         clearEventQuery, clearChallengeQuery, clearInviteQuery, clearPostQuery, clearGroupQuery, clearCommentQuery, clearSponsorQuery,
-        null, "Retrieve Clear Query Function not implemented");
+        null, clearStreakQuery, "Retrieve Clear Query Function not implemented");
 }

@@ -1,5 +1,6 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { Provider } from "react-redux";
+import { shallow, mount } from 'enzyme';
 import TrainerCard from "../TrainerCard";
 import TestConfig, {store} from "../../../../TestConfig";
 

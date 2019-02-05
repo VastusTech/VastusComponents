@@ -9,29 +9,27 @@ import {Player} from "video-react";
 
 // Take from StackOverflow, nice snippit!
 // https://stackoverflow.com/a/17415677
-Date.prototype.toIsoString = function() {
-    var tzo = -this.getTimezoneOffset(),
-        dif = tzo >= 0 ? '+' : '-',
-        pad = function(num) {
-            var norm = Math.floor(Math.abs(num));
-            return (norm < 10 ? '0' : '') + norm;
-        };
-    return this.getFullYear() +
-        '-' + pad(this.getMonth() + 1) +
-        '-' + pad(this.getDate()) +
-        'T' + pad(this.getHours()) +
-        ':' + pad(this.getMinutes()) +
-        ':' + pad(this.getSeconds()) +
-        dif + pad(tzo / 60) +
-        ':' + pad(tzo % 60);
-};
+// Date.prototype.toIsoString = function() {
+//     var tzo = -this.getTimezoneOffset(),
+//         dif = tzo >= 0 ? '+' : '-',
+//         pad = function(num) {
+//             var norm = Math.floor(Math.abs(num));
+//             return (norm < 10 ? '0' : '') + norm;
+//         };
+//     return this.getFullYear() +
+//         '-' + pad(this.getMonth() + 1) +
+//         '-' + pad(this.getDate()) +
+//         'T' + pad(this.getHours()) +
+//         ':' + pad(this.getMinutes()) +
+//         ':' + pad(this.getSeconds()) +
+//         dif + pad(tzo / 60) +
+//         ':' + pad(tzo % 60);
+// };
 
 function arrayRemove(arr, value) {
-
     return arr.filter(function(ele){
         return ele !== value;
     });
-
 }
 
 /*type Props = {
@@ -165,7 +163,7 @@ class CreateGroupProp extends Component {
         // TODO Check to see if valid inputs!
         if (this.state.title && this.state.motto && this.state.tags) {
             alert("Title: " + this.state.title + "Motto: " + this.state.motto);
-            GroupFunctions.createGroupOptional(this.props.user.id, this.state.title, this.state.motto, this.state.access,
+            GroupFunctions.createGroupOptional(this.props.user.id, this.state.title, null, this.state.motto, null, this.state.access,
                 this.state.restriction, [this.props.user.id], null, this.state.tags, (data) => {
                     console.log("Successfully created a group!");
                     this.setState({isSubmitLoading: false});
@@ -192,21 +190,21 @@ class CreateGroupProp extends Component {
         // });
     };
 
-    static getTodayDateString() {
-        // This is annoying just because we need to work with time zones :(
-        const shortestTimeInterval = 5;
-        const date = new Date();
-        date.setMinutes(date.getMinutes() + (shortestTimeInterval - (date.getMinutes() % shortestTimeInterval)));
-        return date.toIsoString().substr(0, 10);
-    }
+    // static getTodayDateString() {
+    //     // This is annoying just because we need to work with time zones :(
+    //     const shortestTimeInterval = 5;
+    //     const date = new Date();
+    //     date.setMinutes(date.getMinutes() + (shortestTimeInterval - (date.getMinutes() % shortestTimeInterval)));
+    //     return date.toIsoString().substr(0, 10);
+    // }
 
-    static getNowTimeString() {
-        // Sneaking some modular arithmetic in this ;) This is so that the time shown is always a nice lookin' number
-        const shortestTimeInterval = 5;
-        const date = new Date();
-        date.setMinutes(date.getMinutes() + (shortestTimeInterval - (date.getMinutes() % shortestTimeInterval)));
-        return date.toIsoString().substr(11, 5);
-    }
+    // static getNowTimeString() {
+    //     // Sneaking some modular arithmetic in this ;) This is so that the time shown is always a nice lookin' number
+    //     const shortestTimeInterval = 5;
+    //     const date = new Date();
+    //     date.setMinutes(date.getMinutes() + (shortestTimeInterval - (date.getMinutes() % shortestTimeInterval)));
+    //     return date.toIsoString().substr(11, 5);
+    // }
 
     closeModal = () => {
         this.setState({ showModal: false })
@@ -261,17 +259,7 @@ class CreateGroupProp extends Component {
         const index = this.state.pictures.length;
         this.state.pictures.push(event.target.files[0]);
         const path = "/" + this.props.user.id + "/temp/pictures/" + index;
-        Storage.put(path, event.target.files[0], { contentType: "image/*" })
-            .then(() => {
-                Storage.get(path).then((url) => {
-                    this.state.tempPictureURLs.push(url);
-                    this.setState({});
-                }).catch((error) => {
-                    consoleError(error);
-                })
-            }).catch((error) => {
-            consoleError(error);
-        });
+        this.state.tempPictureURLs.push(URL.createObjectURL(event.target.files[0]));
         this.setState({});
     };
 
