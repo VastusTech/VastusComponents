@@ -59,7 +59,11 @@ class CreateGroupProp extends Component {
         hiitPressed: false,
         strengthPressed: false,
         restriction: null,
-        access: 'private'
+        access: 'private',
+        pictures: [],
+        videos: [],
+        tempPictureURLs: [],
+        tempVideoURLs: [],
     };
 
     toggle = () => this.setState({ checked: !this.state.checked });
@@ -280,7 +284,9 @@ class CreateGroupProp extends Component {
         if (this.state.tempPictureURLs && this.state.tempPictureURLs.length > 0) {
             //console.log("Running cur image");
             return(
-                <Image src={this.state.tempPictureURLs[0]} />
+                <Card>
+                    <Image src={this.state.tempPictureURLs[0]} />
+                </Card>
             );
         }
         return null;
@@ -309,7 +315,7 @@ class CreateGroupProp extends Component {
     render() {
 
         return (
-            <Grid centered>
+            <Container style={{marginBottom: '50px', marginTop: '10px'}}>
                 <Header align='center'>Group Builder</Header>
                         <Grid centered>
                                 <Grid.Column>
@@ -317,9 +323,12 @@ class CreateGroupProp extends Component {
                                         <Form.Input fluid label="Title" type="text" name="title" placeholder="Title" onChange={value => this.setTitle(value)}/>
                                         <Form.Input fluid label="Group Motto" type="text" name="motto" placeholder="Add Motto Here..." onChange={value => this.setMotto(value)}/>
 
-                                        <Card color='purple' align='center'>
-                                            <div align='center' className="u-bg--bg">
+                                        <Grid centered rows='equal'>
+
+                                            <Grid.Row>
                                                 {this.displayCurrentImage()}
+                                            </Grid.Row>
+                                            <Grid.Row>
                                                 <Grid centered>
                                                     <div className="uploadImage u-flex u-flex-align--center u-margin-top--2" align='center'>
                                                         <div floated="center">
@@ -331,20 +340,27 @@ class CreateGroupProp extends Component {
                                                         </div>
                                                     </div>
                                                 </Grid>
-                                            </div>
-                                            <div>{this.displaySubmission()}</div>
-                                        </Card>
+                                            </Grid.Row>
+                                            <Grid.Row>
+                                                <div>{this.displaySubmission()}</div>
+                                            </Grid.Row>
+                                        </Grid>
+                                        <Grid centered>
                                         <Form.Field width={12}>
                                             <Checkbox toggle onClick={this.handleRestrictionSwitch} onChange={this.toggleRest} checked={this.state.checkedRest} label={this.showRestriction()} />
                                         </Form.Field>
                                         <div>{this.displayError()}</div>
+                                        </Grid>
                                     </Form>
                             </Grid.Column>
                         </Grid>
+                        <Grid centered>
                         <Modal.Actions>
                             <Button loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} primary size="big" type='button' onClick={() => { this.handleSubmit()}}>Submit</Button>
                         </Modal.Actions>
-                        {this.createSuccessLabel()}</Grid>
+                        {this.createSuccessLabel()}
+                        </Grid>
+            </Container>
         );
     }
 }

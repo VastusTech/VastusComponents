@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react';
 import {clearGroupQuery, fetchGroup, fetchClient, forceFetchGroup} from "../../redux_actions/cacheActions";
 import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import {clearBoard} from "../../redux_actions/messageActions";
-import {Button, Divider, Icon, Modal, Tab, Grid, Image, Label} from "semantic-ui-react";
+import {Button, Divider, Icon, Modal, Card, Grid, Image} from "semantic-ui-react";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import CommentScreen from "../messaging/MessageBoard";
 import GroupFunctions from "../../database_functions/GroupFunctions";
@@ -11,6 +11,7 @@ import UserFunctions from "../../database_functions/UserFunctions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 import {Message} from "semantic-ui-react/dist/commonjs/collections/Message/Message";
 import Logo from "../../img/vt_new.svg";
+import DatabaseObjectList from "../lists/DatabaseObjectList";
 
 type Props = {
     open: boolean,
@@ -196,21 +197,19 @@ class GroupDescriptionModal extends Component<Props> {
     }
 
     createCorrectButton() {
-
-        //console.log("Owned: " + isOwned + " Joined: " + isJoined);
-        // console.log(ifCompleted);
         if (this.state.isCompleted) {
             return(
                 <Button disabled fluid inverted size="large">This Event is completed</Button>
             );
         }
         else if (this.state.isOwned) {
-            // TODO This should also link the choose winner button
             return (
                 <Fragment>
                     <Button loading={this.state.isDeleteLoading} fluid negative size="large" disabled={this.state.isDeleteLoading} onClick={this.handleDeleteGroupButton}>Delete</Button>
                     <Divider className='u-margin-top--4' />
-                    <CommentScreen board={this.state.groupID}/>
+                    <Card fluid>
+                        <CommentScreen board={this.getGroupAttribute("id")}/>
+                    </Card>
                 </Fragment>
             )
         }
@@ -219,7 +218,10 @@ class GroupDescriptionModal extends Component<Props> {
                 <Fragment>
                     <Button loading={this.state.isLeaveLoading} fluid inverted size="large" disabled={this.state.isLeaveLoading} onClick={this.handleLeaveGroupButton}>Leave</Button>
                     <Divider className='u-margin-top--4' />
-                    <CommentScreen board={this.state.groupID}/>
+                    <Card fluid>
+                        {alert(this.state.groupID)}
+                        <CommentScreen board={this.getGroupAttribute("id")}/>
+                    </Card>
                 </Fragment>
             )
         }
@@ -305,7 +307,12 @@ class GroupDescriptionModal extends Component<Props> {
                         </Grid.Row>
                     </Grid>
                     <Grid columns='equal' centered>
-                        <Button primary floated='right'>Members</Button>
+                        <Modal trigger={
+                            <Button primary floated='right'>Members</Button>}>
+                            <Modal.Content>
+                                <DatabaseObjectList ids={this.getGroupAttribute("members")} noObjectsMessage={"No members yet!"}/>
+                            </Modal.Content>
+                        </Modal>
                     </Grid>
                 </Modal.Content>
                 {this.createCorrectButton()}

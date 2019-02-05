@@ -94,13 +94,13 @@ class CreatePostProp extends Component {
         }
     };
 
-    getPictures() {
+    getLatestPicture() {
         const pictures = {};
         for (let i = 0; i < this.state.pictures.length; i++) {
             pictures["pictures/" + i] = this.state.pictures[i];
         }
         if (this.state.pictures.length > 0) {
-            return pictures;
+            return [pictures[pictures.length - 1]];
         }
         return null;
     }
@@ -193,7 +193,7 @@ class CreatePostProp extends Component {
 
         // TODO Check to see if valid inputs!
         if (this.state.description) {
-            PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getPictures(), this.getVideos(), (returnValue) => {
+            PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getLatestPicture(), this.getVideos(), (returnValue) => {
                 console.log("Successfully Created Post!");
                 console.log(JSON.stringify(returnValue));
             }, (error) => {
@@ -300,15 +300,6 @@ class CreatePostProp extends Component {
                                 <Grid.Column width={12} className="segment centered" align='center'>
                                     <Form align='center' onSubmit={this.handleSubmit}>
                                         <TextArea fluid label="Description" type="text" name="description" placeholder="Write post description here..." onChange={value => this.changeStateText("description", value)}/>
-                                        {/*<Form.Field>
-                                        <div className="field" width={5}>
-                                            <label>Difficulty</label>
-                                            <Rating icon='star' defaultRating={1} maxRating={3} />
-                                        </div>
-                                    </Form.Field>*/}
-                                        {/*<Form.Field width={12}>*/}
-                                            {/*<Checkbox toggle onClick={this.handleAccessSwitch} onChange={this.toggle} checked={this.state.checked} label={this.state.access} />*/}
-                                        {/*</Form.Field>*/}
                                         <div>{this.displayError()}{this.createSuccessLabel()}</div>
                                     </Form>
                                 </Grid.Column>
@@ -321,15 +312,6 @@ class CreatePostProp extends Component {
                             {this.displayCurrentVideo()}
                             {this.displayCurrentImage()}
                             <Fragment align='center'>
-                                <div className="uploadImage u-flex u-flex-align--center u-margin-top--2" align='center'>
-                                    <div floated="center">
-                                        <Button primary fluid as="label" htmlFor="vidUpload" className="u-bg--primaryGradient">
-                                            <Icon name="camera" className='u-margin-right--0' inverted />
-                                            Upload Video
-                                        </Button>
-                                        <input type="file" accept="video/*;capture=camcorder" id="vidUpload" hidden={true} onChange={this.setVideo}/>
-                                    </div>
-                                </div>
                                 <div className="uploadImage u-flex u-flex-align--center u-margin-top--2" align='center'>
                                     <div floated="center">
                                         <Button primary fluid as="label" htmlFor="picUpload" className="u-bg--primaryGradient">
