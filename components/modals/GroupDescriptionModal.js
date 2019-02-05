@@ -196,17 +196,6 @@ class GroupDescriptionModal extends Component<Props> {
     }
 
     createCorrectButton() {
-        const panes = [
-            { menuItem: 'Group Chat', render: () => (
-                    <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
-                        <CommentScreen board={this.state.groupID}/>
-                    </Tab.Pane>
-                )},{ menuItem: 'Group Posts', render: () => (
-                    <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
-                        Insert Group Posts Here
-                    </Tab.Pane>
-                )},
-        ];
 
         //console.log("Owned: " + isOwned + " Joined: " + isJoined);
         // console.log(ifCompleted);
@@ -221,7 +210,7 @@ class GroupDescriptionModal extends Component<Props> {
                 <Fragment>
                     <Button loading={this.state.isDeleteLoading} fluid negative size="large" disabled={this.state.isDeleteLoading} onClick={this.handleDeleteGroupButton}>Delete</Button>
                     <Divider className='u-margin-top--4' />
-                    <Tab menu={{ widths: 2, inverted: true }} panes={panes} className='u-Group u-margin-top--2' />
+                    <CommentScreen board={this.state.groupID}/>
                 </Fragment>
             )
         }
@@ -230,7 +219,7 @@ class GroupDescriptionModal extends Component<Props> {
                 <Fragment>
                     <Button loading={this.state.isLeaveLoading} fluid inverted size="large" disabled={this.state.isLeaveLoading} onClick={this.handleLeaveGroupButton}>Leave</Button>
                     <Divider className='u-margin-top--4' />
-                    <Tab menu={{ widths: 2, inverted: true }} panes={panes} className='u-Group u-margin-top--2' />
+                    <CommentScreen board={this.state.groupID}/>
                 </Fragment>
             )
         }
@@ -316,12 +305,7 @@ class GroupDescriptionModal extends Component<Props> {
                         </Grid.Row>
                     </Grid>
                     <Grid columns='equal' centered>
-                        <Grid.Column>
-                            <Button primary floated='right'>members</Button>
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Button primary floated='left'>make post</Button>
-                        </Grid.Column>
+                        <Button primary floated='right'>Members</Button>
                     </Grid>
                 </Modal.Content>
                 {this.createCorrectButton()}
