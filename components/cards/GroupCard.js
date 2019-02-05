@@ -57,12 +57,6 @@ class GroupCard extends Component<Props> {
         groupModalOpen: false,
     };
 
-    constructor(props) {
-        super(props);
-        this.getDaysLeft = this.getDaysLeft.bind(this);
-        this.getTodayDateString = this.getTodayDateString.bind(this);
-    }
-
     componentDidMount() {
         this.componentWillReceiveProps(this.props);
         //this.props.fetchGroup(this.state.groupID, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
@@ -155,13 +149,6 @@ class GroupCard extends Component<Props> {
             //console.log("can't find Group");
             return null;
         }
-        if  (this.getDaysLeft() <= 0) {
-            return null;
-        }
-        // if(this.getGroupAttribute("tags")) {
-        //     // console.log("There be tags!");
-        //     // console.log(this.getGroupAttribute("tags"));
-        // }
         return(
             // This is displays a few important pieces of information about the Group for the feed view.
             <Card fluid raised onClick={this.openGroupModal.bind(this)}>
@@ -169,7 +156,7 @@ class GroupCard extends Component<Props> {
                     <Card.Header textAlign = 'center'>{this.getGroupAttribute("title")}</Card.Header>
                     <Image src={Logo} size="small" centered />
                     <Card.Meta textAlign = 'center' >{this.getGroupAttribute("description")}</Card.Meta>
-                    {/*<GroupDescriptionModal open={this.state.groupModalOpen} onClose={this.closeGroupModal.bind(this)} groupID={this.getGroupAttribute("id")}/>*/}
+                    <GroupDescriptionModal open={this.state.groupModalOpen} onClose={this.closeGroupModal.bind(this)} groupID={this.getGroupAttribute("id")}/>
                 </Card.Content>
                 <Card.Content extra>
                     <Card.Meta textAlign = 'center'>
