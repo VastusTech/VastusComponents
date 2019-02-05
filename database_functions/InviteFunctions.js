@@ -44,6 +44,18 @@ class InviteFunctions {
     static createChallengeRequestOptional(fromID, from, challengeID, message, successHandler, failureHandler) {
         return this.create(fromID, from, challengeID, "challengeRequest", from, message, successHandler, failureHandler);
     }
+    static createGroupRequest(fromID, from, groupID, successHandler, failureHandler) {
+        return this.create(fromID, from, groupID, "groupRequest", from, null, successHandler, failureHandler);
+    }
+    static createGroupRequestOptional(fromID, from, groupID, message, successHandler, failureHandler) {
+        return this.create(fromID, from, groupID, "groupRequest", from, message, successHandler, failureHandler);
+    }
+    static createGroupInvite(fromID, from, to, groupID, successHandler, failureHandler) {
+        return this.create(fromID, from, to, "challengeInvite", groupID, null, successHandler, failureHandler);
+    }
+    static createGroupInviteOptional(fromID, from, to, groupID, message, successHandler, failureHandler) {
+        return this.create(fromID, from, to, "groupInvite", groupID, message, successHandler, failureHandler);
+    }
     static create(fromID, from, to, inviteType, about, description, successHandler, failureHandler) {
         return Lambda.create(fromID, "Invite", {
             from,
