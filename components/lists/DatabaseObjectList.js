@@ -30,17 +30,16 @@ class DatabaseObjectList extends Component<Props> {
     }
 
     componentWillReceiveProps(newProps) {
-        if (newProps.ids && this.state.ids !== newProps.ids) {
+        // We can use json stringify to check this because it's an array of strings
+        if (newProps.ids && JSON.stringify(this.state.ids) !== JSON.stringify(newProps.ids)) {
+            this.state.ids = newProps.ids;
             // alert("received ids = " + JSON.stringify(newProps.ids));
-            this.setState({marker: this.state.marker + 1, isLoading: true, ids: newProps.ids, objects: []}, () => {
-                const marker = this.state.marker;
+            this.setState({isLoading: true, ids: newProps.ids, objects: []}, () => {
                 const addObject = (object) => {
-                    if (marker === this.state.marker) {
-                        if (object) {
-                            this.state.objects.push(object);
-                        }
-                        this.setState({isLoading: false});
+                    if (object) {
+                        this.state.objects.push(object);
                     }
+                    this.setState({isLoading: false});
                 };
                 for (let i = 0; i < newProps.ids.length; i++) {
                     const id = newProps.ids[i];
