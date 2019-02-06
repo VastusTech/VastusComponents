@@ -66,10 +66,10 @@ class TrainerDetailCard extends Component<Props> {
         if (newProps.postID && !this.state.postID) {
             this.state.postID = newProps.postID;
         }
-        const by = this.getPostAttribute("by");
-        if (!this.props.open && newProps.open && newProps.postID && by) {
-            this.props.fetchTrainer(by, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
-        }
+        // const by = this.getPostAttribute("by");
+        // if (!this.props.open && newProps.open && newProps.postID && by) {
+        //     this.props.fetchTrainer(by, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
+        // }
     }
 
     getPostAttribute(attribute) {
@@ -151,7 +151,7 @@ class TrainerDetailCard extends Component<Props> {
             }*/
             //console.log(this.getClientAttribute("profilePicture"));
             return(
-                <div avatar align="center" className="ui u-avatar" style={{backgroundImage: `url(${this.getClientAttribute("profilePicture")})`}}></div>
+                <div avatar align="center" className="ui u-avatar" style={{backgroundImage: `url(${this.getClientAttribute("profileImage")})`}}></div>
             );
         }
         else {

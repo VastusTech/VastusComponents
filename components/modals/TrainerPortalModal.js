@@ -266,7 +266,7 @@ class TrainerPortalModal extends React.PureComponent<Props> {
                                 <Button primary fluid size="large" onClick={this.openOwnedModal.bind(this)}><Icon name="trophy" /> Current Challenges</Button>
                                 <Modal basic size='mini' open={this.state.ownedModalOpen} onClose={this.closeOwnedModal.bind(this)} closeIcon>
                                     <Modal.Content>
-                                        <ChallengeList challengeIDs={this.props.user.ownedChallenges}/>
+                                        <ChallengeList challengeIDs={this.props.user.ownedChallenges} noChallengesMessage={"No challenges yet!"}/>
                                     </Modal.Content>
                                 </Modal>
                             </List.Item>

@@ -59,7 +59,7 @@ class PostDescriptionModal extends Component<Props> {
         }
         const by = this.getPostAttribute("by");
         if (!this.props.open && newProps.open && newProps.postID && by) {
-            this.props.fetchClient(by, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"]);
+            this.props.fetchClient(by, ["id", "name", "gender", "birthday", "profileImagePath"]);
         }
     }
 

@@ -66,7 +66,7 @@ class EventDescriptionModal extends Component<Props> {
         const members = this.getEventAttribute("members");
         if (!this.props.open && newProps.open && newProps.eventID && members && members.length > 0) {
             for (let i = 0; i < members.length; i++) {
-                this.props.fetchClient(members[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"]);
+                this.props.fetchClient(members[i], ["id", "name", "gender", "birthday", "profileImagePath"]);
             }
         }
     }

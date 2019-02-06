@@ -60,10 +60,10 @@ class ClientDetailCard extends Component<Props> {
         if (newProps.postID && !this.state.postID) {
             this.state.postID = newProps.postID;
         }
-        const by = this.getPostAttribute("by");
-        if (!this.props.open && newProps.open && newProps.postID && by) {
-            this.props.fetchClient(by, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
-        }
+        // const by = this.getPostAttribute("by");
+        // if (!this.props.open && newProps.open && newProps.postID && by) {
+        //     this.props.fetchClient(by, ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
+        // }
     }
 
     getPostAttribute(attribute) {

@@ -18,7 +18,8 @@ type Props = {
 };
 
 class ClientCard extends Component<Props> {
-    static fetchVariableList = ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture", "friendRequests"];
+    static fetchVariableList = ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "friendRequests"];
+    static ifSubscribe = false;
 
     constructor(props) {
         super(props);
@@ -82,9 +83,9 @@ class ClientCard extends Component<Props> {
     };
 
     profilePicture() {
-        if (this.getClientAttribute("profilePicture")) {
+        if (this.getClientAttribute("profileImage")) {
             return(
-                <div className="u-avatar u-avatar--small" style={{backgroundImage: `url(${this.getClientAttribute("profilePicture")})`}}></div>
+                <div className="u-avatar u-avatar--small" style={{backgroundImage: `url(${this.getClientAttribute("profileImage")})`}}></div>
             );
         }
         else {

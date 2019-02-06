@@ -1,7 +1,9 @@
 import { setIsNotLoading, setError, setIsLoading } from "./infoActions";
 import QL from "../api/GraphQL";
 import { Storage } from "aws-amplify";
+import S3 from "../api/S3Storage";
 import defaultProfilePicture from "../img/roundProfile.png";
+import notFoundPicture from "../img/not_found.png";
 import {switchReturnItemType} from "../logic/ItemType";
 import { consoleLog, consoleError } from "../logic/DebuggingHelper";
 
@@ -137,6 +139,97 @@ function addProfilePicturesToData(data, callback) {
         });
     }
 }
+
+/**
+ * Adds any S3 images to the collected data. The S3 images are specified by ending in either "Path" or "Paths" for a
+ * single picture and an array of pictures respectively. The new images will be put into the same key but minus the
+ * "Path". (Ex. "profileImagePath" -> "profileImage"). "Paths" the "s" just gets put onto the end. I don't give a flying
+ * fuck if that makes it an incorrect spelling, that's how I'm doing it.
+ * (Ex. "profileImageWigglyPaths" -> "profileImageWigglys")
+ *
+ * @param data The data of the object to add S3 images/videos into.
+ * @param callback The callback for the newly updated data.
+ */
+function addS3MediaToData(data, callback) {
+    function addDefaultImage(mediaKey, data) {
+        if (mediaKey === "profileImage" || mediaKey === "profileImages") {
+            data[mediaKey] = defaultProfilePicture;
+        }
+        else {
+            data[mediaKey] = notFoundPicture;
+        }
+    }
+    let asyncWaiting = 0;
+    let asyncReturned = 0;
+    let isWaiting = false;
+    // This will be if any async function finishes and has properly updated the object
+    const finishUpdatingObject = () => {
+        asyncReturned++;
+        if (asyncReturned >= asyncWaiting && isWaiting) {
+            callback(data);
+        }
+    };
+    // Define an arrow function for getting a single URL from a path and adding it to the object
+    const getSingleMedia = (path, mediaKey) => {
+        if (path) {
+            // Get from S3 and add a waiting
+            asyncWaiting++;
+            S3.get(path, (url) => {
+                data[mediaKey] = url;
+                finishUpdatingObject();
+            }, (error) => {
+                addDefaultImage(mediaKey, data);
+                finishUpdatingObject();
+            });
+        } else {
+            // No image
+            addDefaultImage(mediaKey, data);
+        }
+    };
+    // Define an arrow function for getting multiple URLs from a path and adding it to the object's array
+    const getMultipleMedia = (paths, mediaKey) => {
+        if (paths && paths.length) {
+            data[mediaKey] = [];
+            for (let i = 0; i < paths.length; i++) {
+                const path = paths[i];
+                S3.get(path, (url) => {
+                    data[mediaKey].push(url);
+                    finishUpdatingObject();
+                }, (error) => {
+                    // Just don't put it in if it fails
+                    finishUpdatingObject();
+                });
+            }
+        }
+        else {
+            // Empty list of urls
+            data[mediaKey] = [];
+        }
+    };
+    for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+            const keyLen = key.length;
+            // This is 0 or a single Media grab
+            if (key.substr(keyLen - 4, 4) === "Path") {
+                // Get the media
+                getSingleMedia(data[key], key.substr(0, keyLen - 4));
+            }
+            // This is 0 or more media grabs
+            else if (key.substr(keyLen - 5, 5) === "Paths") {
+                // Get the multiple media
+                getMultipleMedia(data[key], key.substr(0, keyLen - 5) + "s");
+            }
+        }
+    }
+    // Check to see if async was super fast
+    if (asyncWaiting <= asyncReturned) {
+        callback(data);
+    }
+    else {
+        // Else we let the async callbacks handle it
+        isWaiting = true;
+    }
+}
 function fetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -156,32 +249,32 @@ function forceFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchTy
     };
 }
 function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore) {
-    const profilePictureIndex = variablesList.indexOf("profilePicture");
-    const profilePicturesIndex = variablesList.indexOf("profilePictures");
-    if (profilePictureIndex !== -1) {
+    // const profilePictureIndex = variablesList.indexOf("profilePicture");
+    // const profilePicturesIndex = variablesList.indexOf("profilePictures");
+    // if (profilePictureIndex !== -1) {
+    //     // consoleLog("The variable list is requesting the profilePicture to be uploaded as well.");
+    //     variablesList.splice(profilePictureIndex, 1);
+    //     // Add
+    //     if (!variablesList.includes("profileImagePath")) {
+    //         consoleError("lmao you forgot to include the profile image path, I'll include it tho, no worries");
+    //         variablesList = [
+    //             ...variablesList,
+    //             "profileImagePath"
+    //         ]
+    //     }
+    // }
+    // if (profilePicturesIndex !== -1) {
         // consoleLog("The variable list is requesting the profilePicture to be uploaded as well.");
-        variablesList.splice(profilePictureIndex, 1);
+        // variablesList.splice(profilePicturesIndex, 1);
         // Add
-        if (!variablesList.includes("profileImagePath")) {
-            consoleError("lmao you forgot to include the profile image path, I'll include it tho, no worries");
-            variablesList = [
-                ...variablesList,
-                "profileImagePath"
-            ]
-        }
-    }
-    if (profilePicturesIndex !== -1) {
-        // consoleLog("The variable list is requesting the profilePicture to be uploaded as well.");
-        variablesList.splice(profilePicturesIndex, 1);
-        // Add
-        if (!variablesList.includes("profileImagePaths")) {
-            consoleError("lmao you forgot to include the profile image path, I'll include it tho, no worries");
-            variablesList = [
-                ...variablesList,
-                "profileImagePaths"
-            ]
-        }
-    }
+        // if (!variablesList.includes("profileImagePaths")) {
+        //     consoleError("lmao you forgot to include the profile image path, I'll include it tho, no worries");
+        //     variablesList = [
+        //         ...variablesList,
+        //         "profileImagePaths"
+        //     ]
+        // }
+    // }
     if (variablesList.length > 0) {
         if (!variablesList.includes("id")) {
             variablesList = [...variablesList, "id"];
@@ -196,42 +289,22 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispat
         QL[QLFunctionName](id, variablesList, (data) => {
             // consoleLog("Successfully retrieved the QL info");
             if (data) {
-                if (profilePictureIndex !== -1) {
-                    // consoleLog("Adding profile image to the data");
-                    addProfilePictureToData(data, (updatedData) => {
-                        // consoleLog("Dispatching the profile image + data");
-                        dispatch({
-                            type: fetchDispatchType,
-                            payload: {
-                                id,
-                                data: updatedData
-                            }
-                        });
-                        dispatch(setIsNotLoading());
-                        if (dataHandler) {
-                            dataHandler(getStore().cache[cacheSet][id]);
-                        }
-                    });
-                }
-                else {
-                    // consoleLog("Just dispatching the normal data");
+                addS3MediaToData(data, (updatedData) => {
                     dispatch({
                         type: fetchDispatchType,
                         payload: {
                             id,
-                            data
+                            data: updatedData
                         }
                     });
                     dispatch(setIsNotLoading());
                     if (dataHandler) {
                         dataHandler(getStore().cache[cacheSet][id]);
                     }
-                }
-            }
-            else {
+                });
+            } else {
                 // Then the fetch came up with nothing!
                 // const error = Error("Couldn't find an object in the database with ID = " + id);
-                // alert(error);
                 consoleLog("Couldn't find ID = " + id + " with action = " + QLFunctionName);
                 dispatch(setIsNotLoading());
                 if (dataHandler) {
@@ -239,6 +312,39 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispat
                     dataHandler(null);
                 }
             }
+            // if (data) {
+                // if (profilePictureIndex !== -1) {
+                    // consoleLog("Adding profile image to the data");
+                //     addProfilePictureToData(data, (updatedData) => {
+                //         // consoleLog("Dispatching the profile image + data");
+                //         dispatch({
+                //             type: fetchDispatchType,
+                //             payload: {
+                //                 id,
+                //                 data: updatedData
+                //             }
+                //         });
+                //         dispatch(setIsNotLoading());
+                //         if (dataHandler) {
+                //             dataHandler(getStore().cache[cacheSet][id]);
+                //         }
+                //     });
+                // }
+                // else {
+                //     // consoleLog("Just dispatching the normal data");
+                //     dispatch({
+                //         type: fetchDispatchType,
+                //         payload: {
+                //             id,
+                //             data
+                //         }
+                //     });
+                //     dispatch(setIsNotLoading());
+                //     if (dataHandler) {
+                //         dataHandler(getStore().cache[cacheSet][id]);
+                //     }
+                // }
+            // }
         }, (error) => {
             consoleError("Error in retrieval");
             consoleError(error);

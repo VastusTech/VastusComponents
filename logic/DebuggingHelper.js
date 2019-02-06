@@ -1,4 +1,4 @@
-import { log } from "../../Constants";
+import {ifAlert, log} from "../../Constants";
 
 export function consoleLog(message) {
     if (log) {
@@ -8,5 +8,10 @@ export function consoleLog(message) {
 export function consoleError(message) {
     if (log) {
         console.error(message);
+    }
+}
+export function debugAlert(message) {
+    if (ifAlert) {
+        alert(message);
     }
 }
