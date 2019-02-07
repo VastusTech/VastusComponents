@@ -46,13 +46,13 @@ class PostFunctions {
         }, failureHandler);
     }
     static addVideo(fromID, postID, video, videoPath, successHandler, failureHandler) {
-        S3.putVideo(videoPath, video, () => {
+        S3.putVideo(videoPath, video, successHandler, failureHandler); /*() => {
             return this.updateAdd(fromID, postID, "videoPaths", videoPath, successHandler, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(videoPath);
                 failureHandler(error);
             });
-        }, failureHandler);
+        }, failureHandler);*/
     }
     static removePicture(fromID, postID, picturePath, successHandler, failureHandler) {
         return this.updateRemove(fromID, postID, "picturePaths", picturePath, (data) => {
