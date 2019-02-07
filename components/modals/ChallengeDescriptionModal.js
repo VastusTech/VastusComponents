@@ -3,7 +3,6 @@ import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Dimmer, Label, 
 import ClientModal from "./ClientModal";
 import { connect } from 'react-redux';
 import {fetchClient, fetchTrainer, forceFetchChallenge, fetchChallenge, clearChallengeQuery} from "../../redux_actions/cacheActions";
-import { clearBoard } from "../../redux_actions/messageActions";
 import CompleteChallengeModal from "../manager/CompleteChallengeModal";
 import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import CommentScreen from "../messaging/MessageBoard";
@@ -140,9 +139,9 @@ class ChallengeDescriptionModal extends Component<Props> {
     }
 
     componentWillUnmount() {
-        if (this.state.challengeID) {
-            this.props.clearBoard(this.state.challengeID);
-        }
+        // if (this.state.challengeID) {
+        //     this.props.clearBoard(this.state.challengeID);
+        // }
     }
 
     displayTagIcons(tags) {
@@ -568,9 +567,6 @@ const mapDispatchToProps = (dispatch) => {
         clearChallengeQuery: () => {
             dispatch(clearChallengeQuery());
         },
-        clearBoard: (board) => {
-            dispatch(clearBoard(board));
-        }
     };
 };
 

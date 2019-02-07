@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import {Button, Input, Icon} from "semantic-ui-react";
 import {connect} from "react-redux";
 import MessageFunctions from "../../database_functions/MessageFunctions";
-import {addMessageToBoard} from "../../redux_actions/messageActions";
 
 type Props = {
     board: string
@@ -130,12 +129,8 @@ const mapStateToProps = (state) => ({
     message: state.message
 });
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        addMessageToBoard: (board, message) => {
-            dispatch(addMessageToBoard(board, message));
-        }
-    };
+const mapDispatchToProps = () => {
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessageInput);

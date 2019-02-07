@@ -2,7 +2,6 @@ import connect from "react-redux/es/connect/connect";
 import React, { Component, Fragment } from 'react';
 import {clearGroupQuery, fetchGroup, fetchClient, forceFetchGroup} from "../../redux_actions/cacheActions";
 import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
-import {clearBoard} from "../../redux_actions/messageActions";
 import {Button, Divider, Icon, Modal, Card, Grid, Image} from "semantic-ui-react";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import CommentScreen from "../messaging/MessageBoard";
@@ -348,9 +347,6 @@ const mapDispatchToProps = (dispatch) => {
         clearGroupQuery: () => {
             dispatch(clearGroupQuery());
         },
-        clearBoard: (board) => {
-            dispatch(clearBoard(board));
-        }
     };
 };
 

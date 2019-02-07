@@ -6,6 +6,7 @@ import defaultProfilePicture from "../img/roundProfile.png";
 import notFoundPicture from "../img/not_found.png";
 import {switchReturnItemType} from "../logic/ItemType";
 import { consoleLog, consoleError } from "../logic/DebuggingHelper";
+import {log} from "../../Constants";
 
 const FETCH_CLIENT = 'FETCH_CLIENT';
 const FETCH_TRAINER = 'FETCH_TRAINER';
@@ -249,32 +250,6 @@ function forceFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchTy
     };
 }
 function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore) {
-    // const profilePictureIndex = variablesList.indexOf("profilePicture");
-    // const profilePicturesIndex = variablesList.indexOf("profilePictures");
-    // if (profilePictureIndex !== -1) {
-    //     // consoleLog("The variable list is requesting the profilePicture to be uploaded as well.");
-    //     variablesList.splice(profilePictureIndex, 1);
-    //     // Add
-    //     if (!variablesList.includes("profileImagePath")) {
-    //         consoleError("lmao you forgot to include the profile image path, I'll include it tho, no worries");
-    //         variablesList = [
-    //             ...variablesList,
-    //             "profileImagePath"
-    //         ]
-    //     }
-    // }
-    // if (profilePicturesIndex !== -1) {
-        // consoleLog("The variable list is requesting the profilePicture to be uploaded as well.");
-        // variablesList.splice(profilePicturesIndex, 1);
-        // Add
-        // if (!variablesList.includes("profileImagePaths")) {
-        //     consoleError("lmao you forgot to include the profile image path, I'll include it tho, no worries");
-        //     variablesList = [
-        //         ...variablesList,
-        //         "profileImagePaths"
-        //     ]
-        // }
-    // }
     if (variablesList.length > 0) {
         if (!variablesList.includes("id")) {
             variablesList = [...variablesList, "id"];
@@ -282,14 +257,15 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispat
         if (!variablesList.includes("item_type")) {
             variablesList = [...variablesList, "item_type"];
         }
-        if (dataHandler) { consoleLog("S H = " + dataHandler.toString()); }
-        else { consoleLog("No data handler...");}
+        if (dataHandler) { log&&console.log("S H = " + dataHandler.toString()); }
+        else { log&&console.log("No data handler...");}
         if (failureHandler) { consoleLog("F H = " + failureHandler.toString()); }
         else { consoleLog("No failure handler...");}
         QL[QLFunctionName](id, variablesList, (data) => {
             // consoleLog("Successfully retrieved the QL info");
             if (data) {
                 addS3MediaToData(data, (updatedData) => {
+                    // TODO __stale__
                     dispatch({
                         type: fetchDispatchType,
                         payload: {
@@ -312,39 +288,6 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispat
                     dataHandler(null);
                 }
             }
-            // if (data) {
-                // if (profilePictureIndex !== -1) {
-                    // consoleLog("Adding profile image to the data");
-                //     addProfilePictureToData(data, (updatedData) => {
-                //         // consoleLog("Dispatching the profile image + data");
-                //         dispatch({
-                //             type: fetchDispatchType,
-                //             payload: {
-                //                 id,
-                //                 data: updatedData
-                //             }
-                //         });
-                //         dispatch(setIsNotLoading());
-                //         if (dataHandler) {
-                //             dataHandler(getStore().cache[cacheSet][id]);
-                //         }
-                //     });
-                // }
-                // else {
-                //     // consoleLog("Just dispatching the normal data");
-                //     dispatch({
-                //         type: fetchDispatchType,
-                //         payload: {
-                //             id,
-                //             data
-                //         }
-                //     });
-                //     dispatch(setIsNotLoading());
-                //     if (dataHandler) {
-                //         dataHandler(getStore().cache[cacheSet][id]);
-                //     }
-                // }
-            // }
         }, (error) => {
             consoleError("Error in retrieval");
             consoleError(error);
