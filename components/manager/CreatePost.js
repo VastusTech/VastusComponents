@@ -3,7 +3,6 @@ import {Grid, Button, Message, Image, Modal, Card, Icon, Form, Container, TextAr
 import { Storage } from 'aws-amplify';
 import {connect} from "react-redux";
 import {setError} from "../../redux_actions/infoActions";
-import {consoleLog, consoleError} from "../../logic/DebuggingHelper";
 import {
     fetchPost,
     clearPostQuery,
@@ -12,6 +11,7 @@ import {
 } from "../../redux_actions/cacheActions";
 import PostFunctions from "../../database_functions/PostFunctions";
 import {Player} from "video-react";
+import {err, log} from "../../../Constants";
 
 // Take from StackOverflow, nice snippit!
 // https://stackoverflow.com/a/17415677
@@ -79,7 +79,7 @@ class CreatePostProp extends Component {
         // TODO Sanitize this input
         // TODO Check to see if this will, in fact, work.!
         this.state[key] = value.target.value;
-        consoleLog("New " + key + " is equal to " + value.target.value);
+        log&&console.log("New " + key + " is equal to " + value.target.value);
     }
 
     handleAccessSwitch = () => {
@@ -90,7 +90,7 @@ class CreatePostProp extends Component {
             this.setState({access: 'public'});
         }
         else {
-            consoleError("Event access should be public or private");
+            err&&console.error("Event access should be public or private");
         }
     };
 
@@ -126,10 +126,10 @@ class CreatePostProp extends Component {
                     this.state.tempVideoURLs.push(url);
                     this.setState({});
                 }).catch((error) => {
-                    consoleError(error);
+                    err&&console.error(error);
                 })
             }).catch((error) => {
-            consoleError(error);
+            err&&console.error(error);
         });
         this.setState({});
     };
@@ -144,10 +144,10 @@ class CreatePostProp extends Component {
                     this.state.tempPictureURLs.push(url);
                     this.setState({});
                 }).catch((error) => {
-                    consoleError(error);
+                    err&&console.error(error);
                 })
             }).catch((error) => {
-            consoleError(error);
+            err&&console.error(error);
         });
         this.setState({});
     };
@@ -197,7 +197,7 @@ class CreatePostProp extends Component {
                 console.log("Successfully Created Post!");
                 console.log(JSON.stringify(returnValue));
             }, (error) => {
-                consoleError(error);
+                err&&console.error(error);
             });
             //     PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {
             //         console.log("Successfully Created Post!");
@@ -243,7 +243,7 @@ class CreatePostProp extends Component {
             //         this.setState({showSuccessLabel: true});
             //         this.setState({showModal: false});
             //     }, (error) => {
-            //         consoleError(error);
+            //         err&&console.error(error);
             //         this.setState({submitError: "*" + JSON.stringify(error)});
             //         this.setState({isSubmitLoading: false});
             //     });

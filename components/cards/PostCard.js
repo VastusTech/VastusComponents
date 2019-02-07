@@ -14,8 +14,7 @@ import TrainerDetailCard from "../post_detail_cards/TrainerDetailCard";
 import {convertFromISO} from "../../logic/TimeHelper";
 import ClientModal from "../modals/ClientModal";
 import TrainerModal from "../modals/TrainerModal";
-import { consoleError} from "../../logic/DebuggingHelper";
-import {log} from "../../../Constants";
+import {err, log} from "../../../Constants";
 
 type Props = {
     postID: string
@@ -161,7 +160,7 @@ class PostCard extends Component<Props> {
                 Storage.get(video).then((url) => {
                     this.setState({videoURL: url});
                 }).catch((error) => {
-                    consoleError(error);
+                    err&&console.error(error);
                 });
             }
             else {

@@ -3,7 +3,7 @@ import { Card, Dimmer, Loader, Grid, Header } from 'semantic-ui-react';
 import ClientModal from '../modals/ClientModal';
 import { connect } from 'react-redux';
 import { fetchClient } from "../../redux_actions/cacheActions";
-import {consoleLog} from "../../logic/DebuggingHelper";
+import {log} from "../../../Constants";
 
 /*
 * Event Card
@@ -78,7 +78,7 @@ class ClientCard extends Component<Props> {
         };
     }
     closeClientModal = () => {
-        consoleLog("Closing client modal");
+        log&&console.log("Closing client modal");
         this.setState({clientModalOpen: false})
     };
 

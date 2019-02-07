@@ -1,4 +1,4 @@
-import {consoleError} from "../logic/DebuggingHelper";
+import {err} from "../../Constants";
 
 // This is where we will store all the retrieved database items and use a LRU cache to rid them if necessary
 const FETCH_CLIENT = 'FETCH_CLIENT';
@@ -416,7 +416,7 @@ function addQueryToCache(state, cacheName, maxCacheSize, LRUHandlerName, normali
 function addObjectToCache(state, cacheName, maxCacheSize, LRUHandlerName, object) {
     // TODO Check to see that this is all well-formed?
     if (!object.id) {
-        consoleError("Adding object to cache does not include the id!!!");
+        err&&console.error("Adding object to cache does not include the id!!!");
     }
     state = {
         ...state

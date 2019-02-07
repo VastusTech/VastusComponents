@@ -9,7 +9,7 @@ import {fetchClient, fetchEvent, putClientQuery, putEventQuery} from "../../redu
 import {newSearch, loadMoreResults} from "../../redux_actions/searchActions";
 import {switchReturnItemType} from "../../logic/ItemType";
 import ChallengeDescriptionModal from "../modals/ChallengeDescriptionModal";
-import {consoleLog} from "../../logic/DebuggingHelper";
+import {log} from "../../../Constants";
 
 class SearchBarProp extends Component {
     state = {
@@ -48,7 +48,7 @@ class SearchBarProp extends Component {
     };
 
     handleSearchChange = (e, { value }) => {
-        consoleLog(value);
+        log&&console.log(value);
         this.retrieveSearchResults(value);
     };
 
@@ -73,7 +73,7 @@ class SearchBarProp extends Component {
         this.props.loadMoreResults(searchQuery, (data) => {
             results.push(...data);
             if (results.length < this.state.minimumSearchResults && !this.props.search.ifFinished) {
-                // consoleLog("Grabbing more results: numResults = " + results.length + ", ifFinished = " + this.props.search.ifFinished);
+                // log&&console.log("Grabbing more results: numResults = " + results.length + ", ifFinished = " + this.props.search.ifFinished);
                 this.retrieveMoreResults(searchQuery, results);
             }
             else {
@@ -113,7 +113,7 @@ class SearchBarProp extends Component {
         )
         }
         else {
-            consoleLog("Wrong type inputted! Received " + type);
+            log&&console.log("Wrong type inputted! Received " + type);
         }
     }
 
@@ -163,8 +163,8 @@ class SearchBarProp extends Component {
                             // TODO Insertsort this? By what basis though?
                             while (formattedResult.title && resultTitles.includes(formattedResult.title)) {
                                 const len = formattedResult.title.length;
-                                // consoleLog(JSON.stringify(resultTitles));
-                                // consoleLog(formattedResult.title + "~ -3: " + formattedResult.title[len - 3] + ", -1: " + formattedResult.title[len - 1]);
+                                // log&&console.log(JSON.stringify(resultTitles));
+                                // log&&console.log(formattedResult.title + "~ -3: " + formattedResult.title[len - 3] + ", -1: " + formattedResult.title[len - 1]);
                                 if (formattedResult.title[len - 3] === "(" && formattedResult.title[len - 1] === ")") {
                                     let num = parseInt(formattedResult.title[len - 2]);
                                     num++;

@@ -37,7 +37,6 @@ export function setPermanentHandlerAndUnsubscription(channelName, handler, unsub
 //             dispatch(addHandler(channelName, handler));
 //         }
 //         else {
-//             consoleError("Can't set handler to notifications when the USER ID isn't set!");
 //         }
 //         dispatch(setIsNotLoading());
 //     };

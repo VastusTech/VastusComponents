@@ -1,4 +1,4 @@
-import {ifAlert, log} from "../../Constants";
+import {ifAlert} from "../../Constants";
 
 export function consoleLog(message) {
     if (log) {

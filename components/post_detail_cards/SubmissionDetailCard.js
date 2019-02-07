@@ -7,7 +7,7 @@ import { forceFetchUserAttributes } from "../../../redux_helpers/actions/userAct
 import PostFunctions from "../../database_functions/PostFunctions";
 import {Player} from "video-react";
 import { Storage } from "aws-amplify";
-import {consoleError} from "../../logic/DebuggingHelper";
+import {err} from "../../../Constants";
 
 type Props = {
     postID: string
@@ -205,7 +205,7 @@ class SubmissionDetailCard extends Component<Props> {
                 Storage.get(video).then((url) => {
                     this.setState({videoURL: url});
                 }).catch((error) => {
-                    consoleError(error);
+                    err&&console.error(error);
                 });
             }
             else {

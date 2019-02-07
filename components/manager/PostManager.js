@@ -111,7 +111,6 @@ class PostManager extends Component {
                 }, (error) => {
                     log&&console.log("Querying Posts failed!");
                     log&&console.log(error);
-                    consoleError(error);
                     this.setState({isLoading: false, error: error});
                 }, this.props.cache.postQueries, this.props.putPostQuery);
         }

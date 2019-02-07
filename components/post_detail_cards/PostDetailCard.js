@@ -14,7 +14,7 @@ import PostFunctions from "../../database_functions/PostFunctions";
 import {Player} from "video-react";
 import { Storage } from "aws-amplify";
 import {getItemTypeFromID} from "../../logic/ItemType";
-import {consoleError} from "../../logic/DebuggingHelper";
+import {err} from "../../../Constants";
 
 type Props = {
     postID: string
@@ -226,7 +226,7 @@ class PostDetailCard extends Component<Props> {
                 Storage.get(video).then((url) => {
                     this.setState({videoURL: url});
                 }).catch((error) => {
-                    consoleError(error);
+                    err&&console.error(error);
                 });
             }
             else if(!this.state.pictureURL && pictures) {
@@ -235,7 +235,7 @@ class PostDetailCard extends Component<Props> {
                 Storage.get(picture).then((url) => {
                     this.setState({pictureURL: url});
                 }).catch((error) => {
-                    consoleError(error);
+                    err&&console.error(error);
                 })
             }
             else if(this.state.videoURL && !this.state.pictureURL) {

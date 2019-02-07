@@ -4,7 +4,6 @@ import {connect} from "react-redux";
 import {setError} from "../../redux_actions/infoActions";
 import {clearChallengeQuery, fetchChallenge, putChallenge, putChallengeQuery} from "../../redux_actions/cacheActions";
 import GroupFunctions from "../../database_functions/GroupFunctions";
-import {consoleError} from "../../logic/DebuggingHelper";
 import {Player} from "video-react";
 
 // Take from StackOverflow, nice snippit!
