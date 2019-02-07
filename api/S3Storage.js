@@ -10,8 +10,17 @@ class S3Storage {
     static putImage(path, image, successHandler, failureHandler) {
         S3Storage.put(path, image, "image/*", successHandler, failureHandler);
     }
-    static putVideo(path, video, successHandler, failureHandler) {
-        S3Storage.put(path, video, "video/*", successHandler, failureHandler);
+
+    //Used to have success and failure handler in the
+    static putVideo(path, video) {
+        let params = {Key: 'OBJECTUPLOAD', ContentType: video.type, Body: video};
+        let options = {partSize: 10 * 1024 * 1024, queueSize: 4};
+        /*S3Storage.upload(params, options).on('httpUploadProgress', function(evt) {
+            console.log("Uploaded :: " + parseInt((evt.loaded * 100) / evt.total )+'%');
+        }).send(function(err, data) {
+            alert("File uploaded successfully.");
+        });*/
+        //S3Storage.put(path, video, "video/*", successHandler, failureHandler);
     }
     static putVideoOrImage(path, media, successHandler, failureHandler) {
         S3Storage.put(path, media, "video/*;image/*", successHandler, failureHandler);
