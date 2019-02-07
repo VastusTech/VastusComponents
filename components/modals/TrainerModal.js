@@ -92,7 +92,7 @@ class TrainerModal extends React.PureComponent<Props> {
 
         if (!this.props.info.isLoading && !this.state.sentRequest && !(user.id && user.name && user.username && user.birthday && user.profilePicture)) {
             this.state.sentRequest = true;
-            this.props.fetchUserAttributes(["name", "username", "birthday", "profileImagePath", "challengesWon", "profilePicture", "friends", "challenges", "ownedChallenges", "completedChallenges"]);
+            // this.props.fetchUserAttributes(["name", "username", "birthday", "profileImagePath", "challengesWon", "friends", "challenges", "ownedChallenges", "completedChallenges"]);
         }
         else {
             this.setState({isLoading: false});
@@ -135,7 +135,7 @@ class TrainerModal extends React.PureComponent<Props> {
                     (data) => {
                         //consoleLog("successfully editted client");
                         //consoleLog(JSON.stringify(data));
-                        this.props.forceFetchUserAttributes(["profileImagePath", "profilePicture"]);
+                        this.props.forceFetchUserAttributes(["profileImagePath"]);
                         this.setState({isLoading: true});
                     }, (error) => {
                         consoleLog("Failed edit client attribute");
@@ -168,7 +168,7 @@ class TrainerModal extends React.PureComponent<Props> {
             //consoleLog("PROPICIMAGE!!!!: " + this.props.user.profilePicture);
             return (
                 <div>
-                    <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.getTrainerAttribute("profilePicture")})`}}>
+                    <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.getTrainerAttribute("profileImage")})`}}>
                     </div>
                 </div>
             );

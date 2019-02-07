@@ -17,7 +17,7 @@ type Props = {
 }
 
 class TrainerCard extends Component<Props> {
-    static fetchVariableList = ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"];
+    static fetchVariableList = ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"];
 
     constructor(props) {
         super(props);
@@ -74,9 +74,9 @@ class TrainerCard extends Component<Props> {
     closeTrainerModal = () => {this.setState({trainerModalOpen: false})};
 
     profilePicture() {
-        if (this.getTrainerAttribute("profilePicture")) {
+        if (this.getTrainerAttribute("profileImage")) {
             return(
-                <div className="u-avatar u-avatar--small" style={{backgroundImage: `url(${this.getTrainerAttribute("profilePicture")})`}}></div>
+                <div className="u-avatar u-avatar--small" style={{backgroundImage: `url(${this.getTrainerAttribute("profileImage")})`}}></div>
             );
         }
         else {

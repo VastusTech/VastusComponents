@@ -66,10 +66,10 @@ class PostDetailCard extends Component<Props> {
         if (newProps.postID && !this.state.postID) {
             this.state.postID = newProps.postID;
         }
-        const by = this.getPostAttribute("by");
-        if (!this.props.open && newProps.open && newProps.postID && by) {
-            this.props.fetchClient(by, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"]);
-        }
+        // const by = this.getPostAttribute("by");
+        // if (!this.props.open && newProps.open && newProps.postID && by) {
+        //     this.props.fetchClient(by, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"]);
+        // }
     }
 
     getPostAttribute(attribute) {
@@ -160,7 +160,7 @@ class PostDetailCard extends Component<Props> {
             }*/
             //console.log(this.getClientAttribute("profilePicture"));
             return(
-                <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${this.getClientAttribute("profilePicture")})`}}></div>
+                <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${this.getClientAttribute("profileImage")})`}}></div>
             );
         }
         else {

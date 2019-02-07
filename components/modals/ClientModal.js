@@ -10,7 +10,7 @@ import InviteFunctions from "../../database_functions/InviteFunctions";
 import UserFunctions from "../../database_functions/UserFunctions";
 import { Storage } from 'aws-amplify';
 import PostFunctions from "../../database_functions/PostFunctions";
-import {consoleLog, consoleError} from "../../logic/DebuggingHelper";
+import {consoleLog, consoleError, debugAlert} from "../../logic/DebuggingHelper";
 import MessageHandler from "../../api/MessageHandler";
 import MessageBoard from "../messaging/MessageBoard";
 
@@ -67,17 +67,19 @@ class ClientModal extends Component<Props> {
         this.componentWillReceiveProps(this.props);
         //console.log(JSON.stringify(this.props));
         //console.log("Fetching client on mount");
-        this.props.fetchClient(this.props.clientID, ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profileImagePaths", "profilePicture", "friendRequests"]);
     }
 
     componentWillReceiveProps(newProps) {
         if (newProps.clientID) {
-            if (this.state.clientID !== newProps.clientID) {
+            if (this.state.clientID !== newProps.clientID && this.props.open) {
+                this.state.clientID = newProps.clientID;
                 // consoleLog("Setting new state to " + newProps.clientID);
                 //console.log("Fetching client will receive");
                 this.resetState(newProps.clientID);
-                this.props.fetchClient(newProps.clientID, ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profileImagePaths", "profilePicture", "friendRequests"]);
-                this.state.clientID = newProps.clientID;
+                debugAlert("Fetching Client for Client Modal!");
+                this.props.fetchClient(this.props.clientID, ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profileImagePaths", "friendRequests"]);
+                // debugAlert("Fetching Client for Client Modal!");
+                // this.props.fetchClient(newProps.clientID, ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profileImagePaths", "friendRequests"]);
                 //this.setState({clientID: newProps.clientID});
                 // this.state.sentRequest = true;
             }
@@ -208,7 +210,7 @@ class ClientModal extends Component<Props> {
                 this.setState({urlsSet: true});
             }*/
             return(
-                <div className="u-avatar u-avatar--small u-margin-bottom--1" style={{backgroundImage: `url(${this.getClientAttribute("profilePicture")})`}}></div>
+                <div className="u-avatar u-avatar--small u-margin-bottom--1" style={{backgroundImage: `url(${this.getClientAttribute("profileImage")})`}}></div>
             );
         }
         else {
