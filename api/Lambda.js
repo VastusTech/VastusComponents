@@ -1,6 +1,5 @@
 import * as AWS from "aws-sdk";
-import {ifDebug} from "../../Constants";
-import {consoleLog, consoleError} from "../logic/DebuggingHelper";
+import {err, ifDebug, log} from "../../Constants";
 import TestHelper from "../logic/TestHelper";
 
 /// Configure AWS SDK for JavaScript
@@ -91,15 +90,15 @@ class Lambda {
         return this.invokeLambda("VastusFirebaseTokenFunction", payload, successHandler, failureHandler);
     }
     static invokeLambda(functionName, payload, successHandler, failureHandler) {
-        consoleLog("Sending lambda payload: " + JSON.stringify(payload));
+        log&&console.log("Sending lambda payload: " + JSON.stringify(payload));
         if (ifDebug) {
             console.log("Sending lambda payload: " + JSON.stringify(payload));
         }
         const request = {FunctionName: functionName, Payload: JSON.stringify(payload)};
         TestHelper.ifTesting || lambda.invoke(request, (error, data) => {
             if (error) {
-                consoleError(error);
-                consoleError("Lambda failure: " + JSON.stringify(error));
+                err&&console.error(error);
+                err&&console.error("Lambda failure: " + JSON.stringify(error));
                 if (ifDebug) {
                     console.log("Lambda failure: " + JSON.stringify(error))
                 }
@@ -107,18 +106,18 @@ class Lambda {
                     failureHandler(error);
                 }
             } else if (data.Payload) {
-                //consoleLog(data.Payload);
+                //log&&console.log(data.Payload);
                 const payload = JSON.parse(data.Payload);
                 if (payload.errorMessage) {
-                    consoleError("Bad payload!: " + JSON.stringify(payload));
-                    consoleError(payload.errorMessage);
+                    err&&console.error("Bad payload!: " + JSON.stringify(payload));
+                    err&&console.error(payload.errorMessage);
                     console.log("Bad payload!: " + JSON.stringify(payload));
                     if (failureHandler) {
                         failureHandler(payload.errorMessage);
                     }
                 }
                 else {
-                    consoleLog("Successfully invoked lambda function!");
+                    log&&console.log("Successfully invoked lambda function!");
                     if (ifDebug) {
                         console.log("Successful Lambda, received " + JSON.stringify(payload));
                     }
@@ -128,7 +127,7 @@ class Lambda {
                 }
             }
             else {
-                consoleError("Weird error: payload returned with nothing...");
+                err&&console.error("Weird error: payload returned with nothing...");
                 if (failureHandler) {
                     failureHandler("Payload returned with null");
                 }

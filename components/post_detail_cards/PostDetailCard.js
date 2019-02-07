@@ -59,7 +59,7 @@ class PostDetailCard extends Component<Props> {
     componentDidMount() {
         // this.isJoined();
         this.isOwned();
-        //consoleLog("Mount Owned: " + this.state.isOwned);
+        //log&&console.log("Mount Owned: " + this.state.isOwned);
     }
 
     componentWillReceiveProps(newProps) {
@@ -153,9 +153,9 @@ class PostDetailCard extends Component<Props> {
     profilePicture() {
         if (this.getClientAttribute("profileImagePaths") !== [] || this.getClientAttribute("profileImagePaths") !== null) {
             /*if(!this.state.urlsSet) {
-                consoleLog(JSON.stringify("Paths being passed in: " + this.props.user.profileImagePaths));
+                log&&console.log(JSON.stringify("Paths being passed in: " + this.props.user.profileImagePaths));
                 this.setURLS(this.getClientAttribute("profileImagePaths"));
-                consoleLog("Setting URLS: " + this.state.galleryURLS);
+                log&&console.log("Setting URLS: " + this.state.galleryURLS);
                 this.setState({urlsSet: true});
             }*/
             //console.log(this.getClientAttribute("profilePicture"));
@@ -173,14 +173,14 @@ class PostDetailCard extends Component<Props> {
     }
 
     handleDeletePostButton() {
-        //consoleLog("Handling deleting the event");
+        //log&&console.log("Handling deleting the event");
         this.setState({isLoading: true});
         PostFunctions.delete(this.props.user.id, this.getPostAttribute("id"), () => {
             this.forceUpdate(this.getPostAttribute("id"));
-            // consoleLog(JSON.stringify(data));
+            // log&&console.log(JSON.stringify(data));
             this.setState({isDeleteLoading: false, event: null, isOwned: false});
         }, (error) => {
-            // consoleLog(JSON.stringify(error));
+            // log&&console.log(JSON.stringify(error));
             this.setState({isDeleteLoading: false, error: error});
         })
     }
@@ -271,16 +271,16 @@ class PostDetailCard extends Component<Props> {
     render() {
         if(this.state.canCallChecks) {
             this.isOwned();
-            //consoleLog("Render Owned: " + this.state.isOwned);
+            //log&&console.log("Render Owned: " + this.state.isOwned);
             this.setState({canCallChecks: false});
-            //consoleLog("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
+            //log&&console.log("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
         }
 
         //This modal displays the challenge information and at the bottom contains a button which allows the user
         //to join a challenge.
         function createCorrectButton(isOwned, deleteHandler, isDeleteLoading) {
-            //consoleLog("Owned: " + isOwned + " Joined: " + isJoined);
-            // consoleLog(ifCompleted);
+            //log&&console.log("Owned: " + isOwned + " Joined: " + isJoined);
+            // log&&console.log(ifCompleted);
             if(isOwned) {
                 // TODO This should also link the choose winner button
                 return(
@@ -290,12 +290,12 @@ class PostDetailCard extends Component<Props> {
                 );
             }
             else {
-                //consoleLog(isJoinLoading);
+                //log&&console.log(isJoinLoading);
                 return null;
             }
         }
 
-        //consoleLog("Challenge Info: " + JSON.stringify(this.state.event));
+        //log&&console.log("Challenge Info: " + JSON.stringify(this.state.event));
         return(
             <Card>
                 <Card.Header>

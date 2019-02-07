@@ -55,7 +55,7 @@ class SubmissionDetailCard extends Component<Props> {
     componentDidMount() {
         // this.isJoined();
         this.isOwned();
-        //consoleLog("Mount Owned: " + this.state.isOwned);
+        //log&&console.log("Mount Owned: " + this.state.isOwned);
     }
 
     componentWillReceiveProps(newProps) {
@@ -103,38 +103,38 @@ class SubmissionDetailCard extends Component<Props> {
     }
 
     handleDeletePostButton() {
-        //consoleLog("Handling deleting the event");
+        //log&&console.log("Handling deleting the event");
         this.setState({isLoading: true});
         PostFunctions.delete(this.props.user.id, this.getPostAttribute("id"), (data) => {
             this.forceUpdate(data.id);
-            // consoleLog(JSON.stringify(data));
+            // log&&console.log(JSON.stringify(data));
             this.setState({isDeleteLoading: false, event: null, isOwned: false});
         }, (error) => {
-            // consoleLog(JSON.stringify(error));
+            // log&&console.log(JSON.stringify(error));
             this.setState({isDeleteLoading: false, error: error});
         })
     }
 
     // handleLeaveChallengeButton() {
-    //     //consoleLog("Handling leaving the event");
+    //     //log&&console.log("Handling leaving the event");
     //     this.setState({isLoading: true});
     //     Lambda.removeClientFromEvent(this.props.user.id, this.props.user.id, this.getChallengeAttribute("id"), (data) => {
     //         this.forceUpdate(data.id);
-    //         //consoleLog(JSON.stringify(data));
+    //         //log&&console.log(JSON.stringify(data));
     //         this.setState({isLeaveLoading: false, isJoined: false});
     //     }, (error) => {
-    //         //consoleLog(JSON.stringify(error));
+    //         //log&&console.log(JSON.stringify(error));
     //         this.setState({isLeaveLoading: false, error: error});
     //     })
     // }
 
     // handleJoinChallengeButton() {
-    //     //consoleLog("Handling joining the event");
+    //     //log&&console.log("Handling joining the event");
     //     this.setState({isLoading: true});
     //     Lambda.clientJoinEvent(this.props.user.id, this.props.user.id, this.getChallengeAttribute("id"),
     //         (data) => {
     //             this.forceUpdate(data.id);
-    //             //consoleLog(JSON.stringify(data));
+    //             //log&&console.log(JSON.stringify(data));
     //             this.setState({isJoinLoading: false, isJoined: true});
     //         }, (error) => {
     //             this.setState({isJoinLoading: false, error: error});
@@ -145,9 +145,9 @@ class SubmissionDetailCard extends Component<Props> {
     //     const members = this.getChallengeAttribute("members");
     //     if (members) {
     //         const isMembers = members.includes(this.props.user.id);
-    //         //consoleLog("Is Members?: " + isMembers);
+    //         //log&&console.log("Is Members?: " + isMembers);
     //         this.setState({isJoined: isMembers});
-    //         //consoleLog("am I in members?: " + members.includes(this.props.user.id));
+    //         //log&&console.log("am I in members?: " + members.includes(this.props.user.id));
     //     }
     //     else {
     //         this.setState({isJoined: false});
@@ -250,16 +250,16 @@ class SubmissionDetailCard extends Component<Props> {
         }
         if(this.state.canCallChecks) {
             this.isOwned();
-            //consoleLog("Render Owned: " + this.state.isOwned);
+            //log&&console.log("Render Owned: " + this.state.isOwned);
             this.setState({canCallChecks: false});
-            //consoleLog("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
+            //log&&console.log("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
         }
 
         //This modal displays the challenge information and at the bottom contains a button which allows the user
         //to join a challenge.
         function createCorrectButton(isOwned, deleteHandler, isDeleteLoading) {
-            //consoleLog("Owned: " + isOwned + " Joined: " + isJoined);
-            // consoleLog(ifCompleted);
+            //log&&console.log("Owned: " + isOwned + " Joined: " + isJoined);
+            // log&&console.log(ifCompleted);
             if(isOwned) {
                 // TODO This should also link the choose winner button
                 return(
@@ -269,12 +269,12 @@ class SubmissionDetailCard extends Component<Props> {
                 );
             }
             else {
-                //consoleLog(isJoinLoading);
+                //log&&console.log(isJoinLoading);
                 return null;
             }
         }
 
-        //consoleLog("Challenge Info: " + JSON.stringify(this.state.event));
+        //log&&console.log("Challenge Info: " + JSON.stringify(this.state.event));
         return(
             <Card>
                 <Card.Header>{convertFromISO(this.getPostAttribute("time_created"))}</Card.Header>

@@ -5,8 +5,7 @@ import S3 from "../api/S3Storage";
 import defaultProfilePicture from "../img/roundProfile.png";
 import notFoundPicture from "../img/not_found.png";
 import {switchReturnItemType} from "../logic/ItemType";
-import { consoleLog, consoleError } from "../logic/DebuggingHelper";
-import {log} from "../../Constants";
+import {err, log} from "../../Constants";
 
 const FETCH_CLIENT = 'FETCH_CLIENT';
 const FETCH_TRAINER = 'FETCH_TRAINER';
@@ -75,9 +74,9 @@ function addProfilePictureToData(data, callback) {
                     profilePicture: url
                 }, callback);
             }).catch((error) => {
-                consoleError("ERROR IN GETTING PROFILE IMAGE FOR USER");
-                consoleLog("ERROR IN GETTING PROFILE IMAGE FOR USER");
-                consoleLog(error);
+                err&&console.error("ERROR IN GETTING PROFILE IMAGE FOR USER");
+                log&&console.log("ERROR IN GETTING PROFILE IMAGE FOR USER");
+                log&&console.log(error);
                 addProfilePicturesToData(data, callback);
             });
         }
@@ -114,8 +113,8 @@ function addProfilePicturesToData(data, callback) {
                     }
                 }).catch((error) => {
                     // Not successful
-                    consoleError("ERROR IN GETTING PROFILE IMAGE FOR USER");
-                    consoleError(error);
+                    err&&console.error("ERROR IN GETTING PROFILE IMAGE FOR USER");
+                    err&&console.error(error);
                     profilePictures.push(defaultProfilePicture);
                     if (profilePictures.length >= len) {
                         callback({
@@ -238,7 +237,7 @@ function fetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, d
         if (currentObject) {
             const objectKeyList = Object.keys(currentObject);
             variablesList = variablesList.filter((v) => { return !objectKeyList.includes(v) });
-            // consoleLog("Final filtered list is = " + JSON.stringify(variablesList));
+            // log&&console.log("Final filtered list is = " + JSON.stringify(variablesList));
         }
         overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore);
     };
@@ -259,10 +258,10 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispat
         }
         if (dataHandler) { log&&console.log("S H = " + dataHandler.toString()); }
         else { log&&console.log("No data handler...");}
-        if (failureHandler) { consoleLog("F H = " + failureHandler.toString()); }
-        else { consoleLog("No failure handler...");}
+        if (failureHandler) { log&&console.log("F H = " + failureHandler.toString()); }
+        else { log&&console.log("No failure handler...");}
         QL[QLFunctionName](id, variablesList, (data) => {
-            // consoleLog("Successfully retrieved the QL info");
+            // log&&console.log("Successfully retrieved the QL info");
             if (data) {
                 addS3MediaToData(data, (updatedData) => {
                     // TODO __stale__
@@ -281,20 +280,20 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispat
             } else {
                 // Then the fetch came up with nothing!
                 // const error = Error("Couldn't find an object in the database with ID = " + id);
-                consoleLog("Couldn't find ID = " + id + " with action = " + QLFunctionName);
+                log&&console.log("Couldn't find ID = " + id + " with action = " + QLFunctionName);
                 dispatch(setIsNotLoading());
                 if (dataHandler) {
-                    consoleLog("D H " + dataHandler.toString());
+                    log&&console.log("D H " + dataHandler.toString());
                     dataHandler(null);
                 }
             }
         }, (error) => {
-            consoleError("Error in retrieval");
-            consoleError(error);
+            err&&console.error("Error in retrieval");
+            err&&console.error(error);
             dispatch(setError(error));
             dispatch(setIsNotLoading());
             if (failureHandler) {
-                consoleLog("F H " + failureHandler.toString());
+                log&&console.log("F H " + failureHandler.toString());
                 failureHandler(error);
             }
         });
@@ -327,7 +326,7 @@ function batchFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchT
                 const objectKeyList = Object.keys(currentObject);
                 filteredVariablesList = variablesList.filter((v) => {return (objectKeyList.contains(v) || filteredVariablesList.contains(v)) });
                 // variablesList = variablesList.filter((v) => { return !objectKeyList.includes(v) });
-                // consoleLog("Final filtered list is = " + JSON.stringify(variablesList));
+                // log&&console.log("Final filtered list is = " + JSON.stringify(variablesList));
             }
         }
         batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, failureHandler, dispatch, getStore);
@@ -343,11 +342,11 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
     const profilePictureIndex = variablesList.indexOf("profilePicture");
     const profilePicturesIndex = variablesList.indexOf("profilePictures");
     if (profilePictureIndex !== -1) {
-        // consoleLog("The variable list is requesting the profilePicture to be uploaded as well.");
+        // log&&console.log("The variable list is requesting the profilePicture to be uploaded as well.");
         variablesList.splice(profilePictureIndex, 1);
         // Add
         if (!variablesList.includes("profileImagePath")) {
-            consoleError("lmao you forgot to include the profile image path, I'll include it tho, no worries");
+            err&&console.error("lmao you forgot to include the profile image path, I'll include it tho, no worries");
             variablesList = [
                 ...variablesList,
                 "profileImagePath"
@@ -355,11 +354,11 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
         }
     }
     if (profilePicturesIndex !== -1) {
-        // consoleLog("The variable list is requesting the profilePicture to be uploaded as well.");
+        // log&&console.log("The variable list is requesting the profilePicture to be uploaded as well.");
         variablesList.splice(profilePicturesIndex, 1);
         // Add
         if (!variablesList.includes("profileImagePaths")) {
-            consoleError("lmao you forgot to include the profile image path, I'll include it tho, no worries");
+            err&&console.error("lmao you forgot to include the profile image path, I'll include it tho, no worries");
             variablesList = [
                 ...variablesList,
                 "profileImagePaths"
@@ -374,7 +373,7 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
             variablesList = [...variablesList, "item_type"];
         }
         QL[QLFunctionName](ids, variablesList, (data) => {
-            // consoleLog("Successfully retrieved the QL info");
+            // log&&console.log("Successfully retrieved the QL info");
             if (data.hasOwnProperty("items") && data.items && data.items.length) {
                 const items = data.items;
                 const itemsLength = items.length;
@@ -383,9 +382,9 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
                     const data = items[i];
                     const id = data.id;
                     if (profilePictureIndex !== -1) {
-                        // consoleLog("Adding profile image to the data");
+                        // log&&console.log("Adding profile image to the data");
                         addProfilePictureToData(data, (updatedData) => {
-                            // consoleLog("Dispatching the profile image + data");
+                            // log&&console.log("Dispatching the profile image + data");
                             dispatch({
                                 type: fetchDispatchType,
                                 payload: {
@@ -396,7 +395,7 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
                         });
                     }
                     else {
-                        // consoleLog("Just dispatching the normal data");
+                        // log&&console.log("Just dispatching the normal data");
                         dispatch({
                             type: fetchDispatchType,
                             payload: {
@@ -414,7 +413,7 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
                 unretrievedDataHandler(data.unretrievedItems);
             }
         }, (error) => {
-            consoleError("Error in retrieval");
+            err&&console.error("Error in retrieval");
             dispatch(setError(error));
             dispatch(setIsNotLoading());
             if (failureHandler) { failureHandler(error);}
@@ -527,8 +526,8 @@ export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandle
         });
         if (dataHandler) { dataHandler(data);}
     }, (error) => {
-        consoleError("Error in QUERY retrieval. ItemType = " + itemType + ", query string = " + JSON.stringify(queryString));
-        consoleError(JSON.stringify(error));
+        err&&console.error("Error in QUERY retrieval. ItemType = " + itemType + ", query string = " + JSON.stringify(queryString));
+        err&&console.error(JSON.stringify(error));
         dispatch(setError(error));
         dispatch(setIsNotLoading());
         if (failureHandler) { failureHandler(error);}

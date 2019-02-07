@@ -42,20 +42,20 @@ class PostManager extends Component {
         //     this.props.fetchUserAttributes(["friends", "invitedEvents"],
         //         (data) => {
         //             // When it has finished
-        //             consoleLog("Finished");
+        //             log&&console.log("Finished");
         //             this.queryEvents();
         //         });
         // }
     }
 
     componentWillReceiveProps(newProps) {
-        // consoleLog("Set state to userID = " + newProps.userID);
+        // log&&console.log("Set state to userID = " + newProps.userID);
         if (this.state.userID !== newProps.userID) {
             this.setState({userID: newProps.userID});
-            // consoleLog("fetchin user attributes");
+            // log&&console.log("fetchin user attributes");
             this.props.fetchUserAttributes(["friends", "invitedChallenges", "name"],
                 (data) => {
-                    // consoleLog("finished");
+                    // log&&console.log("finished");
                     this.queryPosts()
                 });
         }
@@ -64,7 +64,7 @@ class PostManager extends Component {
     queryPosts() {
         this.setState({isLoading: true});
         if (!this.state.ifFinished) {
-            // consoleLog(JSON.stringify(this.props.cache.eventQueries));
+            // log&&console.log(JSON.stringify(this.props.cache.eventQueries));
 
             // QL.queryPosts(["id", "title", "endTime", "time_created", "owner", "ifCompleted", "members", "capacity", "goal", "access", "restriction", "tags", "prize"], QL.generateFilter("and",
             //     {"ifCompleted": "eq"}, {"ifCompleted": "false"}), this.state.PostFeedLength,
@@ -84,7 +84,7 @@ class PostManager extends Component {
                     }
                     if (data.items) {
                         // TODO We can see private events
-                        // consoleLog("got items");
+                        // log&&console.log("got items");
                         const newlyQueriedPosts = [];
                         for (let i = 0; i < data.items.length; i++) {
                             const post = data.items[i];
@@ -96,12 +96,12 @@ class PostManager extends Component {
                         }
                         this.setState({posts: [...this.state.posts, ...newlyQueriedPosts]});
                         for (let i = 0; i < data.items.length; i++) {
-                            //consoleLog(data.items[i].time_created);
-                            // consoleLog("Putting in event: " + JSON.stringify(data.items[i]));
+                            //log&&console.log(data.items[i].time_created);
+                            // log&&console.log("Putting in event: " + JSON.stringify(data.items[i]));
                             // this.setState({events: [...this.state.events, data.items[i]]});
                             this.props.putPost(data.items[i]);
                         }
-                        // consoleLog("events in the end: " + JSON.stringify(this.state.events));
+                        // log&&console.log("events in the end: " + JSON.stringify(this.state.events));
                         this.setState({nextToken: data.nextToken});
                     }
                     else {
@@ -109,8 +109,8 @@ class PostManager extends Component {
                     }
                     this.setState({isLoading: false});
                 }, (error) => {
-                    consoleLog("Querying Posts failed!");
-                    consoleLog(error);
+                    log&&console.log("Querying Posts failed!");
+                    log&&console.log(error);
                     consoleError(error);
                     this.setState({isLoading: false, error: error});
                 }, this.props.cache.postQueries, this.props.putPostQuery);

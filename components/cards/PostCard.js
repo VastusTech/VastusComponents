@@ -14,7 +14,8 @@ import TrainerDetailCard from "../post_detail_cards/TrainerDetailCard";
 import {convertFromISO} from "../../logic/TimeHelper";
 import ClientModal from "../modals/ClientModal";
 import TrainerModal from "../modals/TrainerModal";
-import {consoleLog, consoleError} from "../../logic/DebuggingHelper";
+import { consoleError} from "../../logic/DebuggingHelper";
+import {log} from "../../../Constants";
 
 type Props = {
     postID: string
@@ -62,10 +63,10 @@ class PostCard extends Component<Props> {
     // if (this.props.event) {
     //     let ifOwned = false;
     //     let ifJoined = false;
-    //     //consoleLog("Membahs: " + this.props.event.members);
-    //     //consoleLog(this.props.owner + "vs. " + this.props.event.owner);
+    //     //log&&console.log("Membahs: " + this.props.event.members);
+    //     //log&&console.log(this.props.owner + "vs. " + this.props.event.owner);
     //     if (this.props.user.id === this.props.event.owner) {
-    //         //consoleLog("Same owner and cur user for: " + this.props.event.id);
+    //         //log&&console.log("Same owner and cur user for: " + this.props.event.id);
     //         ifOwned = true;
     //     }
     //     if (this.props.event.members && this.props.event.members.includes(this.props.user.id)) {
@@ -77,7 +78,7 @@ class PostCard extends Component<Props> {
     // }
     componentDidMount() {
         this.componentWillReceiveProps(this.props);
-        consoleLog("Post Card Prop: " + this.props.postID);
+        log&&console.log("Post Card Prop: " + this.props.postID);
         //this.props.fetchPost(this.props.postID, ["id", "postType", "Description"])
         //this.props.fetchClient(this.getPostAttribute("by"), ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
     }
@@ -112,7 +113,7 @@ class PostCard extends Component<Props> {
 
     getTrainerAttribute(attribute) {
         if (this.getPostAttribute("by")) {
-            //consoleLog(this.getPostAttribute("by"));
+            //log&&console.log(this.getPostAttribute("by"));
             let trainer = this.props.cache.trainers[this.getPostAttribute("by")];
             if (trainer) {
                 if (attribute.substr(attribute.length - 6) === "Length") {
@@ -221,7 +222,7 @@ class PostCard extends Component<Props> {
 
     getClientAttribute(attribute) {
         if (this.getPostAttribute("by")) {
-            //consoleLog(this.getPostAttribute("by"));
+            //log&&console.log(this.getPostAttribute("by"));
             let client = this.props.cache.clients[this.getPostAttribute("by")];
             if (client) {
                 //alert("Found Client in Challenge");
@@ -327,12 +328,12 @@ class PostCard extends Component<Props> {
     };
 
     closeClientModal = () => {
-        consoleLog("Closing client modal");
+        log&&console.log("Closing client modal");
         this.setState({clientModalOpen: false})
     };
 
     closeTrainerModal = () => {
-        consoleLog("Closing trainer modal");
+        log&&console.log("Closing trainer modal");
         this.setState({trainerModalOpen: false});
     };
 

@@ -1,4 +1,4 @@
-import {consoleLog} from "./DebuggingHelper";
+import {err, log} from "../../Constants";
 
 const ItemType = {
     Client: "Client",
@@ -83,7 +83,7 @@ export function switchReturnItemType(itemType, clientValue, trainerValue, gymVal
         return returnValue;
     }
     else {
-        consoleLog(errorMessage + " ~ itemType = " + itemType + " not recognized...");
+        err&&console.error(errorMessage + " ~ itemType = " + itemType + " not recognized...");
         return null;
     }
 }
@@ -140,7 +140,7 @@ export function switchHandleItemType(itemType, clientHandler, trainerHandler, gy
         itemHandler();
     }
     else {
-        consoleLog(errorMessage + " ~ itemType = " + itemType + " not recognized...");
+        err&&console.error(errorMessage + " ~ itemType = " + itemType + " not recognized...");
     }
 }
 

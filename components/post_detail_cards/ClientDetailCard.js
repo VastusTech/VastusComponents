@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { fetchClient } from "../../redux_actions/cacheActions";
 import PostFunctions from "../../database_functions/PostFunctions.js";
 import ClientCard from "../cards/ClientCard";
-import {consoleLog} from "../../logic/DebuggingHelper";
+import {log} from "../../../Constants";
 
 type Props = {
     postID: string
@@ -53,7 +53,7 @@ class ClientDetailCard extends Component<Props> {
 
     componentDidMount() {
         // this.isJoined();
-        //consoleLog("Mount Owned: " + this.state.isOwned);
+        //log&&console.log("Mount Owned: " + this.state.isOwned);
     }
 
     componentWillReceiveProps(newProps) {
@@ -101,21 +101,21 @@ class ClientDetailCard extends Component<Props> {
     }
 
     handleDeletePostButton() {
-        //consoleLog("Handling deleting the event");
+        //log&&console.log("Handling deleting the event");
         this.setState({isLoading: true});
         PostFunctions.delete(this.props.user.id, this.getPostAttribute("id"), (data) => {
             this.forceUpdate(data.id);
-            // consoleLog(JSON.stringify(data));
+            // log&&console.log(JSON.stringify(data));
             this.setState({isDeleteLoading: false, event: null});
         }, (error) => {
-            // consoleLog(JSON.stringify(error));
+            // log&&console.log(JSON.stringify(error));
             this.setState({isDeleteLoading: false, error: error});
         })
     }
 
     getClientAttribute(attribute) {
         if (this.getPostAttribute("about")) {
-            consoleLog(this.getPostAttribute("about"));
+            log&&console.log(this.getPostAttribute("about"));
             let client = this.props.cache.clients[this.getPostAttribute("about")];
             if (client) {
                 if (attribute.substr(attribute.length - 6) === "Length") {
@@ -138,9 +138,9 @@ class ClientDetailCard extends Component<Props> {
     profilePicture() {
         if (this.getClientAttribute("profileImagePaths") !== [] || this.getClientAttribute("profileImagePaths") !== null) {
             /*if(!this.state.urlsSet) {
-                consoleLog(JSON.stringify("Paths being passed in: " + this.props.user.profileImagePaths));
+                log&&console.log(JSON.stringify("Paths being passed in: " + this.props.user.profileImagePaths));
                 this.setURLS(this.getClientAttribute("profileImagePaths"));
-                consoleLog("Setting URLS: " + this.state.galleryURLS);
+                log&&console.log("Setting URLS: " + this.state.galleryURLS);
                 this.setState({urlsSet: true});
             }*/
             //console.log(this.getClientAttribute("profilePicture"));
@@ -214,12 +214,12 @@ class ClientDetailCard extends Component<Props> {
             );
         }
         if(this.state.canCallChecks) {
-            //consoleLog("Render Owned: " + this.state.isOwned);
+            //log&&console.log("Render Owned: " + this.state.isOwned);
             this.setState({canCallChecks: false});
-            //consoleLog("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
+            //log&&console.log("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
         }
 
-        //consoleLog("Challenge Info: " + JSON.stringify(this.state.event));
+        //log&&console.log("Challenge Info: " + JSON.stringify(this.state.event));
         return(
             <Card>
                 <Card.Content>
