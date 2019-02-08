@@ -4,7 +4,7 @@ import QL from "../api/GraphQL";
 import S3 from "../api/S3Storage";
 import defaultProfilePicture from "../img/roundProfile.png";
 import notFoundPicture from "../img/not_found.png";
-import {getItemTypeFromID, switchReturnItemType} from "../logic/ItemType";
+import {switchReturnItemType} from "../logic/ItemType";
 import {getObjectChannelName} from "../redux_reducers/cacheReducer";
 import {err, log} from "../../Constants";
 
@@ -21,6 +21,34 @@ const FETCH_GROUP = 'FETCH_GROUP';
 const FETCH_COMMENT = 'FETCH_COMMENT';
 const FETCH_SPONSOR = 'FETCH_SPONSOR';
 const FETCH_STREAK = 'FETCH_STREAK';
+
+const ADD_CLIENT_ATTRIBUTES = 'ADD_CLIENT_ATTRIBUTES';
+const ADD_TRAINER_ATTRIBUTES = 'ADD_TRAINER_ATTRIBUTES';
+const ADD_GYM_ATTRIBUTES = 'ADD_GYM_ATTRIBUTES';
+const ADD_WORKOUT_ATTRIBUTES = 'ADD_WORKOUT_ATTRIBUTES';
+const ADD_REVIEW_ATTRIBUTES = 'ADD_REVIEW_ATTRIBUTES';
+const ADD_EVENT_ATTRIBUTES = 'ADD_EVENT_ATTRIBUTES';
+const ADD_CHALLENGE_ATTRIBUTES = 'ADD_CHALLENGE_ATTRIBUTES';
+const ADD_INVITE_ATTRIBUTES = 'ADD_INVITE_ATTRIBUTES';
+const ADD_POST_ATTRIBUTES = 'ADD_POST_ATTRIBUTES';
+const ADD_GROUP_ATTRIBUTES = 'ADD_GROUP_ATTRIBUTES';
+const ADD_COMMENT_ATTRIBUTES = 'ADD_COMMENT_ATTRIBUTES';
+const ADD_SPONSOR_ATTRIBUTES = 'ADD_SPONSOR_ATTRIBUTES';
+const ADD_STREAK_ATTRIBUTES = 'ADD_STREAK_ATTRIBUTES';
+
+const REMOVE_CLIENT_ATTRIBUTES = 'REMOVE_CLIENT_ATTRIBUTES';
+const REMOVE_TRAINER_ATTRIBUTES = 'REMOVE_TRAINER_ATTRIBUTES';
+const REMOVE_GYM_ATTRIBUTES = 'REMOVE_GYM_ATTRIBUTES';
+const REMOVE_WORKOUT_ATTRIBUTES = 'REMOVE_WORKOUT_ATTRIBUTES';
+const REMOVE_REVIEW_ATTRIBUTES = 'REMOVE_REVIEW_ATTRIBUTES';
+const REMOVE_EVENT_ATTRIBUTES = 'REMOVE_EVENT_ATTRIBUTES';
+const REMOVE_CHALLENGE_ATTRIBUTES = 'REMOVE_CHALLENGE_ATTRIBUTES';
+const REMOVE_INVITE_ATTRIBUTES = 'REMOVE_INVITE_ATTRIBUTES';
+const REMOVE_POST_ATTRIBUTES = 'REMOVE_POST_ATTRIBUTES';
+const REMOVE_GROUP_ATTRIBUTES = 'REMOVE_GROUP_ATTRIBUTES';
+const REMOVE_COMMENT_ATTRIBUTES = 'REMOVE_COMMENT_ATTRIBUTES';
+const REMOVE_SPONSOR_ATTRIBUTES = 'REMOVE_SPONSOR_ATTRIBUTES';
+const REMOVE_STREAK_ATTRIBUTES = 'REMOVE_STREAK_ATTRIBUTES';
 
 const REMOVE_CLIENT =    'REMOVE_CLIENT';
 const REMOVE_TRAINER =   'REMOVE_TRAINER';
@@ -177,12 +205,23 @@ function subscribeFetch(id, itemType, variableList, dataHandler, failureHandler)
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         // If we are doing a special subscribe fetch, then we must first check to see if
-        overwriteFetch(id, variableList, getCacheName(itemType), QL.getGetByIDFunction(itemType), getFetchType(itemType), dataHandler, failureHandler, dispatch, getStore);
-        dispatch(addHandlerAndUnsubscription(id))
+        if (getStore().cache[getCacheName(itemType)][id].__stale__ !== false) {
+            // Then it is stale
+            // Subscribe (potentially again?)
+            dispatch(subscribeCacheUpdatesToObject(id, itemType));
+            // Update the stale value for the object to false
+            dispatch(getPutItemFunction(itemType)({id, __stale__: false}, dispatch));
+            // Then we force fetch everything!
+            dispatch(forceFetch(id, itemType, variableList, dataHandler, failureHandler));
+        }
+        else {
+            // Then it is not stale, and we need not subscribe again
+            dispatch(fetch(id, itemType, variableList, dataHandler, failureHandler));
+        }
     };
 }
 function subscribeCacheUpdatesToObject(id, itemType) {
-    return (dispatch, getStore) => {
+    return (dispatch) => {
         dispatch(addHandlerAndUnsubscription(getObjectChannelName(id), (message) => {
             const payload = message.data;
             const createJSON = payload.CREATE;
@@ -191,14 +230,14 @@ function subscribeCacheUpdatesToObject(id, itemType) {
             const removeJSON = payload.REMOVE;
             const ifDelete = payload.DELETE;
             if (ifDelete) {
-                // If we delete, then we're done, nothing else to do!
-
+                // If we delete, then we're done, nothing else to do! This also handles unsubscribing!
+                dispatch(removeItem(itemType, id, dispatch));
             }
             else {
                 if (createJSON) {
                     // This is any object that was created and added, put it into the cache
                     if (createJSON.id && createJSON.item_type) {
-                        dispatch(getPutItemFunction(createJSON.item_type)(createJSON));
+                        dispatch(getPutItemFunction(createJSON.item_type)(createJSON, dispatch));
                     }
                 }
                 if (setJSON) {
@@ -207,15 +246,18 @@ function subscribeCacheUpdatesToObject(id, itemType) {
                     dispatch(getPutItemFunction(itemType)(setJSON));
                 }
                 if (addJSON) {
-                    // You will have to put this in,
+                    // Adds the attributes to the object, which should already be in there!
+                    dispatch(addItemAttributes(itemType, id, addJSON));
                 }
                 if (removeJSON) {
-
+                    // Removes the attributes from the object, which should already be in there!
+                    dispatch(removeItemAttributes(itemType, id, removeJSON));
                 }
             }
         }, () => {
-
-        }))
+            // When the object is automatically unsubscribed, just add on the __stale__ variable
+            dispatch(getPutItemFunction(itemType)({id, __stale__: true}, dispatch));
+        }));
     };
 }
 function overwriteFetch(id, variablesList, cacheSet, QLFunction, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore) {
@@ -238,8 +280,11 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunction, fetchDispatchTy
                     dispatch({
                         type: fetchDispatchType,
                         payload: {
-                            id,
-                            data: updatedData
+                            object: {
+                                id,
+                                data: updatedData
+                            },
+                            dispatch
                         }
                     });
                     dispatch(setIsNotLoading());
@@ -272,8 +317,11 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunction, fetchDispatchTy
         dispatch({
             type: fetchDispatchType,
             payload: {
-                id,
-                data: null
+                object: {
+                    id,
+                    data: null
+                },
+                dispatch
             }
         });
         dispatch(setIsNotLoading());
@@ -330,8 +378,11 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
                         dispatch({
                             type: fetchDispatchType,
                             payload: {
-                                id,
-                                data: updatedData
+                                object: {
+                                    id,
+                                    data: updatedData
+                                },
+                                dispatch
                             }
                         });
                         retrievedItems.push(getStore().cache[cacheSet][id]);
@@ -357,8 +408,11 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
             dispatch({
                 type: fetchDispatchType,
                 payload: {
-                    id,
-                    data: null
+                    object: {
+                        id,
+                        data: null
+                    },
+                    dispatch
                 }
             });
             items.push(getStore().cache[cacheSet][id]);
@@ -440,8 +494,11 @@ export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandle
                     dispatch({
                         type: getFetchType(itemType),
                         payload: {
-                            id,
-                            data: updatedData
+                            object: {
+                                id,
+                                data: updatedData
+                            },
+                            dispatch
                         }
                     });
                 });
@@ -505,6 +562,45 @@ export function fetchSponsor(id, variablesList, dataHandler, failureHandler) {
 }
 export function fetchStreak(id, variablesList, dataHandler, failureHandler) {
     return fetch(id, "Streak", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchClient(id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, "Client", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchTrainer(id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, "Trainer", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchGym(id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, "Gym", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchWorkout(id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, "Workout", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchReview(id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, "Review", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchEvent(id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, "Event", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchChallenge(id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, "Challenge", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchPost(id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, "Post", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchInvite(id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, "Invite", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchGroup(id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, "Group", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchComment(id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, "Comment", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchSponsor(id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, "Sponsor", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchStreak(id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, "Streak", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchItem(itemType, id, variablesList, dataHandler, failureHandler) {
     return getForceFetchItemFunction(itemType)(id, variablesList, dataHandler, failureHandler);
@@ -886,13 +982,42 @@ export function clearStreakQuery() {
         type: "CLEAR_STREAK_QUERY",
     };
 }
-export function removeItem(itemType, id) {
+function addItemAttributes(itemType, id, attributes) {
+    const addAttributesType = switchReturnItemType(itemType, ADD_CLIENT_ATTRIBUTES, ADD_TRAINER_ATTRIBUTES, ADD_GYM_ATTRIBUTES,
+        ADD_WORKOUT_ATTRIBUTES, ADD_REVIEW_ATTRIBUTES, ADD_EVENT_ATTRIBUTES, ADD_CHALLENGE_ATTRIBUTES, ADD_INVITE_ATTRIBUTES,
+        ADD_POST_ATTRIBUTES, ADD_GROUP_ATTRIBUTES, ADD_COMMENT_ATTRIBUTES, ADD_SPONSOR_ATTRIBUTES, null, ADD_STREAK_ATTRIBUTES,
+        "Receive add item attributes item type not implemented for type!");
+    return {
+        type: addAttributesType,
+        payload: {
+            id,
+            attributes
+        }
+    }
+}
+function removeItemAttributes(itemType, id, attributes) {
+    const removeAttributesType = switchReturnItemType(itemType, REMOVE_CLIENT_ATTRIBUTES, REMOVE_TRAINER_ATTRIBUTES, REMOVE_GYM_ATTRIBUTES,
+        REMOVE_WORKOUT_ATTRIBUTES, REMOVE_REVIEW_ATTRIBUTES, REMOVE_EVENT_ATTRIBUTES, REMOVE_CHALLENGE_ATTRIBUTES, REMOVE_INVITE_ATTRIBUTES,
+        REMOVE_POST_ATTRIBUTES, REMOVE_GROUP_ATTRIBUTES, REMOVE_COMMENT_ATTRIBUTES, REMOVE_SPONSOR_ATTRIBUTES, null, REMOVE_STREAK_ATTRIBUTES,
+        "Receive remove item attributes item type not implemented for type!");
+    return {
+        type: removeAttributesType,
+        payload: {
+            id,
+            attributes
+        }
+    }
+}
+export function removeItem(itemType, id, dispatch) {
     const removeType = switchReturnItemType(itemType, REMOVE_CLIENT, REMOVE_TRAINER, REMOVE_GYM, REMOVE_WORKOUT, REMOVE_REVIEW, REMOVE_EVENT,
         REMOVE_CHALLENGE, REMOVE_INVITE, REMOVE_POST, REMOVE_GROUP, REMOVE_COMMENT, REMOVE_SPONSOR, null, REMOVE_STREAK,
         "Receive remove item type not implemented for type!");
     return {
         type: removeType,
-        payload: id
+        payload: {
+            id,
+            dispatch
+        }
     }
 }
 function putQuery(queryString, queryResult, actionType) {
@@ -904,157 +1029,197 @@ function putQuery(queryString, queryResult, actionType) {
         }
     };
 }
-export function putClient(client) {
+export function putClient(client, dispatch) {
     if (client && client.id) {
         return {
             type: "FETCH_CLIENT",
             payload: {
-                id: client.id,
-                data: client
+                object: {
+                    id: client.id,
+                    data: client
+                },
+                dispatch
             }
         };
     }
     return {type: ""};
 }
-export function putTrainer(trainer) {
+export function putTrainer(trainer, dispatch) {
     if (trainer && trainer.id) {
         return {
             type: "FETCH_TRAINER",
             payload: {
-                id: trainer.id,
-                data: trainer
+                object: {
+                    id: trainer.id,
+                    data: trainer
+                },
+                dispatch
             }
         };
     }
     return {type: ""};
 }
-export function putGym(gym) {
+export function putGym(gym, dispatch) {
     if (gym && gym.id) {
         return {
             type: "FETCH_GYM",
             payload: {
-                id: gym.id,
-                data: gym
+                object: {
+                    id: gym.id,
+                    data: gym
+                },
+                dispatch
             }
         };
     }
     return {type: ""};
 }
-export function putWorkout(workout) {
+export function putWorkout(workout, dispatch) {
     if (workout && workout.id) {
         return {
             type: "FETCH_WORKOUT",
             payload: {
-                id: workout.id,
-                data: workout
+                object: {
+                    id: workout.id,
+                    data: workout
+                },
+                dispatch
             }
         };
     }
     return {type: ""};
 }
-export function putReview(review) {
+export function putReview(review, dispatch) {
     if (review && review.id) {
         return {
             type: "FETCH_REVIEW",
             payload: {
-                id: review.id,
-                data: review
+                object: {
+                    id: review.id,
+                    data: review
+                },
+                dispatch
             }
         };
     }
     return {type: ""};
 }
-export function putEvent(event) {
+export function putEvent(event, dispatch) {
     if (event && event.id) {
         return {
             type: "FETCH_EVENT",
             payload: {
-                id: event.id,
-                data: event
+                object: {
+                    id: event.id,
+                    data: event
+                },
+                dispatch
             }
         };
     }
     return {type: ""};
 }
-export function putChallenge(challenge) {
+export function putChallenge(challenge, dispatch) {
     if (challenge && challenge.id) {
         return {
             type: "FETCH_CHALLENGE",
             payload: {
-                id: challenge.id,
-                data: challenge
+                object: {
+                    id: challenge.id,
+                    data: challenge
+                },
+                dispatch
             }
         };
     }
     return {type: ""};
 }
-export function putInvite(invite) {
+export function putInvite(invite, dispatch) {
     if (invite && invite.id) {
         return {
             type: "FETCH_INVITE",
             payload: {
-                id: invite.id,
-                data: invite
+                object: {
+                    id: invite.id,
+                    data: invite
+                },
+                dispatch
             }
         };
     }
     return {type: ""};
 }
-export function putPost(post) {
+export function putPost(post, dispatch) {
     if (post && post.id) {
         return {
             type: "FETCH_POST",
             payload: {
-                id: post.id,
-                data: post
+                object: {
+                    id: post.id,
+                    data: post
+                },
+                dispatch
             }
         };
     }
     return {type: ""};
 }
-export function putGroup(group) {
+export function putGroup(group, dispatch) {
     if (group && group.id) {
         return {
             type: "FETCH_GROUP",
             payload: {
-                id: group.id,
-                data: group
+                object: {
+                    id: group.id,
+                    data: group
+                },
+                dispatch
             }
         };
     }
     return {type: ""};
 }
-export function putComment(comment) {
+export function putComment(comment, dispatch) {
     if (comment && comment.id) {
         return {
             type: "FETCH_COMMENT",
             payload: {
-                id: comment.id,
-                data: comment
+                object: {
+                    id: comment.id,
+                    data: comment
+                },
+                dispatch
             }
         };
     }
     return {type: ""};
 }
-export function putSponsor(sponsor) {
+export function putSponsor(sponsor, dispatch) {
     if (sponsor && sponsor.id) {
         return {
             type: "FETCH_SPONSOR",
             payload: {
-                id: sponsor.id,
-                data: sponsor
+                object: {
+                    id: sponsor.id,
+                    data: sponsor,
+                },
+                dispatch
             }
+
         };
     }
     return {type: ""};
 }
-export function putStreak(streak) {
+export function putStreak(streak, dispatch) {
     if (streak && streak.id) {
         return {
             type: "FETCH_SPONSOR",
             payload: {
-                id: streak.id,
-                data: streak
+                object: {
+                    id: streak.id,
+                    data: streak
+                },
+                dispatch
             }
         };
     }

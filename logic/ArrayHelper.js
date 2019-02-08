@@ -6,9 +6,11 @@
  * @param originalArray The original array to be subtracted from.
  * @param minusArray The array from which the remove elements will be taken.
  */
-function subtractArray(originalArray, minusArray) {
-    for (let i = minusArray.length -1; i >= 0; i--)
+export function subtractArray(originalArray, minusArray) {
+    for (let i = minusArray.length -1; i >= 0; i--) {
         removeFromArray(minusArray[i]);
+    }
+    return originalArray;
 }
 
 /**
@@ -17,8 +19,9 @@ function subtractArray(originalArray, minusArray) {
  * @param originalArray The original array to be altered.
  * @param element The element to remove from the array.
  */
-function removeFromArray(originalArray, element) {
+export function removeFromArray(originalArray, element) {
     originalArray.splice(element, 1);
+    return originalArray;
 }
 
 /**
@@ -26,11 +29,13 @@ function removeFromArray(originalArray, element) {
  *
  * @param originalArray The array to be added to.
  * @param newArray The array of elements to be added to the original array.
+ * @return the original array that is updated.
  */
-function addUniqueToArray(originalArray, newArray) {
+export function addUniqueToArray(originalArray, newArray) {
     for (let i = 0; i < newArray.length; i++) {
         const e = newArray[i];
         // Aborts if index is not -1
         originalArray.indexOf(e) === -1 && originalArray.push(e);
     }
+    return originalArray;
 }
