@@ -1,9 +1,10 @@
 import QL from "../api/GraphQL";
 import S3 from "../api/S3Storage";
 import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
-import {removeChannel, setHandlerAndUnsubscription} from "./ablyActions";
+import {addHandlerAndUnsubscription} from "./ablyActions";
 import {err, log} from "../../Constants";
-
+import {debugAlert} from "../logic/DebuggingHelper";
+import {getBoardChannel} from "../redux_reducers/messageReducer";
 const notFoundPicture = require('../img/not_found.png');
 const defaultProfilePicture = require("../img/roundProfile.png");
 
@@ -11,15 +12,6 @@ const ADD_MESSAGE = 'ADD_MESSAGE';
 const ADD_QUERY = 'ADD_QUERY';
 const CLEAR_BOARD = 'CLEAR_BOARD';
 
-/**
- * Get the Ably Channel name for the given board.
- *
- * @param board The board to get the Ably channel of.
- * @returns {string} The channel name.
- */
-function getBoardChannel(board) {
-    return board + "-Board";
-}
 export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -27,12 +19,12 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
         if (ifFirst !== false) {
             ifFirst = true;
             // If this is the first time querying the board, Ably subscribe to it.
-            alert("Setting handler stuff!");
-            dispatch(setHandlerAndUnsubscription(getBoardChannel(board), (message) => {
+            debugAlert("Setting handler stuff!");
+            dispatch(addHandlerAndUnsubscription(getBoardChannel(board), (message) => {
                 dispatch(addMessageFromNotification(board, message.data));
             }, () => {
                 // When it unsubscribes, we clear the board
-                clearBoard(board);
+                clearBoard(board, dispatch);
             }));
         }
         let nextToken = getStore().message.boardNextTokens[board];
@@ -45,7 +37,7 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
                     if (!data.items) { data.items = []; }
                     addURLToMessages(data.items, "message", "messageURL", notFoundPicture, (message) => {return message.type}, (messages) => {
                         addURLToMessages(messages, "profileImagePath", "profilePicture", defaultProfilePicture, (message) => {return message.profileImagePath}, (messages) => {
-                            dispatch(addQueryToBoard(board, messages, data.nextToken));
+                            dispatch(addQueryToBoard(board, messages, data.nextToken, dispatch));
                             if (dataHandler) {
                                 dataHandler(messages);
                             }
@@ -123,7 +115,7 @@ function addMessageFromNotification(board, message, dataHandler, failureHandler)
         dispatch(setIsLoading());
         addURLToMessage(message, "message", "messageURL", notFoundPicture, (message) => {return message.type}, (message) => {
             addURLToMessage(message, "profileImagePath", "profilePicture", defaultProfilePicture, (message) => {return message.profileImagePath}, (message) => {
-                dispatch(addMessageToBoard(board, message));
+                dispatch(addMessageToBoard(board, message, dispatch));
                 log && console.log("Successfully received message from Ably! Message = " + JSON.stringify(message));
                 if (dataHandler) {
                     dataHandler(message);
@@ -132,7 +124,7 @@ function addMessageFromNotification(board, message, dataHandler, failureHandler)
             }, (error) => {
                 message.message = "";
                 err && console.error("Error getting media for message from notification! Error = " + JSON.stringify(error));
-                dispatch(addMessageToBoard(board, message));
+                dispatch(addMessageToBoard(board, message, dispatch));
                 if (failureHandler) {
                     failureHandler(error);
                 }
@@ -145,32 +137,37 @@ function addMessageFromNotification(board, message, dataHandler, failureHandler)
 export function discardBoard(board) {
     return (dispatch) => {
         dispatch(setIsLoading());
-        dispatch(removeChannel(getBoardChannel(board)));
+        dispatch(clearBoard(board, dispatch));
         dispatch(setIsNotLoading());
     };
 }
-export function addMessageToBoard(board, message) {
+export function addMessageToBoard(board, message, dispatch) {
     return {
         type: ADD_MESSAGE,
             payload: {
-            board,
-                message
+                board,
+                message,
+                dispatch
         }
     };
 }
-function addQueryToBoard(board, items, nextToken) {
+function addQueryToBoard(board, messages, nextToken, dispatch) {
     return {
         type: ADD_QUERY,
         payload: {
             board,
             nextToken,
-            items,
+            messages,
+            dispatch
         }
     };
 }
-export function clearBoard(board) {
+function clearBoard(board, dispatch) {
     return {
         type: CLEAR_BOARD,
-        payload: board
+        payload: {
+            board,
+            dispatch
+        }
     }
 }
