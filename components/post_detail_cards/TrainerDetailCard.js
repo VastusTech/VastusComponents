@@ -120,7 +120,7 @@ class TrainerDetailCard extends Component<Props> {
 
     getTrainerAttribute(attribute) {
         if (this.getPostAttribute("about")) {
-            log&&console.log(this.getPostAttribute("about"));
+            console.log(this.getPostAttribute("about"));
             let trainer = this.props.cache.trainers[this.getPostAttribute("about")];
             if (trainer) {
                 if (attribute.substr(attribute.length - 6) === "Length") {
