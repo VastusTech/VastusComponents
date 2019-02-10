@@ -63,6 +63,9 @@ class UserFunctions {
     static updateBirthday(fromID, userID, birthday, successHandler, failureHandler) {
         return this.updateSet(fromID, userID, "birthday", birthday, successHandler, failureHandler);
     }
+    static updateLocation(fromID, userID, location, successHandler, failureHandler) {
+        return this.updateSet(fromID, userID, "location", location, successHandler, failureHandler);
+    }
     static updateBio(fromID, userID, bio, successHandler, failureHandler) {
         return this.updateSet(fromID, userID, "bio", bio, successHandler, failureHandler);
     }
