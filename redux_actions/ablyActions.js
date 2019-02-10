@@ -28,6 +28,18 @@ export function setPermanentHandlerAndUnsubscription(channelName, handler, unsub
         dispatch(setIsNotLoading());
     }
 }
+export function removeChannelSubscription(channelName) {
+    return (dispatch, getStore) => {
+        dispatch(setIsLoading());
+        if (getStore().ably.subscribedChannels[channelName]) {
+            dispatch(removeChannel(channelName));
+        }
+        else {
+            log&&console.log("No channel to remove!");
+        }
+        dispatch(setIsNotLoading());
+    }
+}
 // export function addHandlerToNotifications(handler) {
 //     return (dispatch, getStore) => {
 //         dispatch(setIsLoading());

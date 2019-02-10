@@ -1,10 +1,11 @@
 import { setIsNotLoading, setError, setIsLoading } from "./infoActions";
+import { addHandlerAndUnsubscription } from "./ablyActions";
 import QL from "../api/GraphQL";
-import { Storage } from "aws-amplify";
 import S3 from "../api/S3Storage";
 import defaultProfilePicture from "../img/roundProfile.png";
 import notFoundPicture from "../img/not_found.png";
-import {switchReturnItemType} from "../logic/ItemType";
+import {getItemTypeFromID, switchReturnItemType} from "../logic/ItemType";
+import {getObjectChannelName} from "../redux_reducers/cacheReducer";
 import {err, log} from "../../Constants";
 
 const FETCH_CLIENT = 'FETCH_CLIENT';
@@ -62,83 +63,6 @@ const CLEAR_GROUP_QUERY = 'CLEAR_GROUP_QUERY';
 const CLEAR_COMMENT_QUERY = 'CLEAR_COMMENT_QUERY';
 const CLEAR_SPONSOR_QUERY = 'CLEAR_SPONSOR_QUERY';
 const CLEAR_STREAK_QUERY = 'CLEAR_STREAK_QUERY';
-
-// TODO Change this to using my S3Storage class
-function addProfilePictureToData(data, callback) {
-    if (data && data.hasOwnProperty("profileImagePath")) {
-        const imageKey = data.profileImagePath;
-        if (imageKey) {
-            Storage.get(imageKey).then((url) => {
-                addProfilePicturesToData({
-                    ...data,
-                    profilePicture: url
-                }, callback);
-            }).catch((error) => {
-                err&&console.error("ERROR IN GETTING PROFILE IMAGE FOR USER");
-                log&&console.log("ERROR IN GETTING PROFILE IMAGE FOR USER");
-                log&&console.log(error);
-                addProfilePicturesToData(data, callback);
-            });
-        }
-        else {
-            addProfilePicturesToData({
-                ...data,
-                profilePicture: defaultProfilePicture
-            }, callback);
-        }
-    }
-    else {
-        addProfilePicturesToData({
-            ...data,
-            profilePicture: defaultProfilePicture
-        }, callback);
-    }
-}
-function addProfilePicturesToData(data, callback) {
-    if (data && data.hasOwnProperty("profileImagePaths")) {
-        const imagesKey = data.profileImagePaths;
-        if (imagesKey) {
-            const profilePictures = [];
-            const len = imagesKey.length;
-            for (let i = 0; i < len; i++) {
-                const imageKey = imagesKey[i];
-                Storage.get(imageKey).then((url) => {
-                    // Successful
-                    profilePictures.push(url);
-                    if (profilePictures.length >= len) {
-                        callback({
-                            ...data,
-                            profilePictures
-                        });
-                    }
-                }).catch((error) => {
-                    // Not successful
-                    err&&console.error("ERROR IN GETTING PROFILE IMAGE FOR USER");
-                    err&&console.error(error);
-                    profilePictures.push(defaultProfilePicture);
-                    if (profilePictures.length >= len) {
-                        callback({
-                            ...data,
-                            profilePictures
-                        });
-                    }
-                });
-            }
-        }
-        else {
-            callback({
-                ...data,
-                profilePictures: [defaultProfilePicture]
-            });
-        }
-    }
-    else {
-        callback({
-            ...data,
-            profilePictures: [defaultProfilePicture]
-        });
-    }
-}
 
 /**
  * Adds any S3 images to the collected data. The S3 images are specified by ending in either "Path" or "Paths" for a
@@ -230,25 +154,71 @@ function addS3MediaToData(data, callback) {
         isWaiting = true;
     }
 }
-function fetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler) {
+function fetch(id, itemType, variablesList, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        const currentObject = getStore().cache[cacheSet][id];
+        const cacheName = getCacheName(itemType);
+        const currentObject = getStore().cache[cacheName][id];
         if (currentObject) {
             const objectKeyList = Object.keys(currentObject);
             variablesList = variablesList.filter((v) => { return !objectKeyList.includes(v) });
             // log&&console.log("Final filtered list is = " + JSON.stringify(variablesList));
         }
-        overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore);
+        overwriteFetch(id, variablesList, cacheName, QL.getGetByIDFunction(itemType), getFetchType(itemType), dataHandler, failureHandler, dispatch, getStore);
     };
 }
-function forceFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler) {
+function forceFetch(id, itemType, variablesList, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore);
+        overwriteFetch(id, variablesList, getCacheName(itemType), QL.getGetByIDFunction(itemType), getFetchType(itemType), dataHandler, failureHandler, dispatch, getStore);
     };
 }
-function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore) {
+function subscribeFetch(id, itemType, variableList, dataHandler, failureHandler) {
+    return (dispatch, getStore) => {
+        dispatch(setIsLoading());
+        // If we are doing a special subscribe fetch, then we must first check to see if
+        overwriteFetch(id, variableList, getCacheName(itemType), QL.getGetByIDFunction(itemType), getFetchType(itemType), dataHandler, failureHandler, dispatch, getStore);
+        dispatch(addHandlerAndUnsubscription(id))
+    };
+}
+function subscribeCacheUpdatesToObject(id, itemType) {
+    return (dispatch, getStore) => {
+        dispatch(addHandlerAndUnsubscription(getObjectChannelName(id), (message) => {
+            const payload = message.data;
+            const createJSON = payload.CREATE;
+            const setJSON = payload.SET;
+            const addJSON = payload.ADD;
+            const removeJSON = payload.REMOVE;
+            const ifDelete = payload.DELETE;
+            if (ifDelete) {
+                // If we delete, then we're done, nothing else to do!
+
+            }
+            else {
+                if (createJSON) {
+                    // This is any object that was created and added, put it into the cache
+                    if (createJSON.id && createJSON.item_type) {
+                        dispatch(getPutItemFunction(createJSON.item_type)(createJSON));
+                    }
+                }
+                if (setJSON) {
+                    // You simply put the item into the cache (overwriting existing attributes)
+                    setJSON.id = id;
+                    dispatch(getPutItemFunction(itemType)(setJSON));
+                }
+                if (addJSON) {
+                    // You will have to put this in,
+                }
+                if (removeJSON) {
+
+                }
+            }
+        }, () => {
+
+        }))
+    };
+}
+function overwriteFetch(id, variablesList, cacheSet, QLFunction, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore) {
     if (variablesList.length > 0) {
         if (!variablesList.includes("id")) {
             variablesList = [...variablesList, "id"];
@@ -260,7 +230,7 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispat
         else { log&&console.log("No data handler...");}
         if (failureHandler) { log&&console.log("F H = " + failureHandler.toString()); }
         else { log&&console.log("No failure handler...");}
-        QL[QLFunctionName](id, variablesList, (data) => {
+        QLFunction(id, variablesList, (data) => {
             // log&&console.log("Successfully retrieved the QL info");
             if (data) {
                 addS3MediaToData(data, (updatedData) => {
@@ -280,7 +250,7 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispat
             } else {
                 // Then the fetch came up with nothing!
                 // const error = Error("Couldn't find an object in the database with ID = " + id);
-                log&&console.log("Couldn't find ID = " + id + " with action = " + QLFunctionName);
+                log&&console.log("Couldn't find ID = " + id + " with action = " + JSON.stringify(QLFunction));
                 dispatch(setIsNotLoading());
                 if (dataHandler) {
                     log&&console.log("D H " + dataHandler.toString());
@@ -339,32 +309,6 @@ function batchForceFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDisp
     };
 }
 function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, failureHandler, dispatch, getStore) {
-    const profilePictureIndex = variablesList.indexOf("profilePicture");
-    const profilePicturesIndex = variablesList.indexOf("profilePictures");
-    if (profilePictureIndex !== -1) {
-        // log&&console.log("The variable list is requesting the profilePicture to be uploaded as well.");
-        variablesList.splice(profilePictureIndex, 1);
-        // Add
-        if (!variablesList.includes("profileImagePath")) {
-            err&&console.error("lmao you forgot to include the profile image path, I'll include it tho, no worries");
-            variablesList = [
-                ...variablesList,
-                "profileImagePath"
-            ]
-        }
-    }
-    if (profilePicturesIndex !== -1) {
-        // log&&console.log("The variable list is requesting the profilePicture to be uploaded as well.");
-        variablesList.splice(profilePicturesIndex, 1);
-        // Add
-        if (!variablesList.includes("profileImagePaths")) {
-            err&&console.error("lmao you forgot to include the profile image path, I'll include it tho, no worries");
-            variablesList = [
-                ...variablesList,
-                "profileImagePaths"
-            ]
-        }
-    }
     if (variablesList.length > 0) {
         if (!variablesList.includes("id")) {
             variablesList = [...variablesList, "id"];
@@ -381,33 +325,20 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
                 for (let i = 0; i < itemsLength; i++) {
                     const data = items[i];
                     const id = data.id;
-                    if (profilePictureIndex !== -1) {
-                        // log&&console.log("Adding profile image to the data");
-                        addProfilePictureToData(data, (updatedData) => {
-                            // log&&console.log("Dispatching the profile image + data");
-                            dispatch({
-                                type: fetchDispatchType,
-                                payload: {
-                                    id,
-                                    data: updatedData
-                                }
-                            });
-                        });
-                    }
-                    else {
-                        // log&&console.log("Just dispatching the normal data");
+                    addS3MediaToData(data, (updatedData) => {
+                        // log&&console.log("Dispatching the profile image + data");
                         dispatch({
                             type: fetchDispatchType,
                             payload: {
                                 id,
-                                data
+                                data: updatedData
                             }
                         });
-                    }
-                    retrievedItems.push(getStore().cache[cacheSet][id]);
+                        retrievedItems.push(getStore().cache[cacheSet][id]);
+                        dispatch(setIsNotLoading());
+                        if (dataHandler) {dataHandler(retrievedItems);}
+                    });
                 }
-                dispatch(setIsNotLoading());
-                if (dataHandler) {dataHandler(retrievedItems);}
             }
             if (data.hasOwnProperty("unretrievedItems") && data.unretrievedItems && data.unretrievedItems.length && unretrievedDataHandler) {
                 unretrievedDataHandler(data.unretrievedItems);
@@ -505,7 +436,7 @@ export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandle
                 // TODO Handle the profile image path retrieval
                 const item = data.items[i];
                 const id = item.id;
-                addProfilePictureToData(item, (updatedData) => {
+                addS3MediaToData(item, (updatedData) => {
                     dispatch({
                         type: getFetchType(itemType),
                         payload: {
@@ -537,85 +468,85 @@ export function fetchItem(itemType, id, variableList, dataHandler, failureHandle
     return getFetchItemFunction(itemType)(id, variableList, dataHandler, failureHandler);
 }
 export function fetchClient(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "clients", "getClient", "FETCH_CLIENT", dataHandler, failureHandler);
+    return fetch(id, "Client", variablesList, dataHandler, failureHandler);
 }
 export function fetchTrainer(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "trainers", "getTrainer", "FETCH_TRAINER", dataHandler, failureHandler);
+    return fetch(id, "Trainer", variablesList, dataHandler, failureHandler);
 }
 export function fetchGym(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "gyms", "getGym", "FETCH_GYM", dataHandler, failureHandler);
+    return fetch(id, "Gym", variablesList, dataHandler, failureHandler);
 }
 export function fetchWorkout(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "workouts", "getWorkout", "FETCH_WORKOUT", dataHandler, failureHandler);
+    return fetch(id, "Workout", variablesList, dataHandler, failureHandler);
 }
 export function fetchReview(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "reviews", "getReview", "FETCH_REVIEW", dataHandler, failureHandler);
+    return fetch(id, "Review", variablesList, dataHandler, failureHandler);
 }
 export function fetchEvent(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "events", "getEvent", "FETCH_EVENT", dataHandler, failureHandler);
+    return fetch(id, "Event", variablesList, dataHandler, failureHandler);
 }
 export function fetchChallenge(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "challenges", "getChallenge", "FETCH_CHALLENGE", dataHandler, failureHandler);
+    return fetch(id, "Challenge", variablesList, dataHandler, failureHandler);
 }
 export function fetchPost(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "posts", "getPost", "FETCH_POST", dataHandler, failureHandler);
+    return fetch(id, "Post", variablesList, dataHandler, failureHandler);
 }
 export function fetchInvite(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "invites", "getInvite", "FETCH_INVITE", dataHandler, failureHandler);
+    return fetch(id, "Invite", variablesList, dataHandler, failureHandler);
 }
 export function fetchGroup(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "groups", "getGroup", "FETCH_GROUP", dataHandler, failureHandler);
+    return fetch(id, "Group", variablesList, dataHandler, failureHandler);
 }
 export function fetchComment(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "comments", "getComment", "FETCH_COMMENT", dataHandler, failureHandler);
+    return fetch(id, "Comment", variablesList, dataHandler, failureHandler);
 }
 export function fetchSponsor(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "sponsors", "getSponsor", "FETCH_SPONSOR", dataHandler, failureHandler);
+    return fetch(id, "Sponsor", variablesList, dataHandler, failureHandler);
 }
 export function fetchStreak(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "streaks", "getStreaks", "FETCH_STREAK", dataHandler, failureHandler);
+    return fetch(id, "Streak", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchItem(itemType, id, variablesList, dataHandler, failureHandler) {
     return getForceFetchItemFunction(itemType)(id, variablesList, dataHandler, failureHandler);
 }
 export function forceFetchClient(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, variablesList, "clients", "getClient", "FETCH_CLIENT", dataHandler, failureHandler);
+    return forceFetch(id, "Client", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchTrainer(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, variablesList, "trainers", "getTrainer", "FETCH_TRAINER", dataHandler, failureHandler);
+    return forceFetch(id, "Trainer", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchGym(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, variablesList, "gyms", "getGym", "FETCH_GYM", dataHandler, failureHandler);
+    return forceFetch(id, "Gym", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchWorkout(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, variablesList, "workouts", "getWorkout", "FETCH_WORKOUT", dataHandler, failureHandler);
+    return forceFetch(id, "Workout", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchReview(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, variablesList, "reviews", "getReview", "FETCH_REVIEW", dataHandler, failureHandler);
+    return forceFetch(id, "Review", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchEvent(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, variablesList, "events", "getEvent", "FETCH_EVENT", dataHandler, failureHandler);
+    return forceFetch(id, "Event", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchChallenge(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, variablesList, "challenges", "getChallenge", "FETCH_CHALLENGE", dataHandler, failureHandler);
+    return forceFetch(id, "Challenge", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchInvite(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, variablesList, "invites", "getInvite", "FETCH_INVITE", dataHandler, failureHandler);
+    return forceFetch(id, "Invite", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchPost(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, variablesList, "posts", "getPost", "FETCH_POST", dataHandler, failureHandler);
+    return forceFetch(id, "Post", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchGroup(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, variablesList, "groups", "getGroup", "FETCH_GROUP", dataHandler, failureHandler);
+    return forceFetch(id, "Group", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchComment(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, variablesList, "comments", "getComment", "FETCH_COMMENT", dataHandler, failureHandler);
+    return forceFetch(id, "Comment", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchSponsor(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, variablesList, "sponsors", "getSponsor", "FETCH_SPONSOR", dataHandler, failureHandler);
+    return forceFetch(id, "Sponsor", variablesList, dataHandler, failureHandler);
 }
 export function forceFetchStreak(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, variablesList, "streaks", "getStreak", "FETCH_STREAK", dataHandler, failureHandler);
+    return forceFetch(id, "Streak", variablesList, dataHandler, failureHandler);
 }
 export function fetchClients(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
     return batchFetch(ids, variablesList, "clients", "getClients", "FETCH_CLIENT", dataHandler, unretrievedDataHandler, failureHandler);
@@ -1145,11 +1076,21 @@ export function getCache(itemType, getStore) {
         cache.events, cache.challenges, cache.invites, cache.posts, cache.groups, cache.comments, cache.sponsors,
         null, cache.streaks, "Retrieve cache not implemented");
 }
+function getCacheName(itemType) {
+    return switchReturnItemType(itemType, "clients", "trainers", "gyms", "workouts", "reviews",
+        "events", "challenges", "invites", "posts", "groups", "comments", "sponsors",
+        null, "streaks", "Retrieve cache not implemented");
+}
 export function getQueryCache(itemType, getStore) {
     const cache = getStore().cache;
     return switchReturnItemType(itemType, cache.clientQueries, cache.trainerQueries, cache.gymQueries, cache.workoutQueries,
         cache.reviewQueries, cache.eventQueries, cache.challengeQueries, cache.inviteQueries, cache.postQueries, cache.groupQueries,
         cache.commentQueries, cache.sponsorQueries, null, cache.streakQueries, "Retrieve query cache not implemented");
+}
+function getQueryCacheName(itemType)  {
+    return switchReturnItemType(itemType, "clientQueries", "trainerQueries", "gymQueries", "workoutQueries",
+        "reviewQueries", "eventQueries", "challengeQueries", "inviteQueries", "postQueries", "groupQueries",
+        "commentQueries", "sponsorQueries", null, "streakQueries", "Retrieve query cache not implemented");
 }
 export function getPutItemFunction(itemType) {
     return switchReturnItemType(itemType, putClient, putTrainer, putGym, putWorkout, putReview, putEvent, putChallenge, putInvite,
