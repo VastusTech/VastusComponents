@@ -3,6 +3,7 @@ import { Storage } from "aws-amplify";
 import {err, log} from "../../Constants";
 
 class S3Storage {
+    static bucketName = 'vastusofficial';
     // User-Level Functions
     // static putImages(folderPath, images, successHandler, failureHandler) {
     //
@@ -14,7 +15,7 @@ class S3Storage {
 
     //Used to have success and failure handler in the
     static putVideo(path, video, successHandler, failureHandler) {
-        let bucket = new AWS.S3({params: {Bucket: 'vastusofficial'}});
+        let bucket = new AWS.S3({params: {Bucket: S3Storage.bucketName}});
         if (video) {
             let params = {Key: "public/" + path, ContentType: video.type, Body: video};
             let options = {partSize: 10 * 1024 * 1024, queueSize: 8};
@@ -38,6 +39,25 @@ class S3Storage {
         }).catch((error) => {
             err&&console.error("Storage failed to retrieve file with path = " + path + "... Error: " + JSON.stringify(error));
             if (failureHandler) { failureHandler(error); }
+        });
+    }
+    static ifExists(path, successHandler, failureHandler) {
+        let bucket = new AWS.S3({params: {Bucket: S3Storage.bucketName}});
+        bucket.headObject({
+            Bucket: 'vastusofficial',
+            Key: path
+        }, (err) => {
+            if (err) {
+                if (err.code === "NotFound") {
+                    successHandler(false);
+                }
+                else {
+                    failureHandler(err);
+                }
+            }
+            else {
+                successHandler(true);
+            }
         });
     }
     static put(path, file, contentType, successHandler, failureHandler) {
