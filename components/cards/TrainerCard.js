@@ -71,7 +71,11 @@ class TrainerCard extends Component<Props> {
         return null;
     }
 
-    openTrainerModal = () => {this.setState({trainerModalOpen: true})};
+    openTrainerModal = () => {
+        if(!this.state.trainerModalOpen) {
+            this.setState({trainerModalOpen: true});
+        }
+    };
     closeTrainerModal = () => {this.setState({trainerModalOpen: false})};
 
     profilePicture() {

@@ -114,7 +114,12 @@ class ChallengeCard extends Component<Props> {
     }
 
     getDaysLeft() {
-        return daysLeft(parseISOString(this.getChallengeAttribute("endTime")));
+        if (daysLeft(parseISOString(this.getChallengeAttribute("endTime"))) <= 0) {
+            return "Challenge Completed"
+        }
+        else {
+            return daysLeft(parseISOString(this.getChallengeAttribute("endTime"))) + " Days Left";
+        }
     }
 
     displayTagIcons(tags) {
@@ -185,7 +190,8 @@ class ChallengeCard extends Component<Props> {
             <Card fluid raised onClick={this.openChallengeModal.bind(this)}>
                 <Card.Content textAlign = 'center'>
                     <Card.Header textAlign = 'center'>{this.getChallengeAttribute("title")}</Card.Header>
-                    <Card.Meta textAlign = 'center' >{this.getDaysLeft()/*this.getDaysLeft(Date.daysBetween(this.getTodayDateString(), this.getChallengeAttribute("endTime")))*/} days left</Card.Meta>
+                    <Card.Meta textAlign = 'center' >{this.getDaysLeft()}
+                    </Card.Meta>
                     {this.displayTagIcons(this.getChallengeAttribute("tags"))}{/*console.log(this.getChallengeAttribute("tags"))*/}
                     <ChallengeDescriptionModal open={this.state.challengeModalOpen} onClose={this.closeChallengeModal.bind(this)} challengeID={this.getChallengeAttribute("id")}
                                                daysLeft={this.getDaysLeft()}/>
