@@ -150,7 +150,7 @@ class TrainerModal extends React.PureComponent<Props> {
     }
 
     profilePicture() {
-        if (this.props.user.profilePicture) {
+        if (this.getTrainerAttribute("profileImage")) {
             // if (this.state.ifS3) {
             //     // <S3Image size='medium' imgKey={this.state.profilePicture} circular/>
             //     return(
@@ -166,6 +166,7 @@ class TrainerModal extends React.PureComponent<Props> {
                 </div>
             );*/
             //log&&console.log("PROPICIMAGE!!!!: " + this.props.user.profilePicture);
+            //alert("Profile Image: " + this.getTrainerAttribute("profileImage"));
             return (
                 <div>
                     <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.getTrainerAttribute("profileImage")})`}}>
@@ -254,7 +255,8 @@ class TrainerModal extends React.PureComponent<Props> {
         then finally a feed of their posts.
          */
         return(
-            <Modal open={this.props.open} onClose={this.props.onClose} closeIcon>
+            <Modal open={this.props.open} onClose={this.props.onClose}>
+                <Icon className='close' onClick={() => this.props.onClose()}/>
                 <Card color='purple' fluid raised className="u-margin-top--2">
                     <Card.Content textAlign="center">
                         {this.profilePicture()}
