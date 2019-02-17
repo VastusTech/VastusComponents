@@ -2,7 +2,14 @@ import React, { Component, Fragment } from 'react';
 import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Dimmer, Label, Loader } from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 import { connect } from 'react-redux';
-import {fetchClient, fetchTrainer, forceFetchChallenge, fetchChallenge, clearChallengeQuery} from "../../redux_actions/cacheActions";
+import {
+    fetchClient,
+    fetchTrainer,
+    forceFetchChallenge,
+    fetchChallenge,
+    clearChallengeQuery,
+    subscribeFetchChallenge
+} from "../../redux_actions/cacheActions";
 import CompleteChallengeModal from "../manager/CompleteChallengeModal";
 import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import CommentScreen from "../messaging/MessageBoard";
@@ -27,6 +34,8 @@ type Props = {
 * to join the challenge.
  */
 class ChallengeDescriptionModal extends Component<Props> {
+    static ifSubscribeFetch = true;
+
     state = {
         isLoading: false,
         isOwned: false,
@@ -108,6 +117,9 @@ class ChallengeDescriptionModal extends Component<Props> {
         if (newProps.challengeID !== this.state.challengeID) {
             // console.log("resetting state to " + newProps.challengeID);
             this.state.challengeID = newProps.challengeID;
+            this.props.subscribeFetchChallenge(newProps.challengeID, [], (challenge) => {
+                alert("Subscribe fetch complete!");
+            });
             this.resetState(newProps.challengeID);
         }
 
@@ -560,6 +572,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchChallenge: (id, variablesList) => {
             dispatch(fetchChallenge(id, variablesList));
+        },
+        subscribeFetchChallenge: (id, variableList, dataHandler) => {
+            dispatch(subscribeFetchChallenge(id, variableList, dataHandler));
         },
         forceFetchChallenge: (id, variablesList) => {
             dispatch(forceFetchChallenge(id, variablesList));

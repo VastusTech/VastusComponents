@@ -239,82 +239,82 @@ export default (state = initialState, action) => {
             state = addObjectToCache(state, "streaks", streakCacheSize, "streakLRUHandler", action.payload.object, action.payload.dispatch);
             break;
         case ADD_CLIENT_ATTRIBUTES:
-            state = addAttributes(state, action.id, action.attributes, "clients");
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "clients");
             break;
         case ADD_TRAINER_ATTRIBUTES:
-            state = addAttributes(state, action.id, action.attributes, "trainers");
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "trainers");
             break;
         case ADD_GYM_ATTRIBUTES:
-            state = addAttributes(state, action.id, action.attributes, "gyms");
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "gyms");
             break;
         case ADD_WORKOUT_ATTRIBUTES:
-            state = addAttributes(state, action.id, action.attributes, "workouts");
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "workouts");
             break;
         case ADD_REVIEW_ATTRIBUTES:
-            state = addAttributes(state, action.id, action.attributes, "reviews");
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "reviews");
             break;
         case ADD_EVENT_ATTRIBUTES:
-            state = addAttributes(state, action.id, action.attributes, "events");
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "events");
             break;
         case ADD_CHALLENGE_ATTRIBUTES:
-            state = addAttributes(state, action.id, action.attributes, "challenges");
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "challenges");
             break;
         case ADD_INVITE_ATTRIBUTES:
-            state = addAttributes(state, action.id, action.attributes, "invites");
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "invites");
             break;
         case ADD_POST_ATTRIBUTES:
-            state = addAttributes(state, action.id, action.attributes, "posts");
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "posts");
             break;
         case ADD_GROUP_ATTRIBUTES:
-            state = addAttributes(state, action.id, action.attributes, "groups");
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "groups");
             break;
         case ADD_COMMENT_ATTRIBUTES:
-            state = addAttributes(state, action.id, action.attributes, "comments");
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "comments");
             break;
         case ADD_SPONSOR_ATTRIBUTES:
-            state = addAttributes(state, action.id, action.attributes, "sponsors");
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "sponsors");
             break;
         case ADD_STREAK_ATTRIBUTES:
-            state = addAttributes(state, action.id, action.attributes, "streaks");
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "streaks");
             break;
         case REMOVE_CLIENT_ATTRIBUTES:
-            state = removeAttributes(state, action.id, action.attributes, "clients");
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "clients");
             break;
         case REMOVE_TRAINER_ATTRIBUTES:
-            state = removeAttributes(state, action.id, action.attributes, "trainers");
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "trainers");
             break;
         case REMOVE_GYM_ATTRIBUTES:
-            state = removeAttributes(state, action.id, action.attributes, "gyms");
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "gyms");
             break;
         case REMOVE_WORKOUT_ATTRIBUTES:
-            state = removeAttributes(state, action.id, action.attributes, "workouts");
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "workouts");
             break;
         case REMOVE_REVIEW_ATTRIBUTES:
-            state = removeAttributes(state, action.id, action.attributes, "reviews");
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "reviews");
             break;
         case REMOVE_EVENT_ATTRIBUTES:
-            state = removeAttributes(state, action.id, action.attributes, "events");
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "events");
             break;
         case REMOVE_CHALLENGE_ATTRIBUTES:
-            state = removeAttributes(state, action.id, action.attributes, "challenges");
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "challenges");
             break;
         case REMOVE_INVITE_ATTRIBUTES:
-            state = removeAttributes(state, action.id, action.attributes, "invites");
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "invites");
             break;
         case REMOVE_POST_ATTRIBUTES:
-            state = removeAttributes(state, action.id, action.attributes, "posts");
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "posts");
             break;
         case REMOVE_GROUP_ATTRIBUTES:
-            state = removeAttributes(state, action.id, action.attributes, "groups");
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "groups");
             break;
         case REMOVE_COMMENT_ATTRIBUTES:
-            state = removeAttributes(state, action.id, action.attributes, "comments");
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "comments");
             break;
         case REMOVE_SPONSOR_ATTRIBUTES:
-            state = removeAttributes(state, action.id, action.attributes, "sponsors");
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "sponsors");
             break;
         case REMOVE_STREAK_ATTRIBUTES:
-            state = removeAttributes(state, action.id, action.attributes, "streaks");
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "streaks");
             break;
         case REMOVE_CLIENT:
             state = removeItem(state, "clients", action.payload.id, action.payload.dispatch);
@@ -580,6 +580,7 @@ function addAttributes(state, id, attributes, cacheName) {
             }
         }
     }
+    return state;
 }
 function removeAttributes(state, id, attributes, cacheName) {
     state = {
@@ -602,6 +603,7 @@ function removeAttributes(state, id, attributes, cacheName) {
             }
         }
     }
+    return state;
 }
 function removeItem(state, cacheName, id, dispatch) {
     // Once you remove an object, simply unsubscribe
