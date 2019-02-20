@@ -51,7 +51,7 @@ class TrainerPostFeed extends Component<Props> {
     }
 
     componentWillReceiveProps(newProps) {
-        // consoleLog("Set state to userID = " + newProps.userID);
+        // log&&console.log("Set state to userID = " + newProps.userID);
         if (this.state.trainerID !== newProps.trainerID) {
             this.setState({isLoading: true, trainerID: newProps.trainerID});
             this.props.fetchTrainer(newProps.trainerID, ["posts"], (trainer) => {
@@ -70,10 +70,10 @@ class TrainerPostFeed extends Component<Props> {
                         }
                     }
             });
-            // consoleLog("fetchin user attributes");
+            // log&&console.log("fetchin user attributes");
             // this.props.fetchUserAttributes(["friends"],
             //     (data) => {
-            //         // consoleLog("finished");
+            //         // log&&console.log("finished");
             //         this.queryPosts()
             //     });
         }
@@ -90,7 +90,7 @@ class TrainerPostFeed extends Component<Props> {
      */
     handleUpdate = (e, { calculations }) => {
         this.setState({ calculations });
-        // consoleLog(calculations.bottomVisible);
+        // log&&console.log(calculations.bottomVisible);
         if (calculations.bottomVisible) {
             //this.addAnotherPost();
         }
@@ -102,9 +102,9 @@ class TrainerPostFeed extends Component<Props> {
 
     rows() {
         // if(events != null && events.length > 0)
-        //     consoleLog(JSON.stringify(events[0].id));
-        // consoleLog("EVENTS TO PRINT: ");
-        // consoleLog(JSON.stringify(events));
+        //     log&&console.log(JSON.stringify(events[0].id));
+        // log&&console.log("EVENTS TO PRINT: ");
+        // log&&console.log(JSON.stringify(events));
         //console.log("rows should be running");
         //console.log(JSON.stringify(this.state.hiddenPostIDs));
         return _.times(this.state.hiddenPostIDs.length, i => (

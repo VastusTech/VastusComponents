@@ -1,8 +1,10 @@
 import QL from "../api/GraphQL";
 import S3 from "../api/S3Storage";
 import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
-import {consoleError} from "../logic/DebuggingHelper";
-
+import {addHandlerAndUnsubscription} from "./ablyActions";
+import {err, log} from "../../Constants";
+import {debugAlert} from "../logic/DebuggingHelper";
+import {getBoardChannel} from "../redux_reducers/messageReducer";
 const notFoundPicture = require('../img/not_found.png');
 const defaultProfilePicture = require("../img/roundProfile.png");
 
@@ -14,7 +16,17 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         let ifFirst = getStore().message.boardIfFirsts[board];
-        if (ifFirst !== false) { ifFirst = true; }
+        if (ifFirst !== false) {
+            ifFirst = true;
+            // If this is the first time querying the board, Ably subscribe to it.
+            debugAlert("Setting handler stuff!");
+            dispatch(addHandlerAndUnsubscription(getBoardChannel(board), (message) => {
+                dispatch(addMessageFromNotification(board, message.data));
+            }, () => {
+                // When it unsubscribes, we clear the board
+                clearBoard(board, dispatch);
+            }));
+        }
         let nextToken = getStore().message.boardNextTokens[board];
         // console.log("IF FIRST = " + ifFirst + ", NEXT TOKEN = " + nextToken);
         if (ifFirst || nextToken) {
@@ -25,7 +37,7 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
                     if (!data.items) { data.items = []; }
                     addURLToMessages(data.items, "message", "messageURL", notFoundPicture, (message) => {return message.type}, (messages) => {
                         addURLToMessages(messages, "profileImagePath", "profilePicture", defaultProfilePicture, (message) => {return message.profileImagePath}, (messages) => {
-                            dispatch(addQueryToBoard(board, messages, data.nextToken));
+                            dispatch(addQueryToBoard(board, messages, data.nextToken, dispatch));
                             if (dataHandler) {
                                 dataHandler(messages);
                             }
@@ -35,14 +47,14 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
                 }
                 else {
                     const error = new Error("query messages came back with null?");
-                    consoleError(JSON.stringify(error));
+                    err&&console.error(JSON.stringify(error));
                     dispatch(setError(error));
                     dispatch(setIsNotLoading());
                     if (failureHandler) { failureHandler(error); }
                 }
             }, (error) => {
-                consoleError("ERROR INSIDE GET NEXT MESSAGES");
-                consoleError(JSON.stringify(error));
+                err&&console.error("ERROR INSIDE GET NEXT MESSAGES");
+                err&&console.error(JSON.stringify(error));
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
                 if (failureHandler) { failureHandler(error); }
@@ -68,83 +80,94 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
 function addURLToMessages(messages, messagePathField, messageURLField, defaultURL, fetchChecker, dataHandler) {
     const messagesLength = messages.length;
     let messagesReturned = 0;
+    const returnMessage = () => {
+        messagesReturned++;
+        if (messagesReturned >= messagesLength) {
+            dataHandler(messages);
+        }
+    };
     for (let i = 0; i < messagesLength; i++) {
         const message = messages[i];
-        if (fetchChecker(message)) {
-            S3.get(message[messagePathField], (url) => {
-                message[messageURLField] = url;
-                messagesReturned++;
-                if (messagesReturned >= messagesLength) {
-                    dataHandler(messages);
-                }
-            }, (error) => {
-                consoleError("FAILED TO RECEIVE URL FOR MEDIA IN MESSAGE! ERROR = " + JSON.stringify(error));
-                messagesReturned++;
-                message[messageURLField] = defaultURL;
-                if (messagesReturned >= messagesLength) {
-                    dataHandler(messages);
-                }
-            });
-        }
-        else {
-            messagesReturned++;
-            message[messageURLField] = defaultURL;
-            if (messagesReturned >= messagesLength) {
-                dataHandler(messages);
-            }
-        }
+        addURLToMessage(message, messagePathField, messageURLField, defaultURL, fetchChecker, returnMessage);
     }
     if (messagesLength === 0) {
         dataHandler(messages);
     }
 }
-export function addMessageFromNotification(board, message, dataHandler, failureHandler) {
+function addURLToMessage(message, messagePathField, messageURLField, defaultURL, fetchChecker, dataHandler) {
+    if (fetchChecker(message)) {
+        S3.get(message[messagePathField], (url) => {
+            message[messageURLField] = url;
+            dataHandler(message);
+        }, (error) => {
+            err&&console.error("FAILED TO RECEIVE URL FOR MEDIA IN MESSAGE! ERROR = " + JSON.stringify(error));
+            message[messageURLField] = defaultURL;
+            dataHandler(message);
+        });
+    }
+    else {
+        message[messageURLField] = defaultURL;
+        dataHandler(message);
+    }
+}
+function addMessageFromNotification(board, message, dataHandler, failureHandler) {
     return (dispatch) => {
         dispatch(setIsLoading());
-        if (message.type) {
-            S3.get(message.message, (url) => {
-                message.message = url;
-                dispatch(addMessageToBoard(board, message));
-                if (dataHandler) { dataHandler(message); }
+        addURLToMessage(message, "message", "messageURL", notFoundPicture, (message) => {return message.type}, (message) => {
+            addURLToMessage(message, "profileImagePath", "profilePicture", defaultProfilePicture, (message) => {return message.profileImagePath}, (message) => {
+                dispatch(addMessageToBoard(board, message, dispatch));
+                log && console.log("Successfully received message from Ably! Message = " + JSON.stringify(message));
+                if (dataHandler) {
+                    dataHandler(message);
+                }
                 dispatch(setIsNotLoading());
             }, (error) => {
                 message.message = "";
-                consoleError("Error getting media for message from notification! Error = " + JSON.stringify(error));
-                dispatch(addMessageToBoard(board, message));
-                if (failureHandler) { failureHandler(error); }
+                err && console.error("Error getting media for message from notification! Error = " + JSON.stringify(error));
+                dispatch(addMessageToBoard(board, message, dispatch));
+                if (failureHandler) {
+                    failureHandler(error);
+                }
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
             });
-        }
-        else {
-            dispatch(addMessageToBoard(board, message));
-            if (dataHandler) { dataHandler(message); }
-            dispatch(setIsNotLoading());
-        }
+        });
     };
 }
-export function addMessageToBoard(board, message) {
+export function discardBoard(board) {
+    return (dispatch) => {
+        dispatch(setIsLoading());
+        dispatch(clearBoard(board, dispatch));
+        dispatch(setIsNotLoading());
+    };
+}
+export function addMessageToBoard(board, message, dispatch) {
     return {
         type: ADD_MESSAGE,
             payload: {
-            board,
-                message
+                board,
+                message,
+                dispatch
         }
     };
 }
-function addQueryToBoard(board, items, nextToken) {
+function addQueryToBoard(board, messages, nextToken, dispatch) {
     return {
         type: ADD_QUERY,
         payload: {
             board,
             nextToken,
-            items,
+            messages,
+            dispatch
         }
     };
 }
-export function clearBoard(board) {
+function clearBoard(board, dispatch) {
     return {
         type: CLEAR_BOARD,
-        payload: board
+        payload: {
+            board,
+            dispatch
+        }
     }
 }

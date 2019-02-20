@@ -30,30 +30,29 @@ class DatabaseObjectList extends Component<Props> {
     }
 
     componentWillReceiveProps(newProps) {
-        if (newProps.ids && this.state.ids !== newProps.ids) {
+        // We can use json stringify to check this because it's an array of strings
+        if (newProps.ids && JSON.stringify(this.state.ids) !== JSON.stringify(newProps.ids)) {
+            this.state.ids = newProps.ids;
             // alert("received ids = " + JSON.stringify(newProps.ids));
-            this.setState({marker: this.state.marker + 1, isLoading: true, ids: newProps.ids, objects: []}, () => {
-                const marker = this.state.marker;
+            this.setState({isLoading: true, ids: newProps.ids, objects: []}, () => {
                 const addObject = (object) => {
-                    if (marker === this.state.marker) {
-                        if (object) {
-                            this.state.objects.push(object);
-                        }
-                        this.setState({isLoading: false});
+                    if (object) {
+                        this.state.objects.push(object);
                     }
+                    this.setState({isLoading: false});
                 };
                 for (let i = 0; i < newProps.ids.length; i++) {
                     const id = newProps.ids[i];
                     const itemType = getItemTypeFromID(id);
                     if (!newProps.acceptedItemTypes || newProps.acceptedItemTypes.includes(itemType)) {
                         const variableList = switchReturnItemType(itemType,
-                            ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture"],
+                            ClientCard.fetchVariableList,
                             ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"],
                             null, null, null,
-                            ["id", "title", "time", "time_created", "owner", "members", "capacity"],
-                            ["id", "title", "endTime", "time_created", "owner", "members", "capacity", "difficulty"],
+                            EventCard.fetchVariableList,
+                            ChallengeCard.fetchVariableList,
                             null,
-                            ["id", "time_created", "by", "item_type", "postType", "about", "description", "videoPaths", "picturePaths"],
+                            PostCard.fetchVariableList,
                             null, null, null, null,
                             "Get variable list from item type not implemented!");
                         this.props.fetchItem(itemType, id, variableList, addObject);

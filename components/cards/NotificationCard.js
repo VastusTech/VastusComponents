@@ -14,7 +14,13 @@ import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
 type Props = {
     inviteID: string
 };
+
+/**
+ * Basically an InviteCard
+ */
 class NotificationCard extends Component<Props> {
+    static fetchVariableList = ["time_created", "from", "to", "inviteType", "about", "description"];
+
     state = {
         error: null,
         isLoading: false,
@@ -434,7 +440,7 @@ class NotificationCard extends Component<Props> {
             return (
                 <Card fluid raised centered>
                     <div className="u-container">
-                        <div className="u-avatar u-avatar--large u-margin-bottom--neg2 u-margin-x--auto" style={{backgroundImage: `url(${this.getFromAttribute("profilePicture")})`}}></div>
+                        <div className="u-avatar u-avatar--large u-margin-bottom--neg2 u-margin-x--auto" style={{backgroundImage: `url(${this.getFromAttribute("profileImage")})`}}></div>
                     </div>
                     <Card.Content textAlign='center'>
                         <Card.Header onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
@@ -462,7 +468,7 @@ class NotificationCard extends Component<Props> {
                         <Feed>
                             <Feed.Event>
                                 <Feed.Label>
-                                    <Image src={this.getFromAttribute("profilePicture")} circular size="large"/>
+                                    <Image src={this.getFromAttribute("profileImage")} circular size="large"/>
                                 </Feed.Label>
                                 <Feed.Content>
                                     <Feed.Summary>
@@ -500,7 +506,7 @@ class NotificationCard extends Component<Props> {
             return (
                 <Card fluid raised centered>
                     <div className="u-container">
-                        <div className="u-avatar u-avatar--large u-margin-bottom--neg2 u-margin-x--auto" style={{backgroundImage: `url(${this.getFromAttribute("profilePicture")})`}}></div>
+                        <div className="u-avatar u-avatar--large u-margin-bottom--neg2 u-margin-x--auto" style={{backgroundImage: `url(${this.getFromAttribute("profileImage")})`}}></div>
                     </div>
 
                     <Card.Content textAlign='center'>
@@ -535,7 +541,7 @@ class NotificationCard extends Component<Props> {
             return (
                 <Card fluid raised centered>
                     <div className="u-container">
-                        <div className="u-avatar u-avatar--large u-margin-bottom--neg2 u-margin-x--auto" style={{backgroundImage: `url(${this.getFromAttribute("profilePicture")})`}}></div>
+                        <div className="u-avatar u-avatar--large u-margin-bottom--neg2 u-margin-x--auto" style={{backgroundImage: `url(${this.getFromAttribute("profileImage")})`}}></div>
                     </div>
 
                     <Card.Content textAlign='center'>
@@ -573,7 +579,7 @@ class NotificationCard extends Component<Props> {
                         <Feed>
                             <Feed.Event>
                                 <Feed.Label>
-                                    <Image src={this.getFromAttribute("profilePicture")} circular size="large"/>
+                                    <Image src={this.getFromAttribute("profileImage")} circular size="large"/>
                                 </Feed.Label>
                                 <Feed.Content>
                                     <Feed.Summary>
@@ -613,7 +619,7 @@ class NotificationCard extends Component<Props> {
                         <Feed>
                             <Feed.Event>
                                 <Feed.Label>
-                                    <Image src={this.getFromAttribute("profilePicture")} circular size="large"/>
+                                    <Image src={this.getFromAttribute("profileImage")} circular size="large"/>
                                 </Feed.Label>
                                 <Feed.Content>
                                     <Feed.Summary>

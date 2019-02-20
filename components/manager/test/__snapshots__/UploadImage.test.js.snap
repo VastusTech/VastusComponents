@@ -1,0 +1,325 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders without crashing 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <UploadImage
+    callback={[Function]}
+    imageURL={null}
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "checkPropTypes": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <d
+          border={50}
+          borderRadius={0}
+          className=""
+          color={
+            Array [
+              0,
+              0,
+              0,
+              0.5,
+            ]
+          }
+          disableBoundaryChecks={false}
+          height={250}
+          image={null}
+          onImageChange={[Function]}
+          onImageReady={[Function]}
+          onLoadFailure={[Function]}
+          onLoadSuccess={[Function]}
+          onMouseMove={[Function]}
+          onMouseUp={[Function]}
+          onPositionChange={[Function]}
+          rotate={0}
+          scale={1.2}
+          style={Object {}}
+          width={250}
+        />,
+        <Button
+          as="button"
+          onClick={[Function]}
+          primary={true}
+          role="button"
+        >
+          <Icon
+            as="i"
+            name="arrow alternate circle right"
+          />
+        </Button>,
+        <Button
+          as="button"
+          onClick={[Function]}
+          primary={true}
+          role="button"
+        >
+          Upload
+        </Button>,
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "border": 50,
+          "borderRadius": 0,
+          "className": "",
+          "color": Array [
+            0,
+            0,
+            0,
+            0.5,
+          ],
+          "disableBoundaryChecks": false,
+          "height": 250,
+          "image": null,
+          "onImageChange": [Function],
+          "onImageReady": [Function],
+          "onLoadFailure": [Function],
+          "onLoadSuccess": [Function],
+          "onMouseMove": [Function],
+          "onMouseUp": [Function],
+          "onPositionChange": [Function],
+          "rotate": 0,
+          "scale": 1.2,
+          "style": Object {},
+          "width": 250,
+        },
+        "ref": [Function],
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "as": "button",
+          "children": <Icon
+            as="i"
+            name="arrow alternate circle right"
+          />,
+          "onClick": [Function],
+          "primary": true,
+          "role": "button",
+        },
+        "ref": null,
+        "rendered": Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "as": "i",
+            "name": "arrow alternate circle right",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "as": "button",
+          "children": "Upload",
+          "onClick": [Function],
+          "primary": true,
+          "role": "button",
+        },
+        "ref": null,
+        "rendered": "Upload",
+        "type": [Function],
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <d
+            border={50}
+            borderRadius={0}
+            className=""
+            color={
+              Array [
+                0,
+                0,
+                0,
+                0.5,
+              ]
+            }
+            disableBoundaryChecks={false}
+            height={250}
+            image={null}
+            onImageChange={[Function]}
+            onImageReady={[Function]}
+            onLoadFailure={[Function]}
+            onLoadSuccess={[Function]}
+            onMouseMove={[Function]}
+            onMouseUp={[Function]}
+            onPositionChange={[Function]}
+            rotate={0}
+            scale={1.2}
+            style={Object {}}
+            width={250}
+          />,
+          <Button
+            as="button"
+            onClick={[Function]}
+            primary={true}
+            role="button"
+          >
+            <Icon
+              as="i"
+              name="arrow alternate circle right"
+            />
+          </Button>,
+          <Button
+            as="button"
+            onClick={[Function]}
+            primary={true}
+            role="button"
+          >
+            Upload
+          </Button>,
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "border": 50,
+            "borderRadius": 0,
+            "className": "",
+            "color": Array [
+              0,
+              0,
+              0,
+              0.5,
+            ],
+            "disableBoundaryChecks": false,
+            "height": 250,
+            "image": null,
+            "onImageChange": [Function],
+            "onImageReady": [Function],
+            "onLoadFailure": [Function],
+            "onLoadSuccess": [Function],
+            "onMouseMove": [Function],
+            "onMouseUp": [Function],
+            "onPositionChange": [Function],
+            "rotate": 0,
+            "scale": 1.2,
+            "style": Object {},
+            "width": 250,
+          },
+          "ref": [Function],
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "as": "button",
+            "children": <Icon
+              as="i"
+              name="arrow alternate circle right"
+            />,
+            "onClick": [Function],
+            "primary": true,
+            "role": "button",
+          },
+          "ref": null,
+          "rendered": Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "as": "i",
+              "name": "arrow alternate circle right",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "as": "button",
+            "children": "Upload",
+            "onClick": [Function],
+            "primary": true,
+            "role": "button",
+          },
+          "ref": null,
+          "rendered": "Upload",
+          "type": [Function],
+        },
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "legacyContextMode": "parent",
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getChildContext": Object {
+            "calledByRenderer": false,
+          },
+          "getDerivedStateFromProps": true,
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+  },
+}
+`;

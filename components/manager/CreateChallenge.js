@@ -350,9 +350,9 @@ class CreateChallengeProp extends Component {
                                                 <Rating icon='star' defaultRating={1} maxRating={3} />
                                             </div>
                                         </Form.Field>*/}
-                                        <Form.Field width={12}>
-                                            <Checkbox toggle onClick={this.handleAccessSwitch} onChange={this.toggle} checked={this.state.checked} label={this.eventState.access} />
-                                        </Form.Field>
+                                        {/*<Form.Field width={12}>*/}
+                                            {/*<Checkbox toggle onClick={this.handleAccessSwitch} onChange={this.toggle} checked={this.state.checked} label={this.eventState.access} />*/}
+                                        {/*</Form.Field>*/}
                                         <Form.Field width={12}>
                                             <Checkbox toggle onClick={this.handleRestrictionSwitch} onChange={this.toggleRest} checked={this.state.checkedRest} label={this.showRestriction()} />
                                         </Form.Field>
@@ -383,18 +383,18 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(setError(error));
         },
         fetchChallenge: (id, variablesList) => {
-            dispatch(fetchChallenge(id, variablesList));
-        },
-        putChallenge: (event) => {
-            dispatch(putChallenge(event));
-        },
-        putChallengeQuery: (queryString, queryResult) => {
-            dispatch(putChallengeQuery(queryString, queryResult));
-        },
-        clearChallengeQuery: () => {
-            dispatch(clearChallengeQuery());
-        }
-    }
+dispatch(fetchChallenge(id, variablesList));
+},
+putChallenge: (event) => {
+    dispatch(putChallenge(event));
+},
+    putChallengeQuery: (queryString, queryResult) => {
+    dispatch(putChallengeQuery(queryString, queryResult));
+},
+    clearChallengeQuery: () => {
+    dispatch(clearChallengeQuery());
+}
+}
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateChallengeProp);

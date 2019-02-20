@@ -1,4 +1,10 @@
-import {consoleError} from "../logic/DebuggingHelper";
+import {err} from "../../Constants";
+import {removeChannelSubscription} from "../redux_actions/ablyActions";
+import {addUniqueToArray, subtractArray} from "../logic/ArrayHelper";
+
+export function getObjectChannelName(id) {
+    return id + "-Updates";
+}
 
 // This is where we will store all the retrieved database items and use a LRU cache to rid them if necessary
 const FETCH_CLIENT = 'FETCH_CLIENT';
@@ -13,6 +19,35 @@ const FETCH_POST = 'FETCH_POST';
 const FETCH_GROUP = 'FETCH_GROUP';
 const FETCH_COMMENT = 'FETCH_COMMENT';
 const FETCH_SPONSOR = 'FETCH_SPONSOR';
+const FETCH_STREAK = 'FETCH_STREAK';
+
+const ADD_CLIENT_ATTRIBUTES = 'ADD_CLIENT_ATTRIBUTES';
+const ADD_TRAINER_ATTRIBUTES = 'ADD_TRAINER_ATTRIBUTES';
+const ADD_GYM_ATTRIBUTES = 'ADD_GYM_ATTRIBUTES';
+const ADD_WORKOUT_ATTRIBUTES = 'ADD_WORKOUT_ATTRIBUTES';
+const ADD_REVIEW_ATTRIBUTES = 'ADD_REVIEW_ATTRIBUTES';
+const ADD_EVENT_ATTRIBUTES = 'ADD_EVENT_ATTRIBUTES';
+const ADD_CHALLENGE_ATTRIBUTES = 'ADD_CHALLENGE_ATTRIBUTES';
+const ADD_INVITE_ATTRIBUTES = 'ADD_INVITE_ATTRIBUTES';
+const ADD_POST_ATTRIBUTES = 'ADD_POST_ATTRIBUTES';
+const ADD_GROUP_ATTRIBUTES = 'ADD_GROUP_ATTRIBUTES';
+const ADD_COMMENT_ATTRIBUTES = 'ADD_COMMENT_ATTRIBUTES';
+const ADD_SPONSOR_ATTRIBUTES = 'ADD_SPONSOR_ATTRIBUTES';
+const ADD_STREAK_ATTRIBUTES = 'ADD_STREAK_ATTRIBUTES';
+
+const REMOVE_CLIENT_ATTRIBUTES = 'REMOVE_CLIENT_ATTRIBUTES';
+const REMOVE_TRAINER_ATTRIBUTES = 'REMOVE_TRAINER_ATTRIBUTES';
+const REMOVE_GYM_ATTRIBUTES = 'REMOVE_GYM_ATTRIBUTES';
+const REMOVE_WORKOUT_ATTRIBUTES = 'REMOVE_WORKOUT_ATTRIBUTES';
+const REMOVE_REVIEW_ATTRIBUTES = 'REMOVE_REVIEW_ATTRIBUTES';
+const REMOVE_EVENT_ATTRIBUTES = 'REMOVE_EVENT_ATTRIBUTES';
+const REMOVE_CHALLENGE_ATTRIBUTES = 'REMOVE_CHALLENGE_ATTRIBUTES';
+const REMOVE_INVITE_ATTRIBUTES = 'REMOVE_INVITE_ATTRIBUTES';
+const REMOVE_POST_ATTRIBUTES = 'REMOVE_POST_ATTRIBUTES';
+const REMOVE_GROUP_ATTRIBUTES = 'REMOVE_GROUP_ATTRIBUTES';
+const REMOVE_COMMENT_ATTRIBUTES = 'REMOVE_COMMENT_ATTRIBUTES';
+const REMOVE_SPONSOR_ATTRIBUTES = 'REMOVE_SPONSOR_ATTRIBUTES';
+const REMOVE_STREAK_ATTRIBUTES = 'REMOVE_STREAK_ATTRIBUTES';
 
 const REMOVE_CLIENT =    'REMOVE_CLIENT';
 const REMOVE_TRAINER =   'REMOVE_TRAINER';
@@ -26,6 +61,7 @@ const REMOVE_POST =      'REMOVE_POST';
 const REMOVE_GROUP =     'REMOVE_GROUP';
 const REMOVE_COMMENT =   'REMOVE_COMMENT';
 const REMOVE_SPONSOR =   'REMOVE_SPONSOR';
+const REMOVE_STREAK =    'REMOVE_STREAK';
 
 const FETCH_CLIENT_QUERY = 'FETCH_CLIENT_QUERY';
 const FETCH_TRAINER_QUERY = 'FETCH_TRAINER_QUERY';
@@ -39,6 +75,7 @@ const FETCH_POST_QUERY = 'FETCH_POST_QUERY';
 const FETCH_GROUP_QUERY = 'FETCH_GROUP_QUERY';
 const FETCH_COMMENT_QUERY = 'FETCH_COMMENT_QUERY';
 const FETCH_SPONSOR_QUERY = 'FETCH_SPONSOR_QUERY';
+const FETCH_STREAK_QUERY = 'FETCH_STREAK_QUERY';
 
 const CLEAR_NORMALIZED_CLIENT_QUERY =    'CLEAR_NORMALIZED_CLIENT_QUERY';
 const CLEAR_NORMALIZED_TRAINER_QUERY =   'CLEAR_NORMALIZED_TRAINER_QUERY';
@@ -52,6 +89,7 @@ const CLEAR_NORMALIZED_POST_QUERY =      'CLEAR_NORMALIZED_POST_QUERY';
 const CLEAR_NORMALIZED_GROUP_QUERY =     'CLEAR_NORMALIZED_GROUP_QUERY';
 const CLEAR_NORMALIZED_COMMENT_QUERY =   'CLEAR_NORMALIZED_COMMENT_QUERY';
 const CLEAR_NORMALIZED_SPONSOR_QUERY =   'CLEAR_NORMALIZED_SPONSOR_QUERY';
+const CLEAR_NORMALIZED_STREAK_QUERY =    'CLEAR_NORMALIZED_STREAK_QUERY';
 
 const CLEAR_CLIENT_QUERY = 'CLEAR_CLIENT_QUERY';
 const CLEAR_TRAINER_QUERY = 'CLEAR_TRAINER_QUERY';
@@ -65,6 +103,7 @@ const CLEAR_POST_QUERY = 'CLEAR_POST_QUERY';
 const CLEAR_GROUP_QUERY = 'CLEAR_GROUP_QUERY';
 const CLEAR_COMMENT_QUERY = 'CLEAR_COMMENT_QUERY';
 const CLEAR_SPONSOR_QUERY = 'CLEAR_SPONSOR_QUERY';
+const CLEAR_STREAK_QUERY = 'CLEAR_STREAK_QUERY';
 
 // TODO Play around with these values maybe? How do we decide this?
 const clientCacheSize = 100;
@@ -79,6 +118,7 @@ const postCacheSize = 2000;
 const groupCacheSize = 100;
 const commentCacheSize = 1000;
 const sponsorCacheSize = 100;
+const streakCacheSize = 100;
 
 // TODO The query cache sizes might be important if the user is searching for a lot
 const clientQueryCacheSize = 5;
@@ -93,6 +133,7 @@ const postQueryCacheSize = 5;
 const groupQueryCacheSize = 5;
 const commentQueryCacheSize = 5;
 const sponsorQueryCacheSize = 5;
+const streakQueryCacheSize = 10;
 
 const initialState = {
     // ID --> DatabaseObject
@@ -108,6 +149,7 @@ const initialState = {
     groups: {},
     comments: {},
     sponsors: {},
+    streaks: {},
 
     // List of IDs in order of least recently used
     clientLRUHandler: [],
@@ -122,6 +164,7 @@ const initialState = {
     groupLRUHandler: [],
     commentLRUHandler: [],
     sponsorLRUHandler: [],
+    streakLRUHandler: [],
 
     // Cached queries.
     clientQueries: {},
@@ -136,9 +179,8 @@ const initialState = {
     groupQueries: {},
     commentQueries: {},
     sponsorQueries: {},
+    streakQueries: {},
 
-    // TODO Include LRU Handlers for these as well!
-    // TODO Actually use these
     clientQueryLRUHandler: [],
     trainerQueryLRUHandler: [],
     gymQueryLRUHandler: [],
@@ -151,87 +193,168 @@ const initialState = {
     groupQueryLRUHandler: [],
     commentQueryLRUHandler: [],
     sponsorQueryLRUHandler: [],
+    streakQueryLRUHandler: [],
 };
 
 export default (state = initialState, action) => {
-    // if (infoFunctions[action.type]) {
-    //     return infoReducer(state, action);
-    // }
     switch (action.type) {
+        // TODO Also make sure that the item to get also has all the attributes we desire?
         case FETCH_CLIENT:
-            // TODO Also make sure that the item to get also has all the attributes we desire?
-            state = addObjectToCache(state, "clients", clientCacheSize, "clientLRUHandler", action.payload);
+            state = addObjectToCache(state, "clients", clientCacheSize, "clientLRUHandler", action.payload.object, action.payload.dispatch);
             break;
         case FETCH_TRAINER:
-            state = addObjectToCache(state, "trainers", trainerCacheSize, "trainerLRUHandler", action.payload);
+            state = addObjectToCache(state, "trainers", trainerCacheSize, "trainerLRUHandler", action.payload.object, action.payload.dispatch);
             break;
         case FETCH_GYM:
-            state = addObjectToCache(state, "gyms", gymCacheSize, "gymLRUHandler", action.payload);
+            state = addObjectToCache(state, "gyms", gymCacheSize, "gymLRUHandler", action.payload.object, action.payload.dispatch);
             break;
         case FETCH_WORKOUT:
-            state = addObjectToCache(state, "workouts", workoutCacheSize, "workoutLRUHandler", action.payload);
+            state = addObjectToCache(state, "workouts", workoutCacheSize, "workoutLRUHandler", action.payload.object, action.payload.dispatch);
             break;
         case FETCH_REVIEW:
-            state = addObjectToCache(state, "reviews", reviewCacheSize, "reviewLRUHandler", action.payload);
+            state = addObjectToCache(state, "reviews", reviewCacheSize, "reviewLRUHandler", action.payload.object, action.payload.dispatch);
             break;
         case FETCH_EVENT:
-            state = addObjectToCache(state, "events", eventCacheSize, "eventLRUHandler", action.payload);
+            state = addObjectToCache(state, "events", eventCacheSize, "eventLRUHandler", action.payload.object, action.payload.dispatch);
             break;
         case FETCH_CHALLENGE:
-            state = addObjectToCache(state, "challenges", challengeCacheSize, "challengeLRUHandler", action.payload);
+            state = addObjectToCache(state, "challenges", challengeCacheSize, "challengeLRUHandler", action.payload.object, action.payload.dispatch);
             break;
         case FETCH_INVITE:
-            state = addObjectToCache(state, "invites", inviteCacheSize, "inviteLRUHandler", action.payload);
+            state = addObjectToCache(state, "invites", inviteCacheSize, "inviteLRUHandler", action.payload.object, action.payload.dispatch);
             break;
         case FETCH_POST:
-            state = addObjectToCache(state, "posts", postCacheSize, "postLRUHandler", action.payload);
+            state = addObjectToCache(state, "posts", postCacheSize, "postLRUHandler", action.payload.object, action.payload.dispatch);
             break;
         case FETCH_GROUP:
-            state = addObjectToCache(state, "groups", groupCacheSize, "groupLRUHandler", action.payload);
+            state = addObjectToCache(state, "groups", groupCacheSize, "groupLRUHandler", action.payload.object, action.payload.dispatch);
             break;
         case FETCH_COMMENT:
-            state = addObjectToCache(state, "comments", commentCacheSize, "commentLRUHandler", action.payload);
+            state = addObjectToCache(state, "comments", commentCacheSize, "commentLRUHandler", action.payload.object, action.payload.dispatch);
             break;
         case FETCH_SPONSOR:
-            state = addObjectToCache(state, "sponsors", sponsorCacheSize, "sponsorLRUHandler", action.payload);
+            state = addObjectToCache(state, "sponsors", sponsorCacheSize, "sponsorLRUHandler", action.payload.object, action.payload.dispatch);
+            break;
+        case FETCH_STREAK:
+            state = addObjectToCache(state, "streaks", streakCacheSize, "streakLRUHandler", action.payload.object, action.payload.dispatch);
+            break;
+        case ADD_CLIENT_ATTRIBUTES:
+            state = addAttributes(state, action.id, action.attributes, "clients");
+            break;
+        case ADD_TRAINER_ATTRIBUTES:
+            state = addAttributes(state, action.id, action.attributes, "trainers");
+            break;
+        case ADD_GYM_ATTRIBUTES:
+            state = addAttributes(state, action.id, action.attributes, "gyms");
+            break;
+        case ADD_WORKOUT_ATTRIBUTES:
+            state = addAttributes(state, action.id, action.attributes, "workouts");
+            break;
+        case ADD_REVIEW_ATTRIBUTES:
+            state = addAttributes(state, action.id, action.attributes, "reviews");
+            break;
+        case ADD_EVENT_ATTRIBUTES:
+            state = addAttributes(state, action.id, action.attributes, "events");
+            break;
+        case ADD_CHALLENGE_ATTRIBUTES:
+            state = addAttributes(state, action.id, action.attributes, "challenges");
+            break;
+        case ADD_INVITE_ATTRIBUTES:
+            state = addAttributes(state, action.id, action.attributes, "invites");
+            break;
+        case ADD_POST_ATTRIBUTES:
+            state = addAttributes(state, action.id, action.attributes, "posts");
+            break;
+        case ADD_GROUP_ATTRIBUTES:
+            state = addAttributes(state, action.id, action.attributes, "groups");
+            break;
+        case ADD_COMMENT_ATTRIBUTES:
+            state = addAttributes(state, action.id, action.attributes, "comments");
+            break;
+        case ADD_SPONSOR_ATTRIBUTES:
+            state = addAttributes(state, action.id, action.attributes, "sponsors");
+            break;
+        case ADD_STREAK_ATTRIBUTES:
+            state = addAttributes(state, action.id, action.attributes, "streaks");
+            break;
+        case REMOVE_CLIENT_ATTRIBUTES:
+            state = removeAttributes(state, action.id, action.attributes, "clients");
+            break;
+        case REMOVE_TRAINER_ATTRIBUTES:
+            state = removeAttributes(state, action.id, action.attributes, "trainers");
+            break;
+        case REMOVE_GYM_ATTRIBUTES:
+            state = removeAttributes(state, action.id, action.attributes, "gyms");
+            break;
+        case REMOVE_WORKOUT_ATTRIBUTES:
+            state = removeAttributes(state, action.id, action.attributes, "workouts");
+            break;
+        case REMOVE_REVIEW_ATTRIBUTES:
+            state = removeAttributes(state, action.id, action.attributes, "reviews");
+            break;
+        case REMOVE_EVENT_ATTRIBUTES:
+            state = removeAttributes(state, action.id, action.attributes, "events");
+            break;
+        case REMOVE_CHALLENGE_ATTRIBUTES:
+            state = removeAttributes(state, action.id, action.attributes, "challenges");
+            break;
+        case REMOVE_INVITE_ATTRIBUTES:
+            state = removeAttributes(state, action.id, action.attributes, "invites");
+            break;
+        case REMOVE_POST_ATTRIBUTES:
+            state = removeAttributes(state, action.id, action.attributes, "posts");
+            break;
+        case REMOVE_GROUP_ATTRIBUTES:
+            state = removeAttributes(state, action.id, action.attributes, "groups");
+            break;
+        case REMOVE_COMMENT_ATTRIBUTES:
+            state = removeAttributes(state, action.id, action.attributes, "comments");
+            break;
+        case REMOVE_SPONSOR_ATTRIBUTES:
+            state = removeAttributes(state, action.id, action.attributes, "sponsors");
+            break;
+        case REMOVE_STREAK_ATTRIBUTES:
+            state = removeAttributes(state, action.id, action.attributes, "streaks");
             break;
         case REMOVE_CLIENT:
-            state = removeItem(state, "clients", action.payload);
+            state = removeItem(state, "clients", action.payload.id, action.payload.dispatch);
             break;
         case REMOVE_TRAINER:
-            state = removeItem(state, "trainers", action.payload);
+            state = removeItem(state, "trainers", action.payload.id, action.payload.dispatch);
             break;
         case REMOVE_GYM:
-            state = removeItem(state, "gyms", action.payload);
+            state = removeItem(state, "gyms", action.payload.id, action.payload.dispatch);
             break;
         case REMOVE_WORKOUT:
-            state = removeItem(state, "workouts", action.payload);
+            state = removeItem(state, "workouts", action.payload.id, action.payload.dispatch);
             break;
         case REMOVE_REVIEW:
-            state = removeItem(state, "reviews", action.payload);
+            state = removeItem(state, "reviews", action.payload.id, action.payload.dispatch);
             break;
         case REMOVE_EVENT:
-            state = removeItem(state, "events", action.payload);
+            state = removeItem(state, "events", action.payload.id, action.payload.dispatch);
             break;
         case REMOVE_CHALLENGE:
-            state = removeItem(state, "challenges", action.payload);
+            state = removeItem(state, "challenges", action.payload.id, action.payload.dispatch);
             break;
         case REMOVE_INVITE:
-            state = removeItem(state, "invites", action.payload);
+            state = removeItem(state, "invites", action.payload.id, action.payload.dispatch);
             break;
         case REMOVE_POST:
-            state = removeItem(state, "posts", action.payload);
+            state = removeItem(state, "posts", action.payload.id, action.payload.dispatch);
             break;
         case REMOVE_GROUP:
-            state = removeItem(state, "groups", action.payload);
+            state = removeItem(state, "groups", action.payload.id, action.payload.dispatch);
             break;
         case REMOVE_COMMENT:
-            state = removeItem(state, "comments", action.payload);
+            state = removeItem(state, "comments", action.payload.id, action.payload.dispatch);
             break;
         case REMOVE_SPONSOR:
-            state = removeItem(state, "sponsors", action.payload);
+            state = removeItem(state, "sponsors", action.payload.id, action.payload.dispatch);
             break;
-            // Connected these to LRU Handlers... important especially as we scale
+        case REMOVE_STREAK:
+            state = removeItem(state, "streaks", action.payload.id, action.payload.dispatch);
+            break;
         case FETCH_CLIENT_QUERY:
             state = addQueryToCache(state, "clientQueries", clientQueryCacheSize, "clientQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
@@ -267,6 +390,9 @@ export default (state = initialState, action) => {
             break;
         case FETCH_SPONSOR_QUERY:
             state = addQueryToCache(state, "sponsorQueries", sponsorQueryCacheSize, "sponsorQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            break;
+        case FETCH_STREAK_QUERY:
+            state = addQueryToCache(state, "streakQueries", streakQueryCacheSize, "streakQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case CLEAR_NORMALIZED_CLIENT_QUERY:
             state = clearNormalizedCache(state, "clientQueries", action.payload);
@@ -304,6 +430,9 @@ export default (state = initialState, action) => {
         case CLEAR_NORMALIZED_SPONSOR_QUERY:
             state = clearNormalizedCache(state, "sponsorQueries", action.payload);
             break;
+        case CLEAR_NORMALIZED_STREAK_QUERY:
+            state = clearNormalizedCache(state, "streakQueries", action.payload);
+            break;
         case CLEAR_CLIENT_QUERY:
             state = clearCache(state, "clientQueries");
             break;
@@ -339,6 +468,9 @@ export default (state = initialState, action) => {
             break;
         case CLEAR_SPONSOR_QUERY:
             state = clearCache(state, "sponsorQueries");
+            break;
+        case CLEAR_STREAK_QUERY:
+            state = clearCache(state, "streakQueries");
             break;
         default:
             state = {
@@ -390,10 +522,10 @@ function addQueryToCache(state, cacheName, maxCacheSize, LRUHandlerName, normali
         return state;
     }
 }
-function addObjectToCache(state, cacheName, maxCacheSize, LRUHandlerName, object) {
+function addObjectToCache(state, cacheName, maxCacheSize, LRUHandlerName, object, dispatch) {
     // TODO Check to see that this is all well-formed?
     if (!object.id) {
-        consoleError("Adding object to cache does not include the id!!!");
+        err&&console.error("Adding object to cache does not include the id!!!");
     }
     state = {
         ...state
@@ -405,7 +537,9 @@ function addObjectToCache(state, cacheName, maxCacheSize, LRUHandlerName, object
         cache[object.id] = object.data;
         if (LRUHandler.length >= maxCacheSize) {
             // Then we have to pop something out
-            delete cache[LRUHandler.pop()];
+            const deleteObjectID = LRUHandler.pop();
+            delete cache[deleteObjectID];
+            dispatch(removeChannelSubscription(getObjectChannelName(deleteObjectID)));
         }
         return state;
     }
@@ -425,7 +559,53 @@ function addObjectToCache(state, cacheName, maxCacheSize, LRUHandlerName, object
         return state;
     }
 }
-function removeItem(state, cacheName, id) {
+function addAttributes(state, id, attributes, cacheName) {
+    state = {
+        ...state,
+    };
+    state[cacheName][id] = {
+        ...state[cacheName][id],
+    };
+    for (const attributeName in attributes) {
+        if (attributes.hasOwnProperty(attributeName)) {
+            const attribute = state[cacheName][id][attributeName];
+            const addAttribute = attributes[attributeName];
+            if (!attribute) {
+                state[cacheName][id][attributeName] = addAttribute;
+            } else if (!Array.isArray(state[cacheName][id][attributeName])) {
+                err&&console.error("TRYING TO ADD ATTRIBUTES TO A NOT ARRAY!!!! PROBLEM. AttributeName: " + attributeName);
+            }
+            else {
+                state[cacheName][id][attributeName] = addUniqueToArray([...state[cacheName][id][attributeName]], addAttribute);
+            }
+        }
+    }
+}
+function removeAttributes(state, id, attributes, cacheName) {
+    state = {
+        ...state,
+    };
+    state[cacheName][id] = {
+        ...state[cacheName][id],
+    };
+    for (const attributeName in attributes) {
+        if (attributes.hasOwnProperty(attributeName)) {
+            const attribute = state[cacheName][id][attributeName];
+            const removeAttribute = attributes[attributeName];
+            if (!attribute) {
+                // Nothing to remove
+            } else if (!Array.isArray(state[cacheName][id][attributeName])) {
+                err&&console.error("TRYING TO REMOVE ATTRIBUTES FROM A NOT ARRAY!!!! PROBLEM. AttributeName: " + attributeName);
+            }
+            else {
+                state[cacheName][id][attributeName] = subtractArray([...state[cacheName][id][attributeName]], removeAttribute);
+            }
+        }
+    }
+}
+function removeItem(state, cacheName, id, dispatch) {
+    // Once you remove an object, simply unsubscribe
+    dispatch(removeChannelSubscription(getObjectChannelName(id)));
     return {
         ...state,
         [cacheName]: {

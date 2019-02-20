@@ -14,7 +14,11 @@ import PostFunctions from "../../database_functions/PostFunctions";
 import {Player} from "video-react";
 import { Storage } from "aws-amplify";
 import {getItemTypeFromID} from "../../logic/ItemType";
-import {consoleError} from "../../logic/DebuggingHelper";
+import {err} from "../../../Constants";
+
+type Props = {
+    postID: string
+};
 
 /*
 * Event Description Modal
@@ -22,7 +26,9 @@ import {consoleError} from "../../logic/DebuggingHelper";
 * This is the event description which displays more in depth information about a challenge, and allows the user
 * to join the challenge.
  */
-class PostDetailCard extends Component {
+class PostDetailCard extends Component<Props> {
+    static fetchVariableList = ["id", "time_created", "by", "item_type", "postType", "about", "description", "videoPaths", "picturePaths"];
+
     state = {
         error: null,
         // isLoading: false,
@@ -53,17 +59,17 @@ class PostDetailCard extends Component {
     componentDidMount() {
         // this.isJoined();
         this.isOwned();
-        //consoleLog("Mount Owned: " + this.state.isOwned);
+        //log&&console.log("Mount Owned: " + this.state.isOwned);
     }
 
     componentWillReceiveProps(newProps) {
         if (newProps.postID && !this.state.postID) {
             this.state.postID = newProps.postID;
         }
-        const by = this.getPostAttribute("by");
-        if (!this.props.open && newProps.open && newProps.postID && by) {
-            this.props.fetchClient(by, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"]);
-        }
+        // const by = this.getPostAttribute("by");
+        // if (!this.props.open && newProps.open && newProps.postID && by) {
+        //     this.props.fetchClient(by, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"]);
+        // }
     }
 
     getPostAttribute(attribute) {
@@ -147,14 +153,14 @@ class PostDetailCard extends Component {
     profilePicture() {
         if (this.getClientAttribute("profileImagePaths") !== [] || this.getClientAttribute("profileImagePaths") !== null) {
             /*if(!this.state.urlsSet) {
-                consoleLog(JSON.stringify("Paths being passed in: " + this.props.user.profileImagePaths));
+                log&&console.log(JSON.stringify("Paths being passed in: " + this.props.user.profileImagePaths));
                 this.setURLS(this.getClientAttribute("profileImagePaths"));
-                consoleLog("Setting URLS: " + this.state.galleryURLS);
+                log&&console.log("Setting URLS: " + this.state.galleryURLS);
                 this.setState({urlsSet: true});
             }*/
             //console.log(this.getClientAttribute("profilePicture"));
             return(
-                <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${this.getClientAttribute("profilePicture")})`}}></div>
+                <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${this.getClientAttribute("profileImage")})`}}></div>
             );
         }
         else {
@@ -167,14 +173,14 @@ class PostDetailCard extends Component {
     }
 
     handleDeletePostButton() {
-        //consoleLog("Handling deleting the event");
+        //log&&console.log("Handling deleting the event");
         this.setState({isLoading: true});
         PostFunctions.delete(this.props.user.id, this.getPostAttribute("id"), () => {
             this.forceUpdate(this.getPostAttribute("id"));
-            // consoleLog(JSON.stringify(data));
+            // log&&console.log(JSON.stringify(data));
             this.setState({isDeleteLoading: false, event: null, isOwned: false});
         }, (error) => {
-            // consoleLog(JSON.stringify(error));
+            // log&&console.log(JSON.stringify(error));
             this.setState({isDeleteLoading: false, error: error});
         })
     }
@@ -220,7 +226,7 @@ class PostDetailCard extends Component {
                 Storage.get(video).then((url) => {
                     this.setState({videoURL: url});
                 }).catch((error) => {
-                    consoleError(error);
+                    err&&console.error(error);
                 });
             }
             else if(!this.state.pictureURL && pictures) {
@@ -229,7 +235,7 @@ class PostDetailCard extends Component {
                 Storage.get(picture).then((url) => {
                     this.setState({pictureURL: url});
                 }).catch((error) => {
-                    consoleError(error);
+                    err&&console.error(error);
                 })
             }
             else if(this.state.videoURL && !this.state.pictureURL) {
@@ -265,16 +271,16 @@ class PostDetailCard extends Component {
     render() {
         if(this.state.canCallChecks) {
             this.isOwned();
-            //consoleLog("Render Owned: " + this.state.isOwned);
+            //log&&console.log("Render Owned: " + this.state.isOwned);
             this.setState({canCallChecks: false});
-            //consoleLog("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
+            //log&&console.log("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
         }
 
         //This modal displays the challenge information and at the bottom contains a button which allows the user
         //to join a challenge.
         function createCorrectButton(isOwned, deleteHandler, isDeleteLoading) {
-            //consoleLog("Owned: " + isOwned + " Joined: " + isJoined);
-            // consoleLog(ifCompleted);
+            //log&&console.log("Owned: " + isOwned + " Joined: " + isJoined);
+            // log&&console.log(ifCompleted);
             if(isOwned) {
                 // TODO This should also link the choose winner button
                 return(
@@ -284,12 +290,12 @@ class PostDetailCard extends Component {
                 );
             }
             else {
-                //consoleLog(isJoinLoading);
+                //log&&console.log(isJoinLoading);
                 return null;
             }
         }
 
-        //consoleLog("Challenge Info: " + JSON.stringify(this.state.event));
+        //log&&console.log("Challenge Info: " + JSON.stringify(this.state.event));
         return(
             <Card>
                 <Card.Header>

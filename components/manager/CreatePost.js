@@ -3,7 +3,6 @@ import {Grid, Button, Message, Image, Modal, Card, Icon, Form, Container, TextAr
 import { Storage } from 'aws-amplify';
 import {connect} from "react-redux";
 import {setError} from "../../redux_actions/infoActions";
-import {consoleLog, consoleError} from "../../logic/DebuggingHelper";
 import {
     fetchPost,
     clearPostQuery,
@@ -12,6 +11,7 @@ import {
 } from "../../redux_actions/cacheActions";
 import PostFunctions from "../../database_functions/PostFunctions";
 import {Player} from "video-react";
+import {err, log} from "../../../Constants";
 
 // Take from StackOverflow, nice snippit!
 // https://stackoverflow.com/a/17415677
@@ -79,7 +79,7 @@ class CreatePostProp extends Component {
         // TODO Sanitize this input
         // TODO Check to see if this will, in fact, work.!
         this.state[key] = value.target.value;
-        consoleLog("New " + key + " is equal to " + value.target.value);
+        log&&console.log("New " + key + " is equal to " + value.target.value);
     }
 
     handleAccessSwitch = () => {
@@ -90,17 +90,17 @@ class CreatePostProp extends Component {
             this.setState({access: 'public'});
         }
         else {
-            consoleError("Event access should be public or private");
+            err&&console.error("Event access should be public or private");
         }
     };
 
-    getPictures() {
+    getLatestPicture() {
         const pictures = {};
         for (let i = 0; i < this.state.pictures.length; i++) {
             pictures["pictures/" + i] = this.state.pictures[i];
         }
         if (this.state.pictures.length > 0) {
-            return pictures;
+            return [pictures[pictures.length - 1]];
         }
         return null;
     }
@@ -126,10 +126,10 @@ class CreatePostProp extends Component {
                     this.state.tempVideoURLs.push(url);
                     this.setState({});
                 }).catch((error) => {
-                    consoleError(error);
+                    err&&console.error(error);
                 })
             }).catch((error) => {
-            consoleError(error);
+            err&&console.error(error);
         });
         this.setState({});
     };
@@ -144,10 +144,10 @@ class CreatePostProp extends Component {
                     this.state.tempPictureURLs.push(url);
                     this.setState({});
                 }).catch((error) => {
-                    consoleError(error);
+                    err&&console.error(error);
                 })
             }).catch((error) => {
-            consoleError(error);
+            err&&console.error(error);
         });
         this.setState({});
     };
@@ -193,11 +193,11 @@ class CreatePostProp extends Component {
 
         // TODO Check to see if valid inputs!
         if (this.state.description) {
-            PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getPictures(), this.getVideos(), (returnValue) => {
+            PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getLatestPicture(), this.getVideos(), (returnValue) => {
                 console.log("Successfully Created Post!");
                 console.log(JSON.stringify(returnValue));
             }, (error) => {
-                consoleError(error);
+                err&&console.error(error);
             });
             //     PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {
             //         console.log("Successfully Created Post!");
@@ -243,7 +243,7 @@ class CreatePostProp extends Component {
             //         this.setState({showSuccessLabel: true});
             //         this.setState({showModal: false});
             //     }, (error) => {
-            //         consoleError(error);
+            //         err&&console.error(error);
             //         this.setState({submitError: "*" + JSON.stringify(error)});
             //         this.setState({isSubmitLoading: false});
             //     });
@@ -300,15 +300,6 @@ class CreatePostProp extends Component {
                                 <Grid.Column width={12} className="segment centered" align='center'>
                                     <Form align='center' onSubmit={this.handleSubmit}>
                                         <TextArea fluid label="Description" type="text" name="description" placeholder="Write post description here..." onChange={value => this.changeStateText("description", value)}/>
-                                        {/*<Form.Field>
-                                        <div className="field" width={5}>
-                                            <label>Difficulty</label>
-                                            <Rating icon='star' defaultRating={1} maxRating={3} />
-                                        </div>
-                                    </Form.Field>*/}
-                                        <Form.Field width={12}>
-                                            <Checkbox toggle onClick={this.handleAccessSwitch} onChange={this.toggle} checked={this.state.checked} label={this.state.access} />
-                                        </Form.Field>
                                         <div>{this.displayError()}{this.createSuccessLabel()}</div>
                                     </Form>
                                 </Grid.Column>
@@ -321,15 +312,6 @@ class CreatePostProp extends Component {
                             {this.displayCurrentVideo()}
                             {this.displayCurrentImage()}
                             <Fragment align='center'>
-                                <div className="uploadImage u-flex u-flex-align--center u-margin-top--2" align='center'>
-                                    <div floated="center">
-                                        <Button primary fluid as="label" htmlFor="vidUpload" className="u-bg--primaryGradient">
-                                            <Icon name="camera" className='u-margin-right--0' inverted />
-                                            Upload Video
-                                        </Button>
-                                        <input type="file" accept="video/*;capture=camcorder" id="vidUpload" hidden={true} onChange={this.setVideo}/>
-                                    </div>
-                                </div>
                                 <div className="uploadImage u-flex u-flex-align--center u-margin-top--2" align='center'>
                                     <div floated="center">
                                         <Button primary fluid as="label" htmlFor="picUpload" className="u-bg--primaryGradient">

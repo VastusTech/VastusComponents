@@ -13,26 +13,23 @@ import ChallengeCard from "../cards/ChallengeCard";
 import { Storage } from "aws-amplify";
 import ClientModal from "../modals/ClientModal";
 
+type Props = {
+    postID: string
+};
+
 /*
 * Event Description Modal
 *
 * This is the event description which displays more in depth information about a challenge, and allows the user
 * to join the challenge.
  */
-class ChallengeDetailCard extends Component {
+class ChallengeDetailCard extends Component<Props> {
+    static fetchVariableList = ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "difficulty", "time_created", "capacity", "members", "prize", "goal", "owner", "access", "restriction", "submissions"];
+
     state = {
         // isLoading: false,
         postID: null,
-        // event: null,
-        // ownerName: null,
-        // members: {},
         clientModalOpen: false
-        // completeModalOpen: false,
-        // isLeaveLoading: false,
-        // isDeleteLoading: false,
-        // isJoinLoading: false,
-        // joinRequestSent: false,
-        // canCallChecks: true,
     };
 
     constructor(props) {
@@ -56,11 +53,11 @@ class ChallengeDetailCard extends Component {
         if (newProps.postID && !this.state.postID) {
             this.state.postID = newProps.postID;
         }
-        const by = this.getPostAttribute("by");
-        if (!this.props.open && newProps.open && newProps.postID && by) {
-            this.props.fetchClient(by, ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
-            this.props.fetchChallenge(this.getPostAttribute("about"), ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
-        }
+        // const by = this.getPostAttribute("by");
+        // if (!this.props.open && newProps.open && newProps.postID && by) {
+        //     this.props.fetchClient(by, ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
+        //     this.props.fetchChallenge(this.getPostAttribute("about"), ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
+        // }
     }
 
     getPostAttribute(attribute) {
@@ -143,7 +140,7 @@ class ChallengeDetailCard extends Component {
             }*/
             //console.log(this.getClientAttribute("profilePicture"));
             return(
-                <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${this.getClientAttribute("profilePicture")})`, width: '50px', height: '50px'}}></div>
+                <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${this.getClientAttribute("profileImage")})`, width: '50px', height: '50px'}}></div>
             );
         }
         else {
@@ -217,10 +214,10 @@ class ChallengeDetailCard extends Component {
 
     openClientModal = () => {
         if (!this.state.clientModalOpen) {
-            this.setState({clientModalOpen: true})
-            this.props.fetchClient(this.getPostAttribute("by"), ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
-        };
-    }
+            this.setState({clientModalOpen: true});
+            // this.props.fetchClient(this.getPostAttribute("by"), ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
+        }
+    };
     closeClientModal = () => {
         console.log("Closing client modal");
         this.setState({clientModalOpen: false})

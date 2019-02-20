@@ -6,7 +6,7 @@ import {fetchUserAttributes, forceFetchUserAttributes} from "../../../redux_help
 import { connect } from "react-redux";
 import TrainerFunctions from "../../database_functions/TrainerFunctions";
 import {calculateAge} from "../../logic/TimeHelper";
-import TrainerPostFeed from "../../../screens/profile_tab/TrainerPostFeed";
+import TrainerPostFeed from "../lists/TrainerPostFeed";
 import EventList from "../lists/EventList";
 
 type Props = {
@@ -266,7 +266,7 @@ class TrainerPortalModal extends React.PureComponent<Props> {
                                 <Button primary fluid size="large" onClick={this.openOwnedModal.bind(this)}><Icon name="trophy" /> Current Challenges</Button>
                                 <Modal basic size='mini' open={this.state.ownedModalOpen} onClose={this.closeOwnedModal.bind(this)} closeIcon>
                                     <Modal.Content>
-                                        <ChallengeList challengeIDs={this.props.user.ownedChallenges}/>
+                                        <ChallengeList challengeIDs={this.props.user.ownedChallenges} noChallengesMessage={"No challenges yet!"}/>
                                     </Modal.Content>
                                 </Modal>
                             </List.Item>

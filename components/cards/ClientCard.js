@@ -3,7 +3,7 @@ import { Card, Dimmer, Loader, Grid, Header } from 'semantic-ui-react';
 import ClientModal from '../modals/ClientModal';
 import { connect } from 'react-redux';
 import { fetchClient } from "../../redux_actions/cacheActions";
-import {consoleLog} from "../../logic/DebuggingHelper";
+import {log} from "../../../Constants";
 
 /*
 * Event Card
@@ -13,11 +13,14 @@ import {consoleLog} from "../../logic/DebuggingHelper";
  */
 
 type Props = {
-    rank: number,
+    rank?: number,
     clientID: string
-}
+};
 
 class ClientCard extends Component<Props> {
+    static fetchVariableList = ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "friendRequests"];
+    static ifSubscribe = false;
+
     constructor(props) {
         super(props);
         this.openClientModal = this.openClientModal.bind(this);
@@ -75,14 +78,14 @@ class ClientCard extends Component<Props> {
         };
     }
     closeClientModal = () => {
-        consoleLog("Closing client modal");
+        log&&console.log("Closing client modal");
         this.setState({clientModalOpen: false})
     };
 
     profilePicture() {
-        if (this.getClientAttribute("profilePicture")) {
+        if (this.getClientAttribute("profileImage")) {
             return(
-                <div className="u-avatar u-avatar--small" style={{backgroundImage: `url(${this.getClientAttribute("profilePicture")})`}}></div>
+                <div className="u-avatar u-avatar--small" style={{backgroundImage: `url(${this.getClientAttribute("profileImage")})`}}></div>
             );
         }
         else {

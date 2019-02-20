@@ -3,7 +3,6 @@ import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Dimmer, Label, 
 import ClientModal from "./ClientModal";
 import { connect } from 'react-redux';
 import {fetchClient, fetchTrainer, forceFetchChallenge, fetchChallenge, clearChallengeQuery} from "../../redux_actions/cacheActions";
-import { clearBoard } from "../../redux_actions/messageActions";
 import CompleteChallengeModal from "../manager/CompleteChallengeModal";
 import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import CommentScreen from "../messaging/MessageBoard";
@@ -118,19 +117,19 @@ class ChallengeDescriptionModal extends Component<Props> {
             for (let i = 0; i < members.length; i++) {
                 const itemType = getItemTypeFromID(members[i]);
                 if (itemType === "Client") {
-                    this.props.fetchClient(members[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"], () => {
+                    this.props.fetchClient(members[i], ["id", "name", "gender", "birthday", "profileImagePath"], () => {
                         this.setState({});
                     });
                 }
                 else if (itemType === "Trainer") {
-                    this.props.fetchTrainer(members[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"], () => {
+                    this.props.fetchTrainer(members[i], ["id", "name", "gender", "birthday", "profileImagePath"], () => {
                         this.setState({});
                     });
                 }
                 if(owner) {
                     if (owner.substr(0, 2) === "TR") {
                         if(!this.state.fetchedTrainer) {
-                            this.props.fetchTrainer(owner, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
+                            this.props.fetchTrainer(owner, ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
                             this.setState({fetchedTrainer: true});
                         }
                     }
@@ -140,9 +139,9 @@ class ChallengeDescriptionModal extends Component<Props> {
     }
 
     componentWillUnmount() {
-        if (this.state.challengeID) {
-            this.props.clearBoard(this.state.challengeID);
-        }
+        // if (this.state.challengeID) {
+        //     this.props.clearBoard(this.state.challengeID);
+        // }
     }
 
     displayTagIcons(tags) {
@@ -420,11 +419,10 @@ class ChallengeDescriptionModal extends Component<Props> {
     }
     
    profilePicture() {
-        if (this.props.user.profilePicture) {
-            
+        if (this.props.user.profileImage) {
             return (
                 <div>
-                    <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.props.user.profilePicture})`}}>
+                    <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.props.user.profileImage})`}}>
                         <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
                             <Icon name="upload" className='u-margin-right--0' size="large" inverted />
                         </Label>
@@ -569,9 +567,6 @@ const mapDispatchToProps = (dispatch) => {
         clearChallengeQuery: () => {
             dispatch(clearChallengeQuery());
         },
-        clearBoard: (board) => {
-            dispatch(clearBoard(board));
-        }
     };
 };
 

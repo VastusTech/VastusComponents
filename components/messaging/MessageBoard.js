@@ -5,12 +5,9 @@ import { Icon, Message, Divider } from "semantic-ui-react";
 import {fetchClient, fetchTrainer} from "../../redux_actions/cacheActions";
 import {
     queryNextMessagesFromBoard,
-    clearBoard,
-    addMessageToBoard,
-    addMessageFromNotification
+    discardBoard
 } from "../../redux_actions/messageActions";
-import {setHandlerToBoard} from "../../redux_actions/ablyActions";
-import connect from "react-redux/es/connect/connect";
+import {connect} from "react-redux";
 import ScrollView from "react-inverted-scrollview";
 
 type Props = {
@@ -37,19 +34,20 @@ class MessageBoard extends Component<Props> {
     }
 
     componentWillUnmount() {
-        // TODO Unsubscribe to the Ably messages
-        // TODO Also potentially clear the board?
+        // Unsubscribe to the Ably messages
+        // Also potentially clear the board?
+        discardBoard(this.state.board);
     }
 
     componentWillReceiveProps(newProps, nextContext) {
         if (this.state.board !== newProps.board) {
             this.state.board = newProps.board;
-            this.props.setHandlerToBoard(newProps.board, (message) => {
-                // If you get a message, then that means that it is definitely a Message?
-                // console.log("What to do with this?\n\n" + JSON.stringify(message));
-
-                this.props.addMessageFromNotification(newProps.board, message.data);
-            });
+            // this.props.setHandlerToBoard(newProps.board, (message) => {
+            //     // If you get a message, then that means that it is definitely a Message?
+            //     // console.log("What to do with this?\n\n" + JSON.stringify(message));
+            //
+            //     this.props.addMessageFromNotification(newProps.board, message.data);
+            // });
             // Set up the board
             // this.queryMessages();
             if (this.state.board && !this.props.message.boards[this.state.board]) {
@@ -163,20 +161,11 @@ const mapDispatchToProps = (dispatch) => {
         fetchTrainer: (id, variablesList, dataHandler) => {
             dispatch(fetchTrainer(id, variablesList, dataHandler));
         },
-        addMessageToBoard: (board, message) => {
-            dispatch(addMessageToBoard(board, message));
-        },
         queryNextMessagesFromBoard: (board, limit, dataHandler, failureHandler) => {
             dispatch(queryNextMessagesFromBoard(board, limit, dataHandler, failureHandler));
         },
-        clearBoard: (board) => {
-            dispatch(clearBoard(board));
-        },
-        setHandlerToBoard: (board, handler) => {
-            dispatch(setHandlerToBoard(board, handler));
-        },
-        addMessageFromNotification: (board, message, dataHandler, failureHandler) => {
-            dispatch(addMessageFromNotification(board, message, dataHandler, failureHandler));
+        discardBoard: (board) => {
+            dispatch(discardBoard(board));
         }
     };
 };
