@@ -9,6 +9,7 @@ import TrainerCard from "../cards/TrainerCard";
 import EventCard from "../cards/EventCard";
 import ChallengeCard from "../cards/ChallengeCard";
 import PostCard from "../cards/PostCard";
+import MessageBoardCard from "../../../screens/messaging_tab/MessageBoardCard";
 
 type Props = {
     ids: [string],
@@ -53,7 +54,7 @@ class DatabaseObjectList extends Component<Props> {
                             ChallengeCard.fetchVariableList,
                             null,
                             PostCard.fetchVariableList,
-                            null, null, null, null,
+                            null, null, null, MessageBoardCard.fetchVariableList,
                             "Get variable list from item type not implemented!");
                         this.props.fetchItem(itemType, id, variableList, addObject);
                     }
@@ -89,7 +90,7 @@ class DatabaseObjectList extends Component<Props> {
                                 null,
                                 null,
                                 null,
-                                null,
+                                <MessageBoardCard messageBoardID={id}/>,
                                 "Get database object list object not implemented for item type"
                             )}
                         </List.Item>
