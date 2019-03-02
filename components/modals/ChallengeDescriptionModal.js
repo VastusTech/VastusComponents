@@ -117,9 +117,10 @@ class ChallengeDescriptionModal extends Component<Props> {
         if (newProps.challengeID !== this.state.challengeID) {
             // console.log("resetting state to " + newProps.challengeID);
             this.state.challengeID = newProps.challengeID;
-            this.props.subscribeFetchChallenge(newProps.challengeID, [], (challenge) => {
-                alert("Subscribe fetch complete!");
-            });
+            // TODO SUBSCRIBE FETCH LATER
+            // this.props.subscribeFetchChallenge(newProps.challengeID, [], (challenge) => {
+            //     // alert("Subscribe fetch complete!");
+            // });
             this.resetState(newProps.challengeID);
         }
 
