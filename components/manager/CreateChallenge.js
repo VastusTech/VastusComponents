@@ -190,13 +190,13 @@ class CreateChallengeProp extends Component {
                     "3", [], this.state.tags, this.eventState.access, this.state.restriction, this.eventState.prize, (data) => {
                         console.log("Successfully created a challenge!");
                         //console.log(data.data);
-                        PostFunctions.createNewChallengePost(this.props.user.id, this.props.user.id, this.eventState.description, this.eventState.access, data.data, (data) => {
-                            console.log("Successfully created automatic challenge Post");
-                            }, (error) => {
-                            //console.log(JSON.stringify(error));
-                            this.setState({submitError: "*" + JSON.stringify(error)});
-                            this.setState({isSubmitLoading: false});
-                        });
+                        // PostFunctions.createNewChallengePost(this.props.user.id, this.props.user.id, this.eventState.description, this.eventState.access, data.data, (data) => {
+                        //     console.log("Successfully created automatic challenge Post");
+                        //     }, (error) => {
+                        //     //console.log(JSON.stringify(error));
+                        //     this.setState({submitError: "*" + JSON.stringify(error)});
+                        //     this.setState({isSubmitLoading: false});
+                        // });
                         //This is the second call
                         //this.props.clearChallengeQuery();
                         //this.props.queryChallenges();
