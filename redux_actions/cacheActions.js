@@ -205,7 +205,8 @@ function subscribeFetch(id, itemType, variableList, dataHandler, failureHandler)
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         // If we are doing a special subscribe fetch, then we must first check to see if
-        if (getStore().cache[getCacheName(itemType)][id].__stale__ !== false) {
+        const item = getStore().cache[getCacheName(itemType)][id];
+        if (item && item.__stale__ !== false) {
             // Then it is stale
             // Subscribe (potentially again?)
             dispatch(subscribeCacheUpdatesToObject(id, itemType));
@@ -522,7 +523,8 @@ export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandle
     });
 }
 export function fetchItem(itemType, id, variableList, dataHandler, failureHandler) {
-    return getFetchItemFunction(itemType)(id, variableList, dataHandler, failureHandler);
+    // return getFetchItemFunction(itemType)(id, variableList, dataHandler, failureHandler);
+    return fetch(id, itemType, variableList, dataHandler, failureHandler)
 }
 export function fetchClient(id, variablesList, dataHandler, failureHandler) {
     return fetch(id, "Client", variablesList, dataHandler, failureHandler);
@@ -562,6 +564,9 @@ export function fetchSponsor(id, variablesList, dataHandler, failureHandler) {
 }
 export function fetchStreak(id, variablesList, dataHandler, failureHandler) {
     return fetch(id, "Streak", variablesList, dataHandler, failureHandler);
+}
+export function subscribeFetchItem(itemType, id, variablesList, dataHandler, failureHandler) {
+    return subscribeFetch(id, itemType, variablesList, dataHandler, failureHandler);
 }
 export function subscribeFetchClient(id, variablesList, dataHandler, failureHandler) {
     return subscribeFetch(id, "Client", variablesList, dataHandler, failureHandler);
@@ -1269,6 +1274,11 @@ function getForceFetchItemFunction(itemType) {
     return switchReturnItemType(itemType, forceFetchClient, forceFetchTrainer, forceFetchGym, forceFetchWorkout, forceFetchReview,
         forceFetchEvent, forceFetchChallenge, forceFetchInvite, forceFetchPost, forceFetchGroup, forceFetchComment, forceFetchSponsor,
         null, forceFetchStreak, "Retrieve force fetch item function not implemented for item type");
+}
+function getSubscribeFetchItemFunction(itemType) {
+    return switchReturnItemType(itemType, subscribeFetchClient, subscribeFetchTrainer, subscribeFetchGym, subscribeFetchWorkout, subscribeFetchReview,
+        subscribeFetchEvent, subscribeFetchChallenge, subscribeFetchInvite, subscribeFetchPost, subscribeFetchGroup, subscribeFetchComment, subscribeFetchSponsor,
+        null, subscribeFetchStreak, "Retrieve subscribe fetch item function not implemented for item type");
 }
 export function getFetchQueryFunction(itemType) {
     return switchReturnItemType(itemType, fetchClientQuery, fetchTrainerQuery, fetchGymQuery, fetchWorkoutQuery,

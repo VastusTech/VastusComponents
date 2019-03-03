@@ -37,7 +37,7 @@ class S3Storage {
             log&&console.log("Storage successfully retrieved file! URL = " + url);
             if (successHandler) { successHandler(url); }
         }).catch((error) => {
-            err&&console.error("Storage failed to retrieve file with path = " + path + "... Error: " + JSON.stringify(error));
+            err&&console.error("Storage failed to retrieve file with path = " + path + "... Error: " + error);
             if (failureHandler) { failureHandler(error); }
         });
     }
@@ -65,7 +65,7 @@ class S3Storage {
             log&&console.log("Storage successfully put file in! Result: " + JSON.stringify(result));
             if (successHandler) { successHandler(result); }
         }).catch((error) => {
-            err&&console.error("Storage failed put function... Error: " + JSON.stringify(error));
+            err&&console.error("Storage failed put function... Error: " + error);
             if (failureHandler) { failureHandler(error); }
         });
     }
@@ -74,7 +74,7 @@ class S3Storage {
             log&&console.log("Storage successfully removed file! Result: " + JSON.stringify(result));
             if (successHandler) { successHandler(result); }
         }).catch((error) => {
-            err&&console.error("Storage failed remove function... Error: " + JSON.stringify(error));
+            err&&console.error("Storage failed remove function... Error: " + error);
             if (failureHandler) { failureHandler(error); }
         });
     }

@@ -69,8 +69,13 @@ class UserFunctions {
     static updateBio(fromID, userID, bio, successHandler, failureHandler) {
         return this.updateSet(fromID, userID, "bio", bio, successHandler, failureHandler);
     }
-    static updateProfileImagePath(fromID, userID, profileImagePath, successHandler, failureHandler) {
-        return this.updateSet(fromID, userID, "profileImagePath", profileImagePath, successHandler, failureHandler);
+    static updateProfileImagePath(fromID, userID, profileImage, profileImagePath, successHandler, failureHandler) {
+        S3.putImage(profileImagePath, profileImage, () => {
+            return this.updateSet(fromID, userID, "profileImagePath", profileImagePath, successHandler, (error) => {
+                S3.delete(profileImagePath);
+                failureHandler(error);
+            });
+        }, failureHandler);
     }
 
     // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
