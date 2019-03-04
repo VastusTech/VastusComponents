@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import {Button, Input, Icon} from "semantic-ui-react";
+import {Button, Input, Icon, Grid} from "semantic-ui-react";
 import {connect} from "react-redux";
 import MessageFunctions from "../../database_functions/MessageFunctions";
 
@@ -111,9 +111,9 @@ class MessageInput extends Component<Props> {
             <Fragment>
                 <form onSubmit={this.addMessage} className='u-margin-top--2'>
                     <Input type='text' action fluid className="textarea" name="message" placeholder="Write Message...">
-                        <input />
-                        <Button as='label' for='proPicUpload'  >
-                            <Icon name='camera' size = "Large"/>
+                        <input/>
+                        <Button as='label' for='proPicUpload'>
+                            <Icon name='camera' size = "large" style={{marginLeft: '8px'}}/>
                             <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden='true' onChange={this.setPictureOrVideo}/>
                         </Button>
                         <Button loading={this.state.sendLoading} primary>Send</Button>
