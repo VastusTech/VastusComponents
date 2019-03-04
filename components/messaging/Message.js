@@ -19,7 +19,7 @@ export default (props: {message: any, userID: string}) => {
             if (ifSelf) {
                 // Self picture
                 return (
-                    <Grid class="ui computer vertically reversed equal width grid">
+                    <Grid class="ui computer vertically reversed equal width grid" celled>
                         <Label className='ui right fluid' pointing='right' color='purple'>
                             <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
                                  style={{backgroundImage: `url(${messageURL})`}}>
@@ -39,7 +39,7 @@ export default (props: {message: any, userID: string}) => {
             else {
                 // Other picture
                 return (
-                    <Grid class="ui computer vertically reversed equal width grid">
+                    <Grid class="ui computer vertically reversed equal width grid" celled>
                         <Grid.Column width={6}>
                             <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
                         </Grid.Column>
@@ -61,7 +61,7 @@ export default (props: {message: any, userID: string}) => {
             if (ifSelf) {
                 // Self video
                 return (
-                    <Grid class="ui computer vertically reversed equal width grid">
+                    <Grid class="ui computer vertically reversed equal width grid" celled>
                         <Label className='ui right fluid' pointing='right' color='purple'>
                             <Player>
                                 <source src={messageURL} type="video/mp4"/>
@@ -76,7 +76,7 @@ export default (props: {message: any, userID: string}) => {
             else {
                 // Other video
                 return (
-                    <Grid class="ui computer vertically reversed equal width grid">
+                    <Grid class="ui computer vertically reversed equal width grid" celled>
                         <Grid.Column width={6}>
                             <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
                         </Grid.Column>
@@ -98,7 +98,7 @@ export default (props: {message: any, userID: string}) => {
         if (ifSelf) {
             // Self text
             return (
-            <Grid>
+            <Grid celled>
                 {/*<Grid>
                     <Grid.Column floated='right' width={10}>
                         <div>
@@ -142,7 +142,7 @@ export default (props: {message: any, userID: string}) => {
         else {
             // Other text
             return (
-                <Grid>
+                <Grid celled>
                 {/*<Grid style={{marginLeft: '10px'}}>
                     <Grid.Column floated='left' width={1}>
                         <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
