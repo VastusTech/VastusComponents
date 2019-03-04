@@ -42,6 +42,7 @@ class MessageBoard extends Component<Props> {
     componentWillReceiveProps(newProps, nextContext) {
         if (this.state.board !== newProps.board) {
             this.state.board = newProps.board;
+            this.setState({});
             // this.props.setHandlerToBoard(newProps.board, (message) => {
             //     // If you get a message, then that means that it is definitely a Message?
             //     // console.log("What to do with this?\n\n" + JSON.stringify(message));
@@ -86,7 +87,8 @@ class MessageBoard extends Component<Props> {
     }
 
     getBoardMessages() {
-        if (this.state.board && this.props.message.boards[this.state.board]) {
+        const board = this.state.board;
+        if (board && this.props.message.boards[board]) {
             return this.props.message.boards[this.state.board];
         }
         return [];
@@ -138,7 +140,7 @@ class MessageBoard extends Component<Props> {
                         ref={ref => (this.scrollView = ref)}
                         onScroll={this.handleScroll}
                     >
-                        <Messages board={this.state.board} comments={this.getBoardMessages()} userID={this.props.user.id}/>
+                        <Messages board={this.state.board} messages={this.getBoardMessages()} userID={this.props.user.id}/>
                     </ScrollView>
                     <Divider className='u-margin-top--2' />
                     <CommentBox board={this.state.board}/>
