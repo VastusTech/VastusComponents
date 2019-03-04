@@ -1246,7 +1246,7 @@ export function getCache(itemType, getStore) {
         cache.events, cache.challenges, cache.invites, cache.posts, cache.groups, cache.comments, cache.sponsors,
         null, cache.streaks, "Retrieve cache not implemented");
 }
-function getCacheName(itemType) {
+export function getCacheName(itemType) {
     return switchReturnItemType(itemType, "clients", "trainers", "gyms", "workouts", "reviews",
         "events", "challenges", "invites", "posts", "groups", "comments", "sponsors",
         null, "streaks", "Retrieve cache not implemented");

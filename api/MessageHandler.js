@@ -47,6 +47,9 @@ class MessageHandler {
         }
         return board;
     }
+    static getIDsFromBoard(board) {
+        return board.split("_");
+    }
     static sendMessage(board, from, type, message) {
     }
     static getMessage(board, id) {
