@@ -50,9 +50,12 @@ class MessageHandler {
     static getIDsFromBoard(board) {
         return board.split("_");
     }
-    static sendMessage(board, from, type, message) {
-    }
-    static getMessage(board, id) {
+    static ifUnreadFor(userID, message) {
+        // alert("CHECKING IF UNREAD for user = " + userID);
+        // alert("From = " + message.from);
+        // alert("Last seen for = " + JSON.stringify(message.lastSeenFor));
+        // alert("Returning = " + JSON.stringify(message.from !== userID && (!message.lastSeenFor || !message.lastSeenFor.includes(userID))));
+        return message.from !== userID && (!message.lastSeenFor || !message.lastSeenFor.includes(userID));
     }
 }
 

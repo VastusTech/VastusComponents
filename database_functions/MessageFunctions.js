@@ -18,8 +18,9 @@ class MessageFunctions {
     }
 
     // Update Functions ============================================================
-
-
+    static addLastSeen(fromID, board, messageID, userID, successHandler, failureHandler) {
+        return this.updateAdd(fromID, board, messageID, "lastSeenFor", userID, successHandler, failureHandler);
+    }
 
     // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
@@ -47,9 +48,17 @@ class MessageFunctions {
             }
         }, failureHandler);
     }
-    // static updateAdd(fromID, inviteID, attributeName, attributeValue, successHandler, failureHandler) {
-    //     Lambda.updateAddToAttribute(fromID, inviteID, itemType, attributeName, attributeValue, successHandler, failureHandler);
-    // }
+    static updateAdd(fromID, board, messageID, attributeName, attributeValue, successHandler, failureHandler) {
+        return Lambda.invokeDatabaseLambda({
+            fromID,
+            action: "UPDATEADD",
+            itemType,
+            identifiers: [messageID],
+            secondaryIdentifier: board,
+            attributeName,
+            attributeValues: [attributeValue],
+        }, successHandler, failureHandler);
+    }
     // static updateRemove(fromID, inviteID, attributeName, attributeValue, successHandler, failureHandler) {
     //     Lambda.updateRemoveFromAttribute(fromID, inviteID, itemType, attributeName, attributeValue, successHandler, failureHandler);
     // }

@@ -31,7 +31,7 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
         // console.log("IF FIRST = " + ifFirst + ", NEXT TOKEN = " + nextToken);
         if (ifFirst || nextToken) {
             // Then you do the query
-            QL.queryMessages(QL.constructMessageQuery(board, ["from", "name", "profileImagePath", "message", "type", "board", "id", "time_created"], null, limit, nextToken), (data) => {
+            QL.queryMessages(QL.constructMessageQuery(board, ["from", "name", "profileImagePath", "message", "type", "board", "id", "time_created", "lastSeenFor"], null, limit, nextToken), (data) => {
                 if (data) {
                     // console.log(JSON.stringify(data));
                     if (!data.items) { data.items = []; }
