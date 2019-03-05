@@ -1,6 +1,7 @@
- import React, { Component } from 'react';
+import React, { Component } from 'react';
 import { Label, Grid, Icon, Container, Divider, Message, Segment, Button } from 'semantic-ui-react'
 import {Player} from "video-react";
+import Breakpoint from "react-socks";
 
 export default (props: {message: any, userID: string}) => {
     if (!props.message) {
@@ -19,29 +20,21 @@ export default (props: {message: any, userID: string}) => {
             if (ifSelf) {
                 // Self picture
                 return (
-                    <Grid celled>
-                        <Grid.Column>
-                            <Grid.Row>
-                                <strong>{name}</strong>
-                            </Grid.Row>
-                            <Grid.Row>
+                    <div><div>
+                        <Button labelPosition='right' floated='right'>
                                 <Label className='ui right fluid' pointing='right' color='purple'>
                                     <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
                                          style={{backgroundImage: `url(${messageURL})`}}>
                                     </div>
                                 </Label>
-                            </Grid.Row>
-                        </Grid.Column>
-                        <Grid.Column width={2} style={{rightMargin: '5px', leftMargin: '5px'}}>
-                            <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
-                        </Grid.Column>
-                    </Grid>
+                        </Button>
+                    </div><br/><br/><br/></div>
                 );
             }
             else {
                 // Other picture
                 return (
-                    <Grid class="ui computer vertically reversed equal width grid" celled>
+                    <Grid class="ui computer vertically reversed equal width grid">
                         <Grid.Column width={2}>
                             <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
                         </Grid.Column>
@@ -65,29 +58,21 @@ export default (props: {message: any, userID: string}) => {
             if (ifSelf) {
                 // Self video
                 return (
-                    <Grid class="ui computer vertically reversed equal width grid" celled>
-                        <Grid.Column>
-                            <Grid.Row>
-                                <strong>{name}</strong>
-                            </Grid.Row>
-                            <Grid.Row>
+                    <div><div>
+                        <Button labelPosition='right' floated='right'>
                                 <Label className='ui right fluid' pointing='right' color='purple'>
                                     <Player>
                                         <source src={messageURL} type="video/mp4"/>
                                     </Player>
                                 </Label>
-                            </Grid.Row>
-                        </Grid.Column>
-                        <Grid.Column width={2}>
-                            <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
-                        </Grid.Column>
-                    </Grid>
+                        </Button>
+                    </div><br/><br/><br/></div>
                 );
             }
             else {
                 // Other video
                 return (
-                    <Grid class="ui computer vertically reversed equal width grid" celled>
+                    <Grid class="ui computer vertically reversed equal width grid">
                         <Grid.Column width={6}>
                             <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
                         </Grid.Column>
@@ -128,7 +113,9 @@ export default (props: {message: any, userID: string}) => {
         else {
             // Other text
             return (
-                <Grid columns={2} celled>
+                <div>
+                <Breakpoint medium up>
+                <Grid columns={2}>
                     <Grid.Column width={1}>
                         <div avatar className="ui u-avatar mini" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
                     </Grid.Column>
@@ -143,6 +130,28 @@ export default (props: {message: any, userID: string}) => {
                         </Grid.Row>
                     </Grid.Column>
                 </Grid>
+                </Breakpoint>
+
+
+                <Breakpoint small down>
+                    <Grid columns={2}>
+                        <Grid.Column width={3} style={{marginRight: '10px'}}>
+                            <div avatar className="ui u-avatar mini" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Grid.Row>
+                                <strong>{name}</strong>
+                            </Grid.Row>
+                            <Grid.Row>
+                                <Label pointing='left' size='large' color='white'>
+                                    {message}
+                                </Label>
+                            </Grid.Row>
+                        </Grid.Column>
+                    </Grid>
+                </Breakpoint>
+                    <br/><br/>
+                </div>
         );
         }
     }
