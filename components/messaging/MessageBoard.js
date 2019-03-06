@@ -51,7 +51,7 @@ class MessageBoard extends Component<Props> {
             // });
             // Set up the board
             // this.queryMessages();
-            if (this.state.board && !this.props.message.boards[this.state.board]) {
+            if (this.state.board && this.props.message.boards[this.state.board]) {
                 this.queryMessages();
             }
         }
@@ -108,6 +108,7 @@ class MessageBoard extends Component<Props> {
         console.log('scrollBottom', scrollBottom);
         if (scrollTop < 1) {
             // Then we fetch new stuff
+            this.setState({canFetch: true});
             this.queryMessages();
         }
     };
