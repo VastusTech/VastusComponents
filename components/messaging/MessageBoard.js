@@ -21,7 +21,7 @@ class MessageBoard extends Component<Props> {
         board: null,
         isLoading: false,
         fetchLimit: 10,
-        messageMinimum: 5,
+        messageMinimum: 10,
         canFetch: true,
         canScroll: false
     };
@@ -55,6 +55,7 @@ class MessageBoard extends Component<Props> {
             // });
             // Set up the board
             // this.queryMessages();
+            this.scrollToBottom();
             if (this.state.board && (!this.props.message.boards[this.state.board]
                 || this.props.message.boards[this.state.board].length < this.state.messageMinimum)) {
                 // alert("Not enough messages!");
@@ -78,7 +79,7 @@ class MessageBoard extends Component<Props> {
     queryMessages() {
         // console.log("Can we query?");
         if (this.state.canFetch) {
-            alert("Querying next messages from the board!");
+            // alert("Querying next messages from the board!");
             this.setState({isLoading: true});
             this.props.queryNextMessagesFromBoard(this.state.board, this.state.fetchLimit, (items) => {
                 if (items) {
