@@ -7,6 +7,7 @@ import notFoundPicture from "../img/not_found.png";
 import {switchReturnItemType} from "../logic/ItemType";
 import {getObjectChannelName} from "../redux_reducers/cacheReducer";
 import {err, log} from "../../Constants";
+import {addMessageFromNotification} from "./messageActions";
 
 const FETCH_CLIENT = 'FETCH_CLIENT';
 const FETCH_TRAINER = 'FETCH_TRAINER';
@@ -222,7 +223,7 @@ function subscribeFetch(id, itemType, variableList, dataHandler, failureHandler)
     };
 }
 function subscribeCacheUpdatesToObject(id, itemType) {
-    return (dispatch) => {
+    return (dispatch, getStore) => {
         dispatch(addHandlerAndUnsubscription(getObjectChannelName(id), (message) => {
             const payload = message.data;
             const createJSON = payload.CREATE;
@@ -238,7 +239,15 @@ function subscribeCacheUpdatesToObject(id, itemType) {
                 if (createJSON) {
                     // This is any object that was created and added, put it into the cache
                     if (createJSON.id && createJSON.item_type) {
-                        dispatch(getPutItemFunction(createJSON.item_type)(createJSON, dispatch));
+                        if (createJSON.item_type === "Message") {
+                            if (getStore().message.boardIfSubscribed[createJSON.board] !== true) {
+                                // alert("Adding message to board: " + createJSON.board + ", with message: " + JSON.stringify(createJSON));
+                                dispatch(addMessageFromNotification(createJSON.board, createJSON));
+                            }
+                        }
+                        else {
+                            dispatch(getPutItemFunction(createJSON.item_type)(createJSON, dispatch));
+                        }
                     }
                 }
                 if (setJSON) {

@@ -40,16 +40,15 @@ function queryNextMessagesFromBoardOptionalSubscribe(board, limit, ifSubscribe, 
         let ifFirst = getStore().message.boardIfFirsts[board];
         if (ifFirst !== false) {
             ifFirst = true;
-            // If this is the first time querying the board, Ably subscribe to it.
-            if (ifSubscribe) {
-                debugAlert("Setting handler stuff!");
-                dispatch(addHandlerAndUnsubscription(getBoardChannel(board), (message) => {
-                    dispatch(addMessageFromNotification(board, message.data));
-                }, () => {
-                    // When it unsubscribes, we clear the board
-                    clearBoard(board, dispatch);
-                }));
-            }
+        }
+        // If this is the first time querying the board, Ably subscribe to it.
+        if (ifSubscribe && getStore().message.boardIfSubscribed[board] !== true) {
+            dispatch(addHandlerAndUnsubscription(getBoardChannel(board), (message) => {
+                dispatch(addMessageFromNotification(board, message.data));
+            }, () => {
+                // When it unsubscribes, we clear the board
+                clearBoard(board, dispatch);
+            }));
         }
         let nextToken = getStore().message.boardNextTokens[board];
         // console.log("IF FIRST = " + ifFirst + ", NEXT TOKEN = " + nextToken);
@@ -61,7 +60,7 @@ function queryNextMessagesFromBoardOptionalSubscribe(board, limit, ifSubscribe, 
                     if (!data.items) { data.items = []; }
                     addURLToMessages(data.items, "message", "messageURL", notFoundPicture, (message) => {return message.type}, (messages) => {
                         addURLToMessages(messages, "profileImagePath", "profilePicture", defaultProfilePicture, (message) => {return message.profileImagePath}, (messages) => {
-                            dispatch(addQueryToBoard(board, messages, data.nextToken, dispatch));
+                            dispatch(addQueryToBoard(board, messages, data.nextToken, ifSubscribe, dispatch));
                             if (dataHandler) {
                                 dataHandler(messages);
                             }
@@ -134,7 +133,7 @@ function addURLToMessage(message, messagePathField, messageURLField, defaultURL,
         dataHandler(message);
     }
 }
-function addMessageFromNotification(board, message, dataHandler, failureHandler) {
+export function addMessageFromNotification(board, message, dataHandler, failureHandler) {
     return (dispatch) => {
         dispatch(setIsLoading());
         addURLToMessage(message, "message", "messageURL", notFoundPicture, (message) => {return message.type}, (message) => {
@@ -158,6 +157,15 @@ function addMessageFromNotification(board, message, dataHandler, failureHandler)
         });
     };
 }
+export function setBoardRead(board, userID) {
+    return {
+        type: 'SET_BOARD_READ',
+        payload: {
+            board,
+            userID
+        }
+    }
+}
 export function discardBoard(board) {
     return (dispatch) => {
         dispatch(setIsLoading());
@@ -175,13 +183,14 @@ export function addMessageToBoard(board, message, dispatch) {
         }
     };
 }
-function addQueryToBoard(board, messages, nextToken, dispatch) {
+function addQueryToBoard(board, messages, nextToken, ifSubscribed, dispatch) {
     return {
         type: ADD_QUERY,
         payload: {
             board,
             nextToken,
             messages,
+            ifSubscribed,
             dispatch
         }
     };

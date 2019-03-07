@@ -253,7 +253,7 @@ function subscribeToChannel(channel, messageHandler) {
         }
         else {
             log&&console.log("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channel);
-            log&&alert("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channel);
+            // log&&alert("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channel);
         }
     });
 }
