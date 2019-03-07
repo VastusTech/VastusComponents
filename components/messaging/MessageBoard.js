@@ -53,11 +53,11 @@ class MessageBoard extends Component<Props> {
             // Set up the board
             // this.queryMessages();
             if (this.state.board && !this.props.message.boards[this.state.board]) {
-                alert("is in board");
+                //alert("is in board");
                 this.queryMessages();
             }
             if(!this.state.canScroll) {
-                alert("can't scroll");
+                //alert("can't scroll");
                 this.queryMessages();
             }
         }
@@ -66,7 +66,7 @@ class MessageBoard extends Component<Props> {
     queryMessages() {
         // console.log("Can we query?");
         if (this.state.canFetch) {
-            alert("Querying next messages from the board!");
+            //alert("Querying next messages from the board!");
             this.setState({isLoading: true});
             this.props.queryNextMessagesFromBoard(this.state.board, this.state.fetchLimit, (items) => {
                 if (items) {
