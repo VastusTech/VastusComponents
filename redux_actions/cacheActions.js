@@ -206,7 +206,7 @@ function subscribeFetch(id, itemType, variableList, dataHandler, failureHandler)
         dispatch(setIsLoading());
         // If we are doing a special subscribe fetch, then we must first check to see if
         const item = getStore().cache[getCacheName(itemType)][id];
-        if (item && item.__stale__ !== false) {
+        if (!item || item.__stale__ !== false) {
             // Then it is stale
             // Subscribe (potentially again?)
             dispatch(subscribeCacheUpdatesToObject(id, itemType));

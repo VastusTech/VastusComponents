@@ -12,20 +12,44 @@ const ADD_MESSAGE = 'ADD_MESSAGE';
 const ADD_QUERY = 'ADD_QUERY';
 const CLEAR_BOARD = 'CLEAR_BOARD';
 
+export function peekAtFirstMessageFromBoard(board, dataHandler, failureHandler) {
+    return (dispatch, getStore) => {
+        dispatch(setIsLoading());
+        if (getStore().message.boards[board] && getStore().message.boards[board].length > 0) {
+            if (dataHandler) { dataHandler(getStore().message.boards[board][0]); }
+        }
+        else {
+            // Fetch it
+            dispatch(queryNextMessagesFromBoardOptionalSubscribe(board, 1, false, (messages) => {
+                if (dataHandler) {
+                    if (messages && messages.length > 0) { dataHandler(messages[0]); }
+                    else { dataHandler(null); }
+                }
+            }, failureHandler));
+        }
+    }
+}
 export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHandler) {
+    return (dispatch) => {
+        dispatch(queryNextMessagesFromBoardOptionalSubscribe(board, limit, true, dataHandler, failureHandler));
+    }
+}
+function queryNextMessagesFromBoardOptionalSubscribe(board, limit, ifSubscribe, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         let ifFirst = getStore().message.boardIfFirsts[board];
         if (ifFirst !== false) {
             ifFirst = true;
             // If this is the first time querying the board, Ably subscribe to it.
-            debugAlert("Setting handler stuff!");
-            dispatch(addHandlerAndUnsubscription(getBoardChannel(board), (message) => {
-                dispatch(addMessageFromNotification(board, message.data));
-            }, () => {
-                // When it unsubscribes, we clear the board
-                clearBoard(board, dispatch);
-            }));
+            if (ifSubscribe) {
+                debugAlert("Setting handler stuff!");
+                dispatch(addHandlerAndUnsubscription(getBoardChannel(board), (message) => {
+                    dispatch(addMessageFromNotification(board, message.data));
+                }, () => {
+                    // When it unsubscribes, we clear the board
+                    clearBoard(board, dispatch);
+                }));
+            }
         }
         let nextToken = getStore().message.boardNextTokens[board];
         // console.log("IF FIRST = " + ifFirst + ", NEXT TOKEN = " + nextToken);

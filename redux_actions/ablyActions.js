@@ -112,7 +112,9 @@ export function removeChannel(channel) {
         }
     }
 }
-function clearChannels() {
-    return { type: CLEAR_CHANNELS };
+export function clearChannels() {
+    return {
+        type: CLEAR_CHANNELS,
+    }
 }
 
