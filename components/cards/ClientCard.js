@@ -18,7 +18,7 @@ type Props = {
 };
 
 class ClientCard extends Component<Props> {
-    static fetchVariableList = ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "friendRequests"];
+    static fetchVariableList = ["id", "name", "friends", "challengesWon", "profileImagePath", "friendRequests"];
     static ifSubscribe = false;
 
     constructor(props) {

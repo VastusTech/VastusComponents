@@ -55,13 +55,13 @@ function getObjectAttributeFromCache(id, attributeName, subCacheName, cacheReduc
         if (object) {
             return getAttributeFromObject(object, attributeName);
         }
-        else {
-            err&&console.error("Object (id: " + id + ") not fetched yet!!");
-        }
+        // else {
+        //     err&&console.error("Object (id: " + id + ") not fetched yet!!");
+        // }
     }
-    else {
-        err&&console.error("No cache from Redux received!!!!");
-    }
+    // else {
+    //     err&&console.error("No cache from Redux received!!!!");
+    // }
     return null;
 }
 /**

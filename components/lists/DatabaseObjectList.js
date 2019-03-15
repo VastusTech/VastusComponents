@@ -1,15 +1,21 @@
-import React, { Component } from 'react'
-import { List, Message } from 'semantic-ui-react';
+import React, { useState, useEffect } from 'react'
+import { List, Message, Visibility } from 'semantic-ui-react';
 import ClientCard from "../cards/ClientCard";
 import { connect } from "react-redux";
 import {fetchItem} from "../../redux_actions/cacheActions";
 import Spinner from "../props/Spinner";
-import {getItemTypeFromID, switchHandleItemType, switchReturnItemType} from "../../logic/ItemType";
+import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
 import TrainerCard from "../cards/TrainerCard";
 import EventCard from "../cards/EventCard";
 import ChallengeCard from "../cards/ChallengeCard";
 import PostCard from "../cards/PostCard";
-import MessageBoardCard from "../../../screens/messaging_tab/MessageBoardCard";
+import _ from "lodash";
+
+// TODO Test the new "visibility" fetch system!
+// TODO USING VISIBILITY WITH A MODAL DOESN'T WORK?
+// TODO ALSO OFTEN ONE PERSON IS MISSING for some reason?
+
+const numFetch = 10000000;
 
 type Props = {
     ids: [string],
@@ -18,107 +24,132 @@ type Props = {
     sortFunction?: any
 }
 
-class DatabaseObjectList extends Component<Props> {
-    state = {
-        isLoading: true,
-        ids: null,
-        objects: [],
-        marker: 0
+function objectComponents(objects, sortFunction) {
+    const objectList = [...objects];
+    const components = [];
+    if (sortFunction) {
+        objectList.sort(sortFunction);
+    }
+    for (const key in objectList) {
+        if (objectList.hasOwnProperty(key)) {
+            const id = objectList[key].id;
+            const itemType = objectList[key].item_type;
+            const rank = parseInt(key) + 1;
+            components.push(
+                <List.Item key={key}>
+                    {switchReturnItemType(itemType,
+                        <ClientCard rank={rank} clientID={id}/>,
+                        <TrainerCard rank={rank} trainerID={id}/>,
+                        null,
+                        null,
+                        null,
+                        <EventCard eventID={id}/>,
+                        <ChallengeCard challengeID={id}/>,
+                        null,
+                        <PostCard postID={id}/>,
+                        null,
+                        null,
+                        null,
+                        null,
+                        "Get database object list object not implemented for item type"
+                    )}
+                </List.Item>
+            );
+            // components.push()
+        }
+    }
+    return components;
+}
+
+const DatabaseObjectList = (props: Props) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [ids, setIDs] = useState(null);
+    const [visibleObjects, setVisibleObjects] = useState([]);
+    const [hiddenIDIndex, setHiddenIDIndex] = useState(0);
+
+    // Callback for visible objects updated
+    useEffect(() => {
+        if (ids) {
+            fetchMoreObjects();
+        }
+    }, [visibleObjects]);
+
+    // Component will receive new props
+    useEffect(() => {
+        if (props.ids && JSON.stringify(props.ids) !== JSON.stringify(ids)) {
+            setIDs(props.ids);
+            setHiddenIDIndex(0);
+            setVisibleObjects([]);
+        }
+    }, [props]);
+
+    const fetchMoreObjects = () => {
+        setIsLoading(true);
+        const endIndex = Math.min(props.ids.length, hiddenIDIndex + numFetch);
+        for (let i = hiddenIDIndex; i < endIndex; i++) {
+            const id = props.ids[i];
+            const itemType = getItemTypeFromID(id);
+            if (!props.acceptedItemTypes || props.acceptedItemTypes.includes(itemType)) {
+                const variableList = switchReturnItemType(itemType,
+                    ClientCard.fetchVariableList,
+                    TrainerCard.fetchVariableList,
+                    null, null, null,
+                    EventCard.fetchVariableList,
+                    ChallengeCard.fetchVariableList,
+                    null,
+                    PostCard.fetchVariableList,
+                    null, null, null, null, null,
+                    "Get variable list from item type not implemented!");
+                props.fetchItem(itemType, id, variableList, addObject);
+            }
+        }
+        if (hiddenIDIndex === endIndex) {
+            setIsLoading(false);
+        }
+        setHiddenIDIndex(endIndex);
     };
 
-    componentDidMount() {
-        this.componentWillReceiveProps(this.props);
-    }
+    const addObject = (object) => {
+        if (object) {
+            // TODO This may not work?
+            visibleObjects.push(object);
+            setIsLoading(false);
+            // setVisibleObjects([...visibleObjects, object]);
+        }
+    };
 
-    componentWillReceiveProps(newProps) {
-        // We can use json stringify to check this because it's an array of strings
-        if (newProps.ids && JSON.stringify(this.state.ids) !== JSON.stringify(newProps.ids)) {
-            this.state.ids = newProps.ids;
-            // alert("received ids = " + JSON.stringify(newProps.ids));
-            this.setState({isLoading: true, ids: newProps.ids, objects: []}, () => {
-                const addObject = (object) => {
-                    if (object) {
-                        this.state.objects.push(object);
-                    }
-                    this.setState({isLoading: false});
-                };
-                for (let i = 0; i < newProps.ids.length; i++) {
-                    const id = newProps.ids[i];
-                    const itemType = getItemTypeFromID(id);
-                    if (!newProps.acceptedItemTypes || newProps.acceptedItemTypes.includes(itemType)) {
-                        const variableList = switchReturnItemType(itemType,
-                            ClientCard.fetchVariableList,
-                            ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"],
-                            null, null, null,
-                            EventCard.fetchVariableList,
-                            ChallengeCard.fetchVariableList,
-                            null,
-                            PostCard.fetchVariableList,
-                            null, null, null, MessageBoardCard.fetchVariableList,
-                            "Get variable list from item type not implemented!");
-                        this.props.fetchItem(itemType, id, variableList, addObject);
-                    }
-                }
-            });
-        }
-    }
 
-    render() {
-        function objectComponents(objects, sortFunction) {
-            const objectList = [...objects];
-            const components = [];
-            if (sortFunction) {
-                objectList.sort(sortFunction);
-            }
-            for (const key in objectList) {
-                if (objectList.hasOwnProperty(key)) {
-                    const id = objectList[key].id;
-                    const itemType = objectList[key].item_type;
-                    const rank = parseInt(key) + 1;
-                    components.push(
-                        <List.Item key={key}>
-                            {switchReturnItemType(itemType,
-                                <ClientCard rank={rank} clientID={id}/>,
-                                <TrainerCard rank={rank} trainerID={id}/>,
-                                null,
-                                null,
-                                null,
-                                <EventCard eventID={id}/>,
-                                <ChallengeCard challengeID={id}/>,
-                                null,
-                                <PostCard postID={id}/>,
-                                null,
-                                null,
-                                null,
-                                <MessageBoardCard messageBoardID={id}/>,
-                                "Get database object list object not implemented for item type"
-                            )}
-                        </List.Item>
-                    );
-                    components.push(switchReturnItemType())
-                }
-            }
-            return components;
+    const handleVisibilityUpdate = (e, {calculations}) => {
+        // calculations.bottomVisible;
+        // calculations.topVisible;
+        // alert("hey");
+        // alert(JSON.stringify(calculations));
+        console.log(calculations);
+        if (calculations.bottomVisible) {
+            fetchMoreObjects();
         }
-        if (this.props.isLoading) {
-            return(
-                <Spinner/>
-            )
-        }
-        if (this.state.objects.length > 0) {
-            return(
+    };
+
+    if (isLoading) {
+        return(
+            <Spinner/>
+        )
+    }
+    if (ids && ids.length > 0) {
+        return(
+            <div>
                 <List relaxed verticalAlign="middle">
-                    {objectComponents(this.state.objects, this.props.sortFunction)}
+                    {objectComponents(visibleObjects, props.sortFunction)}
                 </List>
-            );
-        }
-        else {
-            return(
-                <Message>{this.props.noObjectsMessage}</Message>
-            );
-        }
+            </div>
+        );
     }
-}
+    else {
+        return(
+            <Message>{props.noObjectsMessage}</Message>
+        );
+    }
+};
 
 const mapStateToProps = () => ({});
 
