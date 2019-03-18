@@ -200,43 +200,43 @@ export default (state = initialState, action) => {
     switch (action.type) {
         // TODO Also make sure that the item to get also has all the attributes we desire?
         case FETCH_CLIENT:
-            state = addObjectToCache(state, "clients", clientCacheSize, "clientLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "clients", clientCacheSize, "clientLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_TRAINER:
-            state = addObjectToCache(state, "trainers", trainerCacheSize, "trainerLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "trainers", trainerCacheSize, "trainerLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_GYM:
-            state = addObjectToCache(state, "gyms", gymCacheSize, "gymLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "gyms", gymCacheSize, "gymLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_WORKOUT:
-            state = addObjectToCache(state, "workouts", workoutCacheSize, "workoutLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "workouts", workoutCacheSize, "workoutLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_REVIEW:
-            state = addObjectToCache(state, "reviews", reviewCacheSize, "reviewLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "reviews", reviewCacheSize, "reviewLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_EVENT:
-            state = addObjectToCache(state, "events", eventCacheSize, "eventLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "events", eventCacheSize, "eventLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_CHALLENGE:
-            state = addObjectToCache(state, "challenges", challengeCacheSize, "challengeLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "challenges", challengeCacheSize, "challengeLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_INVITE:
-            state = addObjectToCache(state, "invites", inviteCacheSize, "inviteLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "invites", inviteCacheSize, "inviteLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_POST:
-            state = addObjectToCache(state, "posts", postCacheSize, "postLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "posts", postCacheSize, "postLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_GROUP:
-            state = addObjectToCache(state, "groups", groupCacheSize, "groupLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "groups", groupCacheSize, "groupLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_COMMENT:
-            state = addObjectToCache(state, "comments", commentCacheSize, "commentLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "comments", commentCacheSize, "commentLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_SPONSOR:
-            state = addObjectToCache(state, "sponsors", sponsorCacheSize, "sponsorLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "sponsors", sponsorCacheSize, "sponsorLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_STREAK:
-            state = addObjectToCache(state, "streaks", streakCacheSize, "streakLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "streaks", streakCacheSize, "streakLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case ADD_CLIENT_ATTRIBUTES:
             state = addAttributes(state, action.payload.id, action.payload.attributes, "clients");
@@ -317,43 +317,43 @@ export default (state = initialState, action) => {
             state = removeAttributes(state, action.payload.id, action.payload.attributes, "streaks");
             break;
         case REMOVE_CLIENT:
-            state = removeItem(state, "clients", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "clients", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_TRAINER:
-            state = removeItem(state, "trainers", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "trainers", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_GYM:
-            state = removeItem(state, "gyms", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "gyms", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_WORKOUT:
-            state = removeItem(state, "workouts", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "workouts", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_REVIEW:
-            state = removeItem(state, "reviews", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "reviews", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_EVENT:
-            state = removeItem(state, "events", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "events", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_CHALLENGE:
-            state = removeItem(state, "challenges", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "challenges", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_INVITE:
-            state = removeItem(state, "invites", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "invites", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_POST:
-            state = removeItem(state, "posts", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "posts", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_GROUP:
-            state = removeItem(state, "groups", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "groups", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_COMMENT:
-            state = removeItem(state, "comments", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "comments", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_SPONSOR:
-            state = removeItem(state, "sponsors", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "sponsors", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_STREAK:
-            state = removeItem(state, "streaks", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "streaks", action.payload.id, action.asyncDispatch);
             break;
         case FETCH_CLIENT_QUERY:
             state = addQueryToCache(state, "clientQueries", clientQueryCacheSize, "clientQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);

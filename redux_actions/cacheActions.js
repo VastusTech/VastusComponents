@@ -264,9 +264,9 @@ function subscribeCacheUpdatesToObject(id, itemType) {
                     dispatch(removeItemAttributes(itemType, id, removeJSON));
                 }
             }
-        }, () => {
+        }, (asyncDispatch) => {
             // When the object is automatically unsubscribed, just add on the __stale__ variable
-            dispatch(getPutItemFunction(itemType)({id, __stale__: true}, dispatch));
+            asyncDispatch(putItem({id, __stale__: true}, itemType, dispatch));
         }));
     };
 }
@@ -1042,6 +1042,9 @@ function putQuery(queryString, queryResult, actionType) {
             queryResult
         }
     };
+}
+export function putItem(item, itemType, dispatch) {
+    return getPutItemFunction(itemType)(item, dispatch);
 }
 export function putClient(client, dispatch) {
     if (client && client.id) {

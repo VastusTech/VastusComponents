@@ -45,7 +45,7 @@ function queryNextMessagesFromBoardOptionalSubscribe(board, limit, ifSubscribe, 
         if (ifSubscribe && getStore().message.boardIfSubscribed[board] !== true) {
             dispatch(addHandlerAndUnsubscription(getBoardChannel(board), (message) => {
                 dispatch(addMessageFromNotification(board, message.data));
-            }, () => {
+            }, (state) => {
                 // When it unsubscribes, we clear the board
                 clearBoard(board, dispatch);
             }));
