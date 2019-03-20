@@ -44,7 +44,7 @@ class S3Storage {
     static ifExists(path, successHandler, failureHandler) {
         let bucket = new AWS.S3({params: {Bucket: S3Storage.bucketName}});
         bucket.headObject({
-            Bucket: 'vastusofficial',
+            Bucket: S3Storage.bucketName,
             Key: path
         }, (err) => {
             if (err) {
