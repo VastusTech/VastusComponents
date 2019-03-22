@@ -15,6 +15,7 @@ class SearchBarProp extends Component {
     state = {
         error: null,
         isLoading: false,
+        searchQuery: "",
         minimumSearchResults: 6,
         // eventsLoading: false,
         // clientsLoading: false,
@@ -36,6 +37,7 @@ class SearchBarProp extends Component {
         this.handleResultSelect = this.handleResultSelect.bind(this);
         this.openResultModal = this.openResultModal.bind(this);
         this.closeResultModal = this.closeResultModal.bind(this);
+        this.retrieveSearchResults = _.debounce(this.retrieveSearchResults.bind(this), 500);
     }
 
     componentWillMount() {
@@ -48,12 +50,17 @@ class SearchBarProp extends Component {
     };
 
     handleSearchChange = (e, { value }) => {
+        // alert(value);
         log&&console.log(value);
+        this.state.searchQuery = value;
+        this.setState({isLoading: true});
+        // this.setState({searchQuery: value, isLoading: true});
         this.retrieveSearchResults(value);
     };
 
     retrieveSearchResults(searchQuery) {
-        this.setState({isLoading: true});
+        // alert(searchQuery);
+        // this.setState({isLoading: true});
         this.props.newSearch(searchQuery, (data) => {
             if (data && data.length) {
                 if (data.length < this.state.minimumSearchResults && !this.props.search.ifFinished) {
@@ -204,9 +211,9 @@ class SearchBarProp extends Component {
                     placeholder="Search for Users and Challenges"
                     loading={this.state.isLoading}
                     onResultSelect={this.handleResultSelect}
-                    onSearchChange={_.debounce(this.handleSearchChange, 1000, { leading: true })}
+                    onSearchChange={this.handleSearchChange}
                     results={this.getFormattedResults()}
-                    value={this.props.search.searchQuery}
+                    value={this.state.searchQuery}
                     showNoResults={this.props.search.searchBarEnabled}
                 />
             </Fragment>
