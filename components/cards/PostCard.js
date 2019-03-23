@@ -202,12 +202,12 @@ class PostCard extends Component<Props> {
         const owner = this.getPostAttribute("by");
         if (owner.substr(0, 2) === "CL" && (this.getClientAttribute("profileImagePaths") !== [] || this.getClientAttribute("profileImagePaths") !== null)) {
             return(
-                <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${this.getClientAttribute("profileImage")})`, width: '50px', height: '50px'}}></div>
+                <div align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${this.getClientAttribute("profileImage")})`, width: '50px', height: '50px'}}/>
             );
         }
         if (owner.substr(0, 2) === "TR" && (this.getClientAttribute("profileImagePaths") !== [] || this.getClientAttribute("profileImagePaths") !== null)) {
             return(
-                <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${this.getTrainerAttribute("profileImage")})`, width: '50px', height: '50px'}}></div>
+                <div align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${this.getTrainerAttribute("profileImage")})`, width: '50px', height: '50px'}}/>
             );
         }
         else {
@@ -378,7 +378,7 @@ class PostCard extends Component<Props> {
                             <Grid.Column width={6}>
                                 {this.profilePicture()}
                             </Grid.Column>
-                            <Grid.Column width={18} style={{marginLeft: '-15px', marginTop: '15px'}}>
+                            <Grid.Column /*width={16}*/ style={{marginLeft: '-15px', marginTop: '15px'}}>
                                 {this.getOwnerName() + " "} {/*this.state.postMessage*/}
                             </Grid.Column>
                             {this.getCorrectModal()}

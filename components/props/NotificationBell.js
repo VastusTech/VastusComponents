@@ -49,8 +49,9 @@ const NotificationBell = (props) => {
     }, [props.user.receivedInvites, props.user.ownedEvents, props.user.ownedChallenges, props.user.ownedGroups]);
 
     if (numNotifications > 0) {
+        const {fetchInvite, fetchGroup, fetchChallenge, fetchEvent, forceFetchUserAttributes, fetchUserAttributes, ...otherProps} = props;
         return (
-            <div {...props}>
+            <div {...otherProps}>
                 <Icon name='bell' size='big'/>
                 {numNotifications}
             </div>
