@@ -7,14 +7,14 @@
 import React, { Component } from 'react';
 import {Card, Modal, Button, Label, Icon, Divider, Image, Message, Dimmer, Loader} from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import {fetchClient, fetchTrainer, forceFetchPost, fetchPost, removeItem} from "../../redux_actions/cacheActions";
-import { convertFromISO } from "../../logic/TimeHelper";
-import { forceFetchUserAttributes } from "../../../redux_helpers/actions/userActions";
-import PostFunctions from "../../database_functions/PostFunctions";
+import {fetchClient, fetchTrainer, forceFetchPost, fetchPost, removeItem} from "../../../redux_actions/cacheActions";
+import { convertFromISO } from "../../../logic/TimeHelper";
+import { forceFetchUserAttributes } from "../../../../redux_helpers/actions/userActions";
+import PostFunctions from "../../../database_functions/PostFunctions";
 import {Player} from "video-react";
 import { Storage } from "aws-amplify";
-import {getItemTypeFromID} from "../../logic/ItemType";
-import {err} from "../../../Constants";
+import {getItemTypeFromID} from "../../../logic/ItemType";
+import {err} from "../../../../Constants";
 
 type Props = {
     postID: string
