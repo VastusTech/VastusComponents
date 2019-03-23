@@ -71,7 +71,7 @@ function getObjectAttributeFromCache(id, attributeName, subCacheName, cacheReduc
  * @param attributeName The name of the attribute in the object to retrieve.
  * @return {*} Either the attribute or the length of the array attribute
  */
-function getAttributeFromObject(object, attributeName) {
+export function getAttributeFromObject(object, attributeName) {
     if (object) {
         if (attributeName.substr(attributeName.length - 6) === "Length") {
             attributeName = attributeName.substr(0, attributeName.length - 6);

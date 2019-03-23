@@ -39,7 +39,7 @@ function objectComponents(objects, sortFunction) {
                 <List.Item key={key}>
                     {switchReturnItemType(itemType,
                         <ClientCard rank={rank} clientID={id}/>,
-                        <TrainerCard rank={rank} trainerID={id}/>,
+                        <TrainerCard rank={rank} trainer={objectList[key]}/>,
                         null,
                         null,
                         null,
@@ -61,6 +61,40 @@ function objectComponents(objects, sortFunction) {
     return components;
 }
 
+const fetchMoreObjects = (ids, acceptedItemTypes, hiddenIDIndex, setHiddenIDIndex, setVisibleObjects, setIsLoading, fetchItem) => {
+    setIsLoading(true);
+    const endIndex = Math.min(ids.length, hiddenIDIndex + numFetch);
+    for (let i = hiddenIDIndex; i < endIndex; i++) {
+        const id = ids[i];
+        const itemType = getItemTypeFromID(id);
+        if (!acceptedItemTypes || acceptedItemTypes.includes(itemType)) {
+            const variableList = switchReturnItemType(itemType,
+                ClientCard.fetchVariableList,
+                TrainerCard.fetchVariableList,
+                null, null, null,
+                EventCard.fetchVariableList,
+                ChallengeCard.fetchVariableList,
+                null,
+                PostCard.fetchVariableList,
+                null, null, null, null, null,
+                "Get variable list from item type not implemented!");
+            fetchItem(itemType, id, variableList, (o) => addObject(o, setVisibleObjects, setIsLoading));
+        }
+    }
+    if (hiddenIDIndex === endIndex) {
+        setIsLoading(false);
+    }
+    setHiddenIDIndex(endIndex);
+};
+
+const addObject = (object, setVisibleObjects, setIsLoading) => {
+    if (object) {
+        setVisibleObjects(p => [...p, object]);
+        setIsLoading(false);
+    }
+};
+
+
 const DatabaseObjectList = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [ids, setIDs] = useState(null);
@@ -70,7 +104,7 @@ const DatabaseObjectList = (props: Props) => {
     // Callback for visible objects updated
     useEffect(() => {
         if (ids) {
-            fetchMoreObjects();
+            fetchMoreObjects(ids, props.acceptedItemTypes, hiddenIDIndex, setHiddenIDIndex, setVisibleObjects, setIsLoading, props.fetchItem);
         }
     }, [visibleObjects]);
 
@@ -83,52 +117,17 @@ const DatabaseObjectList = (props: Props) => {
         }
     }, [props]);
 
-    const fetchMoreObjects = () => {
-        setIsLoading(true);
-        const endIndex = Math.min(props.ids.length, hiddenIDIndex + numFetch);
-        for (let i = hiddenIDIndex; i < endIndex; i++) {
-            const id = props.ids[i];
-            const itemType = getItemTypeFromID(id);
-            if (!props.acceptedItemTypes || props.acceptedItemTypes.includes(itemType)) {
-                const variableList = switchReturnItemType(itemType,
-                    ClientCard.fetchVariableList,
-                    TrainerCard.fetchVariableList,
-                    null, null, null,
-                    EventCard.fetchVariableList,
-                    ChallengeCard.fetchVariableList,
-                    null,
-                    PostCard.fetchVariableList,
-                    null, null, null, null, null,
-                    "Get variable list from item type not implemented!");
-                props.fetchItem(itemType, id, variableList, addObject);
-            }
-        }
-        if (hiddenIDIndex === endIndex) {
-            setIsLoading(false);
-        }
-        setHiddenIDIndex(endIndex);
-    };
-
-    const addObject = (object) => {
-        if (object) {
-            // TODO This may not work?
-            visibleObjects.push(object);
-            setIsLoading(false);
-            // setVisibleObjects([...visibleObjects, object]);
-        }
-    };
+    // alert("defining a function here");
 
 
-    const handleVisibilityUpdate = (e, {calculations}) => {
-        // calculations.bottomVisible;
-        // calculations.topVisible;
-        // alert("hey");
-        // alert(JSON.stringify(calculations));
-        console.log(calculations);
-        if (calculations.bottomVisible) {
-            fetchMoreObjects();
-        }
-    };
+    // const handleVisibilityUpdate = (e, {calculations}) => {
+    //     // alert("hey");
+    //     // alert(JSON.stringify(calculations));
+    //     console.log(calculations);
+    //     if (calculations.bottomVisible) {
+    //         fetchMoreObjects();
+    //     }
+    // };
 
     if (isLoading) {
         return(

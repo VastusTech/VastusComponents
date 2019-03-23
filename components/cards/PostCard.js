@@ -284,7 +284,7 @@ class PostCard extends Component<Props> {
                     if(!this.state.postMessageSet) {
                         this.setState({postMessage: "shared a challenge", postMessageSet: true});
                     }
-                    return (<ChallengeDetailCard postID={this.state.postID}/>);
+                    return (<ChallengeDetailCard challengeID={this.getPostAttribute("about")}/>);
                 }
                 else if (postType === "Invite") {
                     //return (<InviteDetailCard displayMedia = {this.getDisplayMedia}/>);
