@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { List, Message, Visibility } from 'semantic-ui-react';
-import ClientCard from "../cards/ClientCard";
+import ClientCard, {ClientCardInfo} from "../cards/ClientCard";
 import { connect } from "react-redux";
 import {fetchItem} from "../../redux_actions/cacheActions";
 import Spinner from "../props/Spinner";
 import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
-import TrainerCard from "../cards/TrainerCard";
+import TrainerCard, {TrainerCardInfo} from "../cards/TrainerCard";
 import EventCard from "../cards/EventCard";
 import ChallengeCard from "../cards/ChallengeCard";
 import PostCard from "../cards/PostCard";
-import _ from "lodash";
 
 // TODO Test the new "visibility" fetch system!
 // TODO USING VISIBILITY WITH A MODAL DOESN'T WORK?
@@ -24,44 +23,39 @@ type Props = {
     sortFunction?: any
 }
 
-function objectComponents(objects, sortFunction) {
-    const objectList = [...objects];
+function objectComponents(objects, visibleComponents) {
     const components = [];
-    if (sortFunction) {
-        objectList.sort(sortFunction);
-    }
-    for (const key in objectList) {
-        if (objectList.hasOwnProperty(key)) {
-            const id = objectList[key].id;
-            const itemType = objectList[key].item_type;
-            const rank = parseInt(key) + 1;
+    for (const key in objects) {
+        if (objects.hasOwnProperty(key)) {
+            const id = objects[key].id;
             components.push(
                 <List.Item key={key}>
-                    {switchReturnItemType(itemType,
-                        <ClientCard rank={rank} clientID={id}/>,
-                        <TrainerCard rank={rank} trainer={objectList[key]}/>,
-                        null,
-                        null,
-                        null,
-                        <EventCard eventID={id}/>,
-                        <ChallengeCard challengeID={id}/>,
-                        null,
-                        <PostCard postID={id}/>,
-                        null,
-                        null,
-                        null,
-                        null,
-                        "Get database object list object not implemented for item type"
-                    )}
+                    {visibleComponents[id]}
                 </List.Item>
             );
-            // components.push()
         }
     }
     return components;
 }
-
-const fetchMoreObjects = (ids, acceptedItemTypes, hiddenIDIndex, setHiddenIDIndex, setVisibleObjects, setIsLoading, fetchItem) => {
+const getObjectComponent = (key, object: {id: string, item_type: string}) => (
+    switchReturnItemType(object.item_type,
+        <ClientCard rank={key} client={object}/>,
+        <TrainerCard rank={key} trainer={object}/>,
+        null,
+        null,
+        null,
+        <EventCard eventID={object.id}/>,
+        <ChallengeCard challengeID={object.id}/>,
+        null,
+        <PostCard postID={object.id}/>,
+        null,
+        null,
+        null,
+        null,
+        "Get database object list object not implemented for item type"
+    )
+);
+const fetchMoreObjects = (ids, acceptedItemTypes, sortFunction, hiddenIDIndex, setHiddenIDIndex, setVisibleObjects, setVisibleComponents, setIsLoading, fetchItem) => {
     setIsLoading(true);
     const endIndex = Math.min(ids.length, hiddenIDIndex + numFetch);
     for (let i = hiddenIDIndex; i < endIndex; i++) {
@@ -69,8 +63,8 @@ const fetchMoreObjects = (ids, acceptedItemTypes, hiddenIDIndex, setHiddenIDInde
         const itemType = getItemTypeFromID(id);
         if (!acceptedItemTypes || acceptedItemTypes.includes(itemType)) {
             const variableList = switchReturnItemType(itemType,
-                ClientCard.fetchVariableList,
-                TrainerCard.fetchVariableList,
+                ClientCardInfo.fetchList,
+                TrainerCardInfo.fetchList,
                 null, null, null,
                 EventCard.fetchVariableList,
                 ChallengeCard.fetchVariableList,
@@ -78,7 +72,7 @@ const fetchMoreObjects = (ids, acceptedItemTypes, hiddenIDIndex, setHiddenIDInde
                 PostCard.fetchVariableList,
                 null, null, null, null, null,
                 "Get variable list from item type not implemented!");
-            fetchItem(itemType, id, variableList, (o) => addObject(o, setVisibleObjects, setIsLoading));
+            fetchItem(itemType, id, variableList, (o) => addObject(o, sortFunction, setVisibleObjects, setVisibleComponents, setIsLoading));
         }
     }
     if (hiddenIDIndex === endIndex) {
@@ -87,24 +81,46 @@ const fetchMoreObjects = (ids, acceptedItemTypes, hiddenIDIndex, setHiddenIDInde
     setHiddenIDIndex(endIndex);
 };
 
-const addObject = (object, setVisibleObjects, setIsLoading) => {
-    if (object) {
-        setVisibleObjects(p => [...p, object]);
+const addObject = (object, sortFunction, setVisibleObjects, setVisibleComponents, setIsLoading) => {
+    if (object && object.id) {
+        setVisibleObjects(p => {
+            const a = [...p, object];
+            const key = a.length;
+            if (sortFunction) { a.sort(sortFunction); }
+            setVisibleComponents(p => {
+                const newComps = {
+                    ...p,
+                    [object.id]: getObjectComponent(key, object)
+                };
+                if (sortFunction) {
+                    for (const i in a) {
+                        if (a.hasOwnProperty(i)) {
+                            if (newComps[a[i].id].props.rank !== parseInt(i) + 1) {
+                                newComps[a[i].id] = getObjectComponent(parseInt(i) + 1, a[i]);
+                            }
+                        }
+                    }
+                }
+                return newComps;
+            });
+            return a;
+        });
         setIsLoading(false);
     }
 };
-
 
 const DatabaseObjectList = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [ids, setIDs] = useState(null);
     const [visibleObjects, setVisibleObjects] = useState([]);
+    const [visibleComponents, setVisibleComponents] = useState({});
     const [hiddenIDIndex, setHiddenIDIndex] = useState(0);
 
     // Callback for visible objects updated
     useEffect(() => {
         if (ids) {
-            fetchMoreObjects(ids, props.acceptedItemTypes, hiddenIDIndex, setHiddenIDIndex, setVisibleObjects, setIsLoading, props.fetchItem);
+            fetchMoreObjects(ids, props.acceptedItemTypes, props.sortFunction, hiddenIDIndex, setHiddenIDIndex,
+                setVisibleObjects, setVisibleComponents, setIsLoading, props.fetchItem);
         }
     }, [visibleObjects]);
 
@@ -138,7 +154,7 @@ const DatabaseObjectList = (props: Props) => {
         return(
             <div>
                 <List relaxed verticalAlign="middle">
-                    {objectComponents(visibleObjects, props.sortFunction)}
+                    {objectComponents(visibleObjects, visibleComponents)}
                 </List>
             </div>
         );

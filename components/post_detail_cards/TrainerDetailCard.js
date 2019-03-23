@@ -15,7 +15,6 @@ import { connect } from 'react-redux';
 import { fetchClient } from "../../redux_actions/cacheActions";
 import PostFunctions from "../../database_functions/PostFunctions.js";
 import TrainerCard from "../cards/TrainerCard";
-import {log} from "../../../Constants";
 
 type Props = {
     postID: string
