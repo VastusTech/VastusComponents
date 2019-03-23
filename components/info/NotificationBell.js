@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Icon} from 'semantic-ui-react'
+import {Icon, Grid} from 'semantic-ui-react'
 import {fetchUserAttributes, forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import {connect} from 'react-redux';
 import {fetchChallenge, fetchEvent, fetchGroup, fetchInvite} from "../../redux_actions/cacheActions";
@@ -51,15 +51,21 @@ const NotificationBell = (props) => {
     if (numNotifications > 0) {
         const {fetchInvite, fetchGroup, fetchChallenge, fetchEvent, forceFetchUserAttributes, fetchUserAttributes, ...otherProps} = props;
         return (
-            <div {...otherProps}>
-                <Icon name='bell' size='big'/>
-                {numNotifications}
-            </div>
+            <Grid style={{marginTop: "6px"}} centered>
+                <div {...otherProps}>
+                    <Icon name='bell' size='big'/>
+                    {numNotifications}
+                </div>
+            </Grid>
         );
     }
     else {
         return (
-            <Icon name='bell outline' size='large'/>
+            <Grid style={{marginTop: "6px"}} centered>
+                <div>
+                    <Icon name='bell outline' size='big'/>
+                </div>
+            </Grid>
         );
     }
 };
