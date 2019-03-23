@@ -109,7 +109,7 @@ function addS3MediaToData(data, callback) {
             data[mediaKey] = defaultProfilePicture;
         }
         else {
-            data[mediaKey] = notFoundPicture;
+            data[mediaKey] = [notFoundPicture];
         }
     }
     let asyncWaiting = 0;
