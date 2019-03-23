@@ -18,7 +18,7 @@ type Props = {
 /**
  * Basically an InviteCard
  */
-class NotificationCard extends Component<Props> {
+class InviteCard extends Component<Props> {
     static fetchVariableList = ["time_created", "from", "to", "inviteType", "about", "description"];
 
     state = {
@@ -680,5 +680,5 @@ const mapDispatchToProps = (dispatch) => {
         // }
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(NotificationCard);
+export default connect(mapStateToProps, mapDispatchToProps)(InviteCard);
 

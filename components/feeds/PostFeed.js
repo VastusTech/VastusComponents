@@ -158,24 +158,12 @@ const mapDispatchToProps = (dispatch) => {
         fetchPost: (id, variablesList) => {
             dispatch(fetchPost(id, variablesList));
         },
-        // putPost: (event) => {
-        //     dispatch(putPost(event));
-        // },
-        // putPostQuery: (queryString, queryResult) => {
-        //     dispatch(putPostQuery(queryString, queryResult));
-        // },
         fetchPostQuery: (variablesList, filter, limit, nextToken, dataHandler, failureHandler) => {
             dispatch(fetchPostQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler));
         },
         fetchChallenge: (id, variablesList) => {
             dispatch(fetchChallenge(id, variablesList));
         },
-        // putChallenge: (event) => {
-        //     dispatch(putChallenge(event));
-        // },
-        // putChallengeQuery: (queryString, queryResult) => {
-        //     dispatch(putChallengeQuery(queryString, queryResult));
-        // },
     }
 };
 

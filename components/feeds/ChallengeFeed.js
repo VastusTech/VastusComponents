@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import {fetchChallenge, putChallenge, putChallengeQuery} from "../../redux_actions/cacheActions";
 import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import CreateChallengeProp from "../manager/CreateChallenge"
-import NextChallengeProp from "../../../screens/main_tab/NextChallenge";
+import NextChallengeProp from "../info/NextChallenge";
 // import { Tab } from "semantic-ui-react/dist/commonjs/modules/Tab/Tab";
 
 /**
