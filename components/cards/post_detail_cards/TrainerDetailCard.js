@@ -12,10 +12,9 @@
 import React, { Component } from 'react';
 import {Card, Modal, Button, Header, List, Divider, Grid, Message, Dimmer, Loader} from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { fetchClient } from "../../redux_actions/cacheActions";
-import PostFunctions from "../../database_functions/PostFunctions.js";
-import TrainerCard from "../cards/TrainerCard";
-import {log} from "../../../Constants";
+import { fetchClient } from "../../../redux_actions/cacheActions";
+import PostFunctions from "../../../database_functions/PostFunctions.js";
+import TrainerCard from "../TrainerCard";
 
 type Props = {
     postID: string

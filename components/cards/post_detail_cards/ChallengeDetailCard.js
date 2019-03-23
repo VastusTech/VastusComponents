@@ -1,5 +1,5 @@
 import React  from 'react';
-import ChallengeCard from "../cards/ChallengeCard";
+import ChallengeCard from "../ChallengeCard";
 
 export const ChallengeDetailCardInfo = {
     fetchList: ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "difficulty", "time_created", "capacity", "members", "prize", "goal", "owner", "access", "restriction", "submissions"],

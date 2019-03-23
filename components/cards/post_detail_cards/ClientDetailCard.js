@@ -4,6 +4,6 @@
 
 // TODO This will be for a post that is sharing a Client's profile!
 
-import ClientCard from "../cards/ClientCard";
+import ClientCard from "../ClientCard";
 
 export default ClientCard;
