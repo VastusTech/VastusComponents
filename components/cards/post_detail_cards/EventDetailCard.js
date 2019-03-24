@@ -1,6 +1,29 @@
+import React from "react";
+import EventCard from "../EventCard";
 
-// TODO These detail cards are going to be embedded into the PostCard component when it is applicable. Reference
-// TODO Facebook's little cards within posts when you share something for what I am imagining.
+export const EventDetailCardInfo = {
+    fetchList: ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty", "restriction", "access"],
+    ifSubscribe: false
+};
 
-// TODO This will be for a post that is sharing a Event to your friends!
-// TODO This will also be for a post that is created from a newly created event!
+type Props = {
+    event: {
+        id: string,
+        title: string,
+        time: string,
+        capacity: string,
+        difficulty: string,
+        restriction: string,
+        members: [string],
+        owner: string,
+        time_created: string,
+        access: string
+    }
+};
+
+const EventDetailCard = (props: Props) => (
+    <EventCard eventID={props.event.id}/>
+);
+
+export default EventDetailCard;
+

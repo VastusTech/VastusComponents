@@ -160,7 +160,7 @@ class ChallengeFeed extends Component {
             // console.log(JSON.stringify(challenges));
             return _.times(challenges.length, i => (
                 <Fragment key={i + 1}>
-                    <ChallengeCard challengeID={challenges[i].id}/>
+                    <ChallengeCard challenge={challenges[i]}/>
                 </Fragment>
             ));
         }

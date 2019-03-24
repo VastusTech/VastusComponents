@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react'
 import {Icon, Message} from 'semantic-ui-react';
-import ChallengeCard from "../cards/ChallengeCard";
+import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
 import { connect } from "react-redux";
 import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import {fetchChallenge} from "../../redux_actions/cacheActions";
@@ -56,7 +56,7 @@ class NextChallengeProp extends Component {
                     let numTotal = user.challenges.length;
                     for (let i = 0; i < user.challenges.length; i++) {
                         // console.log("Fetching challenge for next challenge");
-                        this.props.fetchChallenge(user.challenges[i], ChallengeCard.fetchVariableList, (challenge) => {
+                        this.props.fetchChallenge(user.challenges[i], ChallengeCardInfo.fetchList, (challenge) => {
                             if (challenge && challenge.endTime) {
                                 const challengeTimeLeft = timeLeft(parseISOString(challenge.endTime));
                                 // alert("Received challenge = " + JSON.stringify(challenge));
@@ -105,7 +105,7 @@ class NextChallengeProp extends Component {
             return (
                 <Fragment key={0}>
                     <Message>
-                        <ChallengeCard challengeID={challenges[0].challenge.id}/>
+                        <ChallengeCard challenge={challenges[0].challenge}/>
                     </Message>
                 </Fragment>
             );

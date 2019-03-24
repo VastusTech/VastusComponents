@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { List, Icon, Grid, Button, Message, Modal } from 'semantic-ui-react';
-import ClientCard from "../cards/ClientCard";
+import ClientCard, {ClientCardInfo} from "../cards/ClientCard";
 import { connect } from "react-redux";
 import {fetchItem} from "../../redux_actions/cacheActions";
 import Spinner from "../props/Spinner";
 import {getItemTypeFromID, switchHandleItemType, switchReturnItemType} from "../../logic/ItemType";
-import TrainerCard from "../cards/TrainerCard";
+import TrainerCard, {TrainerCardInfo} from "../cards/TrainerCard";
 import EventCard from "../cards/EventCard";
-import ChallengeCard from "../cards/ChallengeCard";
-import PostCard from "../cards/PostCard";
+import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
+import PostCard, {PostCardInfo} from "../cards/PostCard";
 import MessageBoardCard from "./MessageBoardCard";
 import MessageBoard from "./MessageBoard";
 import MessageHandler from "../../api/MessageHandler";
@@ -56,13 +56,13 @@ class DatabaseObjectList extends Component<Props> {
                     const itemType = getItemTypeFromID(id);
                     if (!newProps.acceptedItemTypes || newProps.acceptedItemTypes.includes(itemType)) {
                         const variableList = switchReturnItemType(itemType,
-                            ClientCard.fetchVariableList,
-                            ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"],
+                            ClientCardInfo.fetchList,
+                            TrainerCardInfo.fetchList,
                             null, null, null,
                             EventCard.fetchVariableList,
-                            ChallengeCard.fetchVariableList,
+                            ChallengeCardInfo.fetchList,
                             null,
-                            PostCard.fetchVariableList,
+                            PostCardInfo.fetchList,
                             null, null, null, MessageBoardCard.fetchVariableList,
                             "Get variable list from item type not implemented!");
                         this.props.fetchItem(itemType, id, variableList, addObject);
@@ -96,23 +96,24 @@ class DatabaseObjectList extends Component<Props> {
             }
             for (const key in objectList) {
                 if (objectList.hasOwnProperty(key)) {
-                    const id = objectList[key].id;
-                    const itemType = objectList[key].item_type;
+                    const object = objectList[key];
+                    const id = object.id;
+                    const itemType = object.item_type;
                     const rank = parseInt(key) + 1;
                     components.push(
                         <List.Item key={key}>
                             <Grid>
                                 <Grid.Column width={12}>
                                     {switchReturnItemType(itemType,
-                                        <ClientCard rank={rank} clientID={id}/>,
-                                        <TrainerCard rank={rank} trainerID={id}/>,
+                                        <ClientCard rank={rank} client={object}/>,
+                                        <TrainerCard rank={rank} trainer={object}/>,
                                         null,
                                         null,
                                         null,
                                         <EventCard eventID={id}/>,
-                                        <ChallengeCard challengeID={id}/>,
+                                        <ChallengeCard challenge={object}/>,
                                         null,
-                                        <PostCard postID={id}/>,
+                                        <PostCard post={object}/>,
                                         null,
                                         null,
                                         null,

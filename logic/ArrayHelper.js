@@ -39,3 +39,18 @@ export function addUniqueToArray(originalArray, newArray) {
     }
     return originalArray;
 }
+
+/**
+ * Returns whether there is any overlap between the two arrays. Uses pure === for equality checks.
+ *
+ * @param array1
+ * @param array2
+ */
+export function arraysIntersect(array1, array2) {
+    for (let i = 0; i < array1.length; i++) {
+        if (array2.indexOf(array1[i]) !== -1) {
+            return true;
+        }
+    }
+    return false;
+}

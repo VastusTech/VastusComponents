@@ -7,7 +7,7 @@ import Spinner from "../props/Spinner";
 import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
 import TrainerCard, {TrainerCardInfo} from "../cards/TrainerCard";
 import EventCard from "../cards/EventCard";
-import ChallengeCard from "../cards/ChallengeCard";
+import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
 import PostCard from "../cards/PostCard";
 
 // TODO Test the new "visibility" fetch system!
@@ -45,7 +45,7 @@ const getObjectComponent = (key, object: {id: string, item_type: string}) => (
         null,
         null,
         <EventCard eventID={object.id}/>,
-        <ChallengeCard challengeID={object.id}/>,
+        <ChallengeCard challenge={object}/>,
         null,
         <PostCard postID={object.id}/>,
         null,
@@ -67,7 +67,7 @@ const fetchMoreObjects = (ids, acceptedItemTypes, sortFunction, hiddenIDIndex, s
                 TrainerCardInfo.fetchList,
                 null, null, null,
                 EventCard.fetchVariableList,
-                ChallengeCard.fetchVariableList,
+                ChallengeCardInfo.fetchList,
                 null,
                 PostCard.fetchVariableList,
                 null, null, null, null, null,

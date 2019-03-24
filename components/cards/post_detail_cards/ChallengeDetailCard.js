@@ -6,13 +6,20 @@ export const ChallengeDetailCardInfo = {
     ifSubscribe: false,
 };
 
-
 type Props = {
-    challengeID: string
-}
+    challenge: {
+        id: string,
+        title: string,
+        endTime: string,
+        ifCompleted: boolean,
+        tags: [string],
+        difficulty: string,
+        time_created: string,
+    }
+};
 
 const ChallengeDetailCard = (props: Props) => (
-    <ChallengeCard challengeID={props.challengeID}/>
+    <ChallengeCard challenge={props.challenge}/>
 );
 
 export default ChallengeDetailCard;

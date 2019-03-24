@@ -15,7 +15,7 @@ import DatabaseObjectList from "../lists/DatabaseObjectList";
 type Props = {
     open: boolean,
     onClose: any,
-    GroupID: string
+    groupID: string
 }
 
 /*
