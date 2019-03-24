@@ -1,36 +1,18 @@
 import Lambda from "../api/Lambda";
 import S3 from "../api/S3Storage";
 
-class PostFunctions {
+class SubmissionFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
     // Create Functions ============================================================
     // TODO IMPORTANT: pictures and videos are objects with { key = S3Path : value = file }
-    static createBarePost(fromID, by, description, access, successHandler, failureHandler) {
-        return this.createNormalPost(fromID, by, description, access, null, null, successHandler, failureHandler);
-    }
-    static createNewEventPost(fromID, by, description, access, eventID, successHandler, failureHandler) {
-        return this.createNewItemPost(fromID, by, description, access, "Event", eventID, successHandler, failureHandler);
-    }
-    static createNewChallengePost(fromID, by, description, access, challengeID, successHandler, failureHandler) {
-        return this.createNewItemPost(fromID, by, description, access, "Challenge", challengeID, successHandler, failureHandler);
-    }
-    static createNormalPost(fromID, by, description, access, pictures, videos, successHandler, failureHandler) {
-        return this.create(fromID, by, description, access, null, null, pictures, videos, successHandler, failureHandler);
-    }
-    static createShareItemPost(fromID, by, description, access, itemType, itemID, pictures, videos, successHandler, failureHandler) {
-        return this.create(fromID, by, description, access, itemType, itemID, pictures, videos, successHandler, failureHandler);
-    }
-    static createNewItemPost(fromID, by, description, access, itemType, itemID, successHandler, failureHandler) {
-        return this.create(fromID, by, description, access, "new" + itemType, itemID, null, null, successHandler, failureHandler);
+    static createSubmission(fromID, by, challengeID, description, pictures, videos, successHandler, failureHandler) {
+        return this.create(fromID, by, description, "public", "submission", challengeID, pictures, videos, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
     static updateDescription(fromID, postID, description, successHandler, failureHandler) {
         return this.updateSet(fromID, postID, "description", description, successHandler, failureHandler);
-    }
-    static updateAccess(fromID, postID, access, successHandler, failureHandler) {
-        return this.updateSet(fromID, postID, "access", access, successHandler, failureHandler);
     }
     static addPicture(fromID, postID, picture, picturePath, successHandler, failureHandler) {
         S3.putImage(picturePath, picture, () => {
@@ -66,24 +48,22 @@ class PostFunctions {
     }
     // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
-    static create(fromID, by, description, access, postType, about, pictures, videos, successHandler, failureHandler) {
+    static create(fromID, by, description, about, pictures, videos, successHandler, failureHandler) {
         let picturePaths = null;
         let videoPaths = null;
-        if(pictures) {
+        if (pictures) {
             picturePaths = Object.keys(pictures);
         }
-        if(videos) {
+        if (videos) {
             videoPaths = Object.keys(videos);
         }
         let numPictures = 0;
         let numVideos = 0;
         if (picturePaths) { numPictures = picturePaths.length; }
         if (videoPaths) { numVideos = videoPaths.length; }
-        return Lambda.create(fromID, "Post", {
+        return Lambda.create(fromID, "Submission", {
             by,
             description,
-            access,
-            postType,
             about,
             picturePaths,
             videoPaths,
@@ -97,7 +77,7 @@ class PostFunctions {
             }
             function error(error) {
                 // TODO Delete the object and abort!
-                PostFunctions.delete(fromID, id);
+                SubmissionFunctions.delete(fromID, id);
                 failureHandler(error);
             }
             if (numVideosAndPictures === 0) {
@@ -122,17 +102,17 @@ class PostFunctions {
         }, failureHandler);
     }
     static updateAdd(fromID, postID, attributeName, attributeValue, successHandler, failureHandler) {
-        return Lambda.updateAddToAttribute(fromID, postID, "Post", attributeName, attributeValue, successHandler, failureHandler);
+        return Lambda.updateAddToAttribute(fromID, postID, "Submission", attributeName, attributeValue, successHandler, failureHandler);
     }
     static updateRemove(fromID, postID, attributeName, attributeValue, successHandler, failureHandler) {
-        return Lambda.updateRemoveFromAttribute(fromID, postID, "Post", attributeName, attributeValue, successHandler, failureHandler);
+        return Lambda.updateRemoveFromAttribute(fromID, postID, "Submission", attributeName, attributeValue, successHandler, failureHandler);
     }
     static updateSet(fromID, postID, attributeName, attributeValue, successHandler, failureHandler) {
-        return Lambda.updateSetAttribute(fromID, postID, "Post", attributeName, attributeValue, successHandler, failureHandler);
+        return Lambda.updateSetAttribute(fromID, postID, "Submission", attributeName, attributeValue, successHandler, failureHandler);
     }
     static delete(fromID, postID, successHandler, failureHandler) {
-        return Lambda.delete(fromID, postID, "Post", successHandler, failureHandler);
+        return Lambda.delete(fromID, postID, "Submission", successHandler, failureHandler);
     }
 }
 
-export default PostFunctions;
+export default SubmissionFunctions;

@@ -20,6 +20,7 @@ import CreateSubmissionModal from "./CreateSubmissionModal";
 import SubmissionsScreen from "../lists/SubmissionsScreen";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
+import SubmissionList from "../lists/SubmissionList";
 
 type Props = {
     open: boolean,
@@ -367,7 +368,7 @@ class ChallengeDescriptionModal extends Component<Props> {
         const panes = [
             { menuItem: 'Submissions', render: () => (
                 <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
-                    <SubmissionsScreen challengeID={this.state.challengeID}/>
+                    <SubmissionList ids={this.getChallengeAttribute("submissions")} noSubmissionsMessage="No submissions yet!"/>
                 </Tab.Pane>
             )},
             { menuItem: 'Challenge Chat', render: () => (

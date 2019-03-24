@@ -4,6 +4,7 @@ import { Storage } from 'aws-amplify';
 import { Player } from "video-react";
 import { connect } from "react-redux";
 import PostFunctions from "../../database_functions/PostFunctions";
+import SubmissionFunctions from "../../database_functions/SubmissionFunctions";
 
 type Props = {
     open: boolean,
@@ -64,7 +65,7 @@ class CreateSubmissionModal extends Component<Props> {
             videos["videos/" + i] = this.state.videos[i];
         }
         console.log(JSON.stringify(pictures) + " vids: " + JSON.stringify(videos));
-        PostFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Submission", pictures, videos, finishHandler, (error) => {
+        SubmissionFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Submission", pictures, videos, finishHandler, (error) => {
             console.error(error);
         });
         // PostFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Submission", this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {

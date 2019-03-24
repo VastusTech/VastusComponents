@@ -31,6 +31,9 @@ export function getInviteAttribute(id, attributeName, cacheReducer) {
 export function getPostAttribute(id, attributeName, cacheReducer) {
     return getObjectAttributeFromCache(id, attributeName, "posts", cacheReducer);
 }
+export function getSubmissionAttribute(id, attributeName, cacheReducer) {
+    return getObjectAttributeFromCache(id, attributeName, "submissions", cacheReducer);
+}
 export function getGroupAttribute(id, attributeName, cacheReducer) {
     return getObjectAttributeFromCache(id, attributeName, "groups", cacheReducer);
 }
