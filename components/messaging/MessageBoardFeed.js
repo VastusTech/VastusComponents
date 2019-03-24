@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Dimmer, Header, Loader, Grid} from "semantic-ui-react";
 import {connect} from "react-redux";
-import Spinner from "../props/Spinner";
+import Spinner from "../../components/props/Spinner";
 import MessageBoardCard from "./MessageBoardCard";
 import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import {err, log} from "../../../Constants";
