@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {Card, Dimmer, Loader, Grid, Icon, Image, Divider, Button, Feed} from 'semantic-ui-react';
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
 import {convertFromISO} from "../../logic/TimeHelper";
@@ -20,7 +20,9 @@ type Props = {
         about: string,
         description: string,
         picturePaths: [string],
+        pictures: [string],
         videoPaths: [string],
+        videos: [string]
     }
 }
 
@@ -65,10 +67,7 @@ const SubmissionCard = (props: Props) => (
     <Card>
         <Card.Header>{convertFromISO(getAttributeFromObject(props.submission, "time_created"))}</Card.Header>
         <Card.Content>
-            {getDisplayMedia(
-                getAttributeFromObject(props.submission, "pictures"),
-                getAttributeFromObject(props.submission, "videos")
-            )}
+            {getDisplayMedia(getAttributeFromObject(props.submission, "pictures"), getAttributeFromObject(props.submission, "videos"))}
         </Card.Content>
     </Card>
 );

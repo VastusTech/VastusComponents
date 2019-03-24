@@ -7,7 +7,7 @@ class SubmissionFunctions {
     // Create Functions ============================================================
     // TODO IMPORTANT: pictures and videos are objects with { key = S3Path : value = file }
     static createSubmission(fromID, by, challengeID, description, pictures, videos, successHandler, failureHandler) {
-        return this.create(fromID, by, description, "public", "submission", challengeID, pictures, videos, successHandler, failureHandler);
+        return this.create(fromID, by, description, challengeID, pictures, videos, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================

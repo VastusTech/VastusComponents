@@ -147,7 +147,6 @@ function addS3MediaToData(data, callback) {
     const getSingleMedia = (path, mediaKey) => {
         if (path) {
             // Get from S3 and add a waiting
-            asyncWaiting++;
             S3.get(path, (url) => {
                 data[mediaKey] = url;
                 finishUpdatingObject();
@@ -180,6 +179,27 @@ function addS3MediaToData(data, callback) {
             data[mediaKey] = [];
         }
     };
+    // First set the async waiting
+    for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+            const keyLen = key.length;
+            // This is 0 or a single Media grab
+            if (key.substr(keyLen - 4, 4) === "Path") {
+                // Get the media
+                if (data[key]) {
+                    asyncWaiting++;
+                }
+            }
+            // This is 0 or more media grabs
+            else if (key.substr(keyLen - 5, 5) === "Paths") {
+                // Get the multiple media
+                if (data[key] && data[key].length > 0) {
+                    asyncWaiting += data[key].length;
+                }
+            }
+        }
+    }
+    // Then start the getting process
     for (const key in data) {
         if (data.hasOwnProperty(key)) {
             const keyLen = key.length;
