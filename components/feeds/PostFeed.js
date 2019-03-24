@@ -93,7 +93,7 @@ const queryPosts = (filter, nextToken, isFinished, friends, fetchPostQuery, fetc
             err&&console.error("Querying Posts failed!");
             err&&console.error(error);
             setIsLoading(false);
-        }, postQueries, putPostQuery);
+        });
     }
 };
 
@@ -121,8 +121,7 @@ const PostFeed = (props: Props) => {
         if (props.user.id) {
             setPosts([]);
             queryPosts(props.filter, nextToken, isFinished, props.user.friends, props.fetchPostQuery, props.fetchClient, props.fetchTrainer, props.fetchEvent, props.fetchChallenge,
-                props.fetchPost, props.fetchGroup, setIsLoading, setIsFinished, setNextToken, setPosts, props.cache.postQueries,
-                props.putPostQuery);
+                props.fetchPost, props.fetchGroup, setIsLoading, setIsFinished, setNextToken, setPosts);
         }
     }, [props.user.id]);
 
@@ -136,21 +135,20 @@ const PostFeed = (props: Props) => {
         if (calculations.bottomVisible && !isLoading) {
             log&&console.log("Next Token: " + nextToken);
             queryPosts(props.filter, nextToken, isFinished, props.user.friends, props.fetchPostQuery, props.fetchClient, props.fetchTrainer, props.fetchEvent, props.fetchChallenge,
-                props.fetchPost, props.fetchGroup, setIsLoading, setIsFinished, setNextToken, setPosts, props.cache.postQueries,
-                props.putPostQuery);
+                props.fetchPost, props.fetchGroup, setIsLoading, setIsFinished, setNextToken, setPosts);
         }
     };
 
     //This displays the rows in a grid format, with visibility enabled so that we know when the bottom of the page
     //is hit by the user.
     return (
-        <Visibility onUpdate={_.debounce(handleUpdate, 500)}>
+        <Visibility onUpdate={_.debounce(handleUpdate, 250)}>
             {_.times(posts.length, i => (
                 <Fragment key={i + 1}>
                     <PostCard post={posts[i]} by={getObject(posts[i].by, props.cache)} about={getObject(posts[i].about, props.cache)}/>
                 </Fragment>
             ))}
-            {isLoading&&<Spinner/>}
+            {!isFinished&&<Spinner/>}
         </Visibility>
     );
 };

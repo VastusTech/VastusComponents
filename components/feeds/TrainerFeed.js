@@ -2,44 +2,37 @@ import React, {useState, useEffect, Fragment} from 'react'
 import _ from 'lodash'
 import {Visibility, Header, Grid} from 'semantic-ui-react'
 import { connect } from 'react-redux';
-import { fetchGroupQuery, putGroupQuery } from "../../redux_actions/cacheActions";
+import { fetchTrainerQuery } from "../../redux_actions/cacheActions";
 import {log, err} from "../../../Constants";
 import {debugAlert} from "../../logic/DebuggingHelper";
-import GroupCard, {GroupCardInfo} from "../cards/GroupCard";
-import {arraysIntersect} from "../../logic/ArrayHelper";
+import TrainerCard, {TrainerCardInfo} from "../cards/TrainerCard";
 import Spinner from "../props/Spinner";
 
-const groupFeedLength = 50;
+const trainerFeedLength = 10;
 
 type Props = {
     filter: any
 };
 
-const queryGroups = (filter, nextToken, isFinished, friends, fetchGroupQuery, setIsLoading, setIsFinished, setNextToken,
-                    setGroups) => {
+const queryTrainers = (filter, nextToken, isFinished, friends, fetchTrainerQuery, setIsLoading, setIsFinished,
+                       setNextToken, setTrainers) => {
     if (!isFinished) {
         setIsLoading(true);
-        debugAlert("Fetching Group Feed Query");
-        fetchGroupQuery(GroupCardInfo.fetchList, filter, groupFeedLength, nextToken, (data) => {
+        debugAlert("Fetching Trainer Feed Query");
+        fetchTrainerQuery(TrainerCardInfo.fetchList, filter, trainerFeedLength, nextToken, (data) => {
             if (!data.nextToken) {
                 setIsFinished(true);
             }
             if (data.items) {
                 for (let i = 0; i < data.items.length; i++) {
-                    const group = data.items[i];
+                    const trainer = data.items[i];
                     // Filter the results based on if we are able to see it
-                    if (group.access === "public" || arraysIntersect(friends, group.owners)) {
-                        // TODO Fetch any information about the groups!!!
-                        setGroups(p => [...p, group]);
-                    }
-                    else {
-                        debugAlert("NOT SHOWING: " + JSON.stringify(group));
-                    }
+                    setTrainers(p => [...p, trainer]);
                 }
                 setNextToken(data.nextToken);
             }
             else {
-                // TODO Came up with no events
+                // TODO Came up with no trainers
             }
             setIsLoading(false);
         }, (error) => {
@@ -51,22 +44,22 @@ const queryGroups = (filter, nextToken, isFinished, friends, fetchGroupQuery, se
 };
 
 /**
- * Event Feed
+ * Trainer Feed
  *
- * This is the main feed in the home page, it currently displays all public events inside of the database for
+ * This is the main feed in the home page, it currently displays all public trainers inside of the database for
  * the user to see.
  */
-const GroupFeed = (props: Props) => {
+const TrainerFeed = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isFinished, setIsFinished] = useState(false);
     const [nextToken, setNextToken] = useState(null);
-    const [groups, setGroups] = useState([]);
+    const [trainers, setTrainers] = useState([]);
 
     useEffect(() => {
         if (props.user.id) {
-            setGroups([]);
-            queryGroups(props.filter, nextToken, isFinished, props.user.friends, props.fetchGroupQuery,
-                setIsLoading, setIsFinished, setNextToken, setGroups);
+            setTrainers([]);
+            queryTrainers(props.filter, nextToken, isFinished, props.user.friends, props.fetchTrainerQuery,
+                setIsLoading, setIsFinished, setNextToken, setTrainers);
         }
     }, [props.user.id]);
 
@@ -79,8 +72,8 @@ const GroupFeed = (props: Props) => {
         log&&console.log(calculations.bottomVisible);
         if (calculations.bottomVisible && !isLoading) {
             log&&console.log("Next Token: " + nextToken);
-            queryGroups(props.filter, nextToken, isFinished, props.user.friends, props.fetchGroupQuery,
-                setIsLoading, setIsFinished, setNextToken, setGroups);
+            queryTrainers(props.filter, nextToken, isFinished, props.user.friends, props.fetchTrainerQuery,
+                setIsLoading, setIsFinished, setNextToken, setTrainers);
         }
     };
 
@@ -88,9 +81,9 @@ const GroupFeed = (props: Props) => {
     //is hit by the user.
     return (
         <Visibility onUpdate={_.debounce(handleUpdate, 250)}>
-            {_.times(groups.length, i => (
+            {_.times(trainers.length, i => (
                 <Fragment key={i + 1}>
-                    <GroupCard group={groups[i]}/>
+                    <TrainerCard trainer={trainers[i]}/>
                 </Fragment>
             ))}
             {!isFinished&&<Spinner/>}
@@ -105,10 +98,10 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchGroupQuery: (variablesList, filter, limit, nextToken, dataHandler, failureHandler) => {
-            dispatch(fetchGroupQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler));
+        fetchTrainerQuery: (variablesList, filter, limit, nextToken, dataHandler, failureHandler) => {
+            dispatch(fetchTrainerQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler));
         }
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(GroupFeed);
+export default connect(mapStateToProps, mapDispatchToProps)(TrainerFeed);

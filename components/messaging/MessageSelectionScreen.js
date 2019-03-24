@@ -6,7 +6,7 @@ import {fetchItem} from "../../redux_actions/cacheActions";
 import Spinner from "../props/Spinner";
 import {getItemTypeFromID, switchHandleItemType, switchReturnItemType} from "../../logic/ItemType";
 import TrainerCard, {TrainerCardInfo} from "../cards/TrainerCard";
-import EventCard from "../cards/EventCard";
+import EventCard, {EventCardInfo} from "../cards/EventCard";
 import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
 import PostCard, {PostCardInfo} from "../cards/PostCard";
 import MessageBoardCard from "./MessageBoardCard";
@@ -59,7 +59,7 @@ class DatabaseObjectList extends Component<Props> {
                             ClientCardInfo.fetchList,
                             TrainerCardInfo.fetchList,
                             null, null, null,
-                            EventCard.fetchVariableList,
+                            EventCardInfo.fetchList,
                             ChallengeCardInfo.fetchList,
                             null,
                             PostCardInfo.fetchList,
@@ -110,7 +110,7 @@ class DatabaseObjectList extends Component<Props> {
                                         null,
                                         null,
                                         null,
-                                        <EventCard eventID={id}/>,
+                                        <EventCard event={object}/>,
                                         <ChallengeCard challenge={object}/>,
                                         null,
                                         <PostCard post={object}/>,

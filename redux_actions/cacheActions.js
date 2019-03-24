@@ -736,6 +736,9 @@ export function forceFetchSponsors(ids, variablesList, dataHandler, unretrievedD
 export function forceFetchStreaks(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
     return batchForceFetch(ids, variablesList, "streaks", "getStreaks", "FETCH_STREAK", dataHandler, unretrievedDataHandler, failureHandler);
 }
+export function fetchItemQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
 export function fetchClientQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
     // console.log("fetching clients");
     return fetchQuery("Client", variablesList, filter, limit, nextToken, dataHandler, failureHandler);

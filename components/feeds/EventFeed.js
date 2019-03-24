@@ -206,7 +206,7 @@ class EventFeed extends Component {
             // console.log(JSON.stringify(events));
             return _.times(events.length, i => (
                 <Fragment key={i + 1}>
-                    <EventCard eventID={events[i].id}/>
+                    <EventCard event={events[i]}/>
                 </Fragment>
             ));
         }

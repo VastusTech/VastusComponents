@@ -22,7 +22,7 @@ type Props = {
 };
 
 const EventDetailCard = (props: Props) => (
-    <EventCard eventID={props.event.id}/>
+    <EventCard event={props.event}/>
 );
 
 export default EventDetailCard;

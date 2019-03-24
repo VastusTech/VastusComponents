@@ -44,7 +44,7 @@ const getObjectComponent = (key, object: {id: string, item_type: string}) => (
         null,
         null,
         null,
-        <EventCard eventID={object.id}/>,
+        <EventCard event={object}/>,
         <ChallengeCard challenge={object}/>,
         null,
         <PostCard postID={object.id}/>,
