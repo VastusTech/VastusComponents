@@ -191,10 +191,10 @@ const PostCard = (props: Props) => {
         return getObjectFromCache(getPostAttribute("about"), props.cache);
     };
 
-    if (!props.post) {
+    if (!props.post || !getByAttribute("name")) {
         return (
             <Card color='purple' fluid raised>
-                <h1>Loading...</h1>
+                <Spinner loading={true}/>
             </Card>
         );
     }
