@@ -153,7 +153,6 @@ class MessageBoard extends Component<Props> {
         return (
             <div className='u-margin-top--2'>
                 {/*console.log("Comment screen render user: " + this.props.curUser)*/}
-                {this.loadHistory(this.state.isLoading)}
                 <ScrollView
                     class='chat'
                     width='100%'
@@ -161,6 +160,9 @@ class MessageBoard extends Component<Props> {
                     ref={ref => (this.scrollView = ref)}
                     onScroll={this.handleScroll}
                 >
+                    {(this.props.message.boardIfFirsts[this.props.board]
+                        ||this.props.message.boardNextTokens[this.props.board])
+                    &&this.loadHistory(true)}
                     <Messages board={this.state.board} messages={this.getBoardMessages()} userID={this.props.user.id}/>
                 </ScrollView>
                 <Divider className='u-margin-top--2' />
