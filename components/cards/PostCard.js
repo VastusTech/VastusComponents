@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import {Button, Card, Dimmer, Grid, Loader} from 'semantic-ui-react';
+import {connect} from "react-redux";
 import PostDescriptionModal from '../modals/PostDescriptionModal';
 import {Player} from "video-react";
-import { fetchPost, fetchChallenge, fetchClient, fetchTrainer} from "../../redux_actions/cacheActions";
 import ItemType, {getItemTypeFromID} from "../../logic/ItemType";
 import SubmissionDetailCard from "./post_detail_cards/SubmissionDetailCard";
-import SubmissionCard from "./SubmissionCard";
 import ChallengeDetailCard, {ChallengeDetailCardInfo} from "./post_detail_cards/ChallengeDetailCard";
 import PostDetailCard from "./post_detail_cards/PostDetailCard";
 import ClientDetailCard from "./post_detail_cards/ClientDetailCard";
@@ -17,7 +16,7 @@ import {err, log} from "../../../Constants";
 import {GroupDetailCardInfo} from "./post_detail_cards/GroupDetailCard";
 import {EventDetailCardInfo} from "./post_detail_cards/EventDetailCard";
 import Spinner from "../props/Spinner";
-import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
+import {getAttributeFromObject, getObjectAttribute, getObjectFromCache} from "../../logic/CacheRetrievalHelper";
 
 export const PostCardInfo = {
     fetchList: ["id", "time_created", "by", "item_type", "postType", "about", "access", "description", "videoPaths", "picturePaths"],
@@ -50,19 +49,19 @@ type Props = {
         picturePaths: [string],
         pictures: [string],
     },
-    by: {
-        id: string,
-        item_type: string,
-        name: string,
-        profileImagePath: string,
-        profileImage: string,
-    },
-    about?: {
-        id: string,
-        item_type: string,
-        title: string,
-        owner: string
-    }
+    // by: {
+    //     id: string,
+    //     item_type: string,
+    //     name: string,
+    //     profileImagePath: string,
+    //     profileImage: string,
+    // },
+    // about?: {
+    //     id: string,
+    //     item_type: string,
+    //     title: string,
+    //     owner: string
+    // }
 };
 
 const profilePicture = (profileImage) => {
@@ -180,10 +179,16 @@ const PostCard = (props: Props) => {
         return getAttributeFromObject(props.post, attributeName);
     };
     const getByAttribute = (attributeName) => {
-        return getAttributeFromObject(props.by, attributeName);
+        return getObjectAttribute(getPostAttribute("by"), attributeName, props.cache);
     };
-    const getAboutAttribute = (attributeName) => {
-        return getAttributeFromObject(props.about, attributeName);
+    // const getAboutAttribute = (attributeName) => {
+    //     return getAttributeFromObject(props.about, attributeName, props.cache);
+    // };
+    // const getBy = () => {
+    //     return getObjectFromCache(props.by, props.cache);
+    // };
+    const getAbout = () => {
+        return getObjectFromCache(getPostAttribute("about"), props.cache);
     };
 
     if (!props.post) {
@@ -214,7 +219,7 @@ const PostCard = (props: Props) => {
             {/*{openOnce()}*/}
             <Card.Content>
                 <div align='center'>
-                    {getCorrectDetailCard(getPostAttribute("postType"), props.about)}
+                    {getCorrectDetailCard(getPostAttribute("postType"), getAbout())}
                 </div>
                 {/*this.getDisplayMedia()*/}
             </Card.Content>
@@ -234,5 +239,9 @@ const PostCard = (props: Props) => {
     );
 };
 
-export default PostCard;
+const mapStateToProps = state => ({
+    cache: state.cache
+});
+
+export default connect(mapStateToProps)(PostCard);
 

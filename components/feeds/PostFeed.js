@@ -97,13 +97,13 @@ const queryPosts = (filter, nextToken, isFinished, friends, fetchPostQuery, fetc
     }
 };
 
-const getObject = (id, cacheReducer) => {
-    const itemType = getItemTypeFromID(id);
-    if (id && itemType) {
-        return cacheReducer[getCacheName(itemType)][id];
-    }
-    return null;
-};
+// const getObject = (id, cacheReducer) => {
+//     const itemType = getItemTypeFromID(id);
+//     if (id && itemType) {
+//         return cacheReducer[getCacheName(itemType)][id];
+//     }
+//     return null;
+// };
 
 /**
  * Event Feed
@@ -145,7 +145,7 @@ const PostFeed = (props: Props) => {
         <Visibility onUpdate={_.debounce(handleUpdate, 250)}>
             {_.times(posts.length, i => (
                 <Fragment key={i + 1}>
-                    <PostCard post={posts[i]} by={getObject(posts[i].by, props.cache)} about={getObject(posts[i].about, props.cache)}/>
+                    <PostCard post={posts[i]} /*by={getObject(posts[i].by, props.cache)} about={getObject(posts[i].about, props.cache)}*//>
                 </Fragment>
             ))}
             {!isFinished&&<Spinner/>}

@@ -1,7 +1,7 @@
 import React, {useState, useEffect, Fragment} from 'react'
 import _ from 'lodash'
 import {Dimmer, Loader, Message, Grid} from 'semantic-ui-react'
-import InviteCard from "../cards/InviteCard";
+import InviteCard, {InviteCardInfo} from "../cards/InviteCard";
 import {fetchUserAttributes, forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import {connect} from 'react-redux';
 import {
@@ -21,9 +21,9 @@ const fetchAboutAndFromInfo = (invite, fetchClient, fetchTrainer, fetchEvent, fe
         // Fetch from user information
         const fromItemType = getItemTypeFromID(invite.from);
         if (fromItemType === "Client") {
-            fetchClient(invite.from, ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath"]);
+            fetchClient(invite.from, InviteCardInfo.fromInfo.clientFetchList);
         } else if (fromItemType === "Trainer") {
-            fetchTrainer(invite.from, ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
+            fetchTrainer(invite.from, InviteCardInfo.fromInfo.trainerFetchList);
         } else if (fromItemType === "Gym") {
             // TODO FETCH THIS?
             log&&console.log("not implemented!");
@@ -33,38 +33,36 @@ const fetchAboutAndFromInfo = (invite, fetchClient, fetchTrainer, fetchEvent, fe
 
         const toItemType = getItemTypeFromID(invite.to);
         if (toItemType === "Client") {
-            fetchClient(invite.to, ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath"]);
+            fetchClient(invite.to, InviteCardInfo.toInfo.clientFetchList);
         } else if (toItemType === "Trainer") {
-            fetchTrainer(invite.to, ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
+            fetchTrainer(invite.to, InviteCardInfo.toInfo.trainerFetchList);
         } else if (toItemType === "Gym") {
             // TODO FETCH THIS?
             log&&console.log("not implemented!");
         } else if (toItemType === "Event") {
-            fetchEvent(invite.to, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
+            fetchEvent(invite.to, InviteCardInfo.toInfo.eventFetchList);
         } else if (toItemType === "Challenge") {
-            fetchChallenge(invite.to, ["id", "title", "endTime", "time_created", "owner", "members", "capacity", "difficulty"]);
+            fetchChallenge(invite.to, InviteCardInfo.toInfo.challengeFetchList);
         } else if (toItemType === "Group") {
-            // TODO FETCH THIS?
-            log&&console.log("not implemented!");
+            fetchGroup(invite.to, InviteCardInfo.toInfo.groupFetchList);
         } else {
             err&&console.error("ITEM TYPE NOT RECOGNIZED FOR INVITE?");
         }
         // Fetch about item information
         const aboutItemType = getItemTypeFromID(invite.about);
         if (aboutItemType === "Client") {
-            fetchClient(invite.about, ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath"]);
+            fetchClient(invite.about, InviteCardInfo.aboutInfo.clientFetchList);
         } else if (aboutItemType === "Trainer") {
-            fetchTrainer(invite.about, ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
+            fetchTrainer(invite.about, InviteCardInfo.aboutInfo.trainerFetchList);
         } else if (aboutItemType === "Gym") {
             // TODO FETCH THIS?
             log&&console.log("not implemented!");
         } else if (aboutItemType === "Event") {
-            fetchEvent(invite.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty", "restriction"]);
+            fetchEvent(invite.about, InviteCardInfo.aboutInfo.eventFetchList);
         } else if (aboutItemType === "Challenge") {
-            fetchChallenge(invite.about, ["id", "title", "endTime", "time_created", "owner", "members", "capacity", "difficulty", "restriction"]);
+            fetchChallenge(invite.about, InviteCardInfo.aboutInfo.challengeFetchList);
         } else if (aboutItemType === "Group") {
-            // TODO FETCH THIS?
-            log&&console.log("not implemented!");
+            fetchGroup(invite.about, InviteCardInfo.aboutInfo.groupFetchList);
         } else {
             err&&console.error("ITEM TYPE NOT RECOGNIZED FOR INVITE?");
         }
@@ -86,7 +84,7 @@ const InviteFeed = (props) => {
     useEffect(() => {
         if (props.user.id) {
             const fetchAndAddInvite = (inviteID) => {
-                props.fetchInvite(inviteID, InviteCard.fetchVariableList, (data) => {
+                props.fetchInvite(inviteID, InviteCardInfo.fetchList, (data) => {
                     setNotifications(p => [
                         ...p,
                         data
@@ -153,7 +151,7 @@ const InviteFeed = (props) => {
         return(
             <Fragment>
                 {_.times(notifications.length, i => (
-                    <InviteCard inviteID={notifications[i].id}/>
+                    <InviteCard invite={notifications[i]}/>
                 ))}
             </Fragment>
         );

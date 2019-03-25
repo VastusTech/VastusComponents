@@ -67,6 +67,12 @@ function getObjectAttributeFromCache(id, attributeName, subCacheName, cacheReduc
     // }
     return null;
 }
+export function getObjectFromCache(id, cacheReducer) {
+    if (id && cacheReducer) {
+        return cacheReducer[getCacheName(getItemTypeFromID(id))][id];
+    }
+    return null;
+}
 /**
  * Gets an attribute from an object, using my "Length" trick to get lengths of arrays. No checking for a real object here.
  *
