@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, Fragment } from 'react'
 import {Search } from 'semantic-ui-react'
 import EventDescriptionModal from "../modals/EventDescriptionModal";
 import ClientModal from "../modals/ClientModal";

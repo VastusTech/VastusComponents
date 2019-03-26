@@ -1,0 +1,1 @@
+// TODO This will be so that Trainers and Clients will look the same in things like friends lists!
