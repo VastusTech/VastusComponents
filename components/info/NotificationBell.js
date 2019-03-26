@@ -46,6 +46,9 @@ const NotificationBell = (props) => {
                 }
             }
         }
+        return () => {
+            setNumNotifications(0);
+        }
     }, [props.user.receivedInvites, props.user.ownedEvents, props.user.ownedChallenges, props.user.ownedGroups]);
 
     if (numNotifications > 0) {

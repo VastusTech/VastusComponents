@@ -41,30 +41,33 @@ export function performAllQueries(searchQuery, dispatch, getStore, dataHandler) 
     if (searchQuery && searchQuery.length > 0) {
         let numResults = 0;
         let results = [];
-        for (const type in getStore().search.typeQueries) {
-            if (getStore().search.typeQueries.hasOwnProperty(type)) {
-                const numTypesEnabled = getStore().search.numTypesEnabled;
+        const numTypesEnabled = getStore().search.numTypesEnabled;
+        const typeQueries = getStore().search.typeQueries;
+        const getData = (type, data) => {
+            if (data.hasOwnProperty("items") && data.hasOwnProperty("nextToken")) {
+                dispatch(addTypeResults(type, data.items));
+                dispatch(setTypeNextToken(type, data.nextToken));
+                results.push(...data.items);
+            }
+            else {
+                err&&console.error("Received a weird value from query in the newSearch search redux function. Value = " + JSON.stringify(data));
+            }
+            numResults++;
+            if (numTypesEnabled <= numResults) {
+                dataHandler(results);
+            }
+        };
+        const failData = () => {
+            numResults++;
+            if (numTypesEnabled <= numResults) {
+                dataHandler(results);
+            }
+        };
+        for (const type in typeQueries) {
+            if (typeQueries.hasOwnProperty(type)) {
                 // const typeQuery = getStore().search.typeQueries[type];
                 // if (typeQuery.enabled && (typeQuery.nextToken || typeQuery.ifFirst)) {
-                performQuery(type, dispatch, getStore, (data) => {
-                    if (data.hasOwnProperty("items") && data.hasOwnProperty("nextToken")) {
-                        dispatch(addTypeResults(type, data.items));
-                        dispatch(setTypeNextToken(type, data.nextToken));
-                        results.push(...data.items);
-                    }
-                    else {
-                        err&&console.error("Received a weird value from query in the newSearch search redux function. Value = " + JSON.stringify(data));
-                    }
-                    numResults++;
-                    if (numTypesEnabled <= numResults) {
-                        dataHandler(results);
-                    }
-                }, () => {
-                    numResults++;
-                    if (numTypesEnabled <= numResults) {
-                        dataHandler(results);
-                    }
-                })
+                performQuery(type, dispatch, getStore, getData, failData);
             }
         }
     }
@@ -96,7 +99,7 @@ function performQuery(itemType, dispatch, getStore, successHandler, failureHandl
                 // console.log("Ay lmao it came back");
                 if (data) {
                     dispatch(setTypeNextToken(itemType, data.nextToken));
-                    successHandler(data);
+                    successHandler(itemType, data);
                     if (data && data.items) {
                         for (let i = 0; i < data.items.length; i++) {
                             dispatch(putItemFunction(data.items[i]));
@@ -111,7 +114,7 @@ function performQuery(itemType, dispatch, getStore, successHandler, failureHandl
             })(dispatch, getStore);
         }
         else {
-            successHandler({items: [], nextToken: null});
+            successHandler(itemType, {items: [], nextToken: null});
         }
     }
 }
