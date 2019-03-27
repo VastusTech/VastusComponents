@@ -292,7 +292,6 @@ export default (state = initialState, action) => {
                         ...state.typeQueries[action.payload.type],
                         results: [
                             ...state.typeQueries[action.payload.type].results,
-                            // TODO Spread or nah?
                             ...results
                         ]
                     }
@@ -304,6 +303,7 @@ export default (state = initialState, action) => {
             state = {
                 ...state,
                 results: [],
+                ifFinished: false
             };
             for (const type in state.typeQueries) {
                 if (state.typeQueries.hasOwnProperty(type)) {

@@ -6,7 +6,7 @@ import ClientModal from "../modals/ClientModal";
 import TrainerModal from "../modals/TrainerModal";
 import {connect} from "react-redux";
 import {fetchClient, fetchEvent, putClientQuery, putEventQuery} from "../../redux_actions/cacheActions";
-import {newSearch, loadMoreResults} from "../../redux_actions/searchActions";
+import {newSearch} from "../../redux_actions/searchActions";
 import {switchReturnItemType} from "../../logic/ItemType";
 import ChallengeDescriptionModal from "../modals/ChallengeDescriptionModal";
 import PostDescriptionModal from "../modals/PostDescriptionModal";
@@ -106,48 +106,36 @@ const handleResultSelect = (result, setResult, setResultModalOpen) => {
     setResultModalOpen(true);
 };
 
-const retrieveMoreResults = (searchQuery, numResults, loadMoreResults, setIsLoading) => {
-    // alert("loading more results");
-    loadMoreResults(searchQuery, (data) => {
-        const ifFinished = data.length === 0;
-        numResults += data.length;
-        // alert("Finished = " + ifFinished);
-        if (numResults < minimumSearchResults && !ifFinished) {
-            // log&&console.log("Grabbing more results: numResults = " + results.length + ", ifFinished = " + this.props.search.ifFinished);
-            retrieveMoreResults(searchQuery, numResults, loadMoreResults, setIsLoading);
-        }
-        else {
-            setIsLoading(false);
-        }
-    });
-};
-const retrieveSearchResults = _.debounce((searchQuery, newSearch, loadMoreResults, setIsLoading) => {
+// const retrieveMoreResults = (searchQuery, numResults, loadMoreResults, setIsLoading) => {
+//     // alert("loading more results");
+//     loadMoreResults(searchQuery, (data) => {
+//         const ifFinished = data.length === 0;
+//         numResults += data.length;
+//         // alert("Finished = " + ifFinished);
+//         if (numResults < minimumSearchResults && !ifFinished) {
+//             // log&&console.log("Grabbing more results: numResults = " + results.length + ", ifFinished = " + this.props.search.ifFinished);
+//             retrieveMoreResults(searchQuery, numResults, loadMoreResults, setIsLoading);
+//         }
+//         else {
+//             setIsLoading(false);
+//         }
+//     });
+// };
+const retrieveSearchResults = _.debounce((searchQuery, newSearch, setIsLoading) => {
     // alert("new search!");
-    newSearch(searchQuery, (data) => {
-        if (data && data.length) {
-            const ifFinished = data.length === 0;
-            // alert("Finished = " + ifFinished);
-            if (data.length < minimumSearchResults && !ifFinished) {
-                retrieveMoreResults(searchQuery, data.length, loadMoreResults, setIsLoading);
-            }
-            else {
-                setIsLoading(false);
-            }
-        }
-        else {
-            setIsLoading(false);
-        }
+    newSearch(searchQuery, minimumSearchResults, () => {
+        setIsLoading(false);
     });
 }, 500);
 // const bufferedRetrieveSearchResults = _.debounce(retrieveSearchResults, 500);
-const handleSearchChange = (value, newSearch, loadMoreResults, setSearchQuery, setIsLoading) => {
+const handleSearchChange = (value, newSearch, setSearchQuery, setIsLoading) => {
     setSearchQuery(value);
     setIsLoading(true);
     // alert("1");
     // _.debounce(function() {alert("3")}, 250);
     // alert("retrieving search results");
     console.log("retrieve search results");
-    retrieveSearchResults(value, newSearch, loadMoreResults, setIsLoading);
+    retrieveSearchResults(value, newSearch, setIsLoading);
 };
 
 const SearchBarProp = (props) => {
@@ -179,7 +167,7 @@ const SearchBarProp = (props) => {
                 placeholder="Search for Users and Challenges"
                 loading={isLoading}
                 onResultSelect={(e, {result}) => handleResultSelect(result, setResult, setResultModalOpen)}
-                onSearchChange={(e, {value}) => handleSearchChange(value, props.newSearch, props.loadMoreResults, setSearchQuery, setIsLoading)}
+                onSearchChange={(e, {value}) => handleSearchChange(value, props.newSearch, setSearchQuery, setIsLoading)}
                 results={getFormattedResults(props.search.results, props.search.searchBarEnabled)}
                 value={searchQuery}
                 showNoResults={props.search.searchBarEnabled}
@@ -208,11 +196,8 @@ const mapDispatchToProps = (dispatch) => {
         putEventQuery: (queryString, queryResult) => {
             dispatch(putEventQuery(queryString, queryResult));
         },
-        newSearch: (queryString, dataHandler) => {
-            dispatch(newSearch(queryString, dataHandler));
-        },
-        loadMoreResults: (queryString, dataHandler) => {
-            dispatch(loadMoreResults(queryString, dataHandler));
+        newSearch: (queryString, minResults, dataHandler) => {
+            dispatch(newSearch(queryString, minResults, dataHandler));
         }
     };
 };
