@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React, { useState, Fragment } from 'react'
+import Fuse from "fuse.js";
 import {Search } from 'semantic-ui-react'
 import EventDescriptionModal from "../modals/EventDescriptionModal";
 import ClientModal from "../modals/ClientModal";
@@ -31,7 +32,7 @@ const getResultModal = (result, resultModalOpen, setResultModalOpen) => {
         null, null, null, null, "Item Type not implemented for Search Bar Result Modal");
 };
 
-const getFormattedResults = (results, searchBarEnabled) => {
+const getFormattedResults = (searchQuery, results, searchBarEnabled) => {
     const formattedResults = [];
     if (searchBarEnabled) {
         const resultTitles = [];
@@ -98,7 +99,27 @@ const getFormattedResults = (results, searchBarEnabled) => {
         }
     }
     // console.log(formattedResults.length);
-    return formattedResults;
+    if (searchQuery) {
+        const fuse = new Fuse(formattedResults, {
+            shouldSort: true,
+            // threshold: 0.6,
+            // location: 0,
+            // distance: 100,
+            maxPatternLength: 64,
+            minMatchCharLength: 1,
+            keys: [
+                "resultcontent.name",
+                "resultcontent.goal",
+                "description",
+                "title",
+                "resultcontent.username"
+            ]
+        });
+        return fuse.search(searchQuery);
+    }
+    else {
+        return formattedResults;
+    }
 };
 
 const handleResultSelect = (result, setResult, setResultModalOpen) => {
@@ -168,7 +189,7 @@ const SearchBarProp = (props) => {
                 loading={isLoading}
                 onResultSelect={(e, {result}) => handleResultSelect(result, setResult, setResultModalOpen)}
                 onSearchChange={(e, {value}) => handleSearchChange(value, props.newSearch, setSearchQuery, setIsLoading)}
-                results={getFormattedResults(props.search.results, props.search.searchBarEnabled)}
+                results={getFormattedResults(searchQuery, props.search.results, props.search.searchBarEnabled)}
                 value={searchQuery}
                 showNoResults={props.search.searchBarEnabled}
             />
