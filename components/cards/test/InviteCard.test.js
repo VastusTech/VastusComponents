@@ -1,10 +1,10 @@
 import React from 'react';
-import NotificationCard from "../NotificationCard";
+import InviteCard from "../InviteCard";
 import { shallow, mount } from 'enzyme';
 import TestConfig, {store} from "../../../../TestConfig";
 
 TestConfig();
 it('renders without crashing', () => {
-    const component = shallow(<NotificationCard store={store()} inviteID={null}/>);
+    const component = shallow(<InviteCard store={store()} inviteID={null}/>);
     expect(component).toMatchSnapshot();
 });

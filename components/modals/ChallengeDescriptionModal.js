@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import {Icon, Modal, Button, Divider, Message, Image, Tab, Dimmer, Label, Loader, Grid} from 'semantic-ui-react';
+import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Dimmer, Label, Loader } from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 import { connect } from 'react-redux';
 import {
@@ -21,7 +21,6 @@ import SubmissionsScreen from "../lists/SubmissionsScreen";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
 import SubmissionList from "../lists/SubmissionList";
-import CreateChallengeProp from "../manager/CreateChallenge";
 
 type Props = {
     open: boolean,
@@ -46,6 +45,9 @@ class ChallengeDescriptionModal extends Component<Props> {
         isRequesting: false,
         isRestricted: false,
         challengeID: null,
+        // event: null,
+        // ownerName: null,
+        // members: {},
         clientModalOpen: false,
         completeModalOpen: false,
         submitModalOpen: false,
@@ -56,8 +58,7 @@ class ChallengeDescriptionModal extends Component<Props> {
         joinRequestSent: false,
         canCallChecks: true,
         deleted: false,
-        fetchedTrainer: false,
-        editing: false
+        fetchedTrainer: false
     };
 
     resetState(challengeID) {
@@ -81,7 +82,6 @@ class ChallengeDescriptionModal extends Component<Props> {
             isRequestLoading: false,
             joinRequestSent: false,
             canCallChecks: true,
-            editing: false
         });
     }
 
@@ -367,15 +367,15 @@ class ChallengeDescriptionModal extends Component<Props> {
     createCorrectButton() {
         const panes = [
             { menuItem: 'Submissions', render: () => (
-                    <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
-                        <SubmissionList ids={this.getChallengeAttribute("submissions")} noSubmissionsMessage="No submissions yet!"/>
-                    </Tab.Pane>
-                )},
+                <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
+                    <SubmissionList ids={this.getChallengeAttribute("submissions")} noSubmissionsMessage="No submissions yet!"/>
+                </Tab.Pane>
+            )},
             { menuItem: 'Challenge Chat', render: () => (
-                    <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
-                        <CommentScreen board={this.state.challengeID}/>
-                    </Tab.Pane>
-                )},
+                <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
+                    <CommentScreen board={this.state.challengeID}/>
+                </Tab.Pane> 
+            )},
         ];
 
         //console.log("Owned: " + isOwned + " Joined: " + isJoined);
@@ -417,7 +417,7 @@ class ChallengeDescriptionModal extends Component<Props> {
             }
             else {
                 return (<div><Button loading={this.state.isRequestLoading} fluid size="large" disabled={this.state.isRequestLoading}
-                                     onClick={this.handleRequestChallengeButton}>Send Join Request</Button></div>)
+                                onClick={this.handleRequestChallengeButton}>Send Join Request</Button></div>)
             }
         }
         else {
@@ -428,10 +428,11 @@ class ChallengeDescriptionModal extends Component<Props> {
     }
 
     createChallengeChatButton() {
+        
         return null;
     }
-
-    profilePicture() {
+    
+   profilePicture() {
         if (this.props.user.profileImage) {
             return (
                 <div>
@@ -461,12 +462,6 @@ class ChallengeDescriptionModal extends Component<Props> {
         }
     }
 
-    editButton(isOwned) {
-        if(isOwned) {
-            return (<Button onClick><Icon name="edit outline"/></Button>);
-        }
-    }
-
     render() {
         if (!this.getChallengeAttribute("id")) {
             return(
@@ -493,69 +488,58 @@ class ChallengeDescriptionModal extends Component<Props> {
             this.setState({canCallChecks: false});
             //console.log("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
         }
-
-
+	
+		 
         //console.log("Challenge Info: " + JSON.stringify(this.state.event));
-        if(!this.state.editing) {
-            return (
-                <div>
-                    <Modal open={this.props.open} onClose={this.props.onClose.bind(this)}>
-                        <Icon className='close' onClick={() => this.props.onClose()}/>
-                        <Modal.Header align='center'>
-                            {this.editButton(this.state.isOwned)}
+        return(
+        	<div>
+            <Modal open={this.props.open} onClose={this.props.onClose.bind(this)}>
+                <Icon className='close' onClick={() => this.props.onClose()}/>
+                <Modal.Header align='center'><div>
+                {this.getChallengeAttribute("title")}</div>
+                    <div>{this.displayTagIcons(this.getChallengeAttribute("tags"))}</div>
+                    <div>
+                        {this.props.daysLeft} days left
+                    </div>
+                    </Modal.Header>
+                <Modal.Content align='center'>
+                    <Grid>
+                        <Grid.Row centered>
+                            <Icon.Group size='large'>
+                                <Icon name='bullseye' />
+                            </Icon.Group> {this.getChallengeAttribute("goal")}
+                        </Grid.Row>
+                        <Grid.Row centered>
                             <div>
-                                {this.getChallengeAttribute("title")}</div>
-                            <div>{this.displayTagIcons(this.getChallengeAttribute("tags"))}</div>
-                            <div>
-                                {this.props.daysLeft} days left
+                                <Icon.Group size='large'>
+                                    <Icon name='trophy' />
+                                </Icon.Group> {this.getChallengeAttribute("prize")}
                             </div>
-                        </Modal.Header>
-                        <Modal.Content align='center'>
-                            <Grid>
-                                <Grid.Row centered>
-                                    <Icon.Group size='large'>
-                                        <Icon name='bullseye'/>
-                                    </Icon.Group> {this.getChallengeAttribute("goal")}
-                                </Grid.Row>
-                                <Grid.Row centered>
-                                    <div>
-                                        <Icon.Group size='large'>
-                                            <Icon name='trophy'/>
-                                        </Icon.Group> {this.getChallengeAttribute("prize")}
-                                    </div>
-                                </Grid.Row>
-                                <Grid.Column floated='left' width={6}>
-                                    <Grid.Row>
-                                        <Icon name='user'/><Button className="u-button--flat"
-                                                                   onClick={this.openClientModal}>{this.getOwnerName()}</Button>
-                                    </Grid.Row>
-                                </Grid.Column>
-                                <Grid.Column floated='right' width={6}>
-                                    <Grid.Row>
-                                        <Icon name='users'/><Modal trigger={<Button primary
-                                                                                    className="u-button--flat u-padding-left--1">Members</Button>}
-                                                                   closeIcon>
-                                        <Modal.Content>
-                                            <DatabaseObjectList ids={this.getChallengeAttribute("members")}
-                                                                noObjectsMessage={"No members yet!"}/>
-                                        </Modal.Content>
-                                    </Modal>
-                                    </Grid.Row>
-                                </Grid.Column>
-                            </Grid>
-                            <Divider/>
-                            <Modal.Description>
-                                <ClientModal open={this.state.clientModalOpen} onClose={this.closeClientModal}
-                                             clientID={this.getChallengeAttribute("owner")}/>
-                                <CompleteChallengeModal open={this.state.completeModalOpen}
-                                                        onClose={this.closeCompleteModal}
-                                                        challengeID={this.getChallengeAttribute("id")}/>
-                                <CreateSubmissionModal open={this.state.submitModalOpen} onClose={this.closeSubmitModal}
-                                                       challengeID={this.getChallengeAttribute("id")}/>
-                                {this.createCorrectButton()}
-                            </Modal.Description>
-                            <div>{this.displayError()}{this.challengeDeleted()}</div>
-                            {/*
+                        </Grid.Row>
+                        <Grid.Column floated='left' width={6}>
+                            <Grid.Row>
+                                <Icon name='user'/><Button className="u-button--flat" onClick={this.openClientModal}>{this.getOwnerName()}</Button>
+                            </Grid.Row>
+                        </Grid.Column>
+                        <Grid.Column floated='right' width={6}>
+                            <Grid.Row>
+                                <Icon name='users' /><Modal trigger={<Button primary className="u-button--flat u-padding-left--1">Members</Button>} closeIcon>
+                                    <Modal.Content>
+                                        <DatabaseObjectList ids={this.getChallengeAttribute("members")} noObjectsMessage={"No members yet!"}/>
+                                    </Modal.Content>
+                                </Modal>
+                            </Grid.Row>
+                        </Grid.Column>
+                    </Grid>
+                    <Divider/>
+                    <Modal.Description>
+                        <ClientModal open={this.state.clientModalOpen} onClose={this.closeClientModal} clientID={this.getChallengeAttribute("owner")}/>
+                        <CompleteChallengeModal open={this.state.completeModalOpen} onClose={this.closeCompleteModal} challengeID={this.getChallengeAttribute("id")}/>
+                        <CreateSubmissionModal open={this.state.submitModalOpen} onClose={this.closeSubmitModal} challengeID={this.getChallengeAttribute("id")}/>
+                        {this.createCorrectButton()}
+                    </Modal.Description>
+                    <div>{this.displayError()}{this.challengeDeleted()}</div>
+                    {/*
                         <Modal trigger={<Button primary id="ui center aligned"><Icon name="comment outline"/></Button>}>
                             <Grid>
                                 <div id="ui center align">
@@ -564,15 +548,11 @@ class ChallengeDescriptionModal extends Component<Props> {
                             </Grid>
                         </Modal>
                         */}
-                        </Modal.Content>
-                    </Modal>
-                    {this.challengeDeleted()}
-                </div>
-            );
-        }
-        else {
-            return(<CreateChallengeProp/>);
-        }
+                </Modal.Content>
+            </Modal>
+        {this.challengeDeleted()}
+        </div>
+        );
     }
 }
 const mapStateToProps = (state) => ({

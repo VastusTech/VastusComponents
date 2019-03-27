@@ -31,6 +31,9 @@ export function getInviteAttribute(id, attributeName, cacheReducer) {
 export function getPostAttribute(id, attributeName, cacheReducer) {
     return getObjectAttributeFromCache(id, attributeName, "posts", cacheReducer);
 }
+export function getSubmissionAttribute(id, attributeName, cacheReducer) {
+    return getObjectAttributeFromCache(id, attributeName, "submissions", cacheReducer);
+}
 export function getGroupAttribute(id, attributeName, cacheReducer) {
     return getObjectAttributeFromCache(id, attributeName, "groups", cacheReducer);
 }
@@ -55,12 +58,18 @@ function getObjectAttributeFromCache(id, attributeName, subCacheName, cacheReduc
         if (object) {
             return getAttributeFromObject(object, attributeName);
         }
-        else {
-            err&&console.error("Object (id: " + id + ") not fetched yet!!");
-        }
+        // else {
+        //     err&&console.error("Object (id: " + id + ") not fetched yet!!");
+        // }
     }
-    else {
-        err&&console.error("No cache from Redux received!!!!");
+    // else {
+    //     err&&console.error("No cache from Redux received!!!!");
+    // }
+    return null;
+}
+export function getObjectFromCache(id, cacheReducer) {
+    if (id && cacheReducer) {
+        return cacheReducer[getCacheName(getItemTypeFromID(id))][id];
     }
     return null;
 }
@@ -71,7 +80,7 @@ function getObjectAttributeFromCache(id, attributeName, subCacheName, cacheReduc
  * @param attributeName The name of the attribute in the object to retrieve.
  * @return {*} Either the attribute or the length of the array attribute
  */
-function getAttributeFromObject(object, attributeName) {
+export function getAttributeFromObject(object, attributeName) {
     if (object) {
         if (attributeName.substr(attributeName.length - 6) === "Length") {
             attributeName = attributeName.substr(0, attributeName.length - 6);

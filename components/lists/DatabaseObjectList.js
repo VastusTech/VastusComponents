@@ -1,15 +1,20 @@
-import React, { Component } from 'react'
-import { List, Message } from 'semantic-ui-react';
-import ClientCard from "../cards/ClientCard";
+import React, { useState, useEffect } from 'react'
+import { List, Message, Visibility } from 'semantic-ui-react';
+import ClientCard, {ClientCardInfo} from "../cards/ClientCard";
 import { connect } from "react-redux";
 import {fetchItem} from "../../redux_actions/cacheActions";
 import Spinner from "../props/Spinner";
-import {getItemTypeFromID, switchHandleItemType, switchReturnItemType} from "../../logic/ItemType";
-import TrainerCard from "../cards/TrainerCard";
+import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
+import TrainerCard, {TrainerCardInfo} from "../cards/TrainerCard";
 import EventCard from "../cards/EventCard";
-import ChallengeCard from "../cards/ChallengeCard";
+import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
 import PostCard from "../cards/PostCard";
-import MessageBoardCard from "../../../screens/messaging_tab/MessageBoardCard";
+
+// TODO Test the new "visibility" fetch system!
+// TODO USING VISIBILITY WITH A MODAL DOESN'T WORK?
+// TODO ALSO OFTEN ONE PERSON IS MISSING for some reason?
+
+const numFetch = 10000000;
 
 type Props = {
     ids: [string],
@@ -18,107 +23,148 @@ type Props = {
     sortFunction?: any
 }
 
-class DatabaseObjectList extends Component<Props> {
-    state = {
-        isLoading: true,
-        ids: null,
-        objects: [],
-        marker: 0
-    };
-
-    componentDidMount() {
-        this.componentWillReceiveProps(this.props);
-    }
-
-    componentWillReceiveProps(newProps) {
-        // We can use json stringify to check this because it's an array of strings
-        if (newProps.ids && JSON.stringify(this.state.ids) !== JSON.stringify(newProps.ids)) {
-            this.state.ids = newProps.ids;
-            // alert("received ids = " + JSON.stringify(newProps.ids));
-            this.setState({isLoading: true, ids: newProps.ids, objects: []}, () => {
-                const addObject = (object) => {
-                    if (object) {
-                        this.state.objects.push(object);
-                    }
-                    this.setState({isLoading: false});
-                };
-                for (let i = 0; i < newProps.ids.length; i++) {
-                    const id = newProps.ids[i];
-                    const itemType = getItemTypeFromID(id);
-                    if (!newProps.acceptedItemTypes || newProps.acceptedItemTypes.includes(itemType)) {
-                        const variableList = switchReturnItemType(itemType,
-                            ClientCard.fetchVariableList,
-                            ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"],
-                            null, null, null,
-                            EventCard.fetchVariableList,
-                            ChallengeCard.fetchVariableList,
-                            null,
-                            PostCard.fetchVariableList,
-                            null, null, null, MessageBoardCard.fetchVariableList,
-                            "Get variable list from item type not implemented!");
-                        this.props.fetchItem(itemType, id, variableList, addObject);
-                    }
-                }
-            });
-        }
-    }
-
-    render() {
-        function objectComponents(objects, sortFunction) {
-            const objectList = [...objects];
-            const components = [];
-            if (sortFunction) {
-                objectList.sort(sortFunction);
-            }
-            for (const key in objectList) {
-                if (objectList.hasOwnProperty(key)) {
-                    const id = objectList[key].id;
-                    const itemType = objectList[key].item_type;
-                    const rank = parseInt(key) + 1;
-                    components.push(
-                        <List.Item key={key}>
-                            {switchReturnItemType(itemType,
-                                <ClientCard rank={rank} clientID={id}/>,
-                                <TrainerCard rank={rank} trainerID={id}/>,
-                                null,
-                                null,
-                                null,
-                                <EventCard eventID={id}/>,
-                                <ChallengeCard challengeID={id}/>,
-                                null,
-                                <PostCard postID={id}/>,
-                                null,
-                                null,
-                                null,
-                                <MessageBoardCard messageBoardID={id}/>,
-                                "Get database object list object not implemented for item type"
-                            )}
-                        </List.Item>
-                    );
-                    components.push(switchReturnItemType())
-                }
-            }
-            return components;
-        }
-        if (this.props.isLoading) {
-            return(
-                <Spinner/>
-            )
-        }
-        if (this.state.objects.length > 0) {
-            return(
-                <List relaxed verticalAlign="middle">
-                    {objectComponents(this.state.objects, this.props.sortFunction)}
-                </List>
-            );
-        }
-        else {
-            return(
-                <Message>{this.props.noObjectsMessage}</Message>
+function objectComponents(objects, visibleComponents) {
+    const components = [];
+    for (const key in objects) {
+        if (objects.hasOwnProperty(key)) {
+            const id = objects[key].id;
+            components.push(
+                <List.Item key={key}>
+                    {visibleComponents[id]}
+                </List.Item>
             );
         }
     }
+    return components;
 }
+const getObjectComponent = (key, object: {id: string, item_type: string}) => (
+    switchReturnItemType(object.item_type,
+        <ClientCard rank={key} client={object}/>,
+        <TrainerCard rank={key} trainer={object}/>,
+        null,
+        null,
+        null,
+        <EventCard event={object}/>,
+        <ChallengeCard challenge={object}/>,
+        null,
+        <PostCard postID={object.id}/>,
+        null,
+        null,
+        null,
+        null,
+        "Get database object list object not implemented for item type"
+    )
+);
+const fetchMoreObjects = (ids, acceptedItemTypes, sortFunction, hiddenIDIndex, setHiddenIDIndex, setVisibleObjects, setVisibleComponents, setIsLoading, fetchItem) => {
+    setIsLoading(true);
+    const endIndex = Math.min(ids.length, hiddenIDIndex + numFetch);
+    for (let i = hiddenIDIndex; i < endIndex; i++) {
+        const id = ids[i];
+        const itemType = getItemTypeFromID(id);
+        if (!acceptedItemTypes || acceptedItemTypes.includes(itemType)) {
+            const variableList = switchReturnItemType(itemType,
+                ClientCardInfo.fetchList,
+                TrainerCardInfo.fetchList,
+                null, null, null,
+                EventCard.fetchVariableList,
+                ChallengeCardInfo.fetchList,
+                null,
+                PostCard.fetchVariableList,
+                null, null, null, null, null,
+                "Get variable list from item type not implemented!");
+            fetchItem(itemType, id, variableList, (o) => addObject(o, sortFunction, setVisibleObjects, setVisibleComponents, setIsLoading));
+        }
+    }
+    if (hiddenIDIndex === endIndex) {
+        setIsLoading(false);
+    }
+    setHiddenIDIndex(endIndex);
+};
+
+const addObject = (object, sortFunction, setVisibleObjects, setVisibleComponents, setIsLoading) => {
+    if (object && object.id) {
+        setVisibleObjects(p => {
+            const a = [...p, object];
+            const key = a.length;
+            if (sortFunction) { a.sort(sortFunction); }
+            setVisibleComponents(p => {
+                const newComps = {
+                    ...p,
+                    [object.id]: getObjectComponent(key, object)
+                };
+                if (sortFunction) {
+                    for (const i in a) {
+                        if (a.hasOwnProperty(i)) {
+                            if (newComps[a[i].id].props.rank !== parseInt(i) + 1) {
+                                newComps[a[i].id] = getObjectComponent(parseInt(i) + 1, a[i]);
+                            }
+                        }
+                    }
+                }
+                return newComps;
+            });
+            return a;
+        });
+        setIsLoading(false);
+    }
+};
+
+const DatabaseObjectList = (props: Props) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [ids, setIDs] = useState(null);
+    const [visibleObjects, setVisibleObjects] = useState([]);
+    const [visibleComponents, setVisibleComponents] = useState({});
+    const [hiddenIDIndex, setHiddenIDIndex] = useState(0);
+
+    // Callback for visible objects updated
+    useEffect(() => {
+        if (ids) {
+            fetchMoreObjects(ids, props.acceptedItemTypes, props.sortFunction, hiddenIDIndex, setHiddenIDIndex,
+                setVisibleObjects, setVisibleComponents, setIsLoading, props.fetchItem);
+        }
+    }, [visibleObjects]);
+
+    // Component will receive new props
+    useEffect(() => {
+        if (props.ids && JSON.stringify(props.ids) !== JSON.stringify(ids)) {
+            setIDs(props.ids);
+            setHiddenIDIndex(0);
+            setVisibleObjects([]);
+        }
+    }, [props]);
+
+    // alert("defining a function here");
+
+
+    // const handleVisibilityUpdate = (e, {calculations}) => {
+    //     // alert("hey");
+    //     // alert(JSON.stringify(calculations));
+    //     console.log(calculations);
+    //     if (calculations.bottomVisible) {
+    //         fetchMoreObjects();
+    //     }
+    // };
+
+    if (isLoading) {
+        return(
+            <Spinner/>
+        )
+    }
+    if (ids && ids.length > 0) {
+        return(
+            <div>
+                <List relaxed verticalAlign="middle">
+                    {objectComponents(visibleObjects, visibleComponents)}
+                </List>
+            </div>
+        );
+    }
+    else {
+        return(
+            <Message>{props.noObjectsMessage}</Message>
+        );
+    }
+};
 
 const mapStateToProps = () => ({});
 

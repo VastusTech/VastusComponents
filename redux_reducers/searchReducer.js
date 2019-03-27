@@ -201,7 +201,7 @@ const initialState = {
     searchQuery: "",
     results: [],
     limit: 100, // This should be computed dynamically, based on how many types we're querying to maintain a certain number
-    numTypesEnabled: 2,
+    numTypesEnabled: 3,
     ifFinished: false,
     searchBarEnabled: true,
     typeQueries: {
@@ -277,6 +277,7 @@ export default (state = initialState, action) => {
                     }
                 },
             };
+            state.ifFinished = getIfFinished(state);
             break;
         case ADD_TYPE_RESULTS:
             const results = action.payload.results ? action.payload.results : [];
@@ -291,7 +292,6 @@ export default (state = initialState, action) => {
                         ...state.typeQueries[action.payload.type],
                         results: [
                             ...state.typeQueries[action.payload.type].results,
-                            // TODO Spread or nah?
                             ...results
                         ]
                     }
@@ -303,6 +303,7 @@ export default (state = initialState, action) => {
             state = {
                 ...state,
                 results: [],
+                ifFinished: false
             };
             for (const type in state.typeQueries) {
                 if (state.typeQueries.hasOwnProperty(type)) {
@@ -364,7 +365,8 @@ function getIfFinished(state) {
     for (const key in state.typeQueries) {
         if (state.typeQueries.hasOwnProperty(key)) {
             const query = state.typeQueries[key];
-            if (query.enabled && query.ifFirst !== true && query.nextToken !== null) {
+            // A query is finished if it's not first and and the nextToken is null
+            if (query.enabled && (query.ifFirst === true || query.nextToken !== null)) {
                 return false;
             }
         }

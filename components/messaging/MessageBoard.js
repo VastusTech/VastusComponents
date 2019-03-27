@@ -9,6 +9,8 @@ import {
 } from "../../redux_actions/messageActions";
 import {connect} from "react-redux";
 import ScrollView from "react-inverted-scrollview";
+import {inspect} from 'util';
+import {getMethods} from "../../logic/DebuggingHelper";
 
 type Props = {
     board: string,
@@ -17,9 +19,9 @@ type Props = {
 class MessageBoard extends Component<Props> {
     state = {
         board: null,
-        messages: [],
         isLoading: false,
         fetchLimit: 10,
+        messageMinimum: 10,
         canFetch: true,
         canScroll: false
     };
@@ -31,6 +33,7 @@ class MessageBoard extends Component<Props> {
     }
 
     componentDidMount() {
+        // alert(this.scrollView);
         this.componentWillReceiveProps(this.props);
     }
 
@@ -52,21 +55,31 @@ class MessageBoard extends Component<Props> {
             // });
             // Set up the board
             // this.queryMessages();
-            if (this.state.board && !this.props.message.boards[this.state.board]) {
-                alert("is in board");
+            this.scrollToBottom();
+            if (this.state.board && (!this.props.message.boards[this.state.board]
+                || this.props.message.boards[this.state.board].length < this.state.messageMinimum)) {
+                // alert("Not enough messages!");
                 this.queryMessages();
             }
-            if(!this.state.canScroll) {
-                alert("can't scroll");
-                this.queryMessages();
-            }
+            // if (this.scrollView) {
+            //     alert("exists");
+            //     alert(JSON.stringify(getMethods(this.scrollView)));
+            //     alert(this.scrollView.getHeight());
+            // }
+            // if (this.scrollView && this.scrollView.scrollEnabled) {
+            //     alert("can scroll");
+            // }
+            // if(!this.state.canScroll) {
+            //     alert("can't scroll");
+            //     this.queryMessages();
+            // }
         }
     }
 
     queryMessages() {
         // console.log("Can we query?");
         if (this.state.canFetch) {
-            alert("Querying next messages from the board!");
+            // alert("Querying next messages from the board!");
             this.setState({isLoading: true});
             this.props.queryNextMessagesFromBoard(this.state.board, this.state.fetchLimit, (items) => {
                 if (items) {
@@ -138,21 +151,23 @@ class MessageBoard extends Component<Props> {
     render() {
 
         return (
-                <div className='u-margin-top--2'>
-                    {/*console.log("Comment screen render user: " + this.props.curUser)*/}
-                    {this.loadHistory(this.state.isLoading)}
-                    <ScrollView
-                        class='chat'
-                        width='100%'
-                        height='300px'
-                        ref={ref => (this.scrollView = ref)}
-                        onScroll={this.handleScroll}
-                    >
-                        <Messages board={this.state.board} messages={this.getBoardMessages()} userID={this.props.user.id}/>
-                    </ScrollView>
-                    <Divider className='u-margin-top--2' />
-                    <CommentBox board={this.state.board}/>
-                </div>
+            <div className='u-margin-top--2'>
+                {/*console.log("Comment screen render user: " + this.props.curUser)*/}
+                <ScrollView
+                    class='chat'
+                    width='100%'
+                    height='300px'
+                    ref={ref => (this.scrollView = ref)}
+                    onScroll={this.handleScroll}
+                >
+                    {(this.props.message.boardIfFirsts[this.props.board]
+                        ||this.props.message.boardNextTokens[this.props.board])
+                    &&this.loadHistory(true)}
+                    <Messages board={this.state.board} messages={this.getBoardMessages()} userID={this.props.user.id}/>
+                </ScrollView>
+                <Divider className='u-margin-top--2' />
+                <CommentBox board={this.state.board}/>
+            </div>
         );
     }
 }

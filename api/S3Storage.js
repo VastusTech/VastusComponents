@@ -21,9 +21,15 @@ class S3Storage {
             let options = {partSize: 10 * 1024 * 1024, queueSize: 8};
             bucket.upload(params, options).on('httpUploadProgress', function(evt) {
                 console.log("Uploaded :: " + parseInt((evt.loaded * 100) / evt.total )+'%');
-            }).send(function(err, data) {
-                successHandler();
-                alert("Video uploaded successfully.");
+            }).send(function(error, data) {
+                if (error) {
+                    err&&console.error(error);
+                    failureHandler(err);
+                }
+                else {
+                    successHandler(data);
+                    log&&console.log("Video uploaded successfully.");
+                }
             });
         }
     }
@@ -44,7 +50,7 @@ class S3Storage {
     static ifExists(path, successHandler, failureHandler) {
         let bucket = new AWS.S3({params: {Bucket: S3Storage.bucketName}});
         bucket.headObject({
-            Bucket: 'vastusofficial',
+            Bucket: S3Storage.bucketName,
             Key: path
         }, (err) => {
             if (err) {

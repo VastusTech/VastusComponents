@@ -55,7 +55,7 @@ class ChallengeList extends Component<Props> {
                 if (challengeList.hasOwnProperty(key)) {
                     components.push(
                         <List.Item key={key}>
-                            <ChallengeCard challengeID={challengeList[key].id}/>
+                            <ChallengeCard challenge={challengeList[key]}/>
                         </List.Item>
                     );
                 }

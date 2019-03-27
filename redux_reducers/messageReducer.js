@@ -3,6 +3,7 @@ import {err} from "../../Constants";
 
 const ADD_MESSAGE = 'ADD_MESSAGE';
 const ADD_QUERY = 'ADD_QUERY';
+const SET_BOARD_READ = 'SET_BOARD_READ';
 const CLEAR_BOARD = 'CLEAR_BOARD';
 const CLEAR_ALL_BOARDS = 'CLEAR_ALL_BOARDS';
 
@@ -25,6 +26,7 @@ const initialState = {
     boardLRUHandler: [],
     boardNextTokens: {},
     boardIfFirsts: {},
+    boardIfSubscribed: {},
     numMessages: 0,
 };
 
@@ -36,7 +38,23 @@ export default (state = initialState, action) => {
             break;
         case ADD_QUERY:
             state = { ...state };
-            addQuery(state, action.payload.board, action.payload.messages, action.payload.nextToken, action.payload.dispatch);
+            addQuery(state, action.payload.board, action.payload.messages, action.payload.nextToken, action.payload.ifSubscribed, action.payload.dispatch);
+            break;
+        case SET_BOARD_READ:
+            state = { ...state };
+            const board = state.boards[action.payload.board];
+            if (board && board.length > 0) {
+                const message = board[0];
+                if (message.lastSeenFor) {
+                    message.lastSeenFor = [
+                        ...board[0].lastSeenFor,
+                        action.payload.userID,
+                    ]
+                }
+                else {
+                    message.lastSeenFor = [action.payload.userID];
+                }
+            }
             break;
         case CLEAR_BOARD:
             state = { ...state };
@@ -67,9 +85,10 @@ function addMessage(state, board, message, dispatch) {
     state.numMessages += 1;
     updateLRUBoard(state, board);
 }
-function addQuery(state, board, messages, nextToken, dispatch) {
+function addQuery(state, board, messages, nextToken, ifSubscribed, dispatch) {
     state.boardIfFirsts[board] = false;
     state.boardNextTokens[board] = nextToken;
+    state.boardIfSubscribed[board] = ifSubscribed;
     clearBoardsForMessages(state, board, messages.length, dispatch);
     if (state.boards[board]) {
         state.boards[board] = [...state.boards[board], ...messages];
@@ -127,6 +146,7 @@ function clearBoard(state, board, dispatch) {
     delete state.boardNextTokens[board];
     delete state.boardIfFirsts[board];
     delete state.boards[board];
+    delete state.boardIfSubscribed[board];
     dispatch(removeChannelSubscription(getBoardChannel(board)));
 }
 

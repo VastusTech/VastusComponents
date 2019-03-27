@@ -1,15 +1,11 @@
 import Lambda from "../api/Lambda";
 import S3 from "../api/S3Storage";
-import UserFunctions from "./UserFunctions";
 
 class PostFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
     // Create Functions ============================================================
     // TODO IMPORTANT: pictures and videos are objects with { key = S3Path : value = file }
-    static createSubmission(fromID, by, challengeID, description, pictures, videos, successHandler, failureHandler) {
-        return this.create(fromID, by, description, "public", "submission", challengeID, pictures, videos, successHandler, failureHandler);
-    }
     static createBarePost(fromID, by, description, access, successHandler, failureHandler) {
         return this.createNormalPost(fromID, by, description, access, null, null, successHandler, failureHandler);
     }
@@ -46,13 +42,13 @@ class PostFunctions {
         }, failureHandler);
     }
     static addVideo(fromID, postID, video, videoPath, successHandler, failureHandler) {
-        S3.putVideo(videoPath, video, successHandler, failureHandler); /*() => {
+        S3.putVideo(videoPath, video, successHandler, failureHandler, () => {
             return this.updateAdd(fromID, postID, "videoPaths", videoPath, successHandler, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(videoPath);
                 failureHandler(error);
             });
-        }, failureHandler);*/
+        }, failureHandler);
     }
     static removePicture(fromID, postID, picturePath, successHandler, failureHandler) {
         return this.updateRemove(fromID, postID, "picturePaths", picturePath, (data) => {

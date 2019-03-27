@@ -12,17 +12,40 @@ const ADD_MESSAGE = 'ADD_MESSAGE';
 const ADD_QUERY = 'ADD_QUERY';
 const CLEAR_BOARD = 'CLEAR_BOARD';
 
+export function peekAtFirstMessageFromBoard(board, dataHandler, failureHandler) {
+    return (dispatch, getStore) => {
+        dispatch(setIsLoading());
+        if (getStore().message.boards[board] && getStore().message.boards[board].length > 0) {
+            if (dataHandler) { dataHandler(getStore().message.boards[board][0]); }
+        }
+        else {
+            // Fetch it
+            dispatch(queryNextMessagesFromBoardOptionalSubscribe(board, 1, false, (messages) => {
+                if (dataHandler) {
+                    if (messages && messages.length > 0) { dataHandler(messages[0]); }
+                    else { dataHandler(null); }
+                }
+            }, failureHandler));
+        }
+    }
+}
 export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHandler) {
+    return (dispatch) => {
+        dispatch(queryNextMessagesFromBoardOptionalSubscribe(board, limit, true, dataHandler, failureHandler));
+    }
+}
+function queryNextMessagesFromBoardOptionalSubscribe(board, limit, ifSubscribe, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         let ifFirst = getStore().message.boardIfFirsts[board];
         if (ifFirst !== false) {
             ifFirst = true;
-            // If this is the first time querying the board, Ably subscribe to it.
-            debugAlert("Setting handler stuff!");
+        }
+        // If this is the first time querying the board, Ably subscribe to it.
+        if (ifSubscribe && getStore().message.boardIfSubscribed[board] !== true) {
             dispatch(addHandlerAndUnsubscription(getBoardChannel(board), (message) => {
                 dispatch(addMessageFromNotification(board, message.data));
-            }, () => {
+            }, (state) => {
                 // When it unsubscribes, we clear the board
                 clearBoard(board, dispatch);
             }));
@@ -37,7 +60,7 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
                     if (!data.items) { data.items = []; }
                     addURLToMessages(data.items, "message", "messageURL", notFoundPicture, (message) => {return message.type}, (messages) => {
                         addURLToMessages(messages, "profileImagePath", "profilePicture", defaultProfilePicture, (message) => {return message.profileImagePath}, (messages) => {
-                            dispatch(addQueryToBoard(board, messages, data.nextToken, dispatch));
+                            dispatch(addQueryToBoard(board, messages, data.nextToken, ifSubscribe, dispatch));
                             if (dataHandler) {
                                 dataHandler(messages);
                             }
@@ -110,7 +133,7 @@ function addURLToMessage(message, messagePathField, messageURLField, defaultURL,
         dataHandler(message);
     }
 }
-function addMessageFromNotification(board, message, dataHandler, failureHandler) {
+export function addMessageFromNotification(board, message, dataHandler, failureHandler) {
     return (dispatch) => {
         dispatch(setIsLoading());
         addURLToMessage(message, "message", "messageURL", notFoundPicture, (message) => {return message.type}, (message) => {
@@ -134,6 +157,15 @@ function addMessageFromNotification(board, message, dataHandler, failureHandler)
         });
     };
 }
+export function setBoardRead(board, userID) {
+    return {
+        type: 'SET_BOARD_READ',
+        payload: {
+            board,
+            userID
+        }
+    }
+}
 export function discardBoard(board) {
     return (dispatch) => {
         dispatch(setIsLoading());
@@ -151,13 +183,14 @@ export function addMessageToBoard(board, message, dispatch) {
         }
     };
 }
-function addQueryToBoard(board, messages, nextToken, dispatch) {
+function addQueryToBoard(board, messages, nextToken, ifSubscribed, dispatch) {
     return {
         type: ADD_QUERY,
         payload: {
             board,
             nextToken,
             messages,
+            ifSubscribed,
             dispatch
         }
     };

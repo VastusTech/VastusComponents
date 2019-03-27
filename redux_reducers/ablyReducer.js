@@ -52,11 +52,11 @@ export default (state = initialState, action) => {
             break;
         case REMOVE_CHANNEL:
             state = { ...state };
-            removeChannelAndHandlers(state, action.payload.channel);
+            removeChannelAndHandlers(state, action.payload.channel, action.asyncDispatch);
             break;
         case CLEAR_CHANNELS:
             state = { ...state };
-            clearAllChannels(state);
+            clearAllChannels(state, action.asyncDispatch);
             break;
         default:
             state = {
@@ -160,8 +160,8 @@ function setPermanentHandler(state, channel, handler, unsubscriptionHandler, mes
  * @param state The redux ably state.
  * @param channel The channel to remove and unsubscribe from.
  */
-function removeChannelAndHandlers(state, channel) {
-    removeChannel(state, channel);
+function removeChannelAndHandlers(state, channel, asyncDispatch) {
+    removeChannel(state, channel, asyncDispatch);
     const index = state.subscribedChannelLRUHandler.indexOf(channel);
     if (index !== -1) {
         state.subscribedChannelLRUHandler.splice(index, 1);
@@ -211,11 +211,12 @@ function updateLRUChannel(state, channel) {
  *
  * @param state The ably redux state.
  * @param channel The channel to remove from the state.
+ * @param asyncDispatch The asynchronous dispatch to call within an unsubscription handler.
  */
-function removeChannel(state, channel) {
+function removeChannel(state, channel, asyncDispatch) {
     // Unsubscribe from the channel, then remove from the redux state
     const unsubscriptionHandlers = state.unsubscriptionHandlers[channel];
-    unsubscribeFromChannel(channel, unsubscriptionHandlers);
+    unsubscribeFromChannel(asyncDispatch, channel, unsubscriptionHandlers);
     delete state.subscribedChannels[channel];
     delete state.notificationHandlers[channel];
     delete state.unsubscriptionHandlers[channel];
@@ -226,11 +227,11 @@ function removeChannel(state, channel) {
  *
  * @param state The redux ably state.
  */
-function clearAllChannels(state) {
+function clearAllChannels(state, asyncDispatch) {
     const channels = state.subscribedChannels;
     for (const channel in channels) {
         if (channels.hasOwnProperty(channel)) {
-            removeChannel(state, channel);
+            removeChannel(state, channel, asyncDispatch);
         }
     }
     state.subscribedChannelLRUHandler = [];
@@ -253,6 +254,7 @@ function subscribeToChannel(channel, messageHandler) {
         }
         else {
             log&&console.log("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channel);
+            // log&&alert("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channel);
         }
     });
 }
@@ -262,8 +264,9 @@ function subscribeToChannel(channel, messageHandler) {
  *
  * @param channel The channel name that is currently subscribed
  * @param unsubscriptionHandlers The unsubscription handlers to call after un-subscribing.
+ * @param asyncDispatch The asynchronous dispatch to call within unsubscription handlers.
  */
-function unsubscribeFromChannel(channel, unsubscriptionHandlers) {
+function unsubscribeFromChannel(asyncDispatch, channel, unsubscriptionHandlers) {
     /* global Ably */
     Ably.channels.get(channel).unsubscribe((error) => {
         if (error) {
@@ -277,7 +280,7 @@ function unsubscribeFromChannel(channel, unsubscriptionHandlers) {
     if (unsubscriptionHandlers) {
         for (let i = 0; i < unsubscriptionHandlers.length; i++) {
             // Handle the un-subscription
-            unsubscriptionHandlers[i]();
+            unsubscriptionHandlers[i](asyncDispatch);
         }
     }
     else {

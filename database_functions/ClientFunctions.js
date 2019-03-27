@@ -16,8 +16,8 @@ class ClientFunctions extends UserFunctions {
     static createFederatedClient(fromID, name, email, username, federatedID, successHandler, failureHandler) {
         return this.create(fromID, name, null, null, email, username, null, federatedID, null, successHandler, failureHandler);
     }
-    static createFederatedClientOptional(fromID, name, gender, birthday, email, username, federatedID, bio, successHandler, failureHander) {
-        return this.create(fromID, name, gender, birthday, email, username, null, federatedID, bio, successHandler, failureHander);
+    static createFederatedClientOptional(fromID, name, gender, birthday, email, username, federatedID, bio, successHandler, failureHandler) {
+        return this.create(fromID, name, gender, birthday, email, username, null, federatedID, bio, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================

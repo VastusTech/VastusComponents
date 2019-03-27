@@ -1,167 +1,105 @@
-import React, { Component, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import { Card, Dimmer, Loader, Grid, Header } from 'semantic-ui-react';
 import ClientModal from '../modals/ClientModal';
-import { connect } from 'react-redux';
-import { fetchClient } from "../../redux_actions/cacheActions";
-import {log} from "../../../Constants";
+import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
 
-/*
-* Event Card
-*
-* This is the generic view for how a challenge shows up in any feeds or lists.
-* It is used as a modal trigger in the feed.
- */
+export const ClientCardInfo = {
+    fetchList: ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "friendRequests"],
+    ifSubscribe: false
+};
 
 type Props = {
     rank?: number,
-    clientID: string
+    client: {
+        id: string,
+        username: string,
+        gender: string,
+        birthday: string,
+        name: string,
+        friends: [string],
+        challengesWon: [string],
+        scheduledEvents: [string],
+        profileImagePath: string,
+        friendRequests: [string]
+    }
 };
 
-class ClientCard extends Component<Props> {
-    static fetchVariableList = ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "friendRequests"];
-    static ifSubscribe = false;
-
-    constructor(props) {
-        super(props);
-        this.openClientModal = this.openClientModal.bind(this);
-        this.closeClientModal = this.closeClientModal.bind(this);
-        this.profilePicture = this.profilePicture.bind(this);
-        this.getClientAttribute = this.getClientAttribute.bind(this);
-    }
-
-    state = {
-        error: null,
-        // isLoading: true,
-        clientID: null,
-        // event: null,
-        // members: {},
-        // owner: null,
-        // ifOwned: false,
-        // ifJoined: false,
-        // capacity: null,
-        clientModalOpen: false,
-        galleryURLS: []
-    };
-
-    componentDidMount() {
-        this.componentWillReceiveProps(this.props);
-    }
-
-    componentWillReceiveProps(newProps, nextContext) {
-        if (newProps.clientID && !this.state.clientID) {
-            this.setState({clientID: newProps.clientID});
-        }
-    }
-
-    getClientAttribute(attribute) {
-        if (this.state.clientID) {
-            const client = this.props.cache.clients[this.state.clientID];
-            if (client) {
-                if (attribute.substr(attribute.length - 6) === "Length") {
-                    attribute = attribute.substr(0, attribute.length - 6);
-                    if (client[attribute] && client[attribute].length) {
-                        return client[attribute].length;
-                    }
-                    else {
-                        return 0;
-                    }
-                }
-                return this.props.cache.clients[this.state.clientID][attribute];
-            }
-        }
-        return null;
-    }
-
-    openClientModal = () => {
-        if (!this.state.clientModalOpen) {
-            this.setState({clientModalOpen: true})
-        };
-    }
-    closeClientModal = () => {
-        log&&console.log("Closing client modal");
-        this.setState({clientModalOpen: false})
-    };
-
-    profilePicture() {
-        if (this.getClientAttribute("profileImage")) {
-            return(
-                <div className="u-avatar u-avatar--small" style={{backgroundImage: `url(${this.getClientAttribute("profileImage")})`}}></div>
-            );
-        }
-        else {
-            return(
-                <Dimmer inverted>
-                    <Loader />
-                </Dimmer>
-            );
-        }
-    }
-
-    render() {
-        const { rank } = this.props;
-        if (!this.getClientAttribute("id")) {
-            return(
-                <Card fluid raised>
-                    <h1>Loading...</h1>
-                </Card>
-            );
-        }
+const profilePicture = (profileImage) => {
+    if (profileImage) {
         return(
-            // This is displays a few important pieces of information about the challenge for the feed view.
-            <Card fluid raised onClick={() => this.openClientModal()}>
-                <Card.Content>
-                    {/* If no rank */}
-                    {!rank && (
-                        <Fragment>
-                            <Card.Header>
-                                <div className="u-flex u-flex-justify--center u-margin-bottom--2">
-                                    {this.profilePicture()}
-                                </div>
-                            </Card.Header>
-                            <Card.Header textAlign = 'center'>
-                                {this.getClientAttribute("name")}
-                            </Card.Header>
-                        </Fragment>
-                    )}
-                    {/* If has rank */}
-                    {rank && (
-                        <Grid divided verticalAlign='middle'>
-                            <Grid.Row>
-                                <Grid.Column width={4}>
-                                    <Header size='large' textAlign='center'>{rank}</Header>
-                                </Grid.Column>
-                                <Grid.Column width={12}>
-                                    <div className="u-flex u-flex-align--center">
-                                        {this.profilePicture()} <Header size='small' className='u-margin-top--0 u-margin-left--2'>{this.getClientAttribute("name")}</Header>
-                                    </div>
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                    )}
-                    <ClientModal open={this.state.clientModalOpen} onClose={this.closeClientModal} clientID={this.state.clientID}/>
-                </Card.Content>
-                <Card.Content extra>
-                    <Card.Meta>
-                        {this.getClientAttribute("challengesWonLength")} challenges won
-                    </Card.Meta>
-                </Card.Content>
+            <div className="u-avatar u-avatar--small" style={{backgroundImage: `url(${profileImage})`}}/>
+        );
+    }
+    else {
+        return(
+            <Dimmer inverted>
+                <Loader />
+            </Dimmer>
+        );
+    }
+};
+
+/**
+ * Client Card
+ *
+ * This is the generic view for how a client shows up in any feeds or lists.
+ * It is used as a modal trigger in the feed.
+ */
+const ClientCard = (props: Props) => {
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const getClientAttribute = (attributeName) => {
+        return getAttributeFromObject(props.client, attributeName);
+    };
+
+    if (!props.client) {
+        return(
+            <Card fluid raised>
+                <h1>Loading...</h1>
             </Card>
         );
     }
-}
-
-const mapStateToProps = (state) => ({
-    user: state.user,
-    cache: state.cache,
-    info: state.info
-});
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchClient: (id, variablesList) => {
-            dispatch(fetchClient(id, variablesList));
-        }
-    };
+    return(
+        // This is displays a few important pieces of information about the challenge for the feed view.
+        <Card fluid raised onClick={() => setModalOpen.bind(true)}>
+            <Card.Content>
+                {/* If no rank */}
+                {!props.rank && (
+                    <Fragment>
+                        <Card.Header>
+                            <div className="u-flex u-flex-justify--center u-margin-bottom--2">
+                                {profilePicture()}
+                            </div>
+                        </Card.Header>
+                        <Card.Header textAlign = 'center'>
+                            {getClientAttribute("name")}
+                        </Card.Header>
+                    </Fragment>
+                )}
+                {/* If has rank */}
+                {props.rank && (
+                    <Grid divided verticalAlign='middle'>
+                        <Grid.Row>
+                            <Grid.Column width={4}>
+                                <Header size='large' textAlign='center'>{props.rank}</Header>
+                            </Grid.Column>
+                            <Grid.Column width={12}>
+                                <div className="u-flex u-flex-align--center">
+                                    {profilePicture(getClientAttribute("profileImage"))} <Header size='small' className='u-margin-top--0 u-margin-left--2'>{getClientAttribute("name")}</Header>
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                )}
+                <ClientModal open={modalOpen} onClose={() => {alert("ay"); console.log("closing"); setModalOpen(false); console.log("closing")}} clientID={props.client.id}/>
+            </Card.Content>
+            <Card.Content extra>
+                <Card.Meta>
+                    {getClientAttribute("challengesWonLength")} challenges won
+                </Card.Meta>
+            </Card.Content>
+        </Card>
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClientCard);
+export default ClientCard;

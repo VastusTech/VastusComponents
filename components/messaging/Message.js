@@ -36,7 +36,7 @@ export default (props: {message: any, userID: string}) => {
                 return (
                     <Grid class="ui computer vertically reversed equal width grid">
                         <Grid.Column width={2}>
-                            <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
+                            <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}/>
                         </Grid.Column>
                         <Grid.Column>
                             <Grid.Row>
@@ -74,7 +74,7 @@ export default (props: {message: any, userID: string}) => {
                 return (
                     <Grid class="ui computer vertically reversed equal width grid">
                         <Grid.Column width={6}>
-                            <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
+                            <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}/>
                         </Grid.Column>
                         <Grid.Column>
                             <Grid.Row>
@@ -117,7 +117,7 @@ export default (props: {message: any, userID: string}) => {
                 <Breakpoint medium up>
                 <Grid columns={2}>
                     <Grid.Column width={1}>
-                        <div avatar className="ui u-avatar mini" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
+                        <div avatar className="ui u-avatar mini" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}/>
                     </Grid.Column>
                     <Grid.Column>
                         <Grid.Row>
@@ -136,7 +136,7 @@ export default (props: {message: any, userID: string}) => {
                 <Breakpoint small down>
                     <Grid columns={2}>
                         <Grid.Column width={3} style={{marginRight: '10px'}}>
-                            <div avatar className="ui u-avatar mini" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
+                            <div avatar className="ui u-avatar mini" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}/>
                         </Grid.Column>
                         <Grid.Column>
                             <Grid.Row>

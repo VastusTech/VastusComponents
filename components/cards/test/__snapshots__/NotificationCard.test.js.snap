@@ -3,7 +3,7 @@
 exports[`renders without crashing 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Connect(NotificationCard)
+  Symbol(enzyme.__unrendered__): <Connect(InviteCard)
     inviteID={null}
     store={
       Object {

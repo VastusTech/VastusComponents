@@ -16,6 +16,7 @@ const FETCH_EVENT = 'FETCH_EVENT';
 const FETCH_CHALLENGE = 'FETCH_CHALLENGE';
 const FETCH_INVITE = 'FETCH_INVITE';
 const FETCH_POST = 'FETCH_POST';
+const FETCH_SUBMISSION = 'FETCH_SUBMISSION';
 const FETCH_GROUP = 'FETCH_GROUP';
 const FETCH_COMMENT = 'FETCH_COMMENT';
 const FETCH_SPONSOR = 'FETCH_SPONSOR';
@@ -30,6 +31,7 @@ const ADD_EVENT_ATTRIBUTES = 'ADD_EVENT_ATTRIBUTES';
 const ADD_CHALLENGE_ATTRIBUTES = 'ADD_CHALLENGE_ATTRIBUTES';
 const ADD_INVITE_ATTRIBUTES = 'ADD_INVITE_ATTRIBUTES';
 const ADD_POST_ATTRIBUTES = 'ADD_POST_ATTRIBUTES';
+const ADD_SUBMISSION_ATTRIBUTES = 'ADD_SUBMISSION_ATTRIBUTES';
 const ADD_GROUP_ATTRIBUTES = 'ADD_GROUP_ATTRIBUTES';
 const ADD_COMMENT_ATTRIBUTES = 'ADD_COMMENT_ATTRIBUTES';
 const ADD_SPONSOR_ATTRIBUTES = 'ADD_SPONSOR_ATTRIBUTES';
@@ -44,6 +46,7 @@ const REMOVE_EVENT_ATTRIBUTES = 'REMOVE_EVENT_ATTRIBUTES';
 const REMOVE_CHALLENGE_ATTRIBUTES = 'REMOVE_CHALLENGE_ATTRIBUTES';
 const REMOVE_INVITE_ATTRIBUTES = 'REMOVE_INVITE_ATTRIBUTES';
 const REMOVE_POST_ATTRIBUTES = 'REMOVE_POST_ATTRIBUTES';
+const REMOVE_SUBMISSION_ATTRIBUTES = 'REMOVE_SUBMISSION_ATTRIBUTES';
 const REMOVE_GROUP_ATTRIBUTES = 'REMOVE_GROUP_ATTRIBUTES';
 const REMOVE_COMMENT_ATTRIBUTES = 'REMOVE_COMMENT_ATTRIBUTES';
 const REMOVE_SPONSOR_ATTRIBUTES = 'REMOVE_SPONSOR_ATTRIBUTES';
@@ -58,6 +61,7 @@ const REMOVE_EVENT =     'REMOVE_EVENT';
 const REMOVE_CHALLENGE = 'REMOVE_CHALLENGE';
 const REMOVE_INVITE =    'REMOVE_INVITE';
 const REMOVE_POST =      'REMOVE_POST';
+const REMOVE_SUBMISSION ='REMOVE_SUBMISSION';
 const REMOVE_GROUP =     'REMOVE_GROUP';
 const REMOVE_COMMENT =   'REMOVE_COMMENT';
 const REMOVE_SPONSOR =   'REMOVE_SPONSOR';
@@ -72,6 +76,7 @@ const FETCH_EVENT_QUERY = 'FETCH_EVENT_QUERY';
 const FETCH_CHALLENGE_QUERY = 'FETCH_CHALLENGE_QUERY';
 const FETCH_INVITE_QUERY = 'FETCH_INVITE_QUERY';
 const FETCH_POST_QUERY = 'FETCH_POST_QUERY';
+const FETCH_SUBMISSION_QUERY = 'FETCH_SUBMISSION_QUERY';
 const FETCH_GROUP_QUERY = 'FETCH_GROUP_QUERY';
 const FETCH_COMMENT_QUERY = 'FETCH_COMMENT_QUERY';
 const FETCH_SPONSOR_QUERY = 'FETCH_SPONSOR_QUERY';
@@ -86,6 +91,7 @@ const CLEAR_NORMALIZED_EVENT_QUERY =     'CLEAR_NORMALIZED_EVENT_QUERY';
 const CLEAR_NORMALIZED_CHALLENGE_QUERY = 'CLEAR_NORMALIZED_CHALLENGE_QUERY';
 const CLEAR_NORMALIZED_INVITE_QUERY =    'CLEAR_NORMALIZED_INVITE_QUERY';
 const CLEAR_NORMALIZED_POST_QUERY =      'CLEAR_NORMALIZED_POST_QUERY';
+const CLEAR_NORMALIZED_SUBMISSION_QUERY ='CLEAR_NORMALIZED_SUBMISSION_QUERY';
 const CLEAR_NORMALIZED_GROUP_QUERY =     'CLEAR_NORMALIZED_GROUP_QUERY';
 const CLEAR_NORMALIZED_COMMENT_QUERY =   'CLEAR_NORMALIZED_COMMENT_QUERY';
 const CLEAR_NORMALIZED_SPONSOR_QUERY =   'CLEAR_NORMALIZED_SPONSOR_QUERY';
@@ -100,6 +106,7 @@ const CLEAR_EVENT_QUERY = 'CLEAR_EVENT_QUERY';
 const CLEAR_CHALLENGE_QUERY = 'CLEAR_CHALLENGE_QUERY';
 const CLEAR_INVITE_QUERY = 'CLEAR_INVITE_QUERY';
 const CLEAR_POST_QUERY = 'CLEAR_POST_QUERY';
+const CLEAR_SUBMISSION_QUERY = 'CLEAR_SUBMISSION_QUERY';
 const CLEAR_GROUP_QUERY = 'CLEAR_GROUP_QUERY';
 const CLEAR_COMMENT_QUERY = 'CLEAR_COMMENT_QUERY';
 const CLEAR_SPONSOR_QUERY = 'CLEAR_SPONSOR_QUERY';
@@ -115,6 +122,7 @@ const eventCacheSize = 2000;
 const challengeCacheSize = 2000;
 const inviteCacheSize = 100;
 const postCacheSize = 2000;
+const submissionCacheSize = 1000;
 const groupCacheSize = 100;
 const commentCacheSize = 1000;
 const sponsorCacheSize = 100;
@@ -130,6 +138,7 @@ const eventQueryCacheSize = 10;
 const challengeQueryCacheSize = 5;
 const inviteQueryCacheSize = 5;
 const postQueryCacheSize = 5;
+const submissionQueryCacheSize = 5;
 const groupQueryCacheSize = 5;
 const commentQueryCacheSize = 5;
 const sponsorQueryCacheSize = 5;
@@ -146,6 +155,7 @@ const initialState = {
     challenges: {},
     invites: {},
     posts: {},
+    submissions: {},
     groups: {},
     comments: {},
     sponsors: {},
@@ -161,6 +171,7 @@ const initialState = {
     challengeLRUHandler: [],
     inviteLRUHandler: [],
     postLRUHandler: [],
+    submissionLRUHandler: [],
     groupLRUHandler: [],
     commentLRUHandler: [],
     sponsorLRUHandler: [],
@@ -176,6 +187,7 @@ const initialState = {
     challengeQueries: {},
     inviteQueries: {},
     postQueries: {},
+    submissionQueries: {},
     groupQueries: {},
     commentQueries: {},
     sponsorQueries: {},
@@ -190,6 +202,7 @@ const initialState = {
     challengeQueryLRUHandler: [],
     inviteQueryLRUHandler: [],
     postQueryLRUHandler: [],
+    submissionQueryLRUHandler: [],
     groupQueryLRUHandler: [],
     commentQueryLRUHandler: [],
     sponsorQueryLRUHandler: [],
@@ -200,43 +213,46 @@ export default (state = initialState, action) => {
     switch (action.type) {
         // TODO Also make sure that the item to get also has all the attributes we desire?
         case FETCH_CLIENT:
-            state = addObjectToCache(state, "clients", clientCacheSize, "clientLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "clients", clientCacheSize, "clientLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_TRAINER:
-            state = addObjectToCache(state, "trainers", trainerCacheSize, "trainerLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "trainers", trainerCacheSize, "trainerLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_GYM:
-            state = addObjectToCache(state, "gyms", gymCacheSize, "gymLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "gyms", gymCacheSize, "gymLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_WORKOUT:
-            state = addObjectToCache(state, "workouts", workoutCacheSize, "workoutLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "workouts", workoutCacheSize, "workoutLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_REVIEW:
-            state = addObjectToCache(state, "reviews", reviewCacheSize, "reviewLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "reviews", reviewCacheSize, "reviewLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_EVENT:
-            state = addObjectToCache(state, "events", eventCacheSize, "eventLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "events", eventCacheSize, "eventLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_CHALLENGE:
-            state = addObjectToCache(state, "challenges", challengeCacheSize, "challengeLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "challenges", challengeCacheSize, "challengeLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_INVITE:
-            state = addObjectToCache(state, "invites", inviteCacheSize, "inviteLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "invites", inviteCacheSize, "inviteLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_POST:
-            state = addObjectToCache(state, "posts", postCacheSize, "postLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "posts", postCacheSize, "postLRUHandler", action.payload.object, action.asyncDispatch);
+            break;
+        case FETCH_SUBMISSION:
+            state = addObjectToCache(state, "submissions", submissionCacheSize, "submissionLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_GROUP:
-            state = addObjectToCache(state, "groups", groupCacheSize, "groupLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "groups", groupCacheSize, "groupLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_COMMENT:
-            state = addObjectToCache(state, "comments", commentCacheSize, "commentLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "comments", commentCacheSize, "commentLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_SPONSOR:
-            state = addObjectToCache(state, "sponsors", sponsorCacheSize, "sponsorLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "sponsors", sponsorCacheSize, "sponsorLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case FETCH_STREAK:
-            state = addObjectToCache(state, "streaks", streakCacheSize, "streakLRUHandler", action.payload.object, action.payload.dispatch);
+            state = addObjectToCache(state, "streaks", streakCacheSize, "streakLRUHandler", action.payload.object, action.asyncDispatch);
             break;
         case ADD_CLIENT_ATTRIBUTES:
             state = addAttributes(state, action.payload.id, action.payload.attributes, "clients");
@@ -264,6 +280,9 @@ export default (state = initialState, action) => {
             break;
         case ADD_POST_ATTRIBUTES:
             state = addAttributes(state, action.payload.id, action.payload.attributes, "posts");
+            break;
+        case ADD_SUBMISSION_ATTRIBUTES:
+            state = addAttributes(state, action.payload.id, action.payload.attributes, "submissions");
             break;
         case ADD_GROUP_ATTRIBUTES:
             state = addAttributes(state, action.payload.id, action.payload.attributes, "groups");
@@ -304,6 +323,9 @@ export default (state = initialState, action) => {
         case REMOVE_POST_ATTRIBUTES:
             state = removeAttributes(state, action.payload.id, action.payload.attributes, "posts");
             break;
+        case REMOVE_SUBMISSION_ATTRIBUTES:
+            state = removeAttributes(state, action.payload.id, action.payload.attributes, "submissions");
+            break;
         case REMOVE_GROUP_ATTRIBUTES:
             state = removeAttributes(state, action.payload.id, action.payload.attributes, "groups");
             break;
@@ -317,43 +339,46 @@ export default (state = initialState, action) => {
             state = removeAttributes(state, action.payload.id, action.payload.attributes, "streaks");
             break;
         case REMOVE_CLIENT:
-            state = removeItem(state, "clients", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "clients", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_TRAINER:
-            state = removeItem(state, "trainers", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "trainers", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_GYM:
-            state = removeItem(state, "gyms", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "gyms", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_WORKOUT:
-            state = removeItem(state, "workouts", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "workouts", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_REVIEW:
-            state = removeItem(state, "reviews", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "reviews", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_EVENT:
-            state = removeItem(state, "events", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "events", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_CHALLENGE:
-            state = removeItem(state, "challenges", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "challenges", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_INVITE:
-            state = removeItem(state, "invites", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "invites", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_POST:
-            state = removeItem(state, "posts", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "posts", action.payload.id, action.asyncDispatch);
+            break;
+        case REMOVE_SUBMISSION:
+            state = removeItem(state, "submissions", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_GROUP:
-            state = removeItem(state, "groups", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "groups", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_COMMENT:
-            state = removeItem(state, "comments", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "comments", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_SPONSOR:
-            state = removeItem(state, "sponsors", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "sponsors", action.payload.id, action.asyncDispatch);
             break;
         case REMOVE_STREAK:
-            state = removeItem(state, "streaks", action.payload.id, action.payload.dispatch);
+            state = removeItem(state, "streaks", action.payload.id, action.asyncDispatch);
             break;
         case FETCH_CLIENT_QUERY:
             state = addQueryToCache(state, "clientQueries", clientQueryCacheSize, "clientQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
@@ -381,6 +406,9 @@ export default (state = initialState, action) => {
             break;
         case FETCH_POST_QUERY:
             state = addQueryToCache(state, "postQueries", postQueryCacheSize, "postQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            break;
+        case FETCH_SUBMISSION_QUERY:
+            state = addQueryToCache(state, "submissionQueries", submissionQueryCacheSize, "submissionQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_GROUP_QUERY:
             state = addQueryToCache(state, "groupQueries", groupQueryCacheSize, "groupQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
@@ -421,6 +449,9 @@ export default (state = initialState, action) => {
         case CLEAR_NORMALIZED_POST_QUERY:
             state = clearNormalizedCache(state, "postQueries", action.payload);
             break;
+        case CLEAR_NORMALIZED_SUBMISSION_QUERY:
+            state = clearNormalizedCache(state, "submissionQueries", action.payload);
+            break;
         case CLEAR_NORMALIZED_GROUP_QUERY:
             state = clearNormalizedCache(state, "groupQueries", action.payload);
             break;
@@ -459,6 +490,9 @@ export default (state = initialState, action) => {
             break;
         case CLEAR_POST_QUERY:
             state = clearCache(state, "postQueries");
+            break;
+        case CLEAR_SUBMISSION_QUERY:
+            state = clearCache(state, "submissionQueries");
             break;
         case CLEAR_GROUP_QUERY:
             state = clearCache(state, "groupQueries");

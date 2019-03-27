@@ -51,6 +51,9 @@ export function convertToISOString(date) {
         dif + pad(tzo / 60) +
         ':' + pad(tzo % 60);
 }
+export function getNowISO() {
+    return convertToISOString(new Date());
+}
 export function calculateAge(birthday) {
     // TODO Use more libraries to calculate this way better
     if (birthday) {

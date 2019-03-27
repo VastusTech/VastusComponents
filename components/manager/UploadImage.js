@@ -1,53 +1,45 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import {Button, Icon} from "semantic-ui-react";
 import AvatarEditor from "react-avatar-editor";
-import PropTypes from 'prop-types';
 
 type Props = {
-    imageURL: PropTypes.string.isRequired,
-    callback: PropTypes.func.isRequired
-};
-type State = {
-    rotation: number
+    imageURL: string,
+    callback: (any) => void
 };
 
-class UploadImage extends Component<Props, State> {
-    state = {
-        rotation: 0
-    };
-    onClickSave = () => {
-        function dataURItoBlob(dataURI) {
-            const binary = atob(dataURI.split(',')[1]);
-            const array = [];
-            for(let i = 0; i < binary.length; i++) {
-                array.push(binary.charCodeAt(i));
-            }
-            return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+const onClickSave = (editor, callback) => {
+    if (editor) {
+        const dataURI = editor.getImageScaledToCanvas().toDataURL("image/jpeg");
+        const binary = atob(dataURI.split(',')[1]);
+        const array = [];
+        for(let i = 0; i < binary.length; i++) {
+            array.push(binary.charCodeAt(i));
         }
-        if (this.editor) {
-            this.props.callback(dataURItoBlob(this.editor.getImageScaledToCanvas().toDataURL("image/jpeg")));
-        }
-    };
-    setEditorRef = (editorRef) => this.editor = editorRef;
-    render() {
-        return (
-            <div>
-                <AvatarEditor
-                    ref={this.setEditorRef}
-                    image={this.props.imageURL}
-                    width={250}
-                    height={250}
-                    border={50}
-                    rotate={this.state.rotation}
-                    scale={1.2}
-                />
-                <Button primary onClick={() => {this.setState({rotation: (this.state.rotation + 90) % 360})}}>
-                    <Icon name="arrow alternate circle right"/>
-                </Button>
-                <Button primary onClick={this.onClickSave}>Upload</Button>
-            </div>
-        );
+        callback(new Blob([new Uint8Array(array)], {type: 'image/jpeg'}));
     }
-}
+};
+
+const UploadImage = (props: Props) => {
+    const [rotation, setRotation] = useState(0);
+    const [editorRef, setEditorRef] = useState(null);
+    return (
+        <div>
+            <AvatarEditor
+                ref={setEditorRef}
+                image={props.imageURL}
+                width={250}
+                height={250}
+                border={50}
+                rotate={rotation}
+                scale={1.2}
+            />
+            <Button primary onClick={() => setRotation(p => (p + 90) % 360)}>
+                <Icon name="arrow alternate circle right"/>
+            </Button>
+            <Button primary onClick={() => onClickSave(editorRef, props.callback)}>Upload</Button>
+            <Button onClick={() => props.callback(null)}>Cancel</Button>
+        </div>
+    );
+};
 
 export default UploadImage;
