@@ -28,7 +28,7 @@ const queryGroups = (filter, nextToken, isFinished, friends, fetchGroupQuery, se
                 for (let i = 0; i < data.items.length; i++) {
                     const group = data.items[i];
                     // Filter the results based on if we are able to see it
-                    if (group.access === "public" || arraysIntersect(friends, group.owners)) {
+                    if (group.access === "public" || (friends && arraysIntersect(friends, group.owners))) {
                         // TODO Fetch any information about the groups!!!
                         setGroups(p => [...p, group]);
                     }
