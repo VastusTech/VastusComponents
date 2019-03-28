@@ -1,4 +1,4 @@
-import {setIsLoading } from "./infoActions";
+import {setIsLoading, setIsNotLoading} from "./infoActions";
 import QL from "../api/GraphQL";
 import {getPutItemFunction, getFetchQueryFunction} from "./cacheActions";
 import {err, log} from "../../Constants";
@@ -14,26 +14,37 @@ const RESET_QUERY = 'RESET_QUERY';
 const ENABLE_SEARCH_BAR = 'ENABLE_SEARCH_BAR';
 const DISABLE_SEARCH_BAR = 'DISABLE_SEARCH_BAR';
 
-export function newSearch(queryString, dataHandler) {
-    return (dispatch, getStore) => {
+export function newSearch(queryString, minResults, dataHandler) {
+    return (dispatch) => {
         dispatch(setIsLoading());
+        dispatch(resetQuery());
         // Use the current store settings to actually do the search
-        dispatch(setSearchQuery(queryString));
         if (queryString && queryString.length > 0) {
-            dispatch(resetQuery());
-            performAllQueries(queryString, dispatch, getStore, dataHandler);
+            dispatch(setSearchQuery(queryString));
+            dispatch(loadMoreResults(queryString, minResults, (data) => {
+                dispatch(setIsNotLoading());
+                dataHandler(data);
+            }));
         }
         else {
             log&&console.log("I refuse to search for an empty string");
             dataHandler([]);
+            dispatch(setIsNotLoading());
         }
     };
 }
-export function loadMoreResults(searchQuery, dataHandler) {
+function loadMoreResults(searchQuery, minResults, dataHandler) {
     return (dispatch, getStore) => {
-        dispatch(setIsLoading());
-        if (getStore().search.searchQuery === searchQuery) {
-            performAllQueries(searchQuery, dispatch, getStore, dataHandler);
+        if (getStore().search.searchQuery === searchQuery && getStore().search.results.length < minResults &&
+                !getStore().search.ifFinished) {
+            alert("Current results = " + JSON.stringify(getStore().search.results));
+            alert("Still need " + (parseInt(minResults) - parseInt(getStore().search.results.length)) + " more results!");
+            performAllQueries(searchQuery, dispatch, getStore, () => {
+                dispatch(loadMoreResults(searchQuery, minResults, dataHandler));
+            });
+        }
+        else {
+            dataHandler(getStore().search.results);
         }
     };
 }
