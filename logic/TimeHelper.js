@@ -107,3 +107,26 @@ function convertDate(date) {
 
     return month + "/" + day + "/" + year;
 }
+
+/**
+ * Returns the number of midnights that have passed between the two dates.
+ *
+ * @param from The from {@link Date} object.
+ * @param to The from {@link Date} object.
+ * @return {number} The number of midnights that have passed between the two dates.
+ */
+export const midnightsBetween = (from, to) => {
+    from.setHours(0, 0, 0, 0);
+    to.setHours(0, 0, 0, 0);
+    let one_day=1000*60*60*24;                       // Convert both dates to milliseconds
+    let date1_ms = to.getTime();
+    let date2_ms = from.getTime();                   // Calculate the difference in milliseconds
+    // console.log("1: " + date1_ms + ", 2: " + date2_ms);
+    let difference_ms = date1_ms - date2_ms;        // Convert back to days and return
+    // console.log("difference = " + difference_ms);
+    return Math.round(difference_ms/one_day);
+};
+
+export const midnightsPassed = (dateTime) => {
+    return midnightsBetween(dateTime, new Date())
+};
