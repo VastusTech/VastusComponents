@@ -91,7 +91,7 @@ const ClientCard = (props: Props) => {
                         </Grid.Row>
                     </Grid>
                 )}
-                <ClientModal open={modalOpen} onClose={() => {alert("ay"); console.log("closing"); setModalOpen(false); console.log("closing")}} clientID={props.client.id}/>
+                <ClientModal open={modalOpen} onClose={() => {console.log("closing"); setModalOpen(false); console.log("closing")}} clientID={props.client.id}/>
             </Card.Content>
             <Card.Content extra>
                 <Card.Meta>

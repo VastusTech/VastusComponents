@@ -37,8 +37,8 @@ function loadMoreResults(searchQuery, minResults, dataHandler) {
     return (dispatch, getStore) => {
         if (getStore().search.searchQuery === searchQuery && getStore().search.results.length < minResults &&
                 !getStore().search.ifFinished) {
-            alert("Current results = " + JSON.stringify(getStore().search.results));
-            alert("Still need " + (parseInt(minResults) - parseInt(getStore().search.results.length)) + " more results!");
+            // alert("Current results = " + JSON.stringify(getStore().search.results));
+            // alert("Still need " + (parseInt(minResults) - parseInt(getStore().search.results.length)) + " more results!");
             performAllQueries(searchQuery, dispatch, getStore, () => {
                 dispatch(loadMoreResults(searchQuery, minResults, dataHandler));
             });

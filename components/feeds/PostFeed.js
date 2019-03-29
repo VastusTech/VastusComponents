@@ -43,7 +43,7 @@ const queryPosts = (filter, nextToken, isFinished, friends, fetchPostQuery, fetc
                 for (let i = 0; i < data.items.length; i++) {
                     const post = data.items[i];
                     // Filter the results based on if we are able to see it
-                    if (post.access === "public" || friends.includes(post.by)) {
+                    if (post.access === "public" || (friends && friends.includes(post.by))) {
                         // Fetch the "by" information
                         const by = post.by;
                         const byItemType = getItemTypeFromID(by);
