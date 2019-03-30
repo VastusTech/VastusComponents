@@ -7,7 +7,7 @@ import { convertFromISO } from "../../logic/TimeHelper";
 import { forceFetchUserAttributes } from "../../../redux_helpers/actions/userActions";
 import PostFunctions from "../../database_functions/PostFunctions";
 import {getObjectAttribute, getPostAttribute} from "../../logic/CacheRetrievalHelper";
-import {setIsLoading} from "../../redux_actions/infoActions";
+// import {setIsLoading} from "../../redux_actions/infoActions";
 import Spinner from "../props/Spinner";
 
 type Props = {
@@ -82,7 +82,7 @@ const PostDescriptionModal = (props: Props) => {
                         <List.Item>
                             <List.Icon name='user' />
                             <List.Content>
-                                Created by <Button className="u-button--flat" onClick={() => setClientModalOpen(true)}>{getByAttribute("name")}</Button>
+                                Created by <Button className="u-button--flat" onClick={() => clientModalOpen||setClientModalOpen(true)}>{getByAttribute("name")}</Button>
                             </List.Content>
                         </List.Item>
                         <List.Item>
