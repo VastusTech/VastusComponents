@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Dimmer, Label, Loader } from 'semantic-ui-react';
+import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Dimmer, Label, Header } from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 import { connect } from 'react-redux';
 import {
@@ -8,7 +8,7 @@ import {
     forceFetchChallenge,
     fetchChallenge,
     clearChallengeQuery,
-    subscribeFetchChallenge
+    subscribeFetchChallenge, fetchStreak
 } from "../../redux_actions/cacheActions";
 import CompleteChallengeModal from "../manager/CompleteChallengeModal";
 import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
@@ -25,10 +25,15 @@ import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import {daysLeft, parseISOString} from "../../logic/TimeHelper";
 import TrainerModal from "./TrainerModal";
 import Spinner from "../props/Spinner";
+import {ifStreakExpired} from "../../logic/StreakHelper";
+import InviteToScheduledEventsModalProp from "../manager/InviteToScheduledEventsModal";
+import {arrayIntersection, arraysIntersect} from "../../logic/ArrayHelper";
+import {err} from "../../../Constants";
 
 export const ChallengeDescriptionModalInfo = {
     // TODO Contains everything that is referenced here
-    fetchList: ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "time_created", "capacity", "members", "memberRequests", "prize", "goal", "owner", "access", "restriction", "submissions"],
+    fetchList: ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "time_created", "capacity", "members",
+        "memberRequests", "prize", "goal", "owner", "access", "restriction", "submissions", "streaks"],
     ifSubscribe: true,
 };
 
@@ -222,6 +227,34 @@ const createCorrectButton = (userID, challengeID, submissions, isLoading, isComp
     }
 };
 
+const displayStreakInfo = (ifStreak, streak) => {
+    if (ifStreak) {
+        if (streak) {
+            const ifExpired = ifStreakExpired(streak);
+            if (ifExpired) {
+                return [
+                    <Divider/>,
+                    <Header color="red">Your Streak Has Expired!</Header>
+                ];
+            }
+            else {
+                const currentNumber = streak.N;
+                return [
+                    <Divider/>,
+                    <Header color="green">Your current streak is = {currentNumber}</Header>
+                ];
+            }
+        }
+        else {
+            return [
+                <Divider/>,
+                <Header color="gray">Could not read streak data...</Header>
+            ];
+        }
+    }
+    return null;
+};
+
 const displayError = (error) => {
     if (error === "Error while trying to update an item in the database safely. Error: The item failed the checkHandler: That challenge is already filled up!") {
         return (<Message negative>
@@ -247,12 +280,13 @@ const challengeDeleted = (isDeleted) => {
  */
 const ChallengeDescriptionModal = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);
+    const [challengeType, setChallengeType] = useState(null);
+    const [streak, setStreak] = useState(null);
     const [isOwned, setIsOwned] = useState(false);
     const [isRequesting, setIsRequesting] = useState(false);
     const [isJoined, setIsJoined] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
     const [isRestricted, setIsRestricted] = useState(false);
-    const [isDeleted, setIsDeleted] = useState(false);
     const [ownerModalOpen, setOwnerModalOpen] = useState(false);
     const [completeModalOpen, setCompleteModalOpen] = useState(false);
     const [submitModalOpen, setSubmitModalOpen] = useState(false);
@@ -289,6 +323,22 @@ const ChallengeDescriptionModal = (props: Props) => {
                     }
                     if (challenge.completed) {
                         setIsCompleted(challenge.completed === "true");
+                    }
+                    if (challenge.challengeType) {
+                        setChallengeType(challenge.challengeType);
+                        if (challenge.challengeType === "streak") {
+                            if (challenge.streaks && props.user.streaks) {
+                                const intersection = arrayIntersection(challenge.streaks, props.user.streaks);
+                                if (intersection && intersection.length && intersection.length === 1) {
+                                    props.fetchStreak(intersection[0], ["lastUpdated", "N", "bestN", "currentN", "updateSpanType", "updateInterval"], (streak) => {
+                                        setStreak(streak);
+                                    });
+                                }
+                                else {
+                                    err&&console.error("Could not determine which streak is for this challenge!!");
+                                }
+                            }
+                        }
                     }
                 }
                 else {
@@ -360,6 +410,7 @@ const ChallengeDescriptionModal = (props: Props) => {
                             </Grid.Row>
                         </Grid.Column>
                     </Grid>
+                    {displayStreakInfo(challengeType === "streak", streak)}
                     <Divider/>
                     <Modal.Description>
                         {createCorrectModal(getChallengeAttribute("owner"), ownerModalOpen, setOwnerModalOpen)}
@@ -406,6 +457,9 @@ const mapDispatchToProps = (dispatch) => {
         clearChallengeQuery: () => {
             dispatch(clearChallengeQuery());
         },
+        fetchStreak: (id, variableList, dataHandler) => {
+            dispatch(fetchStreak(id, variableList, dataHandler));
+        }
     };
 };
 

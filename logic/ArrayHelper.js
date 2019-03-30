@@ -45,6 +45,7 @@ export function addUniqueToArray(originalArray, newArray) {
  *
  * @param array1
  * @param array2
+ * @return boolean
  */
 export function arraysIntersect(array1, array2) {
     for (let i = 0; i < array1.length; i++) {
@@ -53,6 +54,18 @@ export function arraysIntersect(array1, array2) {
         }
     }
     return false;
+}
+
+/**
+ * Returns the intersection between the two arrays.
+ *
+ * @param array1
+ * @param array2
+ */
+export function arrayIntersection(array1, array2) {
+    const returnArray = [...array1];
+    returnArray.filter(v => array2.includes(v));
+    return returnArray;
 }
 
 /**
@@ -65,4 +78,4 @@ export const shuffleArray = (array) => {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
-}
+};
