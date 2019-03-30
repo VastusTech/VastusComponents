@@ -25,12 +25,10 @@ const toggleTypeCheckbox = (type, setFilterTypes, enableType, disableType) => {
     setFilterTypes(p => {
         if (p[type]) {
             // Disable type
-            alert("disabling " + type);
             disableType(type);
         }
         else {
             // Enable type
-            alert("enabling " + type);
             enableType(type);
         }
         return {
@@ -53,31 +51,37 @@ const FilterScreen = (props) => {
     const [filterTypes, setFilterTypes] = useState({});
 
     useEffect(() => {
-        if (props.open) {
-            setFilterTypes({});
-            const types = props.search.typeQueries;
-            for (const type in types) {
-                if (types.hasOwnProperty(type)) {
-                    if (["Client", "Trainer", "Event", "Challenge", "Group"].includes(type)) {
-                        setFilterTypes(p => ({
-                            ...p,
-                            [type]: types[type].enabled
-                        }));
-                    }
+        setFilterTypes({});
+        const types = props.search.typeQueries;
+        for (const type in types) {
+            if (types.hasOwnProperty(type)) {
+                if (["Client", "Trainer", "Event", "Challenge", "Group"].includes(type)) {
+                    setFilterTypes(p => ({
+                        ...p,
+                        [type]: types[type].enabled
+                    }));
                 }
             }
         }
-    }, [props.open, props.search]);
+    }, [props.search]);
 
     return (
         <div>
-            <Header> Filter </Header>
-            Choose which item types show up in the search!
-            <Fragment>
-                <Grid stackable stretched columns={9}>
-                    {getCheckBoxes(filterTypes, setFilterTypes, props.enableType, props.disableType)}
-                </Grid>
-            </Fragment>
+            <Grid rows={3}>
+                <Grid.Row>
+                    <Header> Filter </Header>
+                </Grid.Row>
+                <Grid.Row>
+                    Choose which item types show up in the search!
+                </Grid.Row>
+                <Grid.Row>
+                    <Fragment>
+                        <Grid stackable stretched columns={9}>
+                            {getCheckBoxes(filterTypes, setFilterTypes, props.enableType, props.disableType)}
+                        </Grid>
+                    </Fragment>
+                </Grid.Row>
+            </Grid>
         </div>
     );
 };
