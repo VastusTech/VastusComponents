@@ -51,7 +51,7 @@ const ClientModal = (props: Props) => {
     // ???? TODO TEST For open?
     useEffect(() => {
         if (props.open && clientID) {
-            alert("opened!");
+            // alert("opened!");
             debugAlert("Fetching Client for Client Modal!");
             props.fetchClient(clientID, ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profileImagePaths", "friendRequests"]);
         }

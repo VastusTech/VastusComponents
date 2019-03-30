@@ -127,7 +127,7 @@ class TrainerPortalModal extends React.PureComponent<Props> {
                 // Now we update the database object to reflect this
                 //console.log("resulttt:" + JSON.stringify(result));
                 //console.log("Successfully put the image, now putting the data into the database!");
-                TrainerFunctions.updateProfileImagePath(this.props.user.id, this.props.user.id, path,
+                TrainerFunctions.updateProfileImage(this.props.user.id, this.props.user.id, path,
                     (data) => {
                         //console.log("successfully editted client");
                         //console.log(JSON.stringify(data));

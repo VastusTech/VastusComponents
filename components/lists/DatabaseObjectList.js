@@ -9,6 +9,7 @@ import TrainerCard, {TrainerCardInfo} from "../cards/TrainerCard";
 import EventCard from "../cards/EventCard";
 import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
 import PostCard from "../cards/PostCard";
+import {shuffleArray} from "../../logic/ArrayHelper";
 
 // TODO Test the new "visibility" fetch system!
 // TODO USING VISIBILITY WITH A MODAL DOESN'T WORK?
@@ -20,6 +21,7 @@ type Props = {
     ids: [string],
     noObjectsMessage: string,
     acceptedItemTypes?: [string],
+    randomized: boolean,
     sortFunction?: any
 }
 
@@ -55,7 +57,7 @@ const getObjectComponent = (key, object: {id: string, item_type: string}) => (
         "Get database object list object not implemented for item type"
     )
 );
-const fetchMoreObjects = (ids, acceptedItemTypes, sortFunction, hiddenIDIndex, setHiddenIDIndex, setVisibleObjects, setVisibleComponents, setIsLoading, fetchItem) => {
+const fetchMoreObjects = (ids, acceptedItemTypes, randomized, sortFunction, hiddenIDIndex, setHiddenIDIndex, setVisibleObjects, setVisibleComponents, setIsLoading, fetchItem) => {
     setIsLoading(true);
     const endIndex = Math.min(ids.length, hiddenIDIndex + numFetch);
     for (let i = hiddenIDIndex; i < endIndex; i++) {
@@ -72,7 +74,7 @@ const fetchMoreObjects = (ids, acceptedItemTypes, sortFunction, hiddenIDIndex, s
                 PostCard.fetchVariableList,
                 null, null, null, null, null,
                 "Get variable list from item type not implemented!");
-            fetchItem(itemType, id, variableList, (o) => addObject(o, sortFunction, setVisibleObjects, setVisibleComponents, setIsLoading));
+            fetchItem(itemType, id, variableList, (o) => addObject(o, sortFunction, randomized, setVisibleObjects, setVisibleComponents, setIsLoading));
         }
     }
     if (hiddenIDIndex === endIndex) {
@@ -81,11 +83,12 @@ const fetchMoreObjects = (ids, acceptedItemTypes, sortFunction, hiddenIDIndex, s
     setHiddenIDIndex(endIndex);
 };
 
-const addObject = (object, sortFunction, setVisibleObjects, setVisibleComponents, setIsLoading) => {
+const addObject = (object, sortFunction, randomized, setVisibleObjects, setVisibleComponents, setIsLoading) => {
     if (object && object.id) {
         setVisibleObjects(p => {
             const a = [...p, object];
             const key = a.length;
+            if (randomized) { shuffleArray(a) }
             if (sortFunction) { a.sort(sortFunction); }
             setVisibleComponents(p => {
                 const newComps = {
@@ -119,7 +122,8 @@ const DatabaseObjectList = (props: Props) => {
     // Callback for visible objects updated
     useEffect(() => {
         if (ids) {
-            fetchMoreObjects(ids, props.acceptedItemTypes, props.sortFunction, hiddenIDIndex, setHiddenIDIndex,
+            const randomized = props.randomized === "true";
+            fetchMoreObjects(ids, props.acceptedItemTypes, randomized, props.sortFunction, hiddenIDIndex, setHiddenIDIndex,
                 setVisibleObjects, setVisibleComponents, setIsLoading, props.fetchItem);
         }
     }, [visibleObjects]);
@@ -174,6 +178,10 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(fetchItem(itemType, id, variableList, dataHandler, failureHandler));
         }
     };
+};
+
+DatabaseObjectList.defaultProps = {
+    randomized: false
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DatabaseObjectList);

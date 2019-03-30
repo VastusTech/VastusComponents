@@ -54,3 +54,15 @@ export function arraysIntersect(array1, array2) {
     }
     return false;
 }
+
+/**
+ * Shuffles a given array based on the Fisher-Yates implementation.
+ *
+ * @param array The array to be mutated and shuffled.
+ */
+export const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
