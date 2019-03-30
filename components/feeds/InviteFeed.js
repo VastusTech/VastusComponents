@@ -14,6 +14,7 @@ import {
 } from "../../redux_actions/cacheActions";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import {err, log} from "../../../Constants";
+import Spinner from "../props/Spinner";
 
 const fetchAboutAndFromInfo = (invite, fetchClient, fetchTrainer, fetchEvent, fetchChallenge, fetchGroup) => {
     // TODO We don't need this much stuff....
@@ -107,29 +108,34 @@ const InviteFeed = (props) => {
                     }
                 });
             };
-            setIsLoading(true);
             props.fetchUserAttributes(["receivedInvites", "ownedEvents", "ownedChallenges", "ownedGroups"], (data) => {
                 if (data) {
+                    let loading = false;
                     if (data.hasOwnProperty("receivedInvites") && data.receivedInvites) {
                         for (let i = 0; i < data.receivedInvites.length; i++) {
                             fetchAndAddInvite(data.receivedInvites[i]);
+                            loading = true;
                         }
                     }
                     if (data.hasOwnProperty("ownedEvents") && data.ownedEvents) {
                         for (let i = 0; i < data.ownedEvents.length; i++) {
                             fetchAndAddReceivedInvites("Event", data.ownedEvents[i]);
+                            loading = true;
                         }
                     }
                     if (data.hasOwnProperty("ownedChallenges") && data.ownedChallenges) {
                         for (let i = 0; i < data.ownedChallenges.length; i++) {
                             fetchAndAddReceivedInvites("Challenge", data.ownedChallenges[i]);
+                            loading = true;
                         }
                     }
                     if (data.hasOwnProperty("ownedGroups") && data.ownedGroups) {
                         for (let i = 0; i < data.ownedGroups.length; i++) {
                             fetchAndAddReceivedInvites("Group", data.ownedGroups[i]);
+                            loading = true;
                         }
                     }
+                    loading&&setIsLoading(loading);
                 }
                 else {
                     setIsLoading(false);
@@ -143,7 +149,7 @@ const InviteFeed = (props) => {
     if (isLoading) {
         return(
             <Dimmer>
-                <Loader/>
+                <Spinner/>
             </Dimmer>
         );
     }
