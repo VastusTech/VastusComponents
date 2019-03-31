@@ -12,7 +12,7 @@ import TrainerDetailCard from "./post_detail_cards/TrainerDetailCard";
 import {convertFromISO} from "../../logic/TimeHelper";
 import ClientModal from "../modals/ClientModal";
 import TrainerModal from "../modals/TrainerModal";
-import {err, log} from "../../../Constants";
+// import {err, log} from "../../../Constants";
 import {GroupDetailCardInfo} from "./post_detail_cards/GroupDetailCard";
 import {EventDetailCardInfo} from "./post_detail_cards/EventDetailCard";
 import Spinner from "../props/Spinner";
@@ -204,7 +204,7 @@ const PostCard = (props: Props) => {
         <Card color='purple' fluid raised>
             {/*this.getPostAttribute("about")*/}
             <Grid style={{marginLeft: '10px', marginTop: '2px', marginBottom: '2px'}}>
-                <Button className="u-button--flat" onClick={() => setByModalOpen(true)}>
+                <Button className="u-button--flat" onClick={() => byModalOpen||setByModalOpen(true)}>
                     <Grid style={{marginLeft: '10px', marginTop: '10px'}}>
                         <Grid.Column width={6}>
                             {profilePicture(getByAttribute("profileImage"))}

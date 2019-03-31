@@ -7,11 +7,17 @@ class ChallengeFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
     // Create Functions ============================================================
-    static createChallenge(fromID, owner, endTime, capacity, title, goal, access, restriction, tags, successHandler, failureHandler) {
-        return this.create(fromID, owner, endTime, capacity, title, goal, null, null, null, tags, access, restriction, null, successHandler, failureHandler);
+    static createChallenge(fromID, owner, endTime, capacity, title, goal, access, restriction, tags, successHandler,
+                           failureHandler) {
+        return this.create(fromID, owner, endTime, capacity, title, goal, null, null, null, tags, access, restriction,
+            null, null, null, null, null, successHandler, failureHandler);
     }
-    static createChallengeOptional(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs, tags, access, restriction, prize, successHandler, failureHandler) {
-        return this.create(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs, tags, access, restriction, prize, successHandler, failureHandler);
+    static createChallengeOptional(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs,
+                                   tags, access, restriction, prize, challengeType, streakUpdateSpanType,
+                                   streakUpdateInterval, streakN, successHandler, failureHandler) {
+        return this.create(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs, tags,
+            access, restriction, prize, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
+            successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
@@ -69,7 +75,8 @@ class ChallengeFunctions {
 
     // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
-    static create(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs, tags, access, restriction, prize, successHandler, failureHandler) {
+    static create(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs, tags, access,
+                  restriction, prize, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN, successHandler, failureHandler) {
         return Lambda.create(fromID, "Challenge", {
             owner,
             endTime,
@@ -83,6 +90,10 @@ class ChallengeFunctions {
             access,
             restriction,
             prize,
+            challengeType,
+            streakUpdateSpanType,
+            streakUpdateInterval,
+            streakN,
         }, successHandler, failureHandler);
     }
     static updateAdd(fromID, challengeID, attributeName, attributeValue, successHandler, failureHandler) {

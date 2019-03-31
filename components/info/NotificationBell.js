@@ -51,8 +51,8 @@ const NotificationBell = (props) => {
         }
     }, [props.user.receivedInvites, props.user.ownedEvents, props.user.ownedChallenges, props.user.ownedGroups]);
 
+    const {fetchInvite, fetchGroup, fetchChallenge, fetchEvent, forceFetchUserAttributes, fetchUserAttributes, ...otherProps} = props;
     if (numNotifications > 0) {
-        const {fetchInvite, fetchGroup, fetchChallenge, fetchEvent, forceFetchUserAttributes, fetchUserAttributes, ...otherProps} = props;
         return (
             <Grid style={{marginTop: "6px"}} centered>
                 <div {...otherProps}>
@@ -65,7 +65,7 @@ const NotificationBell = (props) => {
     else {
         return (
             <Grid style={{marginTop: "6px"}} centered>
-                <div>
+                <div {...otherProps}>
                     <Icon name='bell outline' size='big'/>
                 </div>
             </Grid>
