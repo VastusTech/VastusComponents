@@ -127,6 +127,45 @@ export const midnightsBetween = (from, to) => {
     return Math.round(difference_ms/one_day);
 };
 
+/**
+ * Calculates the number of midnights that have passed between today and the day of the date that is passed in.
+ *
+ * @param dateTime The {@link Date} object to reference from today.
+ * @return {number} The number of midnights between now and the given date.
+ */
 export const midnightsPassed = (dateTime) => {
     return midnightsBetween(dateTime, new Date())
+};
+
+/**
+ * Gets the now date-time string, rounded up to the nearest five minutes interval.
+ *
+ * @return {string} The today datetime string.
+ * @return {*}
+ */
+export const getTodayDateTimeString = () => {
+    // This is annoying just because we need to work with time zones :(
+    // Sneaking some modular arithmetic in this ;) This is so that the time shown is always a nice looking number
+    const shortestTimeInterval = 5;
+    const date = new Date();
+    date.setMinutes(date.getMinutes() + (shortestTimeInterval - (date.getMinutes() % shortestTimeInterval)));
+    return convertToISOString(date);
+};
+
+/**
+ * Gets the today date string, rounded up to the nearest five minutes interval.
+ *
+ * @return {string} The today date string.
+ */
+export const getTodayDateString = () => {
+    return getTodayDateTimeString().substr(0, 10);
+};
+
+/**
+ * Gets the now time string, rounded up to the next five minutes.
+ *
+ * @return {string} The string of the time.
+ */
+export const getNowTimeString = () => {
+    return getTodayDateTimeString().substr(11, 5);
 };
