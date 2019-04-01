@@ -6,7 +6,7 @@ import {logOut} from "../../../redux_helpers/actions/authActions";
 // TODO Make sure the bind call works here!
 
 const LogOutButton = (props) => (
-    <Button fluid inverted size="large" onClick={props.logOut.bind()} width={5}>Log Out</Button>
+    <Button circular inverted size="large" onClick={props.logOut.bind()} width={5}>Log Out</Button>
 );
 
 const mapStateToProps = state => ({});
