@@ -21,6 +21,7 @@ const queryGroups = (filter, nextToken, isFinished, friends, fetchGroupQuery, se
         setIsLoading(true);
         debugAlert("Fetching Group Feed Query");
         fetchGroupQuery(GroupCardInfo.fetchList, filter, groupFeedLength, nextToken, (data) => {
+            alert("fetched group feed");
             if (!data.nextToken) {
                 setIsFinished(true);
             }
