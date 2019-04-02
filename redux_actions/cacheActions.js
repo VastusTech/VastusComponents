@@ -71,6 +71,21 @@ const REMOVE_COMMENT_ATTRIBUTES = 'REMOVE_COMMENT_ATTRIBUTES';
 const REMOVE_SPONSOR_ATTRIBUTES = 'REMOVE_SPONSOR_ATTRIBUTES';
 const REMOVE_STREAK_ATTRIBUTES = 'REMOVE_STREAK_ATTRIBUTES';
 
+const REMOVE_CLIENT_ATTRIBUTE_INDEX = 'REMOVE_CLIENT_ATTRIBUTE_INDEX';
+const REMOVE_TRAINER_ATTRIBUTE_INDEX = 'REMOVE_TRAINER_ATTRIBUTE_INDEX';
+const REMOVE_GYM_ATTRIBUTE_INDEX = 'REMOVE_GYM_ATTRIBUTE_INDEX';
+const REMOVE_WORKOUT_ATTRIBUTE_INDEX = 'REMOVE_WORKOUT_ATTRIBUTE_INDEX';
+const REMOVE_REVIEW_ATTRIBUTE_INDEX = 'REMOVE_REVIEW_ATTRIBUTE_INDEX';
+const REMOVE_EVENT_ATTRIBUTE_INDEX = 'REMOVE_EVENT_ATTRIBUTE_INDEX';
+const REMOVE_CHALLENGE_ATTRIBUTE_INDEX = 'REMOVE_CHALLENGE_ATTRIBUTE_INDEX';
+const REMOVE_INVITE_ATTRIBUTE_INDEX = 'REMOVE_INVITE_ATTRIBUTE_INDEX';
+const REMOVE_POST_ATTRIBUTE_INDEX = 'REMOVE_POST_ATTRIBUTE_INDEX';
+const REMOVE_SUBMISSION_ATTRIBUTE_INDEX = 'REMOVE_SUBMISSION_ATTRIBUTE_INDEX';
+const REMOVE_GROUP_ATTRIBUTE_INDEX = 'REMOVE_GROUP_ATTRIBUTE_INDEX';
+const REMOVE_COMMENT_ATTRIBUTE_INDEX = 'REMOVE_COMMENT_ATTRIBUTE_INDEX';
+const REMOVE_SPONSOR_ATTRIBUTE_INDEX = 'REMOVE_SPONSOR_ATTRIBUTE_INDEX';
+const REMOVE_STREAK_ATTRIBUTE_INDEX = 'REMOVE_STREAK_ATTRIBUTE_INDEX';
+
 const REMOVE_CLIENT =    'REMOVE_CLIENT';
 const REMOVE_TRAINER =   'REMOVE_TRAINER';
 const REMOVE_GYM =       'REMOVE_GYM';
@@ -642,6 +657,14 @@ export function removeFromItemAttribute(id, attributeName, attributeValue) {
         }
     }
 }
+export function removeFromItemAttributeAtIndex(id, attributeName, index) {
+    return (dispatch, getStore) => {
+        dispatch(removeItemAttributeIndex(getItemTypeFromID(id), id, attributeName, index));
+        if (id === getStore().user.id) {
+            dispatch(updateUserFromCache());
+        }
+    }
+}
 export function fetchItem(itemType, id, variableList, dataHandler, failureHandler) {
     // return getFetchItemFunction(itemType)(id, variableList, dataHandler, failureHandler);
     return fetch(id, itemType, variableList, dataHandler, failureHandler)
@@ -1185,6 +1208,21 @@ function removeItemAttributes(itemType, id, attributes) {
         payload: {
             id,
             attributes
+        }
+    }
+}
+function removeItemAttributeIndex(itemType, id, attributeName, index) {
+    const removeAttributesType = switchReturnItemType(itemType, REMOVE_CLIENT_ATTRIBUTE_INDEX, REMOVE_TRAINER_ATTRIBUTE_INDEX,
+        REMOVE_GYM_ATTRIBUTE_INDEX, REMOVE_WORKOUT_ATTRIBUTE_INDEX, REMOVE_REVIEW_ATTRIBUTE_INDEX, REMOVE_EVENT_ATTRIBUTE_INDEX,
+        REMOVE_CHALLENGE_ATTRIBUTE_INDEX, REMOVE_INVITE_ATTRIBUTE_INDEX, REMOVE_POST_ATTRIBUTE_INDEX, REMOVE_SUBMISSION_ATTRIBUTE_INDEX,
+        REMOVE_GROUP_ATTRIBUTE_INDEX, REMOVE_COMMENT_ATTRIBUTE_INDEX, REMOVE_SPONSOR_ATTRIBUTE_INDEX, null, REMOVE_STREAK_ATTRIBUTE_INDEX,
+        "Receive remove item attribute index item type not implemented for type!");
+    return {
+        type: removeAttributesType,
+        payload: {
+            id,
+            attributeName,
+            index
         }
     }
 }

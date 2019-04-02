@@ -68,6 +68,21 @@ const REMOVE_COMMENT_ATTRIBUTES = 'REMOVE_COMMENT_ATTRIBUTES';
 const REMOVE_SPONSOR_ATTRIBUTES = 'REMOVE_SPONSOR_ATTRIBUTES';
 const REMOVE_STREAK_ATTRIBUTES = 'REMOVE_STREAK_ATTRIBUTES';
 
+const REMOVE_CLIENT_ATTRIBUTE_INDEX = 'REMOVE_CLIENT_ATTRIBUTE_INDEX';
+const REMOVE_TRAINER_ATTRIBUTE_INDEX = 'REMOVE_TRAINER_ATTRIBUTE_INDEX';
+const REMOVE_GYM_ATTRIBUTE_INDEX = 'REMOVE_GYM_ATTRIBUTE_INDEX';
+const REMOVE_WORKOUT_ATTRIBUTE_INDEX = 'REMOVE_WORKOUT_ATTRIBUTE_INDEX';
+const REMOVE_REVIEW_ATTRIBUTE_INDEX = 'REMOVE_REVIEW_ATTRIBUTE_INDEX';
+const REMOVE_EVENT_ATTRIBUTE_INDEX = 'REMOVE_EVENT_ATTRIBUTE_INDEX';
+const REMOVE_CHALLENGE_ATTRIBUTE_INDEX = 'REMOVE_CHALLENGE_ATTRIBUTE_INDEX';
+const REMOVE_INVITE_ATTRIBUTE_INDEX = 'REMOVE_INVITE_ATTRIBUTE_INDEX';
+const REMOVE_POST_ATTRIBUTE_INDEX = 'REMOVE_POST_ATTRIBUTE_INDEX';
+const REMOVE_SUBMISSION_ATTRIBUTE_INDEX = 'REMOVE_SUBMISSION_ATTRIBUTE_INDEX';
+const REMOVE_GROUP_ATTRIBUTE_INDEX = 'REMOVE_GROUP_ATTRIBUTE_INDEX';
+const REMOVE_COMMENT_ATTRIBUTE_INDEX = 'REMOVE_COMMENT_ATTRIBUTE_INDEX';
+const REMOVE_SPONSOR_ATTRIBUTE_INDEX = 'REMOVE_SPONSOR_ATTRIBUTE_INDEX';
+const REMOVE_STREAK_ATTRIBUTE_INDEX = 'REMOVE_STREAK_ATTRIBUTE_INDEX';
+
 const REMOVE_CLIENT =    'REMOVE_CLIENT';
 const REMOVE_TRAINER =   'REMOVE_TRAINER';
 const REMOVE_GYM =       'REMOVE_GYM';
@@ -410,6 +425,48 @@ export default (state = initialState, action) => {
         case REMOVE_STREAK_ATTRIBUTES:
             state = removeAttributes(state, action.payload.id, action.payload.attributes, "streaks");
             break;
+        case REMOVE_CLIENT_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "clients");
+            break;
+        case REMOVE_TRAINER_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "trainers");
+            break;
+        case REMOVE_GYM_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "gyms");
+            break;
+        case REMOVE_WORKOUT_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "workouts");
+            break;
+        case REMOVE_REVIEW_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "reviews");
+            break;
+        case REMOVE_EVENT_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "events");
+            break;
+        case REMOVE_CHALLENGE_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "challenges");
+            break;
+        case REMOVE_INVITE_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "invites");
+            break;
+        case REMOVE_POST_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "posts");
+            break;
+        case REMOVE_SUBMISSION_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "submissions");
+            break;
+        case REMOVE_GROUP_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "groups");
+            break;
+        case REMOVE_COMMENT_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "comments");
+            break;
+        case REMOVE_SPONSOR_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "sponsors");
+            break;
+        case REMOVE_STREAK_ATTRIBUTE_INDEX:
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "streaks");
+            break;
         case REMOVE_CLIENT:
             state = removeItem(state, "clients", action.payload.id, action.asyncDispatch);
             break;
@@ -719,6 +776,16 @@ function removeAttributes(state, id, attributes, cacheName) {
             }
         }
     }
+    return state;
+}
+function removeAttributeIndex(state, id, attributeName, index, cacheName) {
+    state = {
+        ...state,
+    };
+    state[cacheName][id] = {
+        ...state[cacheName][id],
+    };
+    state[cacheName][id][attributeName].splice(index, 1);
     return state;
 }
 function removeItem(state, cacheName, id, dispatch) {

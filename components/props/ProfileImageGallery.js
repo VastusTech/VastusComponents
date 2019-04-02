@@ -6,7 +6,11 @@ import {connect} from 'react-redux';
 import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import UserFunctions from "../../database_functions/UserFunctions";
 import UploadImage from "../manager/UploadImage";
-import {setItemAttribute, setItemAttributeIndex} from "../../redux_actions/cacheActions";
+import {
+    removeFromItemAttributeAtIndex,
+    setItemAttribute,
+    setItemAttributeIndex
+} from "../../redux_actions/cacheActions";
 
 type Props = {
     userID?: string,
@@ -63,11 +67,13 @@ const setGalleryPicture = (userID, image, displayImage, pos, profileImagePaths, 
     }
 };
 
-const removeGalleryPicture = (userID, pos, profileImagePaths, setIsLoading) => {
+const removeGalleryPicture = (userID, pos, profileImagePaths, setItemAttribute, removeItemAttributeIndex, setIsLoading) => {
     setIsLoading(true);
     if (pos === 0) {
         // Main profile image
         UserFunctions.updateProfileImage(userID, userID, null, null, () => {
+            setItemAttribute(userID, "profileImage", require('../../img/roundProfile.png'));
+            setItemAttribute(userID, "profileImagePath", null);
             setIsLoading(false);
         }, (error) => {
             setIsLoading(false);
@@ -76,6 +82,8 @@ const removeGalleryPicture = (userID, pos, profileImagePaths, setIsLoading) => {
     else {
         // Gallery Image
         UserFunctions.removeProfileImage(userID, userID, profileImagePaths[pos - 1], () => {
+            removeItemAttributeIndex(userID, "profileImages", pos - 1);
+            removeItemAttributeIndex(userID, "profileImagePaths", pos - 1);
             setIsLoading(false);
         }, (error) => {
             setIsLoading(false);
@@ -83,7 +91,8 @@ const removeGalleryPicture = (userID, pos, profileImagePaths, setIsLoading) => {
     }
 };
 
-const getImageComponents = (userID, profileImage, profileImagePaths, profileImages, editable, swipeRef, setUploadModalOpen, setTempImageInfo, setIsLoading) => {
+const getImageComponents = (userID, profileImage, profileImagePaths, profileImages, editable, swipeRef,
+                            setUploadModalOpen, setTempImageInfo, setItemAttribute, removeItemAttributeIndex, setIsLoading) => {
     if (profileImage) {
         let profileImagesLength = 0;
         if (profileImages) {
@@ -113,7 +122,7 @@ const getImageComponents = (userID, profileImage, profileImagePaths, profileImag
                         </Grid.Column>
                         <Grid.Column>
                             <Button primary as="label" circular className="u-bg--primaryGradient"
-                                    onClick={() => removeGalleryPicture(userID, swipeRef.getPos(), profileImagePaths, setIsLoading)}
+                                    onClick={() => removeGalleryPicture(userID, swipeRef.getPos(), profileImagePaths, setItemAttribute, removeItemAttributeIndex, setIsLoading)}
                                     style={{marginTop: "20px", marginBottom: "20px"}}>
                             {i === 0 ? "Remove Profile Image" : "Remove Gallery Image"}</Button>
                         </Grid.Column>
@@ -150,7 +159,7 @@ const ProfileImageGallery = (props: Props) => {
                     >
                         {getImageComponents(props.userID, props.profileImage, props.profileImagePaths,
                             props.profileImages, props.editable, reactSwipeElement, setUploadModalOpen,
-                            setTempImageInfo, setIsLoading)}
+                            setTempImageInfo, props.setItemAttribute, props.removeItemAttributeIndex, setIsLoading)}
                         {props.editable&&(
                         <div style={{width: "50px"}} align="center">
                             <Button primary as="label" htmlFor="galleryUpload" circular
@@ -194,6 +203,9 @@ const mapDispatchToProps = dispatch => {
         },
         setItemAttributeIndex: (id, attributeName, index, attributeValue) => {
             dispatch(setItemAttributeIndex(id, attributeName, index, attributeValue));
+        },
+        removeItemAttributeIndex: (id, attributeName, index) => {
+            dispatch(removeFromItemAttributeAtIndex(id, attributeName, index));
         }
     }
 };
