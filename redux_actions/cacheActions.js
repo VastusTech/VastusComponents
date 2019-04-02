@@ -4,10 +4,11 @@ import QL from "../api/GraphQL";
 import S3 from "../api/S3Storage";
 import defaultProfilePicture from "../img/roundProfile.png";
 import notFoundPicture from "../img/not_found.png";
-import {switchReturnItemType} from "../logic/ItemType";
+import {getItemTypeFromID, switchReturnItemType} from "../logic/ItemType";
 import {getObjectChannelName} from "../redux_reducers/cacheReducer";
 import {err, log} from "../../Constants";
 import {addMessageFromNotification} from "./messageActions";
+import {setUser, updateUserFromCache} from "../../redux_helpers/actions/userActions";
 
 const FETCH_CLIENT = 'FETCH_CLIENT';
 const FETCH_TRAINER = 'FETCH_TRAINER';
@@ -23,6 +24,22 @@ const FETCH_GROUP = 'FETCH_GROUP';
 const FETCH_COMMENT = 'FETCH_COMMENT';
 const FETCH_SPONSOR = 'FETCH_SPONSOR';
 const FETCH_STREAK = 'FETCH_STREAK';
+
+const SET_CLIENT_ATTRIBUTE_INDEX = 'SET_CLIENT_ATTRIBUTE_INDEX';
+const SET_TRAINER_ATTRIBUTE_INDEX = 'SET_TRAINER_ATTRIBUTE_INDEX';
+const SET_GYM_ATTRIBUTE_INDEX = 'SET_GYM_ATTRIBUTE_INDEX';
+const SET_WORKOUT_ATTRIBUTE_INDEX = 'SET_WORKOUT_ATTRIBUTE_INDEX';
+const SET_REVIEW_ATTRIBUTE_INDEX = 'SET_REVIEW_ATTRIBUTE_INDEX';
+const SET_EVENT_ATTRIBUTE_INDEX = 'SET_EVENT_ATTRIBUTE_INDEX';
+const SET_CHALLENGE_ATTRIBUTE_INDEX = 'SET_CHALLENGE_ATTRIBUTE_INDEX';
+const SET_INVITE_ATTRIBUTE_INDEX = 'SET_INVITE_ATTRIBUTE_INDEX';
+const SET_POST_ATTRIBUTE_INDEX = 'SET_POST_ATTRIBUTE_INDEX';
+const SET_SUBMISSION_ATTRIBUTE_INDEX = 'SET_SUBMISSION_ATTRIBUTE_INDEX';
+const SET_GROUP_ATTRIBUTE_INDEX = 'SET_GROUP_ATTRIBUTE_INDEX';
+const SET_COMMENT_ATTRIBUTE_INDEX = 'SET_COMMENT_ATTRIBUTE_INDEX';
+const SET_SPONSOR_ATTRIBUTE_INDEX = 'SET_SPONSOR_ATTRIBUTE_INDEX';
+const SET_STREAK_ATTRIBUTE_INDEX = 'SET_STREAK_ATTRIBUTE_INDEX';
+const SET_ENTERPRISE_ATTRIBUTE_INDEX = 'SET_ENTERPRISE_ATTRIBUTE_INDEX';
 
 const ADD_CLIENT_ATTRIBUTES = 'ADD_CLIENT_ATTRIBUTES';
 const ADD_TRAINER_ATTRIBUTES = 'ADD_TRAINER_ATTRIBUTES';
@@ -166,7 +183,8 @@ function addS3MediaToData(data, callback) {
             for (let i = 0; i < paths.length; i++) {
                 const path = paths[i];
                 S3.get(path, (url) => {
-                    data[mediaKey].push(url);
+                    data[mediaKey][i] = url;
+                    // data[mediaKey].push(url);
                     finishUpdatingObject();
                 }, (error) => {
                     // Just don't put it in if it fails
@@ -195,6 +213,8 @@ function addS3MediaToData(data, callback) {
                 // Get the multiple media
                 if (data[key] && data[key].length > 0) {
                     asyncWaiting += data[key].length;
+                    // TODO Sort it with something other than by string sort?
+                    data[key].sort();
                 }
             }
         }
@@ -338,6 +358,7 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunction, fetchDispatchTy
                             dispatch
                         }
                     });
+                    if (getStore().user.id === id) { dispatch(updateUserFromCache()); }
                     dispatch(setIsNotLoading());
                     if (dataHandler) {
                         dataHandler(getStore().cache[cacheSet][id]);
@@ -571,6 +592,55 @@ export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandle
         dispatch(setIsNotLoading());
         if (failureHandler) { failureHandler(error);}
     });
+}
+export function setItemAttribute(id, attributeName, attributeValue) {
+    return (dispatch, getStore) => {
+        dispatch(getPutItemFunction(getItemTypeFromID(id))({
+            id,
+            [attributeName]: attributeValue
+        }));
+        if (id === getStore().user.id) {
+            dispatch(updateUserFromCache());
+        }
+    }
+}
+export function setItemAttributeIndex(id, attributeName, index, attributeValue) {
+    return (dispatch, getStore) => {
+        dispatch(setItemAttributeAtIndex(getItemTypeFromID(id), id, attributeName, index, attributeValue));
+        if (id === getStore().user.id) {
+            dispatch(updateUserFromCache());
+        }
+    };
+}
+export function addToItemAttribute(id, attributeName, attributeValue) {
+    return (dispatch, getStore) => {
+        if (attributeValue.length) {
+            dispatch(addItemAttributes(getItemTypeFromID(id), id, {
+                [attributeName]: attributeValue
+            }));
+            if (id === getStore().user.id) {
+                dispatch(updateUserFromCache());
+            }
+        }
+        else {
+            err&&console.error("Attribute value must be an array to add to item attribute");
+        }
+    }
+}
+export function removeFromItemAttribute(id, attributeName, attributeValue) {
+    return (dispatch, getStore) => {
+        if (attributeValue.length) {
+            dispatch(removeItemAttributes(getItemTypeFromID(id), id, {
+                [attributeName]: attributeValue
+            }));
+            if (id === getStore().user.id) {
+                dispatch(updateUserFromCache());
+            }
+        }
+        else {
+            err&&console.error("Attribute value must be an array to remove from item attribute");
+        }
+    }
 }
 export function fetchItem(itemType, id, variableList, dataHandler, failureHandler) {
     // return getFetchItemFunction(itemType)(id, variableList, dataHandler, failureHandler);
@@ -1074,6 +1144,22 @@ export function clearStreakQuery() {
     return {
         type: "CLEAR_STREAK_QUERY",
     };
+}
+function setItemAttributeAtIndex(itemType, id, attributeName, index, attributeValue) {
+    const setItemIndexType = switchReturnItemType(itemType, SET_CLIENT_ATTRIBUTE_INDEX, SET_TRAINER_ATTRIBUTE_INDEX,
+        SET_GYM_ATTRIBUTE_INDEX, SET_WORKOUT_ATTRIBUTE_INDEX, SET_REVIEW_ATTRIBUTE_INDEX, SET_EVENT_ATTRIBUTE_INDEX,
+        SET_CHALLENGE_ATTRIBUTE_INDEX, SET_INVITE_ATTRIBUTE_INDEX, SET_POST_ATTRIBUTE_INDEX, SET_SUBMISSION_ATTRIBUTE_INDEX,
+        SET_GROUP_ATTRIBUTE_INDEX, SET_COMMENT_ATTRIBUTE_INDEX, SET_SPONSOR_ATTRIBUTE_INDEX, null, SET_STREAK_ATTRIBUTE_INDEX,
+        "Receive set item attribute index item type not implemented for type!");
+    return {
+        type: setItemIndexType,
+        payload: {
+            id,
+            attributeName,
+            index,
+            attributeValue
+        }
+    }
 }
 function addItemAttributes(itemType, id, attributes) {
     const addAttributesType = switchReturnItemType(itemType, ADD_CLIENT_ATTRIBUTES, ADD_TRAINER_ATTRIBUTES, ADD_GYM_ATTRIBUTES,

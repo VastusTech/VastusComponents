@@ -22,6 +22,22 @@ const FETCH_COMMENT = 'FETCH_COMMENT';
 const FETCH_SPONSOR = 'FETCH_SPONSOR';
 const FETCH_STREAK = 'FETCH_STREAK';
 
+const SET_CLIENT_ATTRIBUTE_INDEX = 'SET_CLIENT_ATTRIBUTE_INDEX';
+const SET_TRAINER_ATTRIBUTE_INDEX = 'SET_TRAINER_ATTRIBUTE_INDEX';
+const SET_GYM_ATTRIBUTE_INDEX = 'SET_GYM_ATTRIBUTE_INDEX';
+const SET_WORKOUT_ATTRIBUTE_INDEX = 'SET_WORKOUT_ATTRIBUTE_INDEX';
+const SET_REVIEW_ATTRIBUTE_INDEX = 'SET_REVIEW_ATTRIBUTE_INDEX';
+const SET_EVENT_ATTRIBUTE_INDEX = 'SET_EVENT_ATTRIBUTE_INDEX';
+const SET_CHALLENGE_ATTRIBUTE_INDEX = 'SET_CHALLENGE_ATTRIBUTE_INDEX';
+const SET_INVITE_ATTRIBUTE_INDEX = 'SET_INVITE_ATTRIBUTE_INDEX';
+const SET_POST_ATTRIBUTE_INDEX = 'SET_POST_ATTRIBUTE_INDEX';
+const SET_SUBMISSION_ATTRIBUTE_INDEX = 'SET_SUBMISSION_ATTRIBUTE_INDEX';
+const SET_GROUP_ATTRIBUTE_INDEX = 'SET_GROUP_ATTRIBUTE_INDEX';
+const SET_COMMENT_ATTRIBUTE_INDEX = 'SET_COMMENT_ATTRIBUTE_INDEX';
+const SET_SPONSOR_ATTRIBUTE_INDEX = 'SET_SPONSOR_ATTRIBUTE_INDEX';
+const SET_STREAK_ATTRIBUTE_INDEX = 'SET_STREAK_ATTRIBUTE_INDEX';
+const SET_ENTERPRISE_ATTRIBUTE_INDEX = 'SET_ENTERPRISE_ATTRIBUTE_INDEX';
+
 const ADD_CLIENT_ATTRIBUTES = 'ADD_CLIENT_ATTRIBUTES';
 const ADD_TRAINER_ATTRIBUTES = 'ADD_TRAINER_ATTRIBUTES';
 const ADD_GYM_ATTRIBUTES = 'ADD_GYM_ATTRIBUTES';
@@ -253,6 +269,62 @@ export default (state = initialState, action) => {
             break;
         case FETCH_STREAK:
             state = addObjectToCache(state, "streaks", streakCacheSize, "streakLRUHandler", action.payload.object, action.asyncDispatch);
+            break;
+        case SET_CLIENT_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                action.payload.attributeValue, "clients");
+            break;
+        case SET_TRAINER_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                action.payload.attributeValue, "trainers");
+            break;
+        case SET_GYM_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                action.payload.attributeValue, "gyms");
+            break;
+        case SET_WORKOUT_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                action.payload.attributeValue, "workouts");
+            break;
+        case SET_REVIEW_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeame, action.payload.index,
+                action.payload.attributeValue, "reviews");
+            break;
+        case SET_EVENT_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeame, action.payload.index,
+                action.payload.attributeValue, "events");
+            break;
+        case SET_CHALLENGE_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeame, action.payload.index,
+                action.payload.attributeValue, "challenges");
+            break;
+        case SET_INVITE_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeame, action.payload.index,
+                action.payload.attributeValue, "invites");
+            break;
+        case SET_POST_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeame, action.payload.index,
+                action.payload.attributeValue, "posts");
+            break;
+        case SET_SUBMISSION_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeame, action.payload.index,
+                action.payload.attributeValue, "submissions");
+            break;
+        case SET_GROUP_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeame, action.payload.index,
+                action.payload.attributeValue, "groups");
+            break;
+        case SET_COMMENT_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeame, action.payload.index,
+                action.payload.attributeValue, "comments");
+            break;
+        case SET_SPONSOR_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeame, action.payload.index,
+                action.payload.attributeValue, "sponsors");
+            break;
+        case SET_STREAK_ATTRIBUTE_INDEX:
+            state = setAttributeIndex(state, action.payload.id, action.payload.attributeame, action.payload.index,
+                action.payload.attributeValue, "streak");
             break;
         case ADD_CLIENT_ATTRIBUTES:
             state = addAttributes(state, action.payload.id, action.payload.attributes, "clients");
@@ -592,6 +664,16 @@ function addObjectToCache(state, cacheName, maxCacheSize, LRUHandlerName, object
         };
         return state;
     }
+}
+function setAttributeIndex(state, id, attributeName, index, attributeValue, cacheName) {
+    state = {
+        ...state,
+    };
+    state[cacheName][id] = {
+        ...state[cacheName][id],
+    };
+    state[cacheName][id][attributeName][index] = attributeValue;
+    return state;
 }
 function addAttributes(state, id, attributes, cacheName) {
     state = {

@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { Modal, Message, Button, Grid, Icon } from "semantic-ui-react";
-import { Storage } from 'aws-amplify';
 import { Player } from "video-react";
 import { connect } from "react-redux";
-import PostFunctions from "../../database_functions/PostFunctions";
 import SubmissionFunctions from "../../database_functions/SubmissionFunctions";
 
 type Props = {
