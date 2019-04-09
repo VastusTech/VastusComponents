@@ -4,7 +4,7 @@ import EventCard from "../cards/EventCard";
 import { connect } from "react-redux";
 import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import { inspect } from 'util';
-import {fetchEvent} from "../../redux_actions/cacheActions";
+import {fetchEvent} from "../../redux_convenience/cacheItemTypeActions";
 
 class NextEventProp extends Component {
     state = {

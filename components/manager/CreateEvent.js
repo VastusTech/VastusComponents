@@ -3,8 +3,7 @@ import {Checkbox, Modal, Button, Form, Segment, TextArea, Dropdown, Label, Image
 import {connect} from "react-redux";
 import {setError} from "../../redux_actions/infoActions";
 import VTLogo from "../../img/vt_new.svg";
-import {clearEventQuery, fetchEvent, putEvent, putEventQuery} from "../../redux_actions/cacheActions";
-import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
+import {fetchEvent, putEvent} from "../../redux_convenience/cacheItemTypeActions";
 
 // Take from StackOverflow, nice snippit!
 // https://stackoverflow.com/a/17415677
@@ -122,23 +121,23 @@ class CreateEventProp extends Component<Props> {
         if (this.eventState.capacity && this.eventState.location && this.eventState.title && this.eventState.goal) {
             if (Number.isInteger(+this.eventState.capacity)) {
                 // TODO Fix this........
-                ChallengeFunctions.createChallengeOptional(this.props.user.id, this.props.user.id, time, this.eventState.capacity,
-                    this.eventState.location, this.eventState.title, this.eventState.goal, this.eventState.description,
-                    "3", [], this.eventState.access, (data) => {
-                        console.log("Successfully created a challenge!");
-                        //This is the second call
-                        this.props.clearEventQuery();
-                        this.props.queryEvents();
-                        this.setState({isSubmitLoading: false});
-                        this.closeModal();
-                        this.setState({showSuccessLabel: true});
-                        //this.setState({showSuccessModal: true});
-
-                    }, (error) => {
-                        //console.log(JSON.stringify(error));
-                        this.setState({submitError: "*" + JSON.stringify(error)});
-                        this.setState({isSubmitLoading: false});
-                    });
+                // ChallengeFunctions.createChallengeOptional(this.props.user.id, this.props.user.id, time, this.eventState.capacity,
+                //     this.eventState.location, this.eventState.title, this.eventState.goal, this.eventState.description,
+                //     "3", [], this.eventState.access, (data) => {
+                //         console.log("Successfully created a challenge!");
+                //         //This is the second call
+                //         // this.props.clearEventQuery();
+                //         this.props.queryEvents();
+                //         this.setState({isSubmitLoading: false});
+                //         this.closeModal();
+                //         this.setState({showSuccessLabel: true});
+                //         //this.setState({showSuccessModal: true});
+                //
+                //     }, (error) => {
+                //         //console.log(JSON.stringify(error));
+                //         this.setState({submitError: "*" + JSON.stringify(error)});
+                //         this.setState({isSubmitLoading: false});
+                //     });
             }
             else {
                 this.setState({isSubmitLoading: false, submitError: "Capacity needs to be an integer!"});
@@ -288,12 +287,6 @@ const mapDispatchToProps = (dispatch) => {
         putEvent: (event) => {
             dispatch(putEvent(event));
         },
-        putEventQuery: (queryString, queryResult) => {
-            dispatch(putEventQuery(queryString, queryResult));
-        },
-        clearEventQuery: () => {
-            dispatch(clearEventQuery())
-        }
     }
 };
 

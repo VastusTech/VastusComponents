@@ -4,12 +4,11 @@ import ClientModal from "./ClientModal";
 import { connect } from 'react-redux';
 import {
     fetchClient,
-    fetchTrainer,
     forceFetchChallenge,
     fetchChallenge,
     clearChallengeQuery,
     subscribeFetchChallenge, fetchStreak
-} from "../../redux_actions/cacheActions";
+} from "../../redux_convenience/cacheItemTypeActions";
 import CompleteChallengeModal from "../manager/CompleteChallengeModal";
 import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import CommentScreen from "../messaging/MessageBoard";

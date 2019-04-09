@@ -11,7 +11,7 @@ import {
     fetchGroup,
     fetchClient,
     fetchTrainer
-} from "../../redux_actions/cacheActions";
+} from "../../redux_convenience/cacheItemTypeActions";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import {err, log} from "../../../Constants";
 import Spinner from "../props/Spinner";

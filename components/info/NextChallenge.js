@@ -3,7 +3,7 @@ import {Icon, Message} from 'semantic-ui-react';
 import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
 import { connect } from "react-redux";
 import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
-import {fetchChallenge} from "../../redux_actions/cacheActions";
+import {fetchChallenge} from "../../redux_convenience/cacheItemTypeActions";
 import {parseISOString, timeLeft} from "../../logic/TimeHelper";
 import Spinner from "../props/Spinner";
 

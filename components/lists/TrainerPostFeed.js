@@ -8,7 +8,7 @@ import {
     fetchTrainer,
     forceFetchTrainer,
     putPost,
-} from "../../redux_actions/cacheActions";
+} from "../../redux_convenience/cacheItemTypeActions";
 import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 
 type Props = {

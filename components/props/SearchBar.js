@@ -6,7 +6,7 @@ import EventDescriptionModal from "../modals/EventDescriptionModal";
 import ClientModal from "../modals/ClientModal";
 import TrainerModal from "../modals/TrainerModal";
 import {connect} from "react-redux";
-import {fetchClient, fetchEvent, putClientQuery, putEventQuery} from "../../redux_actions/cacheActions";
+import {fetchClient, fetchEvent} from "../../redux_convenience/cacheItemTypeActions";
 import {newSearch} from "../../redux_actions/searchActions";
 import {switchReturnItemType} from "../../logic/ItemType";
 import ChallengeDescriptionModal from "../modals/ChallengeDescriptionModal";
@@ -210,12 +210,6 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchEvent: (id, variablesList) => {
             dispatch(fetchEvent(id, variablesList));
-        },
-        putClientQuery: (queryString, queryResult) => {
-            dispatch(putClientQuery(queryString, queryResult));
-        },
-        putEventQuery: (queryString, queryResult) => {
-            dispatch(putEventQuery(queryString, queryResult));
         },
         newSearch: (queryString, minResults, dataHandler) => {
             dispatch(newSearch(queryString, minResults, dataHandler));

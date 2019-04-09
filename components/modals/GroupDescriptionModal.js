@@ -1,6 +1,6 @@
 import connect from "react-redux/es/connect/connect";
 import React, { Component, Fragment } from 'react';
-import {clearGroupQuery, fetchGroup, fetchClient, forceFetchGroup} from "../../redux_actions/cacheActions";
+import {clearGroupQuery, fetchGroup, fetchClient, forceFetchGroup} from "../../redux_convenience/cacheItemTypeActions";
 import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import {Button, Divider, Icon, Modal, Card, Grid, Image} from "semantic-ui-react";
 import {getItemTypeFromID} from "../../logic/ItemType";

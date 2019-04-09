@@ -3,7 +3,7 @@ import {Grid, Icon, Button, Image, Header, Modal} from 'semantic-ui-react';
 import ReactSwipe from 'react-swipe';
 import _ from "lodash";
 import {connect} from 'react-redux';
-import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
+// import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import UserFunctions from "../../database_functions/UserFunctions";
 import UploadImage from "../manager/UploadImage";
 import {

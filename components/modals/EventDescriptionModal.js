@@ -3,7 +3,7 @@ import {Modal, Button, List, Grid, Message} from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 // import EventMemberList from "../../screens/EventMemberList";
 import { connect } from 'react-redux';
-import {fetchClient, forceFetchEvent, fetchEvent} from "../../redux_actions/cacheActions";
+import {fetchClient, forceFetchEvent, fetchEvent} from "../../redux_convenience/cacheItemTypeActions";
 import CompleteChallengeModal from "../manager/CompleteChallengeModal";
 import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import UserFunctions from "../../database_functions/UserFunctions";

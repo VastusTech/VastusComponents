@@ -5,146 +5,41 @@ import S3 from "../api/S3Storage";
 import defaultProfilePicture from "../img/roundProfile.png";
 import notFoundPicture from "../img/not_found.png";
 import {getItemTypeFromID, switchReturnItemType} from "../logic/ItemType";
-import {getObjectChannelName} from "../redux_reducers/cacheReducer";
+import {
+    getObjectChannelName,
+    FETCH_CLIENT, FETCH_TRAINER, FETCH_GYM, FETCH_WORKOUT, FETCH_REVIEW, FETCH_EVENT, FETCH_CHALLENGE, FETCH_INVITE,
+    FETCH_POST, FETCH_SUBMISSION, FETCH_GROUP, FETCH_COMMENT, FETCH_SPONSOR, FETCH_STREAK, FETCH_CLIENT_QUERY,
+    FETCH_TRAINER_QUERY, FETCH_GYM_QUERY, FETCH_WORKOUT_QUERY, FETCH_REVIEW_QUERY, FETCH_EVENT_QUERY,
+    FETCH_CHALLENGE_QUERY, FETCH_INVITE_QUERY, FETCH_POST_QUERY, FETCH_SUBMISSION_QUERY, FETCH_GROUP_QUERY,
+    FETCH_COMMENT_QUERY, FETCH_SPONSOR_QUERY, FETCH_STREAK_QUERY, SET_CLIENT_ATTRIBUTE_INDEX, SET_TRAINER_ATTRIBUTE_INDEX,
+    SET_GYM_ATTRIBUTE_INDEX, SET_WORKOUT_ATTRIBUTE_INDEX, SET_REVIEW_ATTRIBUTE_INDEX, SET_EVENT_ATTRIBUTE_INDEX,
+    SET_CHALLENGE_ATTRIBUTE_INDEX, SET_INVITE_ATTRIBUTE_INDEX, SET_POST_ATTRIBUTE_INDEX, SET_SUBMISSION_ATTRIBUTE_INDEX,
+    SET_STREAK_ATTRIBUTE_INDEX, SET_SPONSOR_ATTRIBUTE_INDEX, SET_GROUP_ATTRIBUTE_INDEX, SET_COMMENT_ATTRIBUTE_INDEX,
+    ADD_CLIENT_ATTRIBUTES, ADD_TRAINER_ATTRIBUTES, ADD_GYM_ATTRIBUTES, ADD_INVITE_ATTRIBUTES, ADD_CHALLENGE_ATTRIBUTES,
+    ADD_EVENT_ATTRIBUTES, ADD_REVIEW_ATTRIBUTES, ADD_WORKOUT_ATTRIBUTES, ADD_POST_ATTRIBUTES, ADD_SUBMISSION_ATTRIBUTES,
+    ADD_GROUP_ATTRIBUTES, ADD_COMMENT_ATTRIBUTES, ADD_SPONSOR_ATTRIBUTES, ADD_STREAK_ATTRIBUTES, REMOVE_CLIENT_ATTRIBUTES,
+    REMOVE_TRAINER_ATTRIBUTES, REMOVE_GYM_ATTRIBUTES, REMOVE_INVITE_ATTRIBUTES, REMOVE_CHALLENGE_ATTRIBUTES,
+    REMOVE_EVENT_ATTRIBUTES, REMOVE_REVIEW_ATTRIBUTES, REMOVE_WORKOUT_ATTRIBUTES, REMOVE_POST_ATTRIBUTES,
+    REMOVE_SUBMISSION_ATTRIBUTES, REMOVE_GROUP_ATTRIBUTES, REMOVE_COMMENT_ATTRIBUTES, REMOVE_SPONSOR_ATTRIBUTES,
+    REMOVE_STREAK_ATTRIBUTES, REMOVE_CLIENT_ATTRIBUTE_INDEX, REMOVE_TRAINER_ATTRIBUTE_INDEX, REMOVE_EVENT_ATTRIBUTE_INDEX,
+    REMOVE_REVIEW_ATTRIBUTE_INDEX, REMOVE_WORKOUT_ATTRIBUTE_INDEX, REMOVE_GYM_ATTRIBUTE_INDEX,
+    REMOVE_CHALLENGE_ATTRIBUTE_INDEX, REMOVE_INVITE_ATTRIBUTE_INDEX, REMOVE_POST_ATTRIBUTE_INDEX,
+    REMOVE_SUBMISSION_ATTRIBUTE_INDEX, REMOVE_STREAK_ATTRIBUTE_INDEX, REMOVE_SPONSOR_ATTRIBUTE_INDEX,
+    REMOVE_COMMENT_ATTRIBUTE_INDEX, REMOVE_GROUP_ATTRIBUTE_INDEX, REMOVE_CLIENT, REMOVE_TRAINER, REMOVE_GYM,
+    REMOVE_WORKOUT, REMOVE_REVIEW, REMOVE_EVENT, REMOVE_STREAK, REMOVE_SPONSOR, REMOVE_COMMENT,
+    REMOVE_GROUP, REMOVE_SUBMISSION, REMOVE_POST, REMOVE_INVITE, REMOVE_CHALLENGE
+} from "../redux_reducers/cacheReducer";
 import {err, log} from "../../Constants";
 import {addMessageFromNotification} from "./messageActions";
-import {setUser, updateUserFromCache} from "../../redux_helpers/actions/userActions";
+import {updateUserFromCache} from "../../redux_helpers/actions/userActions";
 
-const FETCH_CLIENT = 'FETCH_CLIENT';
-const FETCH_TRAINER = 'FETCH_TRAINER';
-const FETCH_GYM = 'FETCH_GYM';
-const FETCH_WORKOUT = 'FETCH_WORKOUT';
-const FETCH_REVIEW = 'FETCH_REVIEW';
-const FETCH_EVENT = 'FETCH_EVENT';
-const FETCH_CHALLENGE = 'FETCH_CHALLENGE';
-const FETCH_INVITE = 'FETCH_INVITE';
-const FETCH_POST = 'FETCH_POST';
-const FETCH_SUBMISSION = 'FETCH_SUBMISSION';
-const FETCH_GROUP = 'FETCH_GROUP';
-const FETCH_COMMENT = 'FETCH_COMMENT';
-const FETCH_SPONSOR = 'FETCH_SPONSOR';
-const FETCH_STREAK = 'FETCH_STREAK';
+// ======================================================================================================
+// Fetching S3 Data ~
+// ======================================================================================================
 
-const SET_CLIENT_ATTRIBUTE_INDEX = 'SET_CLIENT_ATTRIBUTE_INDEX';
-const SET_TRAINER_ATTRIBUTE_INDEX = 'SET_TRAINER_ATTRIBUTE_INDEX';
-const SET_GYM_ATTRIBUTE_INDEX = 'SET_GYM_ATTRIBUTE_INDEX';
-const SET_WORKOUT_ATTRIBUTE_INDEX = 'SET_WORKOUT_ATTRIBUTE_INDEX';
-const SET_REVIEW_ATTRIBUTE_INDEX = 'SET_REVIEW_ATTRIBUTE_INDEX';
-const SET_EVENT_ATTRIBUTE_INDEX = 'SET_EVENT_ATTRIBUTE_INDEX';
-const SET_CHALLENGE_ATTRIBUTE_INDEX = 'SET_CHALLENGE_ATTRIBUTE_INDEX';
-const SET_INVITE_ATTRIBUTE_INDEX = 'SET_INVITE_ATTRIBUTE_INDEX';
-const SET_POST_ATTRIBUTE_INDEX = 'SET_POST_ATTRIBUTE_INDEX';
-const SET_SUBMISSION_ATTRIBUTE_INDEX = 'SET_SUBMISSION_ATTRIBUTE_INDEX';
-const SET_GROUP_ATTRIBUTE_INDEX = 'SET_GROUP_ATTRIBUTE_INDEX';
-const SET_COMMENT_ATTRIBUTE_INDEX = 'SET_COMMENT_ATTRIBUTE_INDEX';
-const SET_SPONSOR_ATTRIBUTE_INDEX = 'SET_SPONSOR_ATTRIBUTE_INDEX';
-const SET_STREAK_ATTRIBUTE_INDEX = 'SET_STREAK_ATTRIBUTE_INDEX';
-const SET_ENTERPRISE_ATTRIBUTE_INDEX = 'SET_ENTERPRISE_ATTRIBUTE_INDEX';
-
-const ADD_CLIENT_ATTRIBUTES = 'ADD_CLIENT_ATTRIBUTES';
-const ADD_TRAINER_ATTRIBUTES = 'ADD_TRAINER_ATTRIBUTES';
-const ADD_GYM_ATTRIBUTES = 'ADD_GYM_ATTRIBUTES';
-const ADD_WORKOUT_ATTRIBUTES = 'ADD_WORKOUT_ATTRIBUTES';
-const ADD_REVIEW_ATTRIBUTES = 'ADD_REVIEW_ATTRIBUTES';
-const ADD_EVENT_ATTRIBUTES = 'ADD_EVENT_ATTRIBUTES';
-const ADD_CHALLENGE_ATTRIBUTES = 'ADD_CHALLENGE_ATTRIBUTES';
-const ADD_INVITE_ATTRIBUTES = 'ADD_INVITE_ATTRIBUTES';
-const ADD_POST_ATTRIBUTES = 'ADD_POST_ATTRIBUTES';
-const ADD_SUBMISSION_ATTRIBUTES = 'ADD_SUBMISSION_ATTRIBUTES';
-const ADD_GROUP_ATTRIBUTES = 'ADD_GROUP_ATTRIBUTES';
-const ADD_COMMENT_ATTRIBUTES = 'ADD_COMMENT_ATTRIBUTES';
-const ADD_SPONSOR_ATTRIBUTES = 'ADD_SPONSOR_ATTRIBUTES';
-const ADD_STREAK_ATTRIBUTES = 'ADD_STREAK_ATTRIBUTES';
-
-const REMOVE_CLIENT_ATTRIBUTES = 'REMOVE_CLIENT_ATTRIBUTES';
-const REMOVE_TRAINER_ATTRIBUTES = 'REMOVE_TRAINER_ATTRIBUTES';
-const REMOVE_GYM_ATTRIBUTES = 'REMOVE_GYM_ATTRIBUTES';
-const REMOVE_WORKOUT_ATTRIBUTES = 'REMOVE_WORKOUT_ATTRIBUTES';
-const REMOVE_REVIEW_ATTRIBUTES = 'REMOVE_REVIEW_ATTRIBUTES';
-const REMOVE_EVENT_ATTRIBUTES = 'REMOVE_EVENT_ATTRIBUTES';
-const REMOVE_CHALLENGE_ATTRIBUTES = 'REMOVE_CHALLENGE_ATTRIBUTES';
-const REMOVE_INVITE_ATTRIBUTES = 'REMOVE_INVITE_ATTRIBUTES';
-const REMOVE_POST_ATTRIBUTES = 'REMOVE_POST_ATTRIBUTES';
-const REMOVE_SUBMISSION_ATTRIBUTES = 'REMOVE_SUBMISSION_ATTRIBUTES';
-const REMOVE_GROUP_ATTRIBUTES = 'REMOVE_GROUP_ATTRIBUTES';
-const REMOVE_COMMENT_ATTRIBUTES = 'REMOVE_COMMENT_ATTRIBUTES';
-const REMOVE_SPONSOR_ATTRIBUTES = 'REMOVE_SPONSOR_ATTRIBUTES';
-const REMOVE_STREAK_ATTRIBUTES = 'REMOVE_STREAK_ATTRIBUTES';
-
-const REMOVE_CLIENT_ATTRIBUTE_INDEX = 'REMOVE_CLIENT_ATTRIBUTE_INDEX';
-const REMOVE_TRAINER_ATTRIBUTE_INDEX = 'REMOVE_TRAINER_ATTRIBUTE_INDEX';
-const REMOVE_GYM_ATTRIBUTE_INDEX = 'REMOVE_GYM_ATTRIBUTE_INDEX';
-const REMOVE_WORKOUT_ATTRIBUTE_INDEX = 'REMOVE_WORKOUT_ATTRIBUTE_INDEX';
-const REMOVE_REVIEW_ATTRIBUTE_INDEX = 'REMOVE_REVIEW_ATTRIBUTE_INDEX';
-const REMOVE_EVENT_ATTRIBUTE_INDEX = 'REMOVE_EVENT_ATTRIBUTE_INDEX';
-const REMOVE_CHALLENGE_ATTRIBUTE_INDEX = 'REMOVE_CHALLENGE_ATTRIBUTE_INDEX';
-const REMOVE_INVITE_ATTRIBUTE_INDEX = 'REMOVE_INVITE_ATTRIBUTE_INDEX';
-const REMOVE_POST_ATTRIBUTE_INDEX = 'REMOVE_POST_ATTRIBUTE_INDEX';
-const REMOVE_SUBMISSION_ATTRIBUTE_INDEX = 'REMOVE_SUBMISSION_ATTRIBUTE_INDEX';
-const REMOVE_GROUP_ATTRIBUTE_INDEX = 'REMOVE_GROUP_ATTRIBUTE_INDEX';
-const REMOVE_COMMENT_ATTRIBUTE_INDEX = 'REMOVE_COMMENT_ATTRIBUTE_INDEX';
-const REMOVE_SPONSOR_ATTRIBUTE_INDEX = 'REMOVE_SPONSOR_ATTRIBUTE_INDEX';
-const REMOVE_STREAK_ATTRIBUTE_INDEX = 'REMOVE_STREAK_ATTRIBUTE_INDEX';
-
-const REMOVE_CLIENT =    'REMOVE_CLIENT';
-const REMOVE_TRAINER =   'REMOVE_TRAINER';
-const REMOVE_GYM =       'REMOVE_GYM';
-const REMOVE_WORKOUT =   'REMOVE_WORKOUT';
-const REMOVE_REVIEW =    'REMOVE_REVIEW';
-const REMOVE_EVENT =     'REMOVE_EVENT';
-const REMOVE_CHALLENGE = 'REMOVE_CHALLENGE';
-const REMOVE_INVITE =    'REMOVE_INVITE';
-const REMOVE_POST =      'REMOVE_POST';
-const REMOVE_SUBMISSION ='REMOVE_SUBMISSION';
-const REMOVE_GROUP =     'REMOVE_GROUP';
-const REMOVE_COMMENT =   'REMOVE_COMMENT';
-const REMOVE_SPONSOR =   'REMOVE_SPONSOR';
-const REMOVE_STREAK =    'REMOVE_STREAK';
-
-const FETCH_CLIENT_QUERY = 'FETCH_CLIENT_QUERY';
-const FETCH_TRAINER_QUERY = 'FETCH_TRAINER_QUERY';
-const FETCH_GYM_QUERY = 'FETCH_GYM_QUERY';
-const FETCH_WORKOUT_QUERY = 'FETCH_WORKOUT_QUERY';
-const FETCH_REVIEW_QUERY = 'FETCH_REVIEW_QUERY';
-const FETCH_EVENT_QUERY = 'FETCH_EVENT_QUERY';
-const FETCH_CHALLENGE_QUERY = 'FETCH_CHALLENGE_QUERY';
-const FETCH_INVITE_QUERY = 'FETCH_INVITE_QUERY';
-const FETCH_POST_QUERY = 'FETCH_POST_QUERY';
-const FETCH_SUBMISSION_QUERY = 'FETCH_SUBMISSION_QUERY';
-const FETCH_GROUP_QUERY = 'FETCH_GROUP_QUERY';
-const FETCH_COMMENT_QUERY = 'FETCH_COMMENT_QUERY';
-const FETCH_SPONSOR_QUERY = 'FETCH_SPONSOR_QUERY';
-const FETCH_STREAK_QUERY = 'FETCH_STREAK_QUERY';
-
-const CLEAR_NORMALIZED_CLIENT_QUERY =    'CLEAR_NORMALIZED_CLIENT_QUERY';
-const CLEAR_NORMALIZED_TRAINER_QUERY =   'CLEAR_NORMALIZED_TRAINER_QUERY';
-const CLEAR_NORMALIZED_GYM_QUERY =       'CLEAR_NORMALIZED_GYM_QUERY';
-const CLEAR_NORMALIZED_WORKOUT_QUERY =   'CLEAR_NORMALIZED_WORKOUT_QUERY';
-const CLEAR_NORMALIZED_REVIEW_QUERY =    'CLEAR_NORMALIZED_REVIEW_QUERY';
-const CLEAR_NORMALIZED_EVENT_QUERY =     'CLEAR_NORMALIZED_EVENT_QUERY';
-const CLEAR_NORMALIZED_CHALLENGE_QUERY = 'CLEAR_NORMALIZED_CHALLENGE_QUERY';
-const CLEAR_NORMALIZED_INVITE_QUERY =    'CLEAR_NORMALIZED_INVITE_QUERY';
-const CLEAR_NORMALIZED_POST_QUERY =      'CLEAR_NORMALIZED_POST_QUERY';
-const CLEAR_NORMALIZED_SUBMISSION_QUERY ='CLEAR_NORMALIZED_SUBMISSION_QUERY';
-const CLEAR_NORMALIZED_GROUP_QUERY =     'CLEAR_NORMALIZED_GROUP_QUERY';
-const CLEAR_NORMALIZED_COMMENT_QUERY =   'CLEAR_NORMALIZED_COMMENT_QUERY';
-const CLEAR_NORMALIZED_SPONSOR_QUERY =   'CLEAR_NORMALIZED_SPONSOR_QUERY';
-const CLEAR_NORMALIZED_STREAK_QUERY =    'CLEAR_NORMALIZED_STREAK_QUERY';
-
-const CLEAR_CLIENT_QUERY = 'CLEAR_CLIENT_QUERY';
-const CLEAR_TRAINER_QUERY = 'CLEAR_TRAINER_QUERY';
-const CLEAR_GYM_QUERY = 'CLEAR_GYM_QUERY';
-const CLEAR_WORKOUT_QUERY = 'CLEAR_WORKOUT_QUERY';
-const CLEAR_REVIEW_QUERY = 'CLEAR_REVIEW_QUERY';
-const CLEAR_EVENT_QUERY = 'CLEAR_EVENT_QUERY';
-const CLEAR_CHALLENGE_QUERY = 'CLEAR_CHALLENGE_QUERY';
-const CLEAR_INVITE_QUERY = 'CLEAR_INVITE_QUERY';
-const CLEAR_POST_QUERY = 'CLEAR_POST_QUERY';
-const CLEAR_SUBMISSION_QUERY = 'CLEAR_SUBMISSION_QUERY';
-const CLEAR_GROUP_QUERY = 'CLEAR_GROUP_QUERY';
-const CLEAR_COMMENT_QUERY = 'CLEAR_COMMENT_QUERY';
-const CLEAR_SPONSOR_QUERY = 'CLEAR_SPONSOR_QUERY';
-const CLEAR_STREAK_QUERY = 'CLEAR_STREAK_QUERY';
+// TODO =================================================================================================
+// TODO =                         USE THE HAS_KEY METHOD IN S3 FETCHES                                  =
+// TODO =================================================================================================
 
 /**
  * Adds any S3 images to the collected data. The S3 images are specified by ending in either "Path" or "Paths" for a
@@ -259,6 +154,21 @@ function addS3MediaToData(data, callback) {
         isWaiting = true;
     }
 }
+
+// ======================================================================================================
+// Single-Fetch Low-Level Functions ~
+// ======================================================================================================
+
+/**
+ * TODO
+ *
+ * @param id
+ * @param itemType
+ * @param variablesList
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
 function fetch(id, itemType, variablesList, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -272,12 +182,33 @@ function fetch(id, itemType, variablesList, dataHandler, failureHandler) {
         overwriteFetch(id, variablesList, cacheName, QL.getGetByIDFunction(itemType), getFetchType(itemType), dataHandler, failureHandler, dispatch, getStore);
     };
 }
+
+/**
+ * TODO
+ *
+ * @param id
+ * @param itemType
+ * @param variablesList
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
 function forceFetch(id, itemType, variablesList, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         overwriteFetch(id, variablesList, getCacheName(itemType), QL.getGetByIDFunction(itemType), getFetchType(itemType), dataHandler, failureHandler, dispatch, getStore);
     };
 }
+
+/**
+ * TODO
+ * @param id
+ * @param itemType
+ * @param variableList
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
 function subscribeFetch(id, itemType, variableList, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -288,7 +219,7 @@ function subscribeFetch(id, itemType, variableList, dataHandler, failureHandler)
             // Subscribe (potentially again?)
             dispatch(subscribeCacheUpdatesToObject(id, itemType));
             // Update the stale value for the object to false
-            dispatch(getPutItemFunction(itemType)({id, __stale__: false}, dispatch));
+            dispatch(putItem({id, __stale__: false}, itemType));
             // Then we force fetch everything!
             dispatch(forceFetch(id, itemType, variableList, dataHandler, failureHandler));
         }
@@ -298,6 +229,14 @@ function subscribeFetch(id, itemType, variableList, dataHandler, failureHandler)
         }
     };
 }
+
+/**
+ * TODO
+ *
+ * @param id
+ * @param itemType
+ * @return {Function}
+ */
 function subscribeCacheUpdatesToObject(id, itemType) {
     return (dispatch, getStore) => {
         dispatch(addHandlerAndUnsubscription(getObjectChannelName(id), (message) => {
@@ -322,14 +261,16 @@ function subscribeCacheUpdatesToObject(id, itemType) {
                             }
                         }
                         else {
-                            dispatch(getPutItemFunction(createJSON.item_type)(createJSON, dispatch));
+                            // dispatch(getPutItemFunction(createJSON.item_type)(createJSON, dispatch));
+                            dispatch(putItem(createJSON, createJSON.item_type));
                         }
                     }
                 }
                 if (setJSON) {
                     // You simply put the item into the cache (overwriting existing attributes)
                     setJSON.id = id;
-                    dispatch(getPutItemFunction(itemType)(setJSON));
+                    // dispatch(getPutItemFunction(itemType)(setJSON));
+                    dispatch(putItem(setJSON, itemType));
                 }
                 if (addJSON) {
                     // Adds the attributes to the object, which should already be in there!
@@ -346,6 +287,20 @@ function subscribeCacheUpdatesToObject(id, itemType) {
         }));
     };
 }
+
+/**
+ * TODO
+ *
+ * @param id
+ * @param variablesList
+ * @param cacheSet
+ * @param QLFunction
+ * @param fetchDispatchType
+ * @param dataHandler
+ * @param failureHandler
+ * @param dispatch
+ * @param getStore
+ */
 function overwriteFetch(id, variablesList, cacheSet, QLFunction, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore) {
     if (variablesList.length > 0) {
         if (!variablesList.includes("id")) {
@@ -380,6 +335,7 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunction, fetchDispatchTy
                     }
                 });
             } else {
+                // TODO If it came up with nothing, put null into the cache so that we can do a === null check as well
                 // Then the fetch came up with nothing!
                 // const error = Error("Couldn't find an object in the database with ID = " + id);
                 log&&console.log("Couldn't find ID = " + id + " with action = " + JSON.stringify(QLFunction));
@@ -415,85 +371,160 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunction, fetchDispatchTy
         if (dataHandler) { dataHandler(getStore().cache[cacheSet][id]);}
     }
 }
-// TODO THIS'LL BEE SUPER COOL TO DO IN THE FUTURE
-// TODO DON'T OPTIMIZE UNLESS THERE'S AN ACTUAL PROBLEM YOU GOBLIN
-function batchFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, failureHandler) {
-    // TODO Check to see if this has already been fulfilled
-    // TODO Check to see if we have already called the same batch fetch query (add a set in the cache?)
-    // TODO Maybe also try to remove variables based on that
+
+// ======================================================================================================
+// Batch-Fetch Low-Level Functions ~
+// ======================================================================================================
+
+/**
+ * TODO
+ *
+ * @param ids
+ * @param itemType
+ * @param variablesList
+ * @param startIndex
+ * @param maxFetch
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
+function batchFetch(ids, itemType, variablesList, startIndex, maxFetch, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         let filteredVariablesList = [];
-        for (let i = 0; i < ids.length; i++) {
+        const filterFunction = (objectKeyList) => (v) => (objectKeyList.includes(v) || filteredVariablesList.includes(v));
+        for (let i = startIndex; i < Math.min(ids.length, startIndex + maxFetch); i++) {
             const id = ids[i];
-            const currentObject = getStore().cache[cacheSet][id];
+            const cacheSet = getCache(itemType, getStore);
+            const currentObject = cacheSet[id];
             if (currentObject) {
-                const objectKeyList = Object.keys(currentObject);
-                filteredVariablesList = variablesList.filter((v) => {return (objectKeyList.contains(v) || filteredVariablesList.contains(v)) });
+                // TODO TEST IF THIS works?
+                filteredVariablesList = variablesList.filter(filterFunction(Object.keys(currentObject)));
                 // variablesList = variablesList.filter((v) => { return !objectKeyList.includes(v) });
-                // log&&console.log("Final filtered list is = " + JSON.stringify(variablesList));
+            }
+            else {
+                filteredVariablesList = variablesList;
+                break;
             }
         }
-        batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, failureHandler, dispatch, getStore);
+        batchOverwriteFetch(ids, itemType, variablesList, startIndex, maxFetch, dataHandler, failureHandler, dispatch, getStore);
     };
 }
-function batchForceFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, failureHandler) {
+
+/**
+ * TODO
+ *
+ * @param ids
+ * @param itemType
+ * @param variablesList
+ * @param startIndex
+ * @param maxFetch
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
+function batchForceFetch(ids, itemType, variablesList, startIndex, maxFetch, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, failureHandler, dispatch, getStore);
+        batchOverwriteFetch(ids, itemType, variablesList, startIndex, maxFetch, dataHandler, failureHandler, dispatch, getStore);
     };
 }
-function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, failureHandler, dispatch, getStore) {
+
+/**
+ * TODO
+ *
+ * @param ids {array}
+ * @param itemType {string}
+ * @param variablesList {array}
+ * @param startIndex {int}
+ * @param maxFetch {int}
+ * @param dataHandler {callback}
+ * @param failureHandler {callback}
+ * @param dispatch {function}
+ * @param getStore {function}
+ */
+function batchOverwriteFetch(ids, itemType, variablesList, startIndex, maxFetch, dataHandler, failureHandler, dispatch, getStore) {
     if (variablesList.length > 0) {
+        // TODO Check the start index?
         if (!variablesList.includes("id")) {
             variablesList = [...variablesList, "id"];
         }
         if (!variablesList.includes("item_type")) {
             variablesList = [...variablesList, "item_type"];
         }
-        QL[QLFunctionName](ids, variablesList, (data) => {
-            // log&&console.log("Successfully retrieved the QL info");
-            if (data.hasOwnProperty("items") && data.items && data.items.length) {
-                const items = data.items;
-                const itemsLength = items.length;
-                let retrievedItems = [];
-                for (let i = 0; i < itemsLength; i++) {
-                    const data = items[i];
-                    const id = data.id;
-                    addS3MediaToData(data, (updatedData) => {
-                        // log&&console.log("Dispatching the profile image + data");
-                        dispatch({
-                            type: fetchDispatchType,
-                            payload: {
-                                object: {
-                                    id,
-                                    data: updatedData
-                                },
-                                dispatch
-                            }
-                        });
-                        retrievedItems.push(getStore().cache[cacheSet][id]);
-                        dispatch(setIsNotLoading());
-                        if (dataHandler) {dataHandler(retrievedItems);}
-                    });
-                }
+        const retrievedItems = [];
+        let numFetched = 0;
+        // You have a number of ids to fetch
+        const fetchIDs = ids.slice(startIndex, Math.min(startIndex + maxFetch, ids.length));
+        let totalFetch = fetchIDs.length;
+        let firstFetchIDs = [...fetchIDs];
+        let restFetchIDs = [];
+        // Don't send a request for anything that will definitely be sent back
+        if (firstFetchIDs.length > QL.batchLimit) {
+            restFetchIDs = firstFetchIDs.slice(QL.batchLimit);
+            firstFetchIDs = firstFetchIDs.slice(0, QL.batchLimit);
+        }
+        const finishProcessItem = (item) => {
+            dispatch(putItem(item, itemType));
+            retrievedItems.push(getStore().cache[getCacheName(itemType)][item.id]);
+            numFetched++;
+            if (numFetched >= totalFetch) {
+                dispatch(setIsNotLoading());
+                if (dataHandler) {dataHandler(retrievedItems);}
             }
-            if (data.hasOwnProperty("unretrievedItems") && data.unretrievedItems && data.unretrievedItems.length && unretrievedDataHandler) {
-                unretrievedDataHandler(data.unretrievedItems);
-            }
-        }, (error) => {
+        };
+        const batchGetFailHandler = (error) => {
             err&&console.error("Error in retrieval");
             dispatch(setError(error));
             dispatch(setIsNotLoading());
             if (failureHandler) { failureHandler(error);}
-        });
+        };
+        const batchGetDataHandler = (data, restFetch) => {
+            if (data.hasOwnProperty("unretrievedItems") && data.unretrievedItems && data.unretrievedItems.length > 0) {
+                // TODO Try to fetch again? Or just drop them?
+                for (let i = 0; i < data.unretrievedItems.length; i++) {
+                    totalFetch--;
+                    if (numFetched >= totalFetch) {
+                        dispatch(setIsNotLoading());
+                        if (dataHandler) {
+                            dataHandler(retrievedItems);
+                        }
+                    }
+                }
+            }
+            if (restFetch && restFetch.length > 0) {
+                let fetch = restFetch;
+                if (fetch.length > QL.batchLimit) {
+                    fetch = restFetch.slice(0, QL.batchLimit);
+                    restFetch = restFetch.slice(QL.batchLimit);
+                }
+                QL.getItems(itemType, fetch, variablesList, (data) => batchGetDataHandler(data, restFetch), batchGetFailHandler);
+            }
+            if (data.hasOwnProperty("items") && data.items && data.items.length) {
+                for (let i = 0; i < data.items.length; i++) {
+                    if (data.items[i]) {
+                        addS3MediaToData(data.items[i], finishProcessItem);
+                    }
+                    else {
+                        totalFetch--;
+                        if (numFetched >= totalFetch) {
+                            dispatch(setIsNotLoading());
+                            if (dataHandler) {
+                                dataHandler(retrievedItems);
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        QL.getItems(itemType, firstFetchIDs, variablesList, (data) => batchGetDataHandler(data, restFetchIDs), batchGetFailHandler);
     }
     else {
         const items = [];
         for (let i = 0; i < ids.length; i++) {
             const id = ids[i];
             dispatch({
-                type: fetchDispatchType,
+                type: getFetchType(itemType),
                 payload: {
                     object: {
                         id,
@@ -502,12 +533,29 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
                     dispatch
                 }
             });
-            items.push(getStore().cache[cacheSet][id]);
+            items.push(getStore().cache[getCacheName(itemType)][id]);
         }
         dispatch(setIsNotLoading());
         if (dataHandler) { dataHandler(items);}
     }
 }
+
+// ======================================================================================================
+// Query-Fetch Low-Level Functions ~
+// ======================================================================================================
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param variablesList
+ * @param filter
+ * @param limit
+ * @param nextToken
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
 export function fetchQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -517,10 +565,8 @@ export function fetchQuery(itemType, variablesList, filter, limit, nextToken, da
         if (!variablesList.includes("item_type")) {
             variablesList.push("item_type");
         }
-
         // TODO Make this sort alphabetically, so that it's deterministic
         // variablesList = variablesList.sort();
-
         // const fetchQueryDispatchType = getFetchQueryType(itemType);
         let queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit, nextToken);
         const nextTokenString = QL.getNextTokenString(nextToken);
@@ -552,6 +598,19 @@ export function fetchQuery(itemType, variablesList, filter, limit, nextToken, da
         }
     };
 }
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param variablesList
+ * @param filter
+ * @param limit
+ * @param nextToken
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
 export function forceFetchQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
     return (dispatch) => {
         dispatch(setIsLoading());
@@ -570,6 +629,17 @@ export function forceFetchQuery(itemType, variablesList, filter, limit, nextToke
         overwriteFetchQuery(itemType, queryString, nextToken, dataHandler, failureHandler, dispatch);
     };
 }
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param queryString
+ * @param nextToken
+ * @param dataHandler
+ * @param failureHandler
+ * @param dispatch
+ */
 export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandler, failureHandler, dispatch) {
     QL.queryItems(itemType, queryString, (data) => {
         if (data && data.items && data.items.length) {
@@ -608,17 +678,37 @@ export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandle
         if (failureHandler) { failureHandler(error);}
     });
 }
+
+// ======================================================================================================
+// Update Database Item High-Level Functions ~
+// ======================================================================================================
+
+/**
+ * TODO
+ *
+ * @param id
+ * @param attributeName
+ * @param attributeValue
+ * @return {Function}
+ */
 export function setItemAttribute(id, attributeName, attributeValue) {
     return (dispatch, getStore) => {
-        dispatch(getPutItemFunction(getItemTypeFromID(id))({
-            id,
-            [attributeName]: attributeValue
-        }));
+        dispatch(putItem({id, [attributeName]: attributeValue}, getItemTypeFromID(id)));
         if (id === getStore().user.id) {
             dispatch(updateUserFromCache());
         }
     }
 }
+
+/**
+ * TODO
+ *
+ * @param id
+ * @param attributeName
+ * @param index
+ * @param attributeValue
+ * @return {Function}
+ */
 export function setItemAttributeIndex(id, attributeName, index, attributeValue) {
     return (dispatch, getStore) => {
         dispatch(setItemAttributeAtIndex(getItemTypeFromID(id), id, attributeName, index, attributeValue));
@@ -627,6 +717,15 @@ export function setItemAttributeIndex(id, attributeName, index, attributeValue) 
         }
     };
 }
+
+/**
+ * TODO
+ *
+ * @param id
+ * @param attributeName
+ * @param attributeValue
+ * @return {Function}
+ */
 export function addToItemAttribute(id, attributeName, attributeValue) {
     return (dispatch, getStore) => {
         if (attributeValue.length) {
@@ -642,6 +741,15 @@ export function addToItemAttribute(id, attributeName, attributeValue) {
         }
     }
 }
+
+/**
+ * TODO
+ *
+ * @param id
+ * @param attributeName
+ * @param attributeValue
+ * @return {Function}
+ */
 export function removeFromItemAttribute(id, attributeName, attributeValue) {
     return (dispatch, getStore) => {
         if (attributeValue.length) {
@@ -657,6 +765,15 @@ export function removeFromItemAttribute(id, attributeName, attributeValue) {
         }
     }
 }
+
+/**
+ * TODO
+ *
+ * @param id
+ * @param attributeName
+ * @param index
+ * @return {Function}
+ */
 export function removeFromItemAttributeAtIndex(id, attributeName, index) {
     return (dispatch, getStore) => {
         dispatch(removeItemAttributeIndex(getItemTypeFromID(id), id, attributeName, index));
@@ -665,509 +782,162 @@ export function removeFromItemAttributeAtIndex(id, attributeName, index) {
         }
     }
 }
-export function fetchItem(itemType, id, variableList, dataHandler, failureHandler) {
-    // return getFetchItemFunction(itemType)(id, variableList, dataHandler, failureHandler);
+
+// ======================================================================================================
+// Fetch Database Item High-Level Functions ~
+// ======================================================================================================
+
+/**
+ * TODO
+ *
+ * @param id
+ * @param itemType
+ * @param variableList
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
+export function fetchItem(id, itemType, variableList, dataHandler, failureHandler) {
     return fetch(id, itemType, variableList, dataHandler, failureHandler)
 }
-export function fetchClient(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Client", variablesList, dataHandler, failureHandler);
-}
-export function fetchTrainer(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Trainer", variablesList, dataHandler, failureHandler);
-}
-export function fetchGym(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Gym", variablesList, dataHandler, failureHandler);
-}
-export function fetchWorkout(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Workout", variablesList, dataHandler, failureHandler);
-}
-export function fetchReview(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Review", variablesList, dataHandler, failureHandler);
-}
-export function fetchEvent(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Event", variablesList, dataHandler, failureHandler);
-}
-export function fetchChallenge(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Challenge", variablesList, dataHandler, failureHandler);
-}
-export function fetchInvite(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Invite", variablesList, dataHandler, failureHandler);
-}
-export function fetchPost(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Post", variablesList, dataHandler, failureHandler);
-}
-export function fetchSubmission(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Submission", variablesList, dataHandler, failureHandler);
-}
-export function fetchGroup(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Group", variablesList, dataHandler, failureHandler);
-}
-export function fetchComment(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Comment", variablesList, dataHandler, failureHandler);
-}
-export function fetchSponsor(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Sponsor", variablesList, dataHandler, failureHandler);
-}
-export function fetchStreak(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, "Streak", variablesList, dataHandler, failureHandler);
-}
-export function subscribeFetchItem(itemType, id, variablesList, dataHandler, failureHandler) {
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param id
+ * @param variablesList
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
+export function subscribeFetchItem(id, itemType, variablesList, dataHandler, failureHandler) {
     return subscribeFetch(id, itemType, variablesList, dataHandler, failureHandler);
 }
-export function subscribeFetchClient(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Client", variablesList, dataHandler, failureHandler);
+
+/**
+ * TODO
+ *
+ * @param id
+ * @param itemType
+ * @param variableList
+ * @param dataHandler
+ * @param failureHandler
+ */
+export function forceFetchItem(id, itemType, variableList, dataHandler, failureHandler) {
+    return forceFetch(id, itemType, variableList, dataHandler, failureHandler);
 }
-export function subscribeFetchTrainer(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Trainer", variablesList, dataHandler, failureHandler);
+
+/**
+ * TODO
+ *
+ * @param ids
+ * @param itemType
+ * @param variableList
+ * @param startIndex
+ * @param maxFetch
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
+export function fetchItems(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
+    return batchFetch(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler);
 }
-export function subscribeFetchGym(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Gym", variablesList, dataHandler, failureHandler);
+
+/**
+ * TODO
+ *
+ * @param ids
+ * @param itemType
+ * @param variableList
+ * @param startIndex
+ * @param maxFetch
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
+export function forceFetchItems(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
+    return batchForceFetch(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler);
 }
-export function subscribeFetchWorkout(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Workout", variablesList, dataHandler, failureHandler);
-}
-export function subscribeFetchReview(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Review", variablesList, dataHandler, failureHandler);
-}
-export function subscribeFetchEvent(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Event", variablesList, dataHandler, failureHandler);
-}
-export function subscribeFetchChallenge(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Challenge", variablesList, dataHandler, failureHandler);
-}
-export function subscribeFetchInvite(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Invite", variablesList, dataHandler, failureHandler);
-}
-export function subscribeFetchPost(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Post", variablesList, dataHandler, failureHandler);
-}
-export function subscribeFetchSubmission(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Submission", variablesList, dataHandler, failureHandler);
-}
-export function subscribeFetchGroup(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Group", variablesList, dataHandler, failureHandler);
-}
-export function subscribeFetchComment(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Comment", variablesList, dataHandler, failureHandler);
-}
-export function subscribeFetchSponsor(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Sponsor", variablesList, dataHandler, failureHandler);
-}
-export function subscribeFetchStreak(id, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, "Streak", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchItem(itemType, id, variablesList, dataHandler, failureHandler) {
-    return getForceFetchItemFunction(itemType)(id, variablesList, dataHandler, failureHandler);
-}
-export function forceFetchClient(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Client", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchTrainer(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Trainer", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchGym(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Gym", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchWorkout(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Workout", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchReview(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Review", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchEvent(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Event", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchChallenge(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Challenge", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchInvite(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Invite", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchPost(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Post", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchSubmission(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Submission", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchGroup(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Group", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchComment(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Comment", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchSponsor(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Sponsor", variablesList, dataHandler, failureHandler);
-}
-export function forceFetchStreak(id, variablesList, dataHandler, failureHandler) {
-    return forceFetch(id, "Streak", variablesList, dataHandler, failureHandler);
-}
-export function fetchClients(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "clients", "getClients", "FETCH_CLIENT", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function fetchTrainers(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "trainers", "getTrainers", "FETCH_TRAINER", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function fetchGyms(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "gyms", "getGyms", "FETCH_GYM", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function fetchWorkouts(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "workouts", "getWorkouts", "FETCH_WORKOUT", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function fetchReviews(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "reviews", "getReviews", "FETCH_REVIEW", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function fetchEvents(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "events", "getEvents", "FETCH_EVENT", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function fetchChallenges(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "challenges", "getChallenges", "FETCH_CHALLENGE", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function fetchInvites(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "invites", "getInvites", "FETCH_INVITE", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function fetchPosts(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "posts", "getPosts", "FETCH_POST", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function fetchSubmissions(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "submissions", "getSubmissions", "FETCH_SUBMISSION", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function fetchGroups(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "groups", "getGroups", "FETCH_GROUP", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function fetchComments(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "comments", "getComments", "FETCH_COMMENT", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function fetchSponsors(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "sponsors", "getSponsors", "FETCH_SPONSOR", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function fetchStreaks(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchFetch(ids, variablesList, "streaks", "getStreaks", "FETCH_STREAK", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchClients(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "clients", "getClients", "FETCH_CLIENT", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchTrainers(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "trainers", "getTrainers", "FETCH_TRAINER", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchGyms(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "gyms", "getGyms", "FETCH_GYM", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchWorkouts(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "workouts", "getWorkouts", "FETCH_WORKOUT", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchReviews(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "reviews", "getReviews", "FETCH_REVIEW", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchEvents(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "events", "getEvents", "FETCH_EVENT", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchChallenges(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "challenges", "getChallenges", "FETCH_CHALLENGE", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchInvites(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "invites", "getInvites", "FETCH_INVITE", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchPosts(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "posts", "getPosts", "FETCH_POST", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchSubmissions(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "submissions", "getSubmissions", "FETCH_SUBMISSION", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchGroups(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "groups", "getGroups", "FETCH_GROUP", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchComments(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "comments", "getComments", "FETCH_COMMENT", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchSponsors(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "sponsors", "getSponsors", "FETCH_SPONSOR", dataHandler, unretrievedDataHandler, failureHandler);
-}
-export function forceFetchStreaks(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
-    return batchForceFetch(ids, variablesList, "streaks", "getStreaks", "FETCH_STREAK", dataHandler, unretrievedDataHandler, failureHandler);
-}
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param variablesList
+ * @param filter
+ * @param limit
+ * @param nextToken
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
 export function fetchItemQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
     return fetchQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler);
 }
-export function fetchClientQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    // console.log("fetching clients");
-    return fetchQuery("Client", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param variableList
+ * @param filter
+ * @param limit
+ * @param nextToken
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
+export function forceFetchItemQuery(itemType, variableList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery(itemType, variableList, filter, limit, nextToken, dataHandler, failureHandler);
 }
-export function fetchTrainerQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery("Trainer", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function fetchGymQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery("Gym", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function fetchWorkoutQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery("Workout", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function fetchReviewQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery("Review", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function fetchEventQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery("Event", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function fetchChallengeQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery("Challenge", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function fetchInviteQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery("Invite", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function fetchPostQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery("Post", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function fetchSubmissionQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery("Submission", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function fetchGroupQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery("Group", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function fetchCommentQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery("Comment", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function fetchSponsorQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery("Sponsor", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function fetchStreakQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery("Streak", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchClientQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Client", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchTrainerQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Trainer", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchGymQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Gym", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchWorkoutQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Workout", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchReviewQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Review", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchEventQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Event", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchChallengeQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Challenge", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchInviteQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Invite", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchPostQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Post", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchSubmissionQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Submission", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchGroupQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Group", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchCommentQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Comment", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchSponsorQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Sponsor", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-export function forceFetchStreakQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return forceFetchQuery("Streak", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
-}
-// TODO Consider how this might scale? Another LRU Cache here?
-export function putClientQuery(queryString, queryResult) {
+
+// ======================================================================================================
+// Mutate Database Low-Level Functions ~
+// ======================================================================================================
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param queryString
+ * @param queryResult
+ * @return {Function}
+ */
+export function putItemQuery(itemType, queryString, queryResult) {
     return (dispatch) => {
-        dispatch(putQuery(queryString, queryResult, "FETCH_CLIENT_QUERY"));
-        // dispatch(setIsLoading());
-        // TODO Should we take the time to put all the query clients into the cache as well? Is our cache hurting our performance?
-    };
+        dispatch(putQuery(queryString, queryResult, getFetchQueryType(itemType)));
+    }
 }
-export function putTrainerQuery(queryString, queryResult) {
+
+/**
+ * TODO
+ *
+ * @param queryString
+ * @param queryResult
+ * @param actionType
+ * @return {{type: *, payload: {queryString: *, queryResult: *}}}
+ */
+function putQuery(queryString, queryResult, actionType) {
     return {
-        type: "FETCH_TRAINER_QUERY",
+        type: actionType,
         payload: {
             queryString,
             queryResult
         }
     };
 }
-export function putGymQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_GYM_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putWorkoutQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_WORKOUT_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putReviewQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_REVIEW_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putEventQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_EVENT_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putChallengeQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_CHALLENGE_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putInviteQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_INVITE_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putPostQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_POST_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putSubmissionQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_SUBMISSION_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putGroupQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_GROUP_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putCommentQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_COMMENT_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putSponsorQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_SPONSOR_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putStreakQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_STREAK_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function clearClientQuery() {
-    return {
-        type: "CLEAR_CLIENT_QUERY",
-    };
-}
-export function clearTrainerQuery() {
-    return {
-        type: "CLEAR_TRAINER_QUERY",
-    };
-}
-export function clearGymQuery() {
-    return {
-        type: "CLEAR_GYM_QUERY",
-    };
-}
-export function clearWorkoutQuery() {
-    return {
-        type: "CLEAR_WORKOUT_QUERY",
-    };
-}
-export function clearReviewQuery() {
-    return {
-        type: "CLEAR_REVIEW_QUERY",
-    };
-}
-export function clearEventQuery() {
-    return {
-        type: "CLEAR_EVENT_QUERY",
-    };
-}
-export function clearChallengeQuery() {
-    return {
-        type: "CLEAR_CHALLENGE_QUERY",
-    };
-}
-export function clearInviteQuery() {
-    return {
-        type: "CLEAR_INVITE_QUERY",
-    };
-}
-export function clearPostQuery() {
-    return {
-        type: "CLEAR_POST_QUERY",
-    };
-}
-export function clearSubmissionQuery() {
-    return {
-        type: "CLEAR_SUBMISSION_QUERY",
-    };
-}
-export function clearGroupQuery() {
-    return {
-        type: "CLEAR_GROUP_QUERY",
-    };
-}
-export function clearCommentQuery() {
-    return {
-        type: "CLEAR_COMMENT_QUERY",
-    };
-}
-export function clearSponsorQuery() {
-    return {
-        type: "CLEAR_SPONSOR_QUERY",
-    };
-}
-export function clearStreakQuery() {
-    return {
-        type: "CLEAR_STREAK_QUERY",
-    };
-}
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param id
+ * @param attributeName
+ * @param index
+ * @param attributeValue
+ * @return {{type, payload: {id: *, attributeName: *, index: *, attributeValue: *}}}
+ */
 function setItemAttributeAtIndex(itemType, id, attributeName, index, attributeValue) {
     const setItemIndexType = switchReturnItemType(itemType, SET_CLIENT_ATTRIBUTE_INDEX, SET_TRAINER_ATTRIBUTE_INDEX,
         SET_GYM_ATTRIBUTE_INDEX, SET_WORKOUT_ATTRIBUTE_INDEX, SET_REVIEW_ATTRIBUTE_INDEX, SET_EVENT_ATTRIBUTE_INDEX,
@@ -1184,6 +954,15 @@ function setItemAttributeAtIndex(itemType, id, attributeName, index, attributeVa
         }
     }
 }
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param id
+ * @param attributes
+ * @return {{type, payload: {id: *, attributes: *}}}
+ */
 function addItemAttributes(itemType, id, attributes) {
     const addAttributesType = switchReturnItemType(itemType, ADD_CLIENT_ATTRIBUTES, ADD_TRAINER_ATTRIBUTES, ADD_GYM_ATTRIBUTES,
         ADD_WORKOUT_ATTRIBUTES, ADD_REVIEW_ATTRIBUTES, ADD_EVENT_ATTRIBUTES, ADD_CHALLENGE_ATTRIBUTES, ADD_INVITE_ATTRIBUTES,
@@ -1198,6 +977,15 @@ function addItemAttributes(itemType, id, attributes) {
         }
     }
 }
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param id
+ * @param attributes
+ * @return {{type, payload: {id: *, attributes: *}}}
+ */
 function removeItemAttributes(itemType, id, attributes) {
     const removeAttributesType = switchReturnItemType(itemType, REMOVE_CLIENT_ATTRIBUTES, REMOVE_TRAINER_ATTRIBUTES, REMOVE_GYM_ATTRIBUTES,
         REMOVE_WORKOUT_ATTRIBUTES, REMOVE_REVIEW_ATTRIBUTES, REMOVE_EVENT_ATTRIBUTES, REMOVE_CHALLENGE_ATTRIBUTES, REMOVE_INVITE_ATTRIBUTES,
@@ -1211,6 +999,16 @@ function removeItemAttributes(itemType, id, attributes) {
         }
     }
 }
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param id
+ * @param attributeName
+ * @param index
+ * @return {{type, payload: {id: *, attributeName: *, index: *}}}
+ */
 function removeItemAttributeIndex(itemType, id, attributeName, index) {
     const removeAttributesType = switchReturnItemType(itemType, REMOVE_CLIENT_ATTRIBUTE_INDEX, REMOVE_TRAINER_ATTRIBUTE_INDEX,
         REMOVE_GYM_ATTRIBUTE_INDEX, REMOVE_WORKOUT_ATTRIBUTE_INDEX, REMOVE_REVIEW_ATTRIBUTE_INDEX, REMOVE_EVENT_ATTRIBUTE_INDEX,
@@ -1226,6 +1024,15 @@ function removeItemAttributeIndex(itemType, id, attributeName, index) {
         }
     }
 }
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param id
+ * @param dispatch
+ * @return {{type, payload: {id: *, dispatch: *}}}
+ */
 export function removeItem(itemType, id, dispatch) {
     const removeType = switchReturnItemType(itemType, REMOVE_CLIENT, REMOVE_TRAINER, REMOVE_GYM, REMOVE_WORKOUT, REMOVE_REVIEW, REMOVE_EVENT,
         REMOVE_CHALLENGE, REMOVE_INVITE, REMOVE_POST, REMOVE_SUBMISSION, REMOVE_GROUP, REMOVE_COMMENT, REMOVE_SPONSOR, null, REMOVE_STREAK,
@@ -1238,251 +1045,63 @@ export function removeItem(itemType, id, dispatch) {
         }
     }
 }
-function putQuery(queryString, queryResult, actionType) {
-    return {
-        type: actionType,
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putItem(item, itemType, dispatch) {
-    return getPutItemFunction(itemType)(item, dispatch);
-}
-export function putClient(client, dispatch) {
-    if (client && client.id) {
-        return {
-            type: "FETCH_CLIENT",
-            payload: {
-                object: {
-                    id: client.id,
-                    data: client
-                },
-                dispatch
-            }
-        };
-    }
-    return {type: ""};
-}
-export function putTrainer(trainer, dispatch) {
-    if (trainer && trainer.id) {
-        return {
-            type: "FETCH_TRAINER",
-            payload: {
-                object: {
-                    id: trainer.id,
-                    data: trainer
-                },
-                dispatch
-            }
-        };
-    }
-    return {type: ""};
-}
-export function putGym(gym, dispatch) {
-    if (gym && gym.id) {
-        return {
-            type: "FETCH_GYM",
-            payload: {
-                object: {
-                    id: gym.id,
-                    data: gym
-                },
-                dispatch
-            }
-        };
-    }
-    return {type: ""};
-}
-export function putWorkout(workout, dispatch) {
-    if (workout && workout.id) {
-        return {
-            type: "FETCH_WORKOUT",
-            payload: {
-                object: {
-                    id: workout.id,
-                    data: workout
-                },
-                dispatch
-            }
-        };
-    }
-    return {type: ""};
-}
-export function putReview(review, dispatch) {
-    if (review && review.id) {
-        return {
-            type: "FETCH_REVIEW",
-            payload: {
-                object: {
-                    id: review.id,
-                    data: review
-                },
-                dispatch
-            }
-        };
-    }
-    return {type: ""};
-}
-export function putEvent(event, dispatch) {
-    if (event && event.id) {
-        return {
-            type: "FETCH_EVENT",
-            payload: {
-                object: {
-                    id: event.id,
-                    data: event
-                },
-                dispatch
-            }
-        };
-    }
-    return {type: ""};
-}
-export function putChallenge(challenge, dispatch) {
-    if (challenge && challenge.id) {
-        return {
-            type: "FETCH_CHALLENGE",
-            payload: {
-                object: {
-                    id: challenge.id,
-                    data: challenge
-                },
-                dispatch
-            }
-        };
-    }
-    return {type: ""};
-}
-export function putInvite(invite, dispatch) {
-    if (invite && invite.id) {
-        return {
-            type: "FETCH_INVITE",
-            payload: {
-                object: {
-                    id: invite.id,
-                    data: invite
-                },
-                dispatch
-            }
-        };
-    }
-    return {type: ""};
-}
-export function putPost(post, dispatch) {
-    if (post && post.id) {
-        return {
-            type: "FETCH_POST",
-            payload: {
-                object: {
-                    id: post.id,
-                    data: post
-                },
-                dispatch
-            }
-        };
-    }
-    return {type: ""};
-}
-export function putSubmission(submission, dispatch) {
-    if (submission && submission.id) {
-        return {
-            type: "FETCH_SUBMISSION",
-            payload: {
-                object: {
-                    id: submission.id,
-                    data: submission
-                },
-                dispatch
-            }
-        };
-    }
-    return {type: ""};
-}
-export function putGroup(group, dispatch) {
-    if (group && group.id) {
-        return {
-            type: "FETCH_GROUP",
-            payload: {
-                object: {
-                    id: group.id,
-                    data: group
-                },
-                dispatch
-            }
-        };
-    }
-    return {type: ""};
-}
-export function putComment(comment, dispatch) {
-    if (comment && comment.id) {
-        return {
-            type: "FETCH_COMMENT",
-            payload: {
-                object: {
-                    id: comment.id,
-                    data: comment
-                },
-                dispatch
-            }
-        };
-    }
-    return {type: ""};
-}
-export function putSponsor(sponsor, dispatch) {
-    if (sponsor && sponsor.id) {
-        return {
-            type: "FETCH_SPONSOR",
-            payload: {
-                object: {
-                    id: sponsor.id,
-                    data: sponsor,
-                },
-                dispatch
-            }
 
-        };
-    }
-    return {type: ""};
-}
-export function putStreak(streak, dispatch) {
-    if (streak && streak.id) {
+/**
+ * TODO
+ *
+ * @param item
+ * @param itemType
+ * @return {*}
+ */
+export function putItem(item, itemType) {
+    if (item && item.id) {
         return {
-            type: "FETCH_SPONSOR",
+            type: getFetchType(itemType),
             payload: {
                 object: {
-                    id: streak.id,
-                    data: streak
-                },
-                dispatch
+                    id: item.id,
+                    data: item
+                }
             }
-        };
+        }
     }
-    return {type: ""};
+    return {type: ""}
 }
-export function getFetchType(itemType) {
-    return switchReturnItemType(itemType, FETCH_CLIENT, FETCH_TRAINER, FETCH_GYM, FETCH_WORKOUT, FETCH_REVIEW,
-        FETCH_EVENT, FETCH_CHALLENGE, FETCH_INVITE, FETCH_POST, FETCH_SUBMISSION, FETCH_GROUP, FETCH_COMMENT,
-        FETCH_SPONSOR, null, FETCH_STREAK, "Retrieve fetch type not implemented for type.")
-}
-export function getFetchQueryType(itemType) {
-    return switchReturnItemType(itemType, FETCH_CLIENT_QUERY, FETCH_TRAINER_QUERY, FETCH_GYM_QUERY, FETCH_WORKOUT_QUERY,
-        FETCH_REVIEW_QUERY, FETCH_EVENT_QUERY, FETCH_CHALLENGE_QUERY, FETCH_INVITE_QUERY, FETCH_POST_QUERY,
-        FETCH_SUBMISSION_QUERY, FETCH_GROUP_QUERY, FETCH_COMMENT_QUERY, FETCH_SPONSOR_QUERY, null, FETCH_STREAK_QUERY,
-        "Retrieve fetch query type not implemented for type");
-}
+
+// ======================================================================================================
+// Cache Reducer Getter Functions ~
+// ======================================================================================================
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param getStore
+ */
 export function getCache(itemType, getStore) {
     const cache = getStore().cache;
     return switchReturnItemType(itemType, cache.clients, cache.trainers, cache.gyms, cache.workouts, cache.reviews,
         cache.events, cache.challenges, cache.invites, cache.posts, cache.submissions, cache.groups, cache.comments,
         cache.sponsors, null, cache.streaks, "Retrieve cache not implemented");
 }
+
+/**
+ * TODO
+ *
+ * @param itemType
+ */
 export function getCacheName(itemType) {
     return switchReturnItemType(itemType, "clients", "trainers", "gyms", "workouts", "reviews", "events", "challenges",
         "invites", "posts", "submissions", "groups", "comments", "sponsors", null, "streaks",
         "Retrieve cache not implemented");
 }
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param getStore
+ */
 export function getQueryCache(itemType, getStore) {
     const cache = getStore().cache;
     return switchReturnItemType(itemType, cache.clientQueries, cache.trainerQueries, cache.gymQueries,
@@ -1490,46 +1109,26 @@ export function getQueryCache(itemType, getStore) {
         cache.postQueries, cache.submissionQueries, cache.groupQueries, cache.commentQueries, cache.sponsorQueries,
         null, cache.streakQueries, "Retrieve query cache not implemented");
 }
-function getQueryCacheName(itemType)  {
-    return switchReturnItemType(itemType, "clientQueries", "trainerQueries", "gymQueries", "workoutQueries",
-        "reviewQueries", "eventQueries", "challengeQueries", "inviteQueries", "postQueries", "submissionQueries",
-        "groupQueries", "commentQueries", "sponsorQueries", null, "streakQueries",
-        "Retrieve query cache not implemented");
+
+/**
+ * TODO
+ *
+ * @param itemType
+ */
+export function getFetchType(itemType) {
+    return switchReturnItemType(itemType, FETCH_CLIENT, FETCH_TRAINER, FETCH_GYM, FETCH_WORKOUT, FETCH_REVIEW,
+        FETCH_EVENT, FETCH_CHALLENGE, FETCH_INVITE, FETCH_POST, FETCH_SUBMISSION, FETCH_GROUP, FETCH_COMMENT,
+        FETCH_SPONSOR, null, FETCH_STREAK, "Retrieve fetch type not implemented for type.")
 }
-export function getPutItemFunction(itemType) {
-    return switchReturnItemType(itemType, putClient, putTrainer, putGym, putWorkout, putReview, putEvent, putChallenge, putInvite,
-        putPost, putSubmission, putGroup, putComment, putSponsor, null, putStreak, "Retrieve put item function item type not implemented");
-}
-function getFetchItemFunction(itemType) {
-    return switchReturnItemType(itemType, fetchClient, fetchTrainer, fetchGym, fetchWorkout, fetchReview, fetchEvent,
-        fetchChallenge, fetchInvite, fetchPost, fetchSubmission, fetchGroup, fetchComment, fetchSponsor, null, fetchStreak, "Retrieve fetch item function not implemented");
-}
-function getForceFetchItemFunction(itemType) {
-    return switchReturnItemType(itemType, forceFetchClient, forceFetchTrainer, forceFetchGym, forceFetchWorkout,
-        forceFetchReview, forceFetchEvent, forceFetchChallenge, forceFetchInvite, forceFetchPost, forceFetchSubmission,
-        forceFetchGroup, forceFetchComment, forceFetchSponsor, null, forceFetchStreak,
-        "Retrieve force fetch item function not implemented for item type");
-}
-function getSubscribeFetchItemFunction(itemType) {
-    return switchReturnItemType(itemType, subscribeFetchClient, subscribeFetchTrainer, subscribeFetchGym,
-        subscribeFetchWorkout, subscribeFetchReview, subscribeFetchEvent, subscribeFetchChallenge, subscribeFetchInvite,
-        subscribeFetchPost, subscribeFetchSubmission, subscribeFetchGroup, subscribeFetchComment, subscribeFetchSponsor,
-        null, subscribeFetchStreak, "Retrieve subscribe fetch item function not implemented for item type");
-}
-export function getFetchQueryFunction(itemType) {
-    return switchReturnItemType(itemType, fetchClientQuery, fetchTrainerQuery, fetchGymQuery, fetchWorkoutQuery,
-        fetchReviewQuery, fetchEventQuery, fetchChallengeQuery, fetchInviteQuery, fetchPostQuery, fetchSubmissionQuery,
-        fetchGroupQuery, fetchCommentQuery, fetchSponsorQuery, null, fetchStreakQuery,
-        "Retrieve fetch query function item type not implemented");
-}
-export function getPutQueryFunction(itemType) {
-    return switchReturnItemType(itemType, putClientQuery, putTrainerQuery, putGymQuery, putWorkoutQuery, putReviewQuery,
-        putEventQuery, putChallengeQuery, putInviteQuery, putPostQuery, putSubmissionQuery, putGroupQuery,
-        putCommentQuery, putSponsorQuery, null, putStreakQuery, "Retrieve Put Query Function not implemented");
-}
-export function getClearQueryFunction(itemType) {
-    return switchReturnItemType(itemType, clearClientQuery, clearTrainerQuery, clearGymQuery, clearWorkoutQuery,
-        clearReviewQuery, clearEventQuery, clearChallengeQuery, clearInviteQuery, clearPostQuery, clearSubmissionQuery,
-        clearGroupQuery, clearCommentQuery, clearSponsorQuery, null, clearStreakQuery,
-        "Retrieve Clear Query Function not implemented");
+
+/**
+ * TODO
+ *
+ * @param itemType
+ */
+export function getFetchQueryType(itemType) {
+    return switchReturnItemType(itemType, FETCH_CLIENT_QUERY, FETCH_TRAINER_QUERY, FETCH_GYM_QUERY, FETCH_WORKOUT_QUERY,
+        FETCH_REVIEW_QUERY, FETCH_EVENT_QUERY, FETCH_CHALLENGE_QUERY, FETCH_INVITE_QUERY, FETCH_POST_QUERY,
+        FETCH_SUBMISSION_QUERY, FETCH_GROUP_QUERY, FETCH_COMMENT_QUERY, FETCH_SPONSOR_QUERY, null, FETCH_STREAK_QUERY,
+        "Retrieve fetch query type not implemented for type");
 }

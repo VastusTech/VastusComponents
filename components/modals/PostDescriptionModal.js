@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {Modal, Button, List, Message, Dimmer} from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 import { connect } from 'react-redux';
-import { fetchClient, forceFetchPost, fetchPost } from "../../redux_actions/cacheActions";
+import { fetchClient, forceFetchPost, fetchPost } from "../../redux_convenience/cacheItemTypeActions";
 import { convertFromISO } from "../../logic/TimeHelper";
 import { forceFetchUserAttributes } from "../../../redux_helpers/actions/userActions";
 import PostFunctions from "../../database_functions/PostFunctions";

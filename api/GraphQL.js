@@ -5,7 +5,92 @@ import {switchReturnItemType} from "../logic/ItemType";
 import TestHelper from "../logic/TestHelper";
 
 class GraphQL {
+    // Represents the amount of items that can be fetched before a batch fetch operation will definitely send items back
+    static batchLimit = 100;
+
+    // =================================================================================================================
+    // ~ Public GraphQL Using Methods
+    // =================================================================================================================
+
+    /**
+     * TODO
+     *
+     * @param itemType
+     * @param id
+     * @param variablesList
+     * @param successHandler
+     * @param failureHandler
+     */
+    static getItem(itemType, id, variablesList, successHandler, failureHandler) {
+        const func = this.getGetByIDFunction(itemType);
+        if (func) { return func(id, variablesList, successHandler, failureHandler); }
+    }
+
+    /**
+     * TODO
+     *
+     * @param itemType
+     * @param username
+     * @param variablesList
+     * @param successHandler
+     * @param failureHandler
+     */
+    static getItemByUsername(itemType, username, variablesList, successHandler, failureHandler) {
+        const func = this.getGetByUsernameFunction(itemType);
+        if (func) { return func(username, variablesList, successHandler, failureHandler); }
+    }
+
+    /**
+     * TODO
+     *
+     * @param itemType
+     * @param ids
+     * @param variablesList
+     * @param successHandler
+     * @param failureHandler
+     */
+    static getItems(itemType, ids, variablesList, successHandler, failureHandler) {
+        const func = this.getBatchGetFunction(itemType);
+        if (func) { return func(ids, variablesList, successHandler, failureHandler); }
+    }
+
+    /**
+     * TODO
+     *
+     * @param itemType
+     * @param variablesList
+     * @param filter
+     * @param limit
+     * @param nextToken
+     */
+    static constructItemQuery(itemType, variablesList, filter, limit, nextToken) {
+        const func = this.getConstructQueryFunction(itemType);
+        if (func) { return func(variablesList, filter, limit, nextToken); }
+    }
+
+    /**
+     * TODO
+     *
+     * @param itemType
+     * @param queryString
+     * @param successHandler
+     * @param failureHandler
+     */
+    static queryItems(itemType, queryString, successHandler, failureHandler) {
+        const func = this.getQueryFunction(itemType);
+        if (func) { return func(queryString, successHandler, failureHandler); }
+    }
+
+    // =================================================================================================================
+    // ~ GraphQL Switch Specific Item Type Functions
+    // =================================================================================================================
+
     // Gives back function with parameters (id, variablesList, successHandler, failureHandler)
+    /**
+     *
+     * @param itemType
+     * @return {null}
+     */
     static getGetByIDFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.getClient, GraphQL.getTrainer, GraphQL.getGym, GraphQL.getWorkout, GraphQL.getReview,
             GraphQL.getEvent, GraphQL.getChallenge, GraphQL.getInvite, GraphQL.getPost, GraphQL.getSubmission,
@@ -13,16 +98,34 @@ class GraphQL {
             "GraphQL get Fetch function function not implemented");
     }
     // Gives back function with parameters (username, variablesList, successHandler, failureHandler)
+    /**
+     * TODO
+     *
+     * @param itemType
+     * @return {null}
+     */
     static getGetByUsernameFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.getClientByUsername, GraphQL.getTrainerByUsername, GraphQL.getGymByUsername,
             null, null, null, null, null, null, null, null, GraphQL.getSponsorByUsername, "GraphQL get Fetch Username function function not implemented");
     }
     // Gives back function with parameters (federatedID, variablesList, successHandler, failureHandler)
+    /**
+     * TODO
+     *
+     * @param itemType
+     * @return {null}
+     */
     static getGetByFederatedIDFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.getClientByFederatedID, GraphQL.getTrainerByFederatedID, GraphQL.getGymByFederatedID,
             null, null, null, null, null, null, null, null, null, GraphQL.getSponsorByFederatedID, null, null, "GraphQL get Fetch FederatedID function function not implemented");
     }
     // Gives back function with parameters (ids, variablesList, successHandler, failureHandler)
+    /**
+     * TODO
+     *
+     * @param itemType
+     * @return {null}
+     */
     static getBatchGetFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.getClients, GraphQL.getTrainers, GraphQL.getGyms, GraphQL.getWorkouts,
             GraphQL.getReviews, GraphQL.getEvents, GraphQL.getChallenges, GraphQL.getInvites, GraphQL.getPosts,
@@ -30,6 +133,12 @@ class GraphQL {
             "GraphQL get Batch Fetch function function not implemented");
     }
     // Gives back function with parameters (variablesList, filter, limit, nextToken)
+    /**
+     * TODO
+     *
+     * @param itemType
+     * @return {null}
+     */
     static getConstructQueryFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.constructClientQuery, GraphQL.constructTrainerQuery, GraphQL.constructGymQuery,
             GraphQL.constructWorkoutQuery, GraphQL.constructReviewQuery, GraphQL.constructEventQuery, GraphQL.constructChallengeQuery,
@@ -38,32 +147,24 @@ class GraphQL {
             "GraphQL get construct Query function not implemented");
     }
     // Gives back function with parameters (queryString, successHandler, failureHandler)
+    /**
+     * TODO
+     *
+     * @param itemType
+     * @return {null}
+     */
     static getQueryFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.queryClients, GraphQL.queryTrainers, GraphQL.queryGyms, GraphQL.queryWorkouts,
             GraphQL.queryReviews, GraphQL.queryEvents, GraphQL.queryChallenges, GraphQL.queryInvites, GraphQL.queryPosts,
             GraphQL.querySubmissions, GraphQL.queryGroups, GraphQL.queryComments, GraphQL.querySponsors, GraphQL.queryMessages,
             GraphQL.queryStreaks, "GraphQL get Query function function not implemented for type");
     }
-    static getItem(itemType, id, variablesList, successHandler, failureHandler) {
-        const func = this.getGetByIDFunction(itemType);
-        if (func) { return func(id, variablesList, successHandler, failureHandler); }
-    }
-    static getItemByUsername(itemType, username, variablesList, successHandler, failureHandler) {
-        const func = this.getGetByUsernameFunction(itemType);
-        if (func) { return func(username, variablesList, successHandler, failureHandler); }
-    }
-    static getItems(itemType, ids, variablesList, successHandler, failureHandler) {
-        const func = this.getBatchGetFunction(itemType);
-        if (func) { return func(ids, variablesList, successHandler, failureHandler); }
-    }
-    static constructItemQuery(itemType, variablesList, filter, limit, nextToken) {
-        const func = this.getConstructQueryFunction(itemType);
-        if (func) { return func(variablesList, filter, limit, nextToken); }
-    }
-    static queryItems(itemType, queryString, successHandler, failureHandler) {
-        const func = this.getQueryFunction(itemType);
-        if (func) { return func(queryString, successHandler, failureHandler); }
-    }
+
+    // =================================================================================================================
+    // ~ GraphQL Specific Item Type Functions
+    // =================================================================================================================
+
+    // ~ Single Fetch Functions
     static getClient(id, variableList, successHandler, failureHandler) {
         GraphQL.execute(GraphQL.constructQuery("GetClient", "getClient", {id}, variableList),
             "getClient", successHandler, failureHandler);
@@ -156,8 +257,10 @@ class GraphQL {
         GraphQL.execute(GraphQL.constructQuery("GetStreak", "getStreak", {id}, variableList),
             "getStreak", successHandler, failureHandler);
     }
+
+    // ~ Batch Fetch Functions
     static getClients(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrieved Items list!!!!");
         }
@@ -166,7 +269,7 @@ class GraphQL {
             "getClients", successHandler, failureHandler);
     }
     static getTrainers(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrieved Items list!!!!");
         }
@@ -175,7 +278,7 @@ class GraphQL {
             "getTrainers", successHandler, failureHandler);
     }
     static getGyms(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrieved Items list!!!!");
         }
@@ -184,7 +287,7 @@ class GraphQL {
             "getGyms", successHandler, failureHandler);
     }
     static getWorkouts(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrieved Items list!!!!");
         }
@@ -193,7 +296,7 @@ class GraphQL {
             "getWorkouts", successHandler, failureHandler);
     }
     static getReviews(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
@@ -202,7 +305,7 @@ class GraphQL {
             "getReviews", successHandler, failureHandler);
     }
     static getEvents(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
@@ -211,7 +314,7 @@ class GraphQL {
             "getEvents", successHandler, failureHandler);
     }
     static getChallenges(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
@@ -220,7 +323,7 @@ class GraphQL {
             "getChallenges", successHandler, failureHandler);
     }
     static getInvites(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
@@ -229,7 +332,7 @@ class GraphQL {
             "getInvites", successHandler, failureHandler);
     }
     static getPosts(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
@@ -238,7 +341,7 @@ class GraphQL {
             "getPosts", successHandler, failureHandler);
     }
     static getSubmissions(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
@@ -247,7 +350,7 @@ class GraphQL {
             "getSubmissions", successHandler, failureHandler);
     }
     static getGroups(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
@@ -256,7 +359,7 @@ class GraphQL {
             "getGroups", successHandler, failureHandler);
     }
     static getComments(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
@@ -265,7 +368,7 @@ class GraphQL {
             "getComments", successHandler, failureHandler);
     }
     static getSponsors(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
@@ -274,16 +377,16 @@ class GraphQL {
             "getSponsors", successHandler, failureHandler);
     }
     static getMessages(board, ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetMessages", "getSponsors", {board}, variableList, idList, true),
-            "getSponsors", successHandler, failureHandler);
+        GraphQL.execute(GraphQL.constructQuery("GetMessages", "getMessages", {board}, variableList, idList, true),
+            "getMessages", successHandler, failureHandler);
     }
     static getStreaks(ids, variableList, successHandler, failureHandler) {
-        if (ids && ids.length > 100) {
+        if (ids && ids.length > GraphQL.batchLimit) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
@@ -291,6 +394,8 @@ class GraphQL {
         GraphQL.execute(GraphQL.constructQuery("GetStreaks", "getStreaks", null, variableList, idList, true),
             "getStreaks", successHandler, failureHandler);
     }
+
+    // ~ Construct Query Functions
     static constructClientQuery(variableList, filter, limit, nextToken) {
         var inputVariables = {};
         if (limit) { inputVariables.limit = limit; }
@@ -381,6 +486,8 @@ class GraphQL {
         if (nextToken) { inputVariables.nextToken = nextToken; }
         return GraphQL.constructQuery("QueryStreaks", "queryStreaks", inputVariables, variableList, filter, false, true);
     }
+
+    // ~ Query Fetch Functions
     static queryClients(queryString, successHandler, failureHandler) {
         GraphQL.execute(queryString, "queryClients", successHandler, failureHandler);
     }
@@ -467,6 +574,13 @@ class GraphQL {
             parameters: variableValues
         }
     }
+
+    /**
+     * TODO
+     *
+     * @param ids
+     * @return {{parameterString: string, parameters}}
+     */
     static generateIDList(ids) {
         let idListString = "ids: [";
         const parameters = {};
@@ -484,6 +598,18 @@ class GraphQL {
     }
     // TODO GraphQL only supports input String! regular types. Reason to change?
     // TODO Make GraphQL more resilient to an empty filter?
+    /**
+     * TODO
+     *
+     * @param queryName
+     * @param queryFunction
+     * @param inputVariables
+     * @param outputVariables
+     * @param filter
+     * @param ifBatch
+     * @param ifQuery
+     * @return {{query: string, variables: *}}
+     */
     static constructQuery(queryName, queryFunction, inputVariables, outputVariables, filter = null, ifBatch = false, ifQuery = false) {
         let query = '';
         // Filter out the null'ed variables
@@ -555,7 +681,21 @@ class GraphQL {
             variables: finalInputVariables
         };
     }
+
+    /**
+     * TODO
+     *
+     * @param nextToken
+     * @return {string}
+     */
     static getNextTokenString(nextToken) { return nextToken ? nextToken : "null"; }
+
+    /**
+     * TODO
+     *
+     * @param query
+     * @return {{variables: {nextToken: string}}}
+     */
     static getNormalizedQuery(query) {
         return {
             ...query,
@@ -565,6 +705,14 @@ class GraphQL {
             }
         };
     }
+
+    /**
+     * TODO
+     *
+     * @param normalizedQuery
+     * @param nextToken
+     * @return {{variables: {nextToken: *}}}
+     */
     static getQueryFromNormalizedQuery(normalizedQuery, nextToken) {
         return {
             ...normalizedQuery,
@@ -574,6 +722,13 @@ class GraphQL {
             }
         };
     }
+
+    /**
+     * TODO
+     *
+     * @param queryResult
+     * @return {{ids: Array, nextToken: *}}
+     */
     static getCompressedFromQueryResult(queryResult) {
         const items = queryResult.items;
         const ids = [];
@@ -587,6 +742,14 @@ class GraphQL {
             nextToken: queryResult.nextToken
         };
     }
+
+    /**
+     * TODO
+     *
+     * @param compressedResult
+     * @param itemTypeCache
+     * @return {{items: Array, nextToken: *}}
+     */
     static getQueryResultFromCompressed(compressedResult, itemTypeCache) {
         const ids = compressedResult.ids;
         const items = [];
@@ -601,6 +764,18 @@ class GraphQL {
             nextToken: compressedResult.nextToken
         };
     }
+
+    /**
+     * TODO
+     *
+     * @param query
+     * @param queryFunctionName
+     * @param successHandler
+     * @param failureHandler
+     * @param queryCache
+     * @param putQuery
+     * @return {*}
+     */
     static execute(query, queryFunctionName, successHandler, failureHandler, queryCache, putQuery) {
         const queryString = JSON.stringify(query.query) + JSON.stringify(query.variables);
         // log&&console.log(queryString);

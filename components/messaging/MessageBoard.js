@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import CommentBox from "./MessageInput";
 import Messages from './Messages';
 import { Icon, Message, Divider } from "semantic-ui-react";
-import {fetchClient, fetchTrainer} from "../../redux_actions/cacheActions";
+import {fetchClient, fetchTrainer} from "../../redux_convenience/cacheItemTypeActions";
 import {
     queryNextMessagesFromBoard,
     discardBoard
 } from "../../redux_actions/messageActions";
 import {connect} from "react-redux";
 import ScrollView from "react-inverted-scrollview";
-import {inspect} from 'util';
-import {getMethods} from "../../logic/DebuggingHelper";
+// import {inspect} from 'util';
+// import {getMethods} from "../../logic/DebuggingHelper";
 
 type Props = {
     board: string,

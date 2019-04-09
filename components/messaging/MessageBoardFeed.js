@@ -47,7 +47,7 @@ class MessageBoardFeed extends Component<Props> {
                                 const id = ids[key];
                                 const itemType = getItemTypeFromID(id);
                                 if (itemType === "Client" || itemType === "Trainer") {
-                                    this.props.fetchItem(getItemTypeFromID(id), id, ["name", "profileImagePath"]);
+                                    this.props.fetchItem(id, getItemTypeFromID(id), ["name", "profileImagePath"]);
                                 }
                             }
                         }

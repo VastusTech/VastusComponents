@@ -7,8 +7,7 @@ import {
     fetchPost,
     clearPostQuery,
     putPost,
-    putPostQuery
-} from "../../redux_actions/cacheActions";
+} from "../../redux_convenience/cacheItemTypeActions";
 import PostFunctions from "../../database_functions/PostFunctions";
 import {Player} from "video-react";
 import {err, log} from "../../../Constants";
@@ -349,12 +348,6 @@ const mapDispatchToProps = (dispatch) => {
         },
         putPost: (event) => {
             dispatch(putPost(event));
-        },
-        putPostQuery: (queryString, queryResult) => {
-            dispatch(putPostQuery(queryString, queryResult));
-        },
-        clearPostQuery: () => {
-            dispatch(clearPostQuery());
         },
     }
 };

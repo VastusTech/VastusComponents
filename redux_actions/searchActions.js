@@ -1,6 +1,6 @@
 import {setIsLoading, setIsNotLoading} from "./infoActions";
 import QL from "../api/GraphQL";
-import {getPutItemFunction, getFetchQueryFunction} from "./cacheActions";
+import {fetchItemQuery, putItem} from "./cacheActions";
 import {err, log} from "../../Constants";
 
 const ENABLE_TYPE = 'ENABLE_TYPE';
@@ -101,19 +101,16 @@ function performQuery(itemType, dispatch, getStore, successHandler, failureHandl
         const ifFirst = typeQuery.ifFirst;
         log&&console.log("nextToken = " + nextToken);
         if (nextToken || ifFirst) {
-            const putItemFunction = getPutItemFunction(itemType);
-            const fetchQueryFunction = getFetchQueryFunction(itemType);
-            // console.log(JSON.stringify(getFetchQueryFunction));
-            // if (!fetchQueryFunction) { console.log("problem"); }
-            // else { console.log(JSON.stringify(fetchQueryFunction)); }
-            fetchQueryFunction(variableList, QL.generateFilter(filterJSON, filterParameters), limit, nextToken, (data) => {
+            // Fetch the query for the items
+            fetchItemQuery(itemType, variableList, QL.generateFilter(filterJSON, filterParameters), limit, nextToken, (data) => {
                 // console.log("Ay lmao it came back");
                 if (data) {
                     dispatch(setTypeNextToken(itemType, data.nextToken));
                     successHandler(itemType, data);
                     if (data && data.items) {
                         for (let i = 0; i < data.items.length; i++) {
-                            dispatch(putItemFunction(data.items[i]));
+                            // dispatch(putItemFunction(data.items[i]));
+                            dispatch(putItem(data.items[i], itemType));
                         }
                     }
                 }

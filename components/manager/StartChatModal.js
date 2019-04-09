@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Button, Modal, Grid, Header} from "semantic-ui-react";
 import {connect} from "react-redux";
 import ClientCard from "../cards/ClientCard";
-import {fetchClient, fetchTrainer} from "../../redux_actions/cacheActions";
+import {fetchClient, fetchTrainer} from "../../redux_convenience/cacheItemTypeActions";
 import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import TrainerCard from "../cards/TrainerCard";

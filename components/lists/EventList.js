@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { List, Message } from 'semantic-ui-react';
 import EventCard, {EventCardInfo} from "../cards/EventCard";
 import { connect } from "react-redux";
-import { fetchEvent } from "../../redux_actions/cacheActions";
+import { fetchEvent } from "../../redux_convenience/cacheItemTypeActions";
 import Spinner from "../props/Spinner";
 
 type Props = {

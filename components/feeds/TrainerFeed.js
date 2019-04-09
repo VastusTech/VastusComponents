@@ -2,7 +2,7 @@ import React, {useState, useEffect, Fragment} from 'react'
 import _ from 'lodash'
 import {Visibility, Header, Grid} from 'semantic-ui-react'
 import { connect } from 'react-redux';
-import { fetchTrainerQuery } from "../../redux_actions/cacheActions";
+import { fetchTrainerQuery } from "../../redux_convenience/cacheItemTypeActions";
 import {log, err} from "../../../Constants";
 import {debugAlert} from "../../logic/DebuggingHelper";
 import TrainerCard, {TrainerCardInfo} from "../cards/TrainerCard";

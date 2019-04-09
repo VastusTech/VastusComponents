@@ -2,7 +2,7 @@ import React, {useState, useEffect, Fragment} from 'react'
 import _ from 'lodash'
 import {Visibility} from 'semantic-ui-react'
 import { connect } from 'react-redux';
-import {fetchGroupQuery, fetchItemQuery, putGroupQuery} from "../../redux_actions/cacheActions";
+import {fetchItemQuery} from "../../redux_actions/cacheActions";
 import {log, err} from "../../../Constants";
 import {debugAlert} from "../../logic/DebuggingHelper";
 import GroupCard, {GroupCardInfo} from "../cards/GroupCard";

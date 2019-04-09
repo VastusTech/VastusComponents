@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import {Grid, Button, Message, Image, Modal, Form, Container, Checkbox, Header, Dropdown, Label} from 'semantic-ui-react';
 import {connect} from "react-redux";
 import {setError} from "../../redux_actions/infoActions";
-import {clearChallengeQuery, fetchChallenge, putChallenge, putChallengeQuery} from "../../redux_actions/cacheActions";
+import {fetchChallenge, putChallenge} from "../../redux_convenience/cacheItemTypeActions";
 import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
 import {getNowTimeString} from "../../logic/TimeHelper";
 
@@ -304,12 +304,12 @@ const mapDispatchToProps = (dispatch) => {
         putChallenge: (event) => {
             dispatch(putChallenge(event));
         },
-        putChallengeQuery: (queryString, queryResult) => {
-            dispatch(putChallengeQuery(queryString, queryResult));
-        },
-        clearChallengeQuery: () => {
-            dispatch(clearChallengeQuery());
-        }
+        // putChallengeQuery: (queryString, queryResult) => {
+        //     dispatch(putChallengeQuery(queryString, queryResult));
+        // },
+        // clearChallengeQuery: () => {
+        //     dispatch(clearChallengeQuery());
+        // }
     }
 };
 

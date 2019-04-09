@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { List, Message, Visibility } from 'semantic-ui-react';
 import ClientCard, {ClientCardInfo} from "../cards/ClientCard";
 import { connect } from "react-redux";
-import {fetchItem} from "../../redux_actions/cacheActions";
+import {fetchItem, fetchItems} from "../../redux_actions/cacheActions";
 import Spinner from "../props/Spinner";
 import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
 import TrainerCard, {TrainerCardInfo} from "../cards/TrainerCard";
@@ -15,6 +15,9 @@ import {shuffleArray} from "../../logic/ArrayHelper";
 // TODO USING VISIBILITY WITH A MODAL DOESN'T WORK?
 // TODO ALSO OFTEN ONE PERSON IS MISSING for some reason?
 
+/*
+For a BatchFetch, we use the accepted
+ */
 const numFetch = 10000000;
 
 type Props = {
@@ -25,14 +28,13 @@ type Props = {
     sortFunction?: any
 }
 
-function objectComponents(objects, visibleComponents) {
+function objectComponents(objects) {
     const components = [];
     for (const key in objects) {
         if (objects.hasOwnProperty(key)) {
-            const id = objects[key].id;
             components.push(
                 <List.Item key={key}>
-                    {visibleComponents[id]}
+                    {getObjectComponent(parseInt(key) + 1, objects[key])}
                 </List.Item>
             );
         }
@@ -57,13 +59,12 @@ const getObjectComponent = (key, object: {id: string, item_type: string}) => (
         "Get database object list object not implemented for item type"
     )
 );
-const fetchMoreObjects = (ids, acceptedItemTypes, randomized, sortFunction, hiddenIDIndex, setHiddenIDIndex, setVisibleObjects, setVisibleComponents, setIsLoading, fetchItem) => {
+const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, sortFunction, setVisibleObjects, setIsLoading, fetchItems) => {
     setIsLoading(true);
-    const endIndex = Math.min(ids.length, hiddenIDIndex + numFetch);
-    for (let i = hiddenIDIndex; i < endIndex; i++) {
-        const id = ids[i];
-        const itemType = getItemTypeFromID(id);
-        if (!acceptedItemTypes || acceptedItemTypes.includes(itemType)) {
+    for (const itemType in typeIDs) {
+        if (typeIDs.hasOwnProperty(itemType)) {
+            const ids = typeIDs[itemType];
+            const hiddenIndex = typeHiddenIDIndex[itemType];
             const variableList = switchReturnItemType(itemType,
                 ClientCardInfo.fetchList,
                 TrainerCardInfo.fetchList,
@@ -74,38 +75,21 @@ const fetchMoreObjects = (ids, acceptedItemTypes, randomized, sortFunction, hidd
                 PostCard.fetchVariableList,
                 null, null, null, null, null,
                 "Get variable list from item type not implemented!");
-            fetchItem(itemType, id, variableList, (o) => addObject(o, sortFunction, randomized, setVisibleObjects, setVisibleComponents, setIsLoading));
+            fetchItems(ids, itemType, variableList, hiddenIndex, numFetch, (items) => {
+                for (let i = 0; i < items.length; i++) {
+                    addObject(items[i], randomized, sortFunction, setVisibleObjects, setIsLoading);
+                }
+                setIsLoading(false);
+            });
         }
     }
-    if (hiddenIDIndex === endIndex) {
-        setIsLoading(false);
-    }
-    setHiddenIDIndex(endIndex);
 };
-
-const addObject = (object, sortFunction, randomized, setVisibleObjects, setVisibleComponents, setIsLoading) => {
+const addObject = (object, randomized, sortFunction, setVisibleObjects, setIsLoading) => {
     if (object && object.id) {
         setVisibleObjects(p => {
             const a = [...p, object];
-            const key = a.length;
             if (randomized) { shuffleArray(a) }
             if (sortFunction) { a.sort(sortFunction); }
-            setVisibleComponents(p => {
-                const newComps = {
-                    ...p,
-                    [object.id]: getObjectComponent(key, object)
-                };
-                if (sortFunction) {
-                    for (const i in a) {
-                        if (a.hasOwnProperty(i)) {
-                            if (newComps[a[i].id].props.rank !== parseInt(i) + 1) {
-                                newComps[a[i].id] = getObjectComponent(parseInt(i) + 1, a[i]);
-                            }
-                        }
-                    }
-                }
-                return newComps;
-            });
             return a;
         });
         setIsLoading(false);
@@ -115,30 +99,42 @@ const addObject = (object, sortFunction, randomized, setVisibleObjects, setVisib
 const DatabaseObjectList = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [ids, setIDs] = useState(null);
+    // const [typeIDs, setTypeIDs] = useState({});
+    // const [typeHiddenIDIndex, setTypeHiddenIDIndex] = useState({});
     const [visibleObjects, setVisibleObjects] = useState([]);
-    const [visibleComponents, setVisibleComponents] = useState({});
+    // const [visibleComponents, setVisibleComponents] = useState({});
     const [hiddenIDIndex, setHiddenIDIndex] = useState(0);
-
-    // Callback for visible objects updated
-    useEffect(() => {
-        if (ids) {
-            const randomized = props.randomized === "true";
-            fetchMoreObjects(ids, props.acceptedItemTypes, randomized, props.sortFunction, hiddenIDIndex, setHiddenIDIndex,
-                setVisibleObjects, setVisibleComponents, setIsLoading, props.fetchItem);
-        }
-    }, [visibleObjects]);
 
     // Component will receive new props
     useEffect(() => {
         if (props.ids && JSON.stringify(props.ids) !== JSON.stringify(ids)) {
-            setIDs(props.ids);
+            const ids = [...props.ids];
+            // TODO Randomizing doesn't work
+            if (props.randomized === true) {
+                shuffleArray(ids)
+            }
+            setIDs(ids);
             setHiddenIDIndex(0);
             setVisibleObjects([]);
+            const typeIDs = {};
+            const typeHiddenIndex = {};
+            for (let i = 0; i < ids.length; i++) {
+                const id = ids[i];
+                const itemType = getItemTypeFromID(id);
+                if (!props.acceptedItemTypes || props.acceptedItemTypes.includes(itemType)) {
+                    if (typeIDs[itemType]) {
+                        typeIDs[itemType].push(id);
+                    }
+                    else {
+                        typeIDs[itemType] = [id];
+                        typeHiddenIndex[itemType] = 0;
+                    }
+                }
+            }
+            batchFetchMoreObjects(typeIDs, typeHiddenIndex, props.randomized === true, props.sortFunction,
+                setVisibleObjects, setIsLoading, props.fetchItems);
         }
-    }, [props]);
-
-    // alert("defining a function here");
-
+    }, [props.ids]);
 
     // const handleVisibilityUpdate = (e, {calculations}) => {
     //     // alert("hey");
@@ -158,7 +154,7 @@ const DatabaseObjectList = (props: Props) => {
         return(
             <div>
                 <List relaxed verticalAlign="middle">
-                    {objectComponents(visibleObjects, visibleComponents)}
+                    {objectComponents(visibleObjects)}
                 </List>
             </div>
         );
@@ -176,6 +172,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         fetchItem: (itemType, id, variableList, dataHandler, failureHandler) => {
             dispatch(fetchItem(itemType, id, variableList, dataHandler, failureHandler));
+        },
+        fetchItems: (ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler) => {
+            dispatch(fetchItems(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler));
         }
     };
 };

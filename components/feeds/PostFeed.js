@@ -8,8 +8,8 @@ import {
     fetchChallenge,
     fetchClient,
     fetchTrainer,
-    fetchPostQuery, fetchGroup, getCacheName
-} from "../../redux_actions/cacheActions";
+    fetchPostQuery, fetchGroup
+} from "../../redux_convenience/cacheItemTypeActions";
 import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import {log, err} from "../../../Constants";
