@@ -1,11 +1,11 @@
 import {removeChannelSubscription} from "../redux_actions/ablyActions";
 import {err} from "../../Constants";
 
-const ADD_MESSAGE = 'ADD_MESSAGE';
-const ADD_QUERY = 'ADD_QUERY';
-const SET_BOARD_READ = 'SET_BOARD_READ';
-const CLEAR_BOARD = 'CLEAR_BOARD';
-const CLEAR_ALL_BOARDS = 'CLEAR_ALL_BOARDS';
+export const ADD_MESSAGE = 'ADD_MESSAGE';
+export const ADD_QUERY = 'ADD_QUERY';
+export const SET_BOARD_READ = 'SET_BOARD_READ';
+export const CLEAR_BOARD = 'CLEAR_BOARD';
+export const CLEAR_ALL_BOARDS = 'CLEAR_ALL_BOARDS';
 
 /**
  * Get the Ably Channel name for the given board.

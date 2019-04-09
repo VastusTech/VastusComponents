@@ -1,12 +1,19 @@
 import {setIsLoading, setIsNotLoading} from "./infoActions";
 import {log} from "../../Constants";
+import { ADD_HANDLER, REMOVE_CHANNEL, SET_PERMANENT_HANDLER, SET_HANDLER, CLEAR_CHANNELS } from "../redux_reducers/ablyReducer";
 
-const ADD_HANDLER = 'ADD_HANDLER';
-const SET_HANDLER = 'SET_HANDLER';
-const SET_PERMANENT_HANDLER = 'ADD_PERMANENT_CHANNEL';
-const REMOVE_CHANNEL = 'REMOVE_CHANNEL';
-const CLEAR_CHANNELS = 'CLEAR_CHANNELS';
+// =========================================================================================================
+// ~ High-Level Ably Actions
+// =========================================================================================================
 
+/**
+ * TODO
+ *
+ * @param channelName
+ * @param handler
+ * @param unsubscriptionHandler
+ * @return {Function}
+ */
 export function addHandlerAndUnsubscription(channelName, handler, unsubscriptionHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -14,6 +21,15 @@ export function addHandlerAndUnsubscription(channelName, handler, unsubscription
         dispatch(setIsNotLoading());
     }
 }
+
+/**
+ * TODO
+ *
+ * @param channelName
+ * @param handler
+ * @param unsubscriptionHandler
+ * @return {Function}
+ */
 export function setHandlerAndUnsubscription(channelName, handler, unsubscriptionHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -21,6 +37,15 @@ export function setHandlerAndUnsubscription(channelName, handler, unsubscription
         dispatch(setIsNotLoading());
     }
 }
+
+/**
+ * TODO
+ *
+ * @param channelName
+ * @param handler
+ * @param unsubscriptionHandler
+ * @return {Function}
+ */
 export function setPermanentHandlerAndUnsubscription(channelName, handler, unsubscriptionHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -28,6 +53,13 @@ export function setPermanentHandlerAndUnsubscription(channelName, handler, unsub
         dispatch(setIsNotLoading());
     }
 }
+
+/**
+ * TODO
+ *
+ * @param channelName
+ * @return {Function}
+ */
 export function removeChannelSubscription(channelName) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -53,6 +85,11 @@ export function removeChannelSubscription(channelName) {
 //         dispatch(setIsNotLoading());
 //     };
 // }
+/**
+ * TODO
+ *
+ * @return {Function}
+ */
 export function removeAllHandlers() {
     return (dispatch) => {
         dispatch(setIsLoading());
@@ -60,6 +97,14 @@ export function removeAllHandlers() {
         dispatch(setIsNotLoading());
     };
 }
+
+/**
+ * TODO
+ *
+ * @param channelName
+ * @param getStore
+ * @return {Function}
+ */
 function getMessageHandler(channelName, getStore) {
     return (message) => {
         log&&console.log("RECEIVED ABLY MESSAGE = " + JSON.stringify(message));
@@ -71,6 +116,11 @@ function getMessageHandler(channelName, getStore) {
         }
     }
 }
+
+// =========================================================================================================
+// ~ Low-Level Ably Actions
+// =========================================================================================================
+
 function addHandler(channel, handler, unsubscriptionHandler, messageHandler) {
     return {
         type: ADD_HANDLER,

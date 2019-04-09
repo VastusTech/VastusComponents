@@ -218,7 +218,7 @@ class GroupDescriptionModal extends Component<Props> {
                     <Button loading={this.state.isLeaveLoading} fluid inverted size="large" disabled={this.state.isLeaveLoading} onClick={this.handleLeaveGroupButton}>Leave</Button>
                     <Divider className='u-margin-top--4' />
                     <Card fluid>
-                        {alert(this.state.groupID)}
+                        {/*{alert(this.state.groupID)}*/}
                         <CommentScreen board={this.getGroupAttribute("id")}/>
                     </Card>
                 </Fragment>

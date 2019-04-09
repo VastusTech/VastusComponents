@@ -1,10 +1,10 @@
 import {err, log} from "../../Constants";
 
-const ADD_HANDLER = 'ADD_HANDLER';
-const SET_HANDLER = 'SET_HANDLER';
-const SET_PERMANENT_HANDLER = 'ADD_PERMANENT_CHANNEL';
-const REMOVE_CHANNEL = 'REMOVE_CHANNEL';
-const CLEAR_CHANNELS = 'CLEAR_CHANNELS';
+export const ADD_HANDLER = 'ADD_HANDLER';
+export const SET_HANDLER = 'SET_HANDLER';
+export const SET_PERMANENT_HANDLER = 'ADD_PERMANENT_CHANNEL';
+export const REMOVE_CHANNEL = 'REMOVE_CHANNEL';
+export const CLEAR_CHANNELS = 'CLEAR_CHANNELS';
 
 // The max number of channels we can be subscribed to at any given moment
 const channelCacheSize = 10;

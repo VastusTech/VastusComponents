@@ -1,3 +1,9 @@
+/**
+ * TODO
+ *
+ * @param dateTime
+ * @return {string}
+ */
 export function convertFromISO(dateTime) {
     let dateTimeString = String(dateTime);
     let date = new Date(dateTimeString);
@@ -10,6 +16,12 @@ export function convertFromISO(dateTime) {
     return days[date.getDay()]+', '+months[date.getMonth()]+' '+date.getDate()+', '+date.getFullYear()+' '+hours+':'+minutes+ampm;
 }
 
+/**
+ * TODO
+ *
+ * @param dateTime
+ * @return {string}
+ */
 export function convertFromIntervalISO(dateTime) {
     let dateTimeString = String(dateTime);
     let dateTimes = String(dateTimeString).split("_");
@@ -32,9 +44,23 @@ export function convertFromIntervalISO(dateTime) {
         days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     return days[fromDate.getDay()]+', '+months[fromDate.getMonth()]+' '+fromDate.getDate()+', '+fromDate.getFullYear()+' '+fromhours+':'+fromminutes+fromampm + ' - '+tohours+':'+tominutes+toampm;
 }
+
+/**
+ * TODO
+ *
+ * @param s
+ * @return {Date}
+ */
 export function parseISOString(s) {
     return new Date(String(s));
 }
+
+/**
+ * TODO
+ *
+ * @param date
+ * @return {string}
+ */
 export function convertToISOString(date) {
     const tzo = -date.getTimezoneOffset(),
         dif = tzo >= 0 ? '+' : '-',
@@ -51,9 +77,22 @@ export function convertToISOString(date) {
         dif + pad(tzo / 60) +
         ':' + pad(tzo % 60);
 }
+
+/**
+ * TODO
+ *
+ * @return {string}
+ */
 export function getNowISO() {
     return convertToISOString(new Date());
 }
+
+/**
+ * TODO
+ *
+ * @param birthday
+ * @return {*}
+ */
 export function calculateAge(birthday) {
     // TODO Use more libraries to calculate this way better
     if (birthday) {
@@ -67,9 +106,24 @@ export function calculateAge(birthday) {
     }
     return null;
 }
+
+/**
+ * TODO
+ *
+ * @param fromDate
+ * @param toDate
+ * @return {string}
+ */
 export function convertToISOIntervalString(fromDate, toDate) {
     return convertToISOString(fromDate) + "_" + convertToISOString(toDate);
 }
+
+/**
+ * TODO
+ *
+ * @param dateTime
+ * @return {number}
+ */
 export function daysLeft(dateTime) {
     const now = new Date();
     let one_day=1000*60*60*24;                       // Convert both dates to milliseconds
@@ -80,10 +134,24 @@ export function daysLeft(dateTime) {
     // console.log("difference = " + difference_ms);
     return Math.round(difference_ms/one_day);
 }
+
+/**
+ * TODO
+ *
+ * @param dateTime
+ * @return {number}
+ */
 export function timeLeft(dateTime) {
     const now = new Date();
     return dateTime.getTime() - now.getTime();
 }
+
+/**
+ * TODO
+ *
+ * @param time
+ * @return {string}
+ */
 function convertTime(time) {
     if (parseInt(time, 10) > 12) {
         return "0" + (parseInt(time, 10) - 12) + time.substr(2, 3) + "pm";
@@ -99,6 +167,12 @@ function convertTime(time) {
     }
 }
 
+/**
+ * TODO
+ *
+ * @param date
+ * @return {string}
+ */
 function convertDate(date) {
     let dateString = String(date);
     let year = dateString.substr(0, 4);

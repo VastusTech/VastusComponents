@@ -2,18 +2,33 @@ import * as AWS from "aws-sdk";
 import { Storage } from "aws-amplify";
 import {err, log} from "../../Constants";
 
+/**
+ * Class for handling all the interactions with our S3 Bucket files.
+ */
 class S3Storage {
     static bucketName = 'vastusofficial';
     // User-Level Functions
-    // static putImages(folderPath, images, successHandler, failureHandler) {
-    //
-    // }
-    // Content-Level Functions
+
+    /**
+     * TODO
+     *
+     * @param path
+     * @param image
+     * @param successHandler
+     * @param failureHandler
+     */
     static putImage(path, image, successHandler, failureHandler) {
         S3Storage.put(path, image, "image/*", successHandler, failureHandler);
     }
 
-    //Used to have success and failure handler in the
+    /**
+     * TODO
+     *
+     * @param path
+     * @param video
+     * @param successHandler
+     * @param failureHandler
+     */
     static putVideo(path, video, successHandler, failureHandler) {
         let bucket = new AWS.S3({params: {Bucket: S3Storage.bucketName}});
         if (video) {
@@ -33,10 +48,27 @@ class S3Storage {
             });
         }
     }
+
+    /**
+     * TODO
+     *
+     * @param path
+     * @param media
+     * @param successHandler
+     * @param failureHandler
+     */
     static putVideoOrImage(path, media, successHandler, failureHandler) {
         S3Storage.put(path, media, "video/*;image/*", successHandler, failureHandler);
     }
+
     // Low Level Functions
+    /**
+     * TODO
+     *
+     * @param path
+     * @param successHandler
+     * @param failureHandler
+     */
     static get(path, successHandler, failureHandler) {
         // returns URL
         Storage.get(path).then((url) => {
@@ -47,6 +79,14 @@ class S3Storage {
             if (failureHandler) { failureHandler(error); }
         });
     }
+
+    /**
+     * TODO
+     *
+     * @param path
+     * @param successHandler
+     * @param failureHandler
+     */
     static ifExists(path, successHandler, failureHandler) {
         let bucket = new AWS.S3({params: {Bucket: S3Storage.bucketName}});
         bucket.headObject({
@@ -66,6 +106,16 @@ class S3Storage {
             }
         });
     }
+
+    /**
+     * TODO
+     *
+     * @param path
+     * @param file
+     * @param contentType
+     * @param successHandler
+     * @param failureHandler
+     */
     static put(path, file, contentType, successHandler, failureHandler) {
         Storage.put(path, file, { contentType, progressCallback(progress) { console.log(`Uploaded: ${progress.loaded}/${progress.total}`);} }).then((result) => {
             log&&console.log("Storage successfully put file in! Result: " + JSON.stringify(result));
@@ -75,6 +125,14 @@ class S3Storage {
             if (failureHandler) { failureHandler(error); }
         });
     }
+
+    /**
+     * TODO
+     *
+     * @param path
+     * @param successHandler
+     * @param failureHandler
+     */
     static delete(path, successHandler, failureHandler) {
         Storage.remove(path).then((result) => {
             log&&console.log("Storage successfully removed file! Result: " + JSON.stringify(result));

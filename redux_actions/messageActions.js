@@ -3,15 +3,22 @@ import S3 from "../api/S3Storage";
 import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
 import {addHandlerAndUnsubscription} from "./ablyActions";
 import {err, log} from "../../Constants";
-import {debugAlert} from "../logic/DebuggingHelper";
-import {getBoardChannel} from "../redux_reducers/messageReducer";
+import {getBoardChannel, CLEAR_ALL_BOARDS, SET_BOARD_READ, CLEAR_BOARD, ADD_QUERY, ADD_MESSAGE} from "../redux_reducers/messageReducer";
 const notFoundPicture = require('../img/not_found.png');
 const defaultProfilePicture = require("../img/roundProfile.png");
 
-const ADD_MESSAGE = 'ADD_MESSAGE';
-const ADD_QUERY = 'ADD_QUERY';
-const CLEAR_BOARD = 'CLEAR_BOARD';
+// =========================================================================================================
+// ~ High-Level Message Actions
+// =========================================================================================================
 
+/**
+ * TODO
+ *
+ * @param board
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
 export function peekAtFirstMessageFromBoard(board, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -29,11 +36,31 @@ export function peekAtFirstMessageFromBoard(board, dataHandler, failureHandler) 
         }
     }
 }
+
+/**
+ * TODO
+ *
+ * @param board
+ * @param limit
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
 export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHandler) {
     return (dispatch) => {
         dispatch(queryNextMessagesFromBoardOptionalSubscribe(board, limit, true, dataHandler, failureHandler));
     }
 }
+
+/**
+ * TODO
+ * @param board
+ * @param limit
+ * @param ifSubscribe
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
 function queryNextMessagesFromBoardOptionalSubscribe(board, limit, ifSubscribe, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -117,6 +144,17 @@ function addURLToMessages(messages, messagePathField, messageURLField, defaultUR
         dataHandler(messages);
     }
 }
+
+/**
+ * TODO
+ *
+ * @param message
+ * @param messagePathField
+ * @param messageURLField
+ * @param defaultURL
+ * @param fetchChecker
+ * @param dataHandler
+ */
 function addURLToMessage(message, messagePathField, messageURLField, defaultURL, fetchChecker, dataHandler) {
     if (fetchChecker(message)) {
         S3.get(message[messagePathField], (url) => {
@@ -133,6 +171,16 @@ function addURLToMessage(message, messagePathField, messageURLField, defaultURL,
         dataHandler(message);
     }
 }
+
+/**
+ * TODO
+ *
+ * @param board
+ * @param message
+ * @param dataHandler
+ * @param failureHandler
+ * @return {Function}
+ */
 export function addMessageFromNotification(board, message, dataHandler, failureHandler) {
     return (dispatch) => {
         dispatch(setIsLoading());
@@ -157,9 +205,14 @@ export function addMessageFromNotification(board, message, dataHandler, failureH
         });
     };
 }
+
+// =========================================================================================================
+// ~ Low-Level Message Actions
+// =========================================================================================================
+
 export function setBoardRead(board, userID) {
     return {
-        type: 'SET_BOARD_READ',
+        type: SET_BOARD_READ,
         payload: {
             board,
             userID

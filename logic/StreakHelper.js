@@ -8,6 +8,13 @@ const numberOfUpdateSpansPassed = (lastUpdated, updateSpanType) => {
     }
     return -1;
 };
+
+/**
+ * TODO
+ *
+ * @param streak
+ * @return {boolean}
+ */
 export const ifStreakExpired = (streak) => {
     if (streak.lastUpdated && streak.updateSpanType && streak.updateInterval) {
         const spansPassed = numberOfUpdateSpansPassed(streak.lastUpdated, streak.updateSpanType);
@@ -20,3 +27,4 @@ export const ifStreakExpired = (streak) => {
     }
     return true;
 };
+// TODO export const streakN = (streak) => {

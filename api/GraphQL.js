@@ -22,7 +22,10 @@ class GraphQL {
      * @param failureHandler
      */
     static getItem(itemType, id, variablesList, successHandler, failureHandler) {
-        const func = this.getGetByIDFunction(itemType);
+        const func = switchReturnItemType(itemType, GraphQL.getClient, GraphQL.getTrainer, GraphQL.getGym, GraphQL.getWorkout, GraphQL.getReview,
+            GraphQL.getEvent, GraphQL.getChallenge, GraphQL.getInvite, GraphQL.getPost, GraphQL.getSubmission,
+            GraphQL.getGroup, GraphQL.getComment, GraphQL.getSponsor, GraphQL.getMessage, GraphQL.getStreak,
+            "GraphQL get Fetch function function not implemented");
         if (func) { return func(id, variablesList, successHandler, failureHandler); }
     }
 
@@ -36,7 +39,8 @@ class GraphQL {
      * @param failureHandler
      */
     static getItemByUsername(itemType, username, variablesList, successHandler, failureHandler) {
-        const func = this.getGetByUsernameFunction(itemType);
+        const func = switchReturnItemType(itemType, GraphQL.getClientByUsername, GraphQL.getTrainerByUsername, GraphQL.getGymByUsername,
+            null, null, null, null, null, null, null, null, GraphQL.getSponsorByUsername, "GraphQL get Fetch Username function function not implemented");
         if (func) { return func(username, variablesList, successHandler, failureHandler); }
     }
 
@@ -50,7 +54,10 @@ class GraphQL {
      * @param failureHandler
      */
     static getItems(itemType, ids, variablesList, successHandler, failureHandler) {
-        const func = this.getBatchGetFunction(itemType);
+        const func = switchReturnItemType(itemType, GraphQL.getClients, GraphQL.getTrainers, GraphQL.getGyms, GraphQL.getWorkouts,
+            GraphQL.getReviews, GraphQL.getEvents, GraphQL.getChallenges, GraphQL.getInvites, GraphQL.getPosts,
+            GraphQL.getSubmissions, GraphQL.getGroups, GraphQL.getComments, GraphQL.getSponsors, GraphQL.getMessages, GraphQL.getStreaks,
+            "GraphQL get Batch Fetch function function not implemented");
         if (func) { return func(ids, variablesList, successHandler, failureHandler); }
     }
 
@@ -64,7 +71,11 @@ class GraphQL {
      * @param nextToken
      */
     static constructItemQuery(itemType, variablesList, filter, limit, nextToken) {
-        const func = this.getConstructQueryFunction(itemType);
+        const func = switchReturnItemType(itemType, GraphQL.constructClientQuery, GraphQL.constructTrainerQuery, GraphQL.constructGymQuery,
+            GraphQL.constructWorkoutQuery, GraphQL.constructReviewQuery, GraphQL.constructEventQuery, GraphQL.constructChallengeQuery,
+            GraphQL.constructInviteQuery, GraphQL.constructPostQuery, GraphQL.constructSubmissionQuery, GraphQL.constructGroupQuery,
+            GraphQL.constructCommentQuery, GraphQL.constructSponsorQuery, GraphQL.constructMessageQuery, GraphQL.constructStreakQuery,
+            "GraphQL get construct Query function not implemented");
         if (func) { return func(variablesList, filter, limit, nextToken); }
     }
 
@@ -77,7 +88,10 @@ class GraphQL {
      * @param failureHandler
      */
     static queryItems(itemType, queryString, successHandler, failureHandler) {
-        const func = this.getQueryFunction(itemType);
+        const func = switchReturnItemType(itemType, GraphQL.queryClients, GraphQL.queryTrainers, GraphQL.queryGyms, GraphQL.queryWorkouts,
+            GraphQL.queryReviews, GraphQL.queryEvents, GraphQL.queryChallenges, GraphQL.queryInvites, GraphQL.queryPosts,
+            GraphQL.querySubmissions, GraphQL.queryGroups, GraphQL.queryComments, GraphQL.querySponsors, GraphQL.queryMessages,
+            GraphQL.queryStreaks, "GraphQL get Query function function not implemented for type");
         if (func) { return func(queryString, successHandler, failureHandler); }
     }
 
@@ -104,10 +118,11 @@ class GraphQL {
      * @param itemType
      * @return {null}
      */
-    static getGetByUsernameFunction(itemType) {
-        return switchReturnItemType(itemType, GraphQL.getClientByUsername, GraphQL.getTrainerByUsername, GraphQL.getGymByUsername,
-            null, null, null, null, null, null, null, null, GraphQL.getSponsorByUsername, "GraphQL get Fetch Username function function not implemented");
-    }
+    // static getGetByUsernameFunction(itemType) {
+    //     return switchReturnItemType(itemType, GraphQL.getClientByUsername, GraphQL.getTrainerByUsername, GraphQL.getGymByUsername,
+    //         null, null, null, null, null, null, null, null, GraphQL.getSponsorByUsername, "GraphQL get Fetch Username function function not implemented");
+    // }
+
     // Gives back function with parameters (federatedID, variablesList, successHandler, failureHandler)
     /**
      * TODO
@@ -115,10 +130,10 @@ class GraphQL {
      * @param itemType
      * @return {null}
      */
-    static getGetByFederatedIDFunction(itemType) {
-        return switchReturnItemType(itemType, GraphQL.getClientByFederatedID, GraphQL.getTrainerByFederatedID, GraphQL.getGymByFederatedID,
-            null, null, null, null, null, null, null, null, null, GraphQL.getSponsorByFederatedID, null, null, "GraphQL get Fetch FederatedID function function not implemented");
-    }
+    // static getGetByFederatedIDFunction(itemType) {
+    //     return switchReturnItemType(itemType, GraphQL.getClientByFederatedID, GraphQL.getTrainerByFederatedID, GraphQL.getGymByFederatedID,
+    //         null, null, null, null, null, null, null, null, null, GraphQL.getSponsorByFederatedID, null, null, "GraphQL get Fetch FederatedID function function not implemented");
+    // }
     // Gives back function with parameters (ids, variablesList, successHandler, failureHandler)
     /**
      * TODO
@@ -126,12 +141,12 @@ class GraphQL {
      * @param itemType
      * @return {null}
      */
-    static getBatchGetFunction(itemType) {
-        return switchReturnItemType(itemType, GraphQL.getClients, GraphQL.getTrainers, GraphQL.getGyms, GraphQL.getWorkouts,
-            GraphQL.getReviews, GraphQL.getEvents, GraphQL.getChallenges, GraphQL.getInvites, GraphQL.getPosts,
-            GraphQL.getSubmissions, GraphQL.getGroups, GraphQL.getComments, GraphQL.getSponsors, GraphQL.getMessages, GraphQL.getStreaks,
-            "GraphQL get Batch Fetch function function not implemented");
-    }
+    // static getBatchGetFunction(itemType) {
+    //     return switchReturnItemType(itemType, GraphQL.getClients, GraphQL.getTrainers, GraphQL.getGyms, GraphQL.getWorkouts,
+    //         GraphQL.getReviews, GraphQL.getEvents, GraphQL.getChallenges, GraphQL.getInvites, GraphQL.getPosts,
+    //         GraphQL.getSubmissions, GraphQL.getGroups, GraphQL.getComments, GraphQL.getSponsors, GraphQL.getMessages, GraphQL.getStreaks,
+    //         "GraphQL get Batch Fetch function function not implemented");
+    // }
     // Gives back function with parameters (variablesList, filter, limit, nextToken)
     /**
      * TODO
@@ -139,13 +154,13 @@ class GraphQL {
      * @param itemType
      * @return {null}
      */
-    static getConstructQueryFunction(itemType) {
-        return switchReturnItemType(itemType, GraphQL.constructClientQuery, GraphQL.constructTrainerQuery, GraphQL.constructGymQuery,
-            GraphQL.constructWorkoutQuery, GraphQL.constructReviewQuery, GraphQL.constructEventQuery, GraphQL.constructChallengeQuery,
-            GraphQL.constructInviteQuery, GraphQL.constructPostQuery, GraphQL.constructSubmissionQuery, GraphQL.constructGroupQuery,
-            GraphQL.constructCommentQuery, GraphQL.constructSponsorQuery, GraphQL.constructMessageQuery, GraphQL.constructStreakQuery,
-            "GraphQL get construct Query function not implemented");
-    }
+    // static getConstructQueryFunction(itemType) {
+    //     return switchReturnItemType(itemType, GraphQL.constructClientQuery, GraphQL.constructTrainerQuery, GraphQL.constructGymQuery,
+    //         GraphQL.constructWorkoutQuery, GraphQL.constructReviewQuery, GraphQL.constructEventQuery, GraphQL.constructChallengeQuery,
+    //         GraphQL.constructInviteQuery, GraphQL.constructPostQuery, GraphQL.constructSubmissionQuery, GraphQL.constructGroupQuery,
+    //         GraphQL.constructCommentQuery, GraphQL.constructSponsorQuery, GraphQL.constructMessageQuery, GraphQL.constructStreakQuery,
+    //         "GraphQL get construct Query function not implemented");
+    // }
     // Gives back function with parameters (queryString, successHandler, failureHandler)
     /**
      * TODO
@@ -153,12 +168,12 @@ class GraphQL {
      * @param itemType
      * @return {null}
      */
-    static getQueryFunction(itemType) {
-        return switchReturnItemType(itemType, GraphQL.queryClients, GraphQL.queryTrainers, GraphQL.queryGyms, GraphQL.queryWorkouts,
-            GraphQL.queryReviews, GraphQL.queryEvents, GraphQL.queryChallenges, GraphQL.queryInvites, GraphQL.queryPosts,
-            GraphQL.querySubmissions, GraphQL.queryGroups, GraphQL.queryComments, GraphQL.querySponsors, GraphQL.queryMessages,
-            GraphQL.queryStreaks, "GraphQL get Query function function not implemented for type");
-    }
+    // static getQueryFunction(itemType) {
+    //     return switchReturnItemType(itemType, GraphQL.queryClients, GraphQL.queryTrainers, GraphQL.queryGyms, GraphQL.queryWorkouts,
+    //         GraphQL.queryReviews, GraphQL.queryEvents, GraphQL.queryChallenges, GraphQL.queryInvites, GraphQL.queryPosts,
+    //         GraphQL.querySubmissions, GraphQL.queryGroups, GraphQL.queryComments, GraphQL.querySponsors, GraphQL.queryMessages,
+    //         GraphQL.queryStreaks, "GraphQL get Query function function not implemented for type");
+    // }
 
     // =================================================================================================================
     // ~ GraphQL Specific Item Type Functions

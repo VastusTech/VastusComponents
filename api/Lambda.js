@@ -15,6 +15,16 @@ let lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
 class Lambda {
     // All the basic CRUD Functions with my own personally defined JSONs
     // TODO Is there a case where we would need specify action yet?
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param itemType
+     * @param createRequest
+     * @param successHandler
+     * @param failureHandler
+     * @return {*}
+     */
     static create(fromID, itemType, createRequest, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
             fromID: fromID,
@@ -23,6 +33,19 @@ class Lambda {
             [("create" + itemType + "Request")]: createRequest,
         }, successHandler, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param objectID
+     * @param objectItemType
+     * @param attributeName
+     * @param attributeValue
+     * @param successHandler
+     * @param failureHandler
+     * @return {*}
+     */
     static updateSetAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
             fromID: fromID,
@@ -37,6 +60,19 @@ class Lambda {
             ]
         }, successHandler, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param objectID
+     * @param objectItemType
+     * @param attributeName
+     * @param attributeValue
+     * @param successHandler
+     * @param failureHandler
+     * @return {*}
+     */
     static updateAddToAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
             fromID,
@@ -51,6 +87,19 @@ class Lambda {
             ],
         }, successHandler, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param objectID
+     * @param objectItemType
+     * @param attributeName
+     * @param attributeValue
+     * @param successHandler
+     * @param failureHandler
+     * @return {*}
+     */
     static updateRemoveFromAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
             fromID,
@@ -65,6 +114,17 @@ class Lambda {
             ],
         }, successHandler, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param objectID
+     * @param objectItemType
+     * @param successHandler
+     * @param failureHandler
+     * @return {*}
+     */
     static delete(fromID, objectID, objectItemType, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
             fromID,
@@ -75,6 +135,13 @@ class Lambda {
             ],
         }, successHandler, failureHandler)
     }
+
+    /**
+     * TODO
+     * @param successHandler
+     * @param failureHandler
+     * @return {*}
+     */
     static ping(successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
             action: "PING"
@@ -89,6 +156,16 @@ class Lambda {
     static invokeFirebaseLambda(payload, successHandler, failureHandler) {
         return this.invokeLambda("VastusFirebaseTokenFunction", payload, successHandler, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param functionName
+     * @param payload
+     * @param successHandler
+     * @param failureHandler
+     * @return {string}
+     */
     static invokeLambda(functionName, payload, successHandler, failureHandler) {
         log&&console.log("Sending lambda payload: " + JSON.stringify(payload));
         if (ifDebug) {

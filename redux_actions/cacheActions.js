@@ -179,7 +179,7 @@ function fetch(id, itemType, variablesList, dataHandler, failureHandler) {
             variablesList = variablesList.filter((v) => { return !objectKeyList.includes(v) });
             // log&&console.log("Final filtered list is = " + JSON.stringify(variablesList));
         }
-        overwriteFetch(id, variablesList, cacheName, QL.getGetByIDFunction(itemType), getFetchType(itemType), dataHandler, failureHandler, dispatch, getStore);
+        overwriteFetch(id, itemType, variablesList, dataHandler, failureHandler, dispatch, getStore);
     };
 }
 
@@ -196,7 +196,7 @@ function fetch(id, itemType, variablesList, dataHandler, failureHandler) {
 function forceFetch(id, itemType, variablesList, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        overwriteFetch(id, variablesList, getCacheName(itemType), QL.getGetByIDFunction(itemType), getFetchType(itemType), dataHandler, failureHandler, dispatch, getStore);
+        overwriteFetch(id, itemType, variablesList, dataHandler, failureHandler, dispatch, getStore);
     };
 }
 
@@ -292,16 +292,14 @@ function subscribeCacheUpdatesToObject(id, itemType) {
  * TODO
  *
  * @param id
+ * @param itemType
  * @param variablesList
- * @param cacheSet
- * @param QLFunction
- * @param fetchDispatchType
  * @param dataHandler
  * @param failureHandler
  * @param dispatch
  * @param getStore
  */
-function overwriteFetch(id, variablesList, cacheSet, QLFunction, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore) {
+function overwriteFetch(id, itemType, variablesList, dataHandler, failureHandler, dispatch, getStore) {
     if (variablesList.length > 0) {
         if (!variablesList.includes("id")) {
             variablesList = [...variablesList, "id"];
@@ -313,32 +311,23 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunction, fetchDispatchTy
         else { log&&console.log("No data handler...");}
         if (failureHandler) { log&&console.log("F H = " + failureHandler.toString()); }
         else { log&&console.log("No failure handler...");}
-        QLFunction(id, variablesList, (data) => {
+        QL.getItem(itemType, id, variablesList, (data) => {
             // log&&console.log("Successfully retrieved the QL info");
             if (data) {
                 addS3MediaToData(data, (updatedData) => {
                     // TODO __stale__
-                    dispatch({
-                        type: fetchDispatchType,
-                        payload: {
-                            object: {
-                                id,
-                                data: updatedData
-                            },
-                            dispatch
-                        }
-                    });
+                    dispatch(putItem(updatedData, itemType));
                     if (getStore().user.id === id) { dispatch(updateUserFromCache()); }
                     dispatch(setIsNotLoading());
                     if (dataHandler) {
-                        dataHandler(getStore().cache[cacheSet][id]);
+                        dataHandler(getCache(itemType, getStore)[id]);
                     }
                 });
             } else {
                 // TODO If it came up with nothing, put null into the cache so that we can do a === null check as well
                 // Then the fetch came up with nothing!
                 // const error = Error("Couldn't find an object in the database with ID = " + id);
-                log&&console.log("Couldn't find ID = " + id + " with action = " + JSON.stringify(QLFunction));
+                log&&console.log("Couldn't find ID = " + id + " for item type = " + itemType);
                 dispatch(setIsNotLoading());
                 if (dataHandler) {
                     log&&console.log("D H " + dataHandler.toString());
@@ -357,18 +346,9 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunction, fetchDispatchTy
         });
     }
     else {
-        dispatch({
-            type: fetchDispatchType,
-            payload: {
-                object: {
-                    id,
-                    data: null
-                },
-                dispatch
-            }
-        });
+        dispatch(putItem({id}, itemType));
         dispatch(setIsNotLoading());
-        if (dataHandler) { dataHandler(getStore().cache[cacheSet][id]);}
+        if (dataHandler) { dataHandler(getCache(itemType, getStore)[id]); }
     }
 }
 
@@ -523,16 +503,7 @@ function batchOverwriteFetch(ids, itemType, variablesList, startIndex, maxFetch,
         const items = [];
         for (let i = 0; i < ids.length; i++) {
             const id = ids[i];
-            dispatch({
-                type: getFetchType(itemType),
-                payload: {
-                    object: {
-                        id,
-                        data: null
-                    },
-                    dispatch
-                }
-            });
+            dispatch(putItem({id}, itemType));
             items.push(getStore().cache[getCacheName(itemType)][id]);
         }
         dispatch(setIsNotLoading());
@@ -568,7 +539,8 @@ export function fetchQuery(itemType, variablesList, filter, limit, nextToken, da
         // TODO Make this sort alphabetically, so that it's deterministic
         // variablesList = variablesList.sort();
         // const fetchQueryDispatchType = getFetchQueryType(itemType);
-        let queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit, nextToken);
+        let queryString = QL.constructItemQuery(itemType, variablesList, filter, limit, nextToken);
+        // let queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit, nextToken);
         const nextTokenString = QL.getNextTokenString(nextToken);
         const normalizedQueryString = JSON.stringify(QL.getNormalizedQuery(queryString));
         // if (nextTokenString === "null") { console.log("N Q S = " + JSON.stringify(normalizedQueryString))}
@@ -624,7 +596,8 @@ export function forceFetchQuery(itemType, variablesList, filter, limit, nextToke
         // TODO Make this sort alphabetically, so that it's deterministic
         // variablesList = variablesList.sort();
 
-        let queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit, nextToken);
+        // let queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit, nextToken);
+        let queryString = QL.constructItemQuery(itemType, variablesList, filter, limit, nextToken);
         // const queryString = QL[QLFunctionName](variablesList, filter, limit, nextToken);
         overwriteFetchQuery(itemType, queryString, nextToken, dataHandler, failureHandler, dispatch);
     };

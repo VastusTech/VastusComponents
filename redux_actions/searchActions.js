@@ -2,18 +2,21 @@ import {setIsLoading, setIsNotLoading} from "./infoActions";
 import QL from "../api/GraphQL";
 import {fetchItemQuery, putItem} from "./cacheActions";
 import {err, log} from "../../Constants";
+import {ENABLE_TYPE, DISABLE_SEARCH_BAR, ENABLE_SEARCH_BAR, RESET_QUERY, RESET_TYPE_QUERY, SET_TYPE_NEXT_TOKEN,
+    SET_SEARCH_QUERY, ADD_TYPE_RESULTS, DISABLE_TYPE, SET_TYPE_FILTER} from "../redux_reducers/searchReducer";
 
-const ENABLE_TYPE = 'ENABLE_TYPE';
-const DISABLE_TYPE = 'DISABLE_TYPE';
-const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
-const SET_TYPE_FILTER = 'SET_TYPE_FILTER';
-const SET_TYPE_NEXT_TOKEN = 'SET_TYPE_NEXT_TOKEN';
-const ADD_TYPE_RESULTS = 'ADD_TYPE_RESULTS';
-const RESET_TYPE_QUERY = 'RESET_TYPE_QUERY';
-const RESET_QUERY = 'RESET_QUERY';
-const ENABLE_SEARCH_BAR = 'ENABLE_SEARCH_BAR';
-const DISABLE_SEARCH_BAR = 'DISABLE_SEARCH_BAR';
+// =========================================================================================================
+// ~ High-Level Search Actions
+// =========================================================================================================
 
+/**
+ * TODO
+ *
+ * @param queryString
+ * @param minResults
+ * @param dataHandler
+ * @return {Function}
+ */
 export function newSearch(queryString, minResults, dataHandler) {
     return (dispatch) => {
         dispatch(setIsLoading());
@@ -33,7 +36,16 @@ export function newSearch(queryString, minResults, dataHandler) {
         }
     };
 }
-function loadMoreResults(searchQuery, minResults, dataHandler) {
+
+/**
+ * TODO
+ *
+ * @param searchQuery
+ * @param minResults
+ * @param dataHandler
+ * @return {Function}
+ */
+export function loadMoreResults(searchQuery, minResults, dataHandler) {
     return (dispatch, getStore) => {
         if (getStore().search.searchQuery === searchQuery && getStore().search.results.length < minResults &&
                 !getStore().search.ifFinished) {
@@ -48,7 +60,16 @@ function loadMoreResults(searchQuery, minResults, dataHandler) {
         }
     };
 }
-export function performAllQueries(searchQuery, dispatch, getStore, dataHandler) {
+
+/**
+ * TODO
+ *
+ * @param searchQuery
+ * @param dispatch
+ * @param getStore
+ * @param dataHandler
+ */
+function performAllQueries(searchQuery, dispatch, getStore, dataHandler) {
     if (searchQuery && searchQuery.length > 0) {
         let numResults = 0;
         let results = [];
@@ -86,6 +107,16 @@ export function performAllQueries(searchQuery, dispatch, getStore, dataHandler) 
         // TODO What to do if we trying to do this? Set is not loading?
     }
 }
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param dispatch
+ * @param getStore
+ * @param successHandler
+ * @param failureHandler
+ */
 function performQuery(itemType, dispatch, getStore, successHandler, failureHandler) {
     const searchQuery = getStore().search.searchQuery;
     const typeQuery = getStore().search.typeQueries[itemType];
@@ -126,6 +157,11 @@ function performQuery(itemType, dispatch, getStore, successHandler, failureHandl
         }
     }
 }
+
+// =========================================================================================================
+// ~ Low-Level Search Actions
+// =========================================================================================================
+
 export function enableType(type) {
     return {
         type: ENABLE_TYPE,
