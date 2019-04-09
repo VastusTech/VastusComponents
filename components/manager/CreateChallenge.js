@@ -4,7 +4,8 @@ import {connect} from "react-redux";
 import {setError} from "../../redux_actions/infoActions";
 import {fetchChallenge, putChallenge} from "../../redux_convenience/cacheItemTypeActions";
 import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
-import {getNowTimeString} from "../../logic/TimeHelper";
+import {getNowTimeString, parseISOString} from "../../logic/TimeHelper";
+import {streakUpdateInfo} from "../../logic/StreakHelper";
 
 const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, access, restriction, prize, challengeType,
                       streakUpdateSpanType, streakUpdateInterval, streakN, setIsLoading, setError, setShowSuccessModal) => {
@@ -214,10 +215,12 @@ const CreateChallengeProp = (props) => {
                                     <Form.Input fluid label="Prize" type="text" name="prize" placeholder="Prize for winning the event..." onChange={value => setPrize(value.target.value)}/>
                                     {
                                         challengeType === "streak" ? [
+                                            <div className="field" align="center">
+                                                <Header as="h1">{streakUpdateInfo(streakN, streakUpdateInterval, streakUpdateSpanType)}</Header>
+                                            </div>,
                                             <div className="field">
-                                                <Label>Complete {5} Submissions Every {5} {"Months"}</Label>
                                                 <label>Update Span</label>
-                                                <Dropdown selection placeholder="Choose the Span of the Streak Update"
+                                                <Dropdown value={streakUpdateSpanType} selection placeholder="Choose the Span of the Streak Update"
                                                           options={[{
                                                               key: "hourly",
                                                               text: "Hourly",
@@ -242,8 +245,14 @@ const CreateChallengeProp = (props) => {
                                                           onChange={(e, data) => {
                                                               setStreakUpdateSpanType(data.value)}}/>
                                             </div>,
-                                            <Form.Input fluid label="Span Interval" type="text" name="streakUpdateInterval" placeholder="Spans until streaks update... " onChange={value => setStreakUpdateInterval(value.target.value)}/>,
-                                            <Form.Input fluid label="Streak Number" type="text" name="streakN" placeholder="Number of submissions until streak counts..." onChange={value => setStreakN(value.target.value)}/>,
+                                            <Form.Input fluid label="Span Interval" type="number" name="streakUpdateInterval"
+                                                        placeholder="Spans until streaks update... " value={streakUpdateInterval}
+                                                        onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
+                                                            ? setStreakUpdateInterval(1) : setStreakUpdateInterval(value.target.value)}/>,
+                                            <Form.Input fluid label="Streak Number" type="number" name="streakN"
+                                                        placeholder="Number of submissions until streak counts..." value={streakN}
+                                                        onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
+                                                            ? setStreakN(1) : setStreakN(value.target.value)}/>,
                                         ] : null
                                     }
                                     {/*<Form.Field>
@@ -254,7 +263,8 @@ const CreateChallengeProp = (props) => {
                                     </Form.Field>*/}
                                     <Form.Field width={12}>
                                         <Checkbox toggle
-                                                  onClick={() => setChallengeType(p => p ? null : "streak")}
+                                                  onClick={() => {setChallengeType(p => p ? null : "streak");
+                                                  setStreakN(1); setStreakUpdateInterval(1); setStreakUpdateSpanType("daily")}}
                                                   checked={challengeType === "streak"}
                                                   label={challengeType ? challengeType : "normal"} />
                                     </Form.Field>

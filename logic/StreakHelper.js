@@ -28,3 +28,31 @@ export const ifStreakExpired = (streak) => {
     return true;
 };
 // TODO export const streakN = (streak) => {
+export const streakUpdateInfo = (streakN, streakUpdateInterval, streakUpdateSpanType) => {
+    let pluralSubmission = streakN === "1" || streakN === 1 ? "" : "s";
+    let pluralInterval = streakUpdateInterval === "1" || streakUpdateInterval === 1 ? "" : "s";
+    let interval;
+    switch (streakUpdateSpanType) {
+        case "hourly":
+            interval = "hour";
+            break;
+        case "daily":
+            interval = "day";
+            break;
+        case "weekly":
+            interval = "week";
+            break;
+        case "monthly":
+            interval = "month";
+            break;
+        case "yearly":
+            interval = "year";
+            break;
+        default:
+            err&&console.error("Unrecognized streak update interval = " + streakUpdateInterval);
+            interval = "time";
+    }
+    streakUpdateInterval = streakUpdateInterval === "1" || streakUpdateInterval === 1 ? "" : streakUpdateInterval + " ";
+    return "Complete " + streakN + " Submission" + pluralSubmission + " every " + streakUpdateInterval +
+        interval + pluralInterval;
+};
