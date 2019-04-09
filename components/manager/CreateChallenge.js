@@ -215,6 +215,7 @@ const CreateChallengeProp = (props) => {
                                     {
                                         challengeType === "streak" ? [
                                             <div className="field">
+                                                <Label>Complete {5} Submissions Every {5} {"Months"}</Label>
                                                 <label>Update Span</label>
                                                 <Dropdown selection placeholder="Choose the Span of the Streak Update"
                                                           options={[{
