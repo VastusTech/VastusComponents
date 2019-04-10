@@ -1,70 +1,105 @@
-import {setIsLoading } from "./infoActions";
+import {setIsLoading, setIsNotLoading} from "./infoActions";
 import QL from "../api/GraphQL";
-import {getPutItemFunction, getFetchQueryFunction} from "./cacheActions";
-import {consoleLog, consoleError} from "../logic/DebuggingHelper";
+import {fetchItemQuery, putItem} from "./cacheActions";
+import {err, log} from "../../Constants";
+import {ENABLE_TYPE, DISABLE_SEARCH_BAR, ENABLE_SEARCH_BAR, RESET_QUERY, RESET_TYPE_QUERY, SET_TYPE_NEXT_TOKEN,
+    SET_SEARCH_QUERY, ADD_TYPE_RESULTS, DISABLE_TYPE, SET_TYPE_FILTER} from "../redux_reducers/searchReducer";
 
-const ENABLE_TYPE = 'ENABLE_TYPE';
-const DISABLE_TYPE = 'DISABLE_TYPE';
-const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
-const SET_TYPE_FILTER = 'SET_TYPE_FILTER';
-const SET_TYPE_NEXT_TOKEN = 'SET_TYPE_NEXT_TOKEN';
-const ADD_TYPE_RESULTS = 'ADD_TYPE_RESULTS';
-const RESET_TYPE_QUERY = 'RESET_TYPE_QUERY';
-const RESET_QUERY = 'RESET_QUERY';
-const ENABLE_SEARCH_BAR = 'ENABLE_SEARCH_BAR';
-const DISABLE_SEARCH_BAR = 'DISABLE_SEARCH_BAR';
+// =========================================================================================================
+// ~ High-Level Search Actions
+// =========================================================================================================
 
-export function newSearch(queryString, dataHandler) {
-    return (dispatch, getStore) => {
+/**
+ * TODO
+ *
+ * @param queryString
+ * @param minResults
+ * @param dataHandler
+ * @return {Function}
+ */
+export function newSearch(queryString, minResults, dataHandler) {
+    return (dispatch) => {
         dispatch(setIsLoading());
+        dispatch(resetQuery());
         // Use the current store settings to actually do the search
-        dispatch(setSearchQuery(queryString));
         if (queryString && queryString.length > 0) {
-            dispatch(resetQuery());
-            performAllQueries(queryString, dispatch, getStore, dataHandler);
+            dispatch(setSearchQuery(queryString));
+            dispatch(loadMoreResults(queryString, minResults, (data) => {
+                dispatch(setIsNotLoading());
+                dataHandler(data);
+            }));
         }
         else {
-            consoleLog("I refuse to search for an empty string");
+            log&&console.log("I refuse to search for an empty string");
             dataHandler([]);
+            dispatch(setIsNotLoading());
         }
     };
 }
-export function loadMoreResults(searchQuery, dataHandler) {
+
+/**
+ * TODO
+ *
+ * @param searchQuery
+ * @param minResults
+ * @param dataHandler
+ * @return {Function}
+ */
+export function loadMoreResults(searchQuery, minResults, dataHandler) {
     return (dispatch, getStore) => {
-        dispatch(setIsLoading());
-        if (getStore().search.searchQuery === searchQuery) {
-            performAllQueries(searchQuery, dispatch, getStore, dataHandler);
+        if (getStore().search.searchQuery === searchQuery && getStore().search.results.length < minResults &&
+                !getStore().search.ifFinished) {
+            // alert("Current results = " + JSON.stringify(getStore().search.results));
+            // alert("Still need " + (parseInt(minResults) - parseInt(getStore().search.results.length)) + " more results!");
+            performAllQueries(searchQuery, dispatch, getStore, () => {
+                dispatch(loadMoreResults(searchQuery, minResults, dataHandler));
+            });
+        }
+        else {
+            dataHandler(getStore().search.results);
         }
     };
 }
-export function performAllQueries(searchQuery, dispatch, getStore, dataHandler) {
+
+/**
+ * TODO
+ *
+ * @param searchQuery
+ * @param dispatch
+ * @param getStore
+ * @param dataHandler
+ */
+function performAllQueries(searchQuery, dispatch, getStore, dataHandler) {
     if (searchQuery && searchQuery.length > 0) {
         let numResults = 0;
         let results = [];
-        for (const type in getStore().search.typeQueries) {
-            if (getStore().search.typeQueries.hasOwnProperty(type)) {
-                const numTypesEnabled = getStore().search.numTypesEnabled;
+        const numTypesEnabled = getStore().search.numTypesEnabled;
+        const typeQueries = getStore().search.typeQueries;
+        const getData = (type, data) => {
+            if (data.hasOwnProperty("items") && data.hasOwnProperty("nextToken")) {
+                dispatch(addTypeResults(type, data.items));
+                dispatch(setTypeNextToken(type, data.nextToken));
+                results.push(...data.items);
+            }
+            else {
+                err&&console.error("Received a weird value from query in the newSearch search redux function. Value = " + JSON.stringify(data));
+            }
+            numResults++;
+            if (numTypesEnabled <= numResults) {
+                dataHandler(results);
+            }
+        };
+        const failData = () => {
+            numResults++;
+            if (numTypesEnabled <= numResults) {
+                dataHandler(results);
+            }
+        };
+        for (const type in typeQueries) {
+            if (typeQueries.hasOwnProperty(type)) {
                 // const typeQuery = getStore().search.typeQueries[type];
                 // if (typeQuery.enabled && (typeQuery.nextToken || typeQuery.ifFirst)) {
-                performQuery(type, dispatch, getStore, (data) => {
-                    if (data.hasOwnProperty("items") && data.hasOwnProperty("nextToken")) {
-                        dispatch(addTypeResults(type, data.items));
-                        dispatch(setTypeNextToken(type, data.nextToken));
-                        results.push(...data.items);
-                    }
-                    else {
-                        consoleError("Received a weird value from query in the newSearch search redux function. Value = " + JSON.stringify(data));
-                    }
-                    numResults++;
-                    if (numTypesEnabled <= numResults) {
-                        dataHandler(results);
-                    }
-                }, () => {
-                    numResults++;
-                    if (numTypesEnabled <= numResults) {
-                        dataHandler(results);
-                    }
-                })
+                performQuery(type, dispatch, getStore, getData, failData);
             }
         }
     }
@@ -72,6 +107,16 @@ export function performAllQueries(searchQuery, dispatch, getStore, dataHandler) 
         // TODO What to do if we trying to do this? Set is not loading?
     }
 }
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param dispatch
+ * @param getStore
+ * @param successHandler
+ * @param failureHandler
+ */
 function performQuery(itemType, dispatch, getStore, successHandler, failureHandler) {
     const searchQuery = getStore().search.searchQuery;
     const typeQuery = getStore().search.typeQueries[itemType];
@@ -85,36 +130,38 @@ function performQuery(itemType, dispatch, getStore, successHandler, failureHandl
         const limit = typeQuery.limit;
         const nextToken = typeQuery.nextToken;
         const ifFirst = typeQuery.ifFirst;
-        consoleLog("nextToken = " + nextToken);
+        log&&console.log("nextToken = " + nextToken);
         if (nextToken || ifFirst) {
-            const putItemFunction = getPutItemFunction(itemType);
-            const fetchQueryFunction = getFetchQueryFunction(itemType);
-            // console.log(JSON.stringify(getFetchQueryFunction));
-            // if (!fetchQueryFunction) { console.log("problem"); }
-            // else { console.log(JSON.stringify(fetchQueryFunction)); }
-            fetchQueryFunction(variableList, QL.generateFilter(filterJSON, filterParameters), limit, nextToken, (data) => {
+            // Fetch the query for the items
+            fetchItemQuery(itemType, variableList, QL.generateFilter(filterJSON, filterParameters), limit, nextToken, (data) => {
                 // console.log("Ay lmao it came back");
                 if (data) {
                     dispatch(setTypeNextToken(itemType, data.nextToken));
-                    successHandler(data);
+                    successHandler(itemType, data);
                     if (data && data.items) {
                         for (let i = 0; i < data.items.length; i++) {
-                            dispatch(putItemFunction(data.items[i]));
+                            // dispatch(putItemFunction(data.items[i]));
+                            dispatch(putItem(data.items[i], itemType));
                         }
                     }
                 }
                 else {
-                    consoleError("Query function returned null?");
+                    err&&console.error("Query function returned null?");
                 }
             }, (error) => {
                 if (failureHandler) { failureHandler(error); }
             })(dispatch, getStore);
         }
         else {
-            successHandler({items: [], nextToken: null});
+            successHandler(itemType, {items: [], nextToken: null});
         }
     }
 }
+
+// =========================================================================================================
+// ~ Low-Level Search Actions
+// =========================================================================================================
+
 export function enableType(type) {
     return {
         type: ENABLE_TYPE,

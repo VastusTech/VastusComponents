@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { List, Message } from 'semantic-ui-react';
-import EventCard from "../cards/EventCard";
+import EventCard, {EventCardInfo} from "../cards/EventCard";
 import { connect } from "react-redux";
-import { fetchEvent } from "../../redux_actions/cacheActions";
+import { fetchEvent } from "../../redux_convenience/cacheItemTypeActions";
 import Spinner from "../props/Spinner";
 
 type Props = {
@@ -38,7 +38,7 @@ class EventList extends Component<Props> {
 
     update(props) {
         for (let i = 0; i < props.eventIDs.length; i++) {
-            this.props.fetchEvent(props.eventIDs[i], ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty", "restriction", "access"], (event) => {
+            this.props.fetchEvent(props.eventIDs[i], EventCardInfo.fetchList, (event) => {
                 // Handle received data
                 if (event) {
                     this.state.events.push(event);
@@ -68,7 +68,7 @@ class EventList extends Component<Props> {
                 if (row.hasOwnProperty(key) === true) {
                     rowProps.push(
                         <List.Item key={key}>
-                            <EventCard eventID={row[key].id}/>
+                            <EventCard event={row[key]}/>
                         </List.Item>
                     );
                 }

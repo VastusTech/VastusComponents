@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { List, Message } from 'semantic-ui-react';
 import ClientCard from "../cards/ClientCard";
 import { connect } from "react-redux";
-import { fetchClient } from "../../redux_actions/cacheActions";
+import { fetchClient } from "../../redux_convenience/cacheItemTypeActions";
 import Spinner from "../props/Spinner";
 
 type Props = {
@@ -32,7 +32,7 @@ class ClientList extends Component<Props> {
             // alert("received clientIDs = " + JSON.stringify(newProps.clientIDs));
             this.setState({isLoading: true, clientIDs: newProps.clientIDs, clients: []}, () => {
                 for (let i = 0; i < newProps.clientIDs.length; i++) {
-                    this.props.fetchClient(newProps.clientIDs[i], ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture", "friendRequests"], (client) => {
+                    this.props.fetchClient(newProps.clientIDs[i], ClientCard.fetchVariableList, (client) => {
                         // Handle received data
                         if (client) {
                             this.state.clients.push(client);

@@ -1,89 +1,113 @@
 import {setIsLoading, setIsNotLoading} from "./infoActions";
-import {consoleLog, consoleError} from "../logic/DebuggingHelper";
+import {log} from "../../Constants";
+import { ADD_HANDLER, REMOVE_CHANNEL, SET_PERMANENT_HANDLER, SET_HANDLER, CLEAR_CHANNELS } from "../redux_reducers/ablyReducer";
 
-const ADD_HANDLER = 'ADD_HANDLER';
-const SET_HANDLER = 'SET_HANDLER';
-const CLEAR_CHANNELS = 'CLEAR_CHANNELS';
+// =========================================================================================================
+// ~ High-Level Ably Actions
+// =========================================================================================================
 
-export function addHandlerToBoard(board, handler) {
+/**
+ * TODO
+ *
+ * @param channelName
+ * @param handler
+ * @param unsubscriptionHandler
+ * @return {Function}
+ */
+export function addHandlerAndUnsubscription(channelName, handler, unsubscriptionHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        const channelName = board + "-Board";
-        subscribeToChannelOnlyOnce(channelName, dispatch, getStore);
-        dispatch(addHandler(channelName, handler));
+        dispatch(addHandler(channelName, handler, unsubscriptionHandler, getMessageHandler(channelName, getStore)));
         dispatch(setIsNotLoading());
-    };
+    }
 }
-export function addHandlerToNotifications(handler) {
+
+/**
+ * TODO
+ *
+ * @param channelName
+ * @param handler
+ * @param unsubscriptionHandler
+ * @return {Function}
+ */
+export function setHandlerAndUnsubscription(channelName, handler, unsubscriptionHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        if (getStore().user.id) {
-            const channelName = getStore().user.id + "-Notifications";
-            subscribeToChannelOnlyOnce(channelName, dispatch, getStore);
-            dispatch(addHandler(channelName, handler));
+        dispatch(setHandler(channelName, handler, unsubscriptionHandler, getMessageHandler(channelName, getStore)));
+        dispatch(setIsNotLoading());
+    }
+}
+
+/**
+ * TODO
+ *
+ * @param channelName
+ * @param handler
+ * @param unsubscriptionHandler
+ * @return {Function}
+ */
+export function setPermanentHandlerAndUnsubscription(channelName, handler, unsubscriptionHandler) {
+    return (dispatch, getStore) => {
+        dispatch(setIsLoading());
+        dispatch(setPermanentHandler(channelName, handler, unsubscriptionHandler, getMessageHandler(channelName, getStore)));
+        dispatch(setIsNotLoading());
+    }
+}
+
+/**
+ * TODO
+ *
+ * @param channelName
+ * @return {Function}
+ */
+export function removeChannelSubscription(channelName) {
+    return (dispatch, getStore) => {
+        dispatch(setIsLoading());
+        if (getStore().ably.subscribedChannels[channelName]) {
+            dispatch(removeChannel(channelName));
         }
         else {
-            consoleError("Can't set handler to notifications when the USER ID isn't set!");
+            log&&console.log("No channel to remove!");
         }
         dispatch(setIsNotLoading());
-    };
+    }
 }
-export function setHandlerToBoard(board, handler) {
-    return (dispatch, getStore) => {
-        dispatch(setIsLoading());
-        const channelName = board + "-Board";
-        subscribeToChannelOnlyOnce(channelName, dispatch, getStore);
-        dispatch(setHandler(channelName, handler));
-        dispatch(setIsNotLoading());
-    };
-}
-export function setHandlerToNotifications(handler) {
-    return (dispatch, getStore) => {
-        dispatch(setIsLoading());
-        if (getStore().user.id) {
-            const channelName = getStore().user.id + "-Notifications";
-            subscribeToChannelOnlyOnce(channelName, dispatch, getStore);
-            dispatch(setHandler(channelName, handler));
-        }
-        else {
-            consoleError("Can't set handler to notifications when the USER ID isn't set!");
-        }
-        dispatch(setIsNotLoading());
-    };
-}
+// export function addHandlerToNotifications(handler) {
+//     return (dispatch, getStore) => {
+//         dispatch(setIsLoading());
+//         if (getStore().user.id) {
+//             const channelName = getStore().user.id + "-Notifications";
+//             // subscribeToChannelOnlyOnce(channelName, dispatch, getStore);
+//             dispatch(addHandler(channelName, handler));
+//         }
+//         else {
+//         }
+//         dispatch(setIsNotLoading());
+//     };
+// }
+/**
+ * TODO
+ *
+ * @return {Function}
+ */
 export function removeAllHandlers() {
-    return (dispatch, getStore) => {
+    return (dispatch) => {
         dispatch(setIsLoading());
-        const subscribedChannels = getStore().ably.subscribedChannels;
-        for (const key in subscribedChannels) {
-            if (subscribedChannels.hasOwnProperty(key)) {
-                Ably.channels.get(key).unsubscribe();
-            }
-        }
         dispatch(clearChannels());
         dispatch(setIsNotLoading());
     };
 }
-function subscribeToChannelOnlyOnce(channelName, dispatch, getStore) {
-    if (!getStore().ably.subscribedChannels[channelName]) {
-        subscribeToChannel(channelName, dispatch, getStore);
-    }
-}
-function subscribeToChannel(channelName, dispatch, getStore) {
-    /*global Ably*/
-    const channel = Ably.channels.get(channelName);
-    channel.subscribe(getMessageHandler(channelName, getStore), (err) => {
-        if (err) {
-            console.log("Failed to subscribe to the channel. Error = " + JSON.stringify(err));
-        }
-        else {
-            // console.log("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channelName);
-        }
-    });
-}
+
+/**
+ * TODO
+ *
+ * @param channelName
+ * @param getStore
+ * @return {Function}
+ */
 function getMessageHandler(channelName, getStore) {
     return (message) => {
-        consoleLog("RECEIVED ABLY MESSAGE = " + JSON.stringify(message));
+        log&&console.log("RECEIVED ABLY MESSAGE = " + JSON.stringify(message));
         const handlers = getStore().ably.notificationHandlers[channelName];
         if (handlers && handlers.length > 0) {
             for (let i = 0; i < handlers.length; i++) {
@@ -92,25 +116,55 @@ function getMessageHandler(channelName, getStore) {
         }
     }
 }
-function addHandler(channel, handler) {
+
+// =========================================================================================================
+// ~ Low-Level Ably Actions
+// =========================================================================================================
+
+function addHandler(channel, handler, unsubscriptionHandler, messageHandler) {
     return {
         type: ADD_HANDLER,
         payload: {
             channel,
-            handler
+            handler,
+            unsubscriptionHandler,
+            messageHandler
         }
     };
 }
-function setHandler(channel, handler) {
+function setHandler(channel, handler, unsubscriptionHandler, messageHandler) {
     return {
         type: SET_HANDLER,
         payload: {
             channel,
-            handler
+            handler,
+            unsubscriptionHandler,
+            messageHandler
         }
     };
 }
-function clearChannels() {
-    return { type: CLEAR_CHANNELS };
+function setPermanentHandler(channel, handler, unsubscriptionHandler, messageHandler) {
+    return {
+        type: SET_PERMANENT_HANDLER,
+        payload: {
+            channel,
+            handler,
+            unsubscriptionHandler,
+            messageHandler
+        }
+    };
+}
+export function removeChannel(channel) {
+    return {
+        type: REMOVE_CHANNEL,
+        payload: {
+            channel
+        }
+    }
+}
+export function clearChannels() {
+    return {
+        type: CLEAR_CHANNELS,
+    }
 }
 

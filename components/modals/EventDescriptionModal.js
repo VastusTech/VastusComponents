@@ -3,7 +3,7 @@ import {Modal, Button, List, Grid, Message} from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 // import EventMemberList from "../../screens/EventMemberList";
 import { connect } from 'react-redux';
-import {fetchClient, forceFetchEvent, fetchEvent} from "../../redux_actions/cacheActions";
+import {fetchClient, forceFetchEvent, fetchEvent} from "../../redux_convenience/cacheItemTypeActions";
 import CompleteChallengeModal from "../manager/CompleteChallengeModal";
 import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import UserFunctions from "../../database_functions/UserFunctions";
@@ -66,7 +66,7 @@ class EventDescriptionModal extends Component<Props> {
         const members = this.getEventAttribute("members");
         if (!this.props.open && newProps.open && newProps.eventID && members && members.length > 0) {
             for (let i = 0; i < members.length; i++) {
-                this.props.fetchClient(members[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"]);
+                this.props.fetchClient(members[i], ["id", "name", "gender", "birthday", "profileImagePath"]);
             }
         }
     }

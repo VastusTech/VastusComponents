@@ -1,9 +1,14 @@
-import React, { Component, Fragment } from 'react';
-import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Dimmer, Label, Loader } from 'semantic-ui-react';
+import React, { useState, useEffect, Fragment } from 'react';
+import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Dimmer, Label, Header } from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 import { connect } from 'react-redux';
-import {fetchClient, fetchTrainer, forceFetchChallenge, fetchChallenge, clearChallengeQuery} from "../../redux_actions/cacheActions";
-import { clearBoard } from "../../redux_actions/messageActions";
+import {
+    fetchClient,
+    forceFetchChallenge,
+    fetchChallenge,
+    clearChallengeQuery,
+    subscribeFetchChallenge, fetchStreak
+} from "../../redux_convenience/cacheItemTypeActions";
 import CompleteChallengeModal from "../manager/CompleteChallengeModal";
 import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import CommentScreen from "../messaging/MessageBoard";
@@ -11,15 +16,260 @@ import UserFunctions from "../../database_functions/UserFunctions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
 import CreateSubmissionModal from "./CreateSubmissionModal";
-import SubmissionsScreen from "../lists/SubmissionsScreen";
+// import SubmissionsScreen from "../lists/SubmissionsScreen";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
+import SubmissionList from "../lists/SubmissionList";
+import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
+import {daysLeft, parseISOString} from "../../logic/TimeHelper";
+import TrainerModal from "./TrainerModal";
+import Spinner from "../props/Spinner";
+import {ifStreakExpired} from "../../logic/StreakHelper";
+import InviteToScheduledEventsModalProp from "../manager/InviteToScheduledEventsModal";
+import {arrayIntersection, arraysIntersect} from "../../logic/ArrayHelper";
+import {err} from "../../../Constants";
+
+export const ChallengeDescriptionModalInfo = {
+    // TODO Contains everything that is referenced here
+    fetchList: ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "time_created", "capacity", "members",
+        "memberRequests", "prize", "goal", "owner", "access", "restriction", "submissions", "streaks"],
+    ifSubscribe: true,
+};
 
 type Props = {
     open: boolean,
     onClose: any,
     challengeID: string
-}
+};
+
+const displayTagIcons = (tags) => {
+    if (tags) {
+        if (tags.length === 1) {
+            return (
+                <Image avatar src={require('../../img/' + tags[0] + '_icon.png')}/>
+            );
+        }
+        else if (tags.length === 2) {
+            return (
+                <div>
+                    <Image avatar src={require('../../img/' + tags[0] + '_icon.png')}/>
+                    <Image avatar src={require('../../img/' + tags[1] + '_icon.png')}/>
+                </div>
+            );
+        }
+        else if (tags.length === 3) {
+            return(
+                <div>
+                    <Image avatar src={require('../../img/' + tags[0] + '_icon.png')}/>
+                    <Image avatar src={require('../../img/' + tags[1] + '_icon.png')}/>
+                    <Image avatar src={require('../../img/' + tags[2] + '_icon.png')}/>
+                </div>
+            );
+        }
+        else if (tags.length === 4) {
+            return(
+                <div>
+                    <Image avatar src={require('../../img/' + tags[0] + '_icon.png')}/>
+                    <Image avatar src={require('../../img/' + tags[1] + '_icon.png')}/>
+                    <Image avatar src={require('../../img/' + tags[2] + '_icon.png')}/>
+                    <Image avatar src={require('../../img/' + tags[3] + '_icon.png')}/>
+                </div>
+            );
+        }
+    }
+    else {
+        return (
+            // "There ain't no tags round these parts partner " + tags
+            null
+        );
+    }
+};
+
+const handleDeleteChallengeButton = (userID, challengeID, setIsLoading, onClose) => {
+    //console.log("Handling deleting the event");
+    setIsLoading(true);
+    ChallengeFunctions.delete(userID, challengeID, (data) => {
+        // this.forceUpdate(data.id);
+        // console.log(JSON.stringify(data));
+        // this.setState({isLoading: false, isDeleteLoading: false, event: null, isOwned: false, isJoined: false, deleted: true});
+        setIsLoading(false);
+        onClose();
+    }, (error) => {
+        // console.log(JSON.stringify(error));
+        // this.setState({isLoading: false, isDeleteLoading: false, error: error, deleted: false});
+        setIsLoading(false);
+    })
+};
+
+const handleLeaveChallengeButton = (userID, challengeID, setIsLoading) => {
+    //console.log("Handling leaving the event");
+    // this.setState({isLeaveLoading: true, isLoading: true});
+    setIsLoading(true);
+    UserFunctions.removeChallenge(userID, userID, challengeID, (data) => {
+        setIsLoading(false);
+        // this.forceUpdate(data.id);
+        //console.log(JSON.stringify(data));
+        // this.setState({isLoading: false, isLeaveLoading: false, isJoined: false});
+    }, (error) => {
+        setIsLoading(false);
+        //console.log(JSON.stringify(error));
+        // this.setState({isLoading: false, isLeaveLoading: false, error: error});
+    })
+};
+
+const handleJoinChallengeButton = (userID, challengeID, setIsLoading) => {
+    //console.log("Handling joining the event");
+    // this.setState({isJoinLoading: true, isLoading: true});
+    setIsLoading(true);
+    UserFunctions.addChallenge(userID, userID, challengeID,
+        () => {
+            setIsLoading(false);
+            // this.forceUpdate();
+            //console.log(JSON.stringify(data));
+            // this.setState({isLoading: false, isJoinLoading: false, isJoined: true});
+        }, (error) => {
+            setIsLoading(false);
+            // this.setState({isLoading: false, isJoinLoading: false, error: error});
+        });
+};
+
+const handleRequestChallengeButton = (userID, challengeID, setIsLoading) => {
+    // this.setState({isRequestLoading: true, isLoading: true});
+    setIsLoading(true);
+    InviteFunctions.createChallengeRequest(userID, userID, challengeID,
+        () => {
+            setIsLoading(false);
+            // this.forceUpdate();
+            // this.setState({isLoading: false, isRequestLoading: false, isRequesting: true});
+        }, (error) => {
+            setIsLoading(false);
+            // this.setState({isLoading: false, isRequestLoading: false, error: error})
+        });
+};
+
+const createCorrectModal = (ownerID, ownerModalOpen, setOwnerModalOpen) => {
+    const itemType = getItemTypeFromID(ownerID);
+    if (itemType === "Client") {
+        return (
+            <ClientModal open={ownerModalOpen} onClose={() => setOwnerModalOpen(false)} clientID={ownerID}/>
+        );
+    }
+    else if (itemType === "Trainer") {
+        return (
+            <TrainerModal open={ownerModalOpen} onClose={() => setOwnerModalOpen(false)} trainerID={ownerID}/>
+        );
+    }
+    return null;
+};
+
+const createCorrectButton = (userID, challengeID, submissions, isLoading, isCompleted, isOwned, isJoined, isRestricted,
+                             isRequesting, setIsLoading, setSubmitModalOpen, setCompleteModalOpen, onClose) => {
+    const panes = [
+        { menuItem: 'Submissions', render: () => (
+                <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
+                    <SubmissionList ids={submissions} noSubmissionsMessage="No submissions yet!"/>
+                </Tab.Pane>
+            )},
+        { menuItem: 'Challenge Chat', render: () => (
+                <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
+                    <CommentScreen board={challengeID}/>
+                </Tab.Pane>
+            )},
+    ];
+
+    //console.log("Owned: " + isOwned + " Joined: " + isJoined);
+    // console.log(ifCompleted);
+    if (isCompleted) {
+        return(
+            <Button disabled fluid inverted size="large">This Event is completed</Button>
+        );
+    }
+    else if (isOwned) {
+        // TODO This should also link the choose winner button
+        return (
+            <Fragment>
+                <Button primary fluid className='u-margin-bottom--1' onClick={() => setSubmitModalOpen(true)}>Submit Your Entry</Button>
+                <Button primary fluid size="large" onClick={() => setCompleteModalOpen(true)}>Select Winner</Button>
+                <Button loading={isLoading} fluid negative size="large" disabled={isLoading} onClick={() => handleDeleteChallengeButton(userID, challengeID, setIsLoading, onClose)}>Delete</Button>
+                <Divider className='u-margin-top--4' />
+                <Tab menu={{ widths: 2, inverted: true }} panes={panes} className='u-challenge u-margin-top--2' />
+            </Fragment>
+        )
+    }
+    else if (isJoined) {
+        return (
+            <Fragment>
+                <Button primary fluid className='u-margin-bottom--1' onClick={() => setSubmitModalOpen(true)}>Submit Your Entry</Button>
+                <Button loading={isLoading} fluid inverted size="large" disabled={isLoading} onClick={() => handleLeaveChallengeButton(userID, challengeID, setIsLoading)}>Leave</Button>
+                <Divider className='u-margin-top--4' />
+                <Tab menu={{ widths: 2, inverted: true }} panes={panes} className='u-challenge u-margin-top--2' />
+            </Fragment>
+        )
+    }
+    else if (isRestricted) {
+        if (isRequesting) {
+            return (
+                <div>
+                    <Button inverted fluid size="large" disabled={true}>Request Sent!</Button>
+                </div>
+            )
+        }
+        else {
+            return (<div><Button loading={isLoading} fluid size="large" disabled={isLoading}
+                                 onClick={() => handleRequestChallengeButton(userID, challengeID, setIsLoading)}>Send Join Request</Button></div>)
+        }
+    }
+    else {
+        //console.log(isJoinLoading);
+        return (<Button loading={isLoading} fluid size="large" disabled={isLoading}
+                        onClick={() => handleJoinChallengeButton(userID, challengeID, setIsLoading)}>Join</Button>)
+    }
+};
+
+const displayStreakInfo = (ifStreak, streak) => {
+    if (ifStreak) {
+        if (streak) {
+            const ifExpired = ifStreakExpired(streak);
+            if (ifExpired) {
+                return [
+                    <Divider/>,
+                    <Header color="red">Your Streak Has Expired!</Header>
+                ];
+            }
+            else {
+                const currentNumber = streak.N;
+                return [
+                    <Divider/>,
+                    <Header color="green">Your current streak is = {currentNumber}</Header>
+                ];
+            }
+        }
+        else {
+            return [
+                <Divider/>,
+                <Header color="gray">Could not read streak data...</Header>
+            ];
+        }
+    }
+    return null;
+};
+
+const displayError = (error) => {
+    if (error === "Error while trying to update an item in the database safely. Error: The item failed the checkHandler: That challenge is already filled up!") {
+        return (<Message negative>
+            <Message.Header>Sorry!</Message.Header>
+            <p>That challenge is already filled up!</p>
+        </Message>);
+    }
+};
+
+const challengeDeleted = (isDeleted) => {
+    if(isDeleted) {
+        return (<Message negative>
+            <Message.Header>This Challenge is Deleted!</Message.Header>
+        </Message>);
+    }
+};
 
 /*
 * Event Description Modal
@@ -27,467 +277,104 @@ type Props = {
 * This is the event description which displays more in depth information about a challenge, and allows the user
 * to join the challenge.
  */
-class ChallengeDescriptionModal extends Component<Props> {
-    state = {
-        isLoading: false,
-        isOwned: false,
-        isJoined: false,
-        isCompleted: false,
-        isRequesting: false,
-        isRestricted: false,
-        challengeID: null,
-        // event: null,
-        // ownerName: null,
-        // members: {},
-        clientModalOpen: false,
-        completeModalOpen: false,
-        submitModalOpen: false,
-        isLeaveLoading: false,
-        isDeleteLoading: false,
-        isJoinLoading: false,
-        isRequestLoading: false,
-        joinRequestSent: false,
-        canCallChecks: true,
-        deleted: false,
-        fetchedTrainer: false
-    };
+const ChallengeDescriptionModal = (props: Props) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [challengeType, setChallengeType] = useState(null);
+    const [streak, setStreak] = useState(null);
+    const [isOwned, setIsOwned] = useState(false);
+    const [isRequesting, setIsRequesting] = useState(false);
+    const [isJoined, setIsJoined] = useState(false);
+    const [isCompleted, setIsCompleted] = useState(false);
+    const [isRestricted, setIsRestricted] = useState(false);
+    const [ownerModalOpen, setOwnerModalOpen] = useState(false);
+    const [completeModalOpen, setCompleteModalOpen] = useState(false);
+    const [submitModalOpen, setSubmitModalOpen] = useState(false);
+    const [deleted, setDeleted] = useState(false);
 
-    resetState(challengeID) {
-        this.setState({
-            isLoading: false,
-            isOwned: false,
-            isJoined: false,
-            isCompleted: false,
-            isRequesting: false,
-            isRestricted: false,
-            challengeID: challengeID,
-            // event: null,
-            // ownerName: null,
-            // members: {},
-            clientModalOpen: false,
-            completeModalOpen: false,
-            submitModalOpen: false,
-            isLeaveLoading: false,
-            isDeleteLoading: false,
-            isJoinLoading: false,
-            isRequestLoading: false,
-            joinRequestSent: false,
-            canCallChecks: true,
-        });
-    }
+    const getChallengeAttribute = attribute => getObjectAttribute(props.challengeID, attribute, props.cache);
+    const getOwnerAttribute = attribute => getObjectAttribute(getChallengeAttribute("owner"), attribute, props.cache);
 
-    constructor(props) {
-        super(props);
-        this.handleJoinChallengeButton = this.handleJoinChallengeButton.bind(this);
-        this.handleRequestChallengeButton = this.handleRequestChallengeButton.bind(this);
-        this.handleLeaveChallengeButton = this.handleLeaveChallengeButton.bind(this);
-        this.handleDeleteChallengeButton = this.handleDeleteChallengeButton.bind(this);
-        this.isOwned = this.isOwned.bind(this);
-        this.isJoined = this.isJoined.bind(this);
-        this.isRequesting = this.isRequesting.bind(this);
-        this.isRestricted = this.isRestricted.bind(this);
-        this.isCompleted = this.isCompleted.bind(this);
-        this.closeClientModal = this.closeClientModal.bind(this);
-        this.openClientModal = this.openClientModal.bind(this);
-        this.closeCompleteModal = this.closeCompleteModal.bind(this);
-        this.openCompleteModal = this.openCompleteModal.bind(this);
-        this.openSubmitModal = this.openSubmitModal.bind(this);
-        this.closeSubmitModal = this.closeSubmitModal.bind(this);
-    }
-
-    componentDidMount() {
-        this.isJoined();
-        this.isOwned();
-        this.isCompleted();
-        this.isRequesting();
-        this.isRestricted();
-        //console.log("Mount Owned: " + this.state.isOwned);
-        this.componentWillReceiveProps(this.props);
-    }
-
-    componentWillReceiveProps(newProps) {
-        if (newProps.challengeID !== this.state.challengeID) {
-            // console.log("resetting state to " + newProps.challengeID);
-            this.state.challengeID = newProps.challengeID;
-            this.resetState(newProps.challengeID);
-        }
-
-        const members = this.getChallengeAttribute("members");
-        const owner = this.getChallengeAttribute("owner");
-        if (!this.props.open && newProps.open && members && members.length > 0) {
-            for (let i = 0; i < members.length; i++) {
-                const itemType = getItemTypeFromID(members[i]);
-                if (itemType === "Client") {
-                    this.props.fetchClient(members[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"], () => {
-                        this.setState({});
-                    });
-                }
-                else if (itemType === "Trainer") {
-                    this.props.fetchTrainer(members[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"], () => {
-                        this.setState({});
-                    });
-                }
-                if(owner) {
-                    if (owner.substr(0, 2) === "TR") {
-                        if(!this.state.fetchedTrainer) {
-                            this.props.fetchTrainer(owner, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
-                            this.setState({fetchedTrainer: true});
+    useEffect(() => {
+        if (props.challengeID) {
+            // TODO Reset state?
+            props.fetchChallenge(props.challengeID, ChallengeDescriptionModalInfo.fetchList, (challenge) => {
+                if (challenge) {
+                    if (challenge.owner) {
+                        if (challenge.owner === props.user.id) {
+                            setIsOwned(true);
+                        }
+                        const itemType = getItemTypeFromID(challenge.owner);
+                        if (itemType === "Client") {
+                            props.fetchClient(challenge.owner, ["id", "name", "profileImagePath", "profileImagePaths"]);
+                        }
+                        else if (itemType === "Trainer") {
+                            props.fetchTrainer(challenge.owner, ["id", "name", "profileImagePath", "profileImagePaths"]);
+                        }
+                    }
+                    if (challenge.members) {
+                        setIsJoined(challenge.members.includes(props.user.id));
+                    }
+                    if (challenge.memberRequests) {
+                        setIsRequesting(challenge.memberRequests.includes(props.user.id));
+                    }
+                    if (challenge.restriction) {
+                        setIsRestricted(challenge.restriction === "invite");
+                    }
+                    if (challenge.completed) {
+                        setIsCompleted(challenge.completed === "true");
+                    }
+                    if (challenge.challengeType) {
+                        setChallengeType(challenge.challengeType);
+                        if (challenge.challengeType === "streak") {
+                            if (challenge.streaks && props.user.streaks) {
+                                const intersection = arrayIntersection(challenge.streaks, props.user.streaks);
+                                if (intersection && intersection.length && intersection.length === 1) {
+                                    props.fetchStreak(intersection[0], ["lastUpdated", "N", "bestN", "currentN", "updateSpanType", "updateInterval"], (streak) => {
+                                        setStreak(streak);
+                                    });
+                                }
+                                else {
+                                    err&&console.error("Could not determine which streak is for this challenge!!");
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
-    }
-
-    componentWillUnmount() {
-        if (this.state.challengeID) {
-            this.props.clearBoard(this.state.challengeID);
-        }
-    }
-
-    displayTagIcons(tags) {
-        if(tags) {
-            if (tags.length === 1) {
-                return (
-                    <Image avatar src={require('../../img/' + tags[0] + '_icon.png')}/>
-                );
-            }
-            else if (tags.length === 2) {
-                return (
-                    <div>
-                        <Image avatar src={require('../../img/' + tags[0] + '_icon.png')}/>
-                        <Image avatar src={require('../../img/' + tags[1] + '_icon.png')}/>
-                    </div>
-                );
-            }
-            else if (tags.length === 3) {
-                return(
-                    <div>
-                        <Image avatar src={require('../../img/' + tags[0] + '_icon.png')}/>
-                        <Image avatar src={require('../../img/' + tags[1] + '_icon.png')}/>
-                        <Image avatar src={require('../../img/' + tags[2] + '_icon.png')}/>
-                    </div>
-                );
-            }
-            else if (tags.length === 4) {
-                return(
-                    <div>
-                        <Image avatar src={require('../../img/' + tags[0] + '_icon.png')}/>
-                        <Image avatar src={require('../../img/' + tags[1] + '_icon.png')}/>
-                        <Image avatar src={require('../../img/' + tags[2] + '_icon.png')}/>
-                        <Image avatar src={require('../../img/' + tags[3] + '_icon.png')}/>
-                    </div>
-                );
-            }
-        }
-        else {
-            return (
-                // "There ain't no tags round these parts partner " + tags
-                null
-            );
-        }
-    }
-
-    getChallengeAttribute(attribute) {
-        if (this.state.challengeID) {
-            let challenge = this.props.cache.challenges[this.state.challengeID];
-            if (challenge) {
-                if (attribute.substr(attribute.length - 6) === "Length") {
-                    attribute = attribute.substr(0, attribute.length - 6);
-                    if (challenge[attribute] && challenge[attribute].length) {
-                        return challenge[attribute].length;
-                    }
-                    else {
-                        return 0;
-                    }
+                else {
+                    setDeleted(true);
                 }
-                return challenge[attribute];
-            }
-        }
-        else {
-            return null;
-        }
-    }
-
-    getOwnerName() {
-        const owner = this.getChallengeAttribute("owner");
-        if (owner) {
-            const ownerType = getItemTypeFromID(owner);
-            if (ownerType === "Client") {
-                if (this.props.cache.clients[owner]) {
-                    return this.props.cache.clients[owner].name
-                }
-            }
-            else if (ownerType === "Trainer") {
-                if (this.props.cache.trainers[owner]) {
-                    return this.props.cache.trainers[owner].name
-                }
-            }
-            // else if (!this.props.info.isLoading) {
-            //     this.props.fetchClient(owner, ["name"]);
-            // }
-        }
-        return null;
-    }
-
-    handleDeleteChallengeButton() {
-        //console.log("Handling deleting the event");
-        this.setState({isDeleteLoading: true, isLoading: true});
-        ChallengeFunctions.delete(this.props.user.id, this.getChallengeAttribute("id"), (data) => {
-            this.forceUpdate(data.id);
-            // console.log(JSON.stringify(data));
-            this.setState({isLoading: false, isDeleteLoading: false, event: null, isOwned: false, isJoined: false, deleted: true});
-            this.props.onClose();
-        }, (error) => {
-            // console.log(JSON.stringify(error));
-            this.setState({isLoading: false, isDeleteLoading: false, error: error, deleted: false});
-        })
-    }
-
-    handleLeaveChallengeButton() {
-        //console.log("Handling leaving the event");
-        this.setState({isLeaveLoading: true, isLoading: true});
-        UserFunctions.removeChallenge(this.props.user.id, this.props.user.id, this.getChallengeAttribute("id"), (data) => {
-            this.forceUpdate(data.id);
-            //console.log(JSON.stringify(data));
-            this.setState({isLoading: false, isLeaveLoading: false, isJoined: false});
-        }, (error) => {
-            //console.log(JSON.stringify(error));
-            this.setState({isLoading: false, isLeaveLoading: false, error: error});
-        })
-    }
-
-    handleJoinChallengeButton() {
-        //console.log("Handling joining the event");
-        this.setState({isJoinLoading: true, isLoading: true});
-        UserFunctions.addChallenge(this.props.user.id, this.props.user.id, this.getChallengeAttribute("id"),
-            () => {
-                this.forceUpdate();
-                //console.log(JSON.stringify(data));
-                this.setState({isLoading: false, isJoinLoading: false, isJoined: true});
             }, (error) => {
-                this.setState({isLoading: false, isJoinLoading: false, error: error});
-            })
-    }
 
-    handleRequestChallengeButton() {
-        this.setState({isRequestLoading: true, isLoading: true});
-        InviteFunctions.createChallengeRequest(this.props.user.id, this.props.user.id, this.getChallengeAttribute("id"),
-            () => {
-                this.forceUpdate();
-                this.setState({isLoading: false, isRequestLoading: false, isRequesting: true});
-            }, (error) => {
-                this.setState({isLoading: false, isRequestLoading: false, error: error})
             });
-    }
-
-    isJoined() {
-        const members = this.getChallengeAttribute("members");
-        if (members) {
-            const isMembers = members.includes(this.props.user.id);
-            //console.log("Is Members?: " + isMembers);
-            this.setState({isJoined: isMembers});
-            //console.log("am I in members?: " + members.includes(this.props.user.id));
         }
-        else {
-            this.setState({isJoined: false});
+        return () => {
+            // TODO clean up
         }
-    }
+    }, [props.challengeID]);
+    // const forceUpdate = () => {
+    //     forceFetchChallenge(this.getChallengeAttribute("id"), ["owner",
+    //         "time", "capacity", "title", "description", "difficulty", "memberIDs", "memberRequests", "access", "restriction", "prize"]);
+    // };
 
-    isRequesting() {
-        const memberRequests = this.getChallengeAttribute("memberRequests");
-        if (memberRequests) {
-            this.setState({isRequesting: memberRequests.includes(this.props.user.id)});
-        }
-    }
-
-    isRestricted() {
-        this.setState({isRestricted: this.getChallengeAttribute("restriction") === "invite"});
-    }
-
-    isOwned() {
-        this.setState({isOwned: this.props.user.id === this.getChallengeAttribute("owner")});
-    }
-
-    isCompleted() {
-        this.setState({ifCompleted: this.getChallengeAttribute("ifCompleted") === "true"});
-    }
-
-    openClientModal() {
-        if (!this.state.clientModalOpen) {
-            this.setState({clientModalOpen: true});
-        }
-    }
-    closeClientModal() { this.setState({clientModalOpen: false}); }
-
-    openCompleteModal() {
-        if(!this.state.completeModalOpen) {
-            this.setState({completeModalOpen: true});
-        }
-    }
-    closeCompleteModal() { this.setState({completeModalOpen: false}); }
-
-    openSubmitModal() {
-        if(!this.state.submitModalOpen) {
-            this.setState({submitModalOpen: true});
-        }
-    }
-    closeSubmitModal() { this.setState({submitModalOpen: false}); }
-
-    forceUpdate() {
-        forceFetchChallenge(this.getChallengeAttribute("id"), ["owner",
-            "time", "capacity", "title", "description", "difficulty", "memberIDs", "memberRequests", "access", "restriction", "prize"]);
-    };
-
-    displayError() {
-        if (this.state.error === "Error while trying to update an item in the database safely. Error: The item failed the checkHandler: That challenge is already filled up!") {
-            return (<Message negative>
-                <Message.Header>Sorry!</Message.Header>
-                <p>That challenge is already filled up!</p>
-            </Message>);
-        }
-
-    }
 
     //This modal displays the challenge information and at the bottom contains a button which allows the user
     //to join a challenge.
-    createCorrectButton() {
-        const panes = [
-            { menuItem: 'Submissions', render: () => (
-                <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
-                    <SubmissionsScreen challengeID={this.state.challengeID}/>
-                </Tab.Pane>
-            )},
-            { menuItem: 'Challenge Chat', render: () => (
-                <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
-                    <CommentScreen board={this.state.challengeID}/>
-                </Tab.Pane> 
-            )},
-        ];
-
-        //console.log("Owned: " + isOwned + " Joined: " + isJoined);
-        // console.log(ifCompleted);
-        if (this.state.isCompleted) {
-            return(
-                <Button disabled fluid inverted size="large">This Event is completed</Button>
-            );
-        }
-        else if (this.state.isOwned) {
-            // TODO This should also link the choose winner button
-            return (
-                <Fragment>
-                    <Button primary fluid className='u-margin-bottom--1' onClick={this.openSubmitModal}>Submit Your Entry</Button>
-                    <Button primary fluid size="large" onClick={this.openCompleteModal}>Select Winner</Button>
-                    <Button loading={this.state.isDeleteLoading} fluid negative size="large" disabled={this.state.isDeleteLoading} onClick={this.handleDeleteChallengeButton}>Delete</Button>
-                    <Divider className='u-margin-top--4' />
-                    <Tab menu={{ widths: 2, inverted: true }} panes={panes} className='u-challenge u-margin-top--2' />
-                </Fragment>
-            )
-        }
-        else if (this.state.isJoined) {
-            return (
-                <Fragment>
-                    <Button primary fluid className='u-margin-bottom--1' onClick={this.openSubmitModal}>Submit Your Entry</Button>
-                    <Button loading={this.state.isLeaveLoading} fluid inverted size="large" disabled={this.state.isLeaveLoading} onClick={this.handleLeaveChallengeButton}>Leave</Button>
-                    <Divider className='u-margin-top--4' />
-                    <Tab menu={{ widths: 2, inverted: true }} panes={panes} className='u-challenge u-margin-top--2' />
-                </Fragment>
-            )
-        }
-        else if (this.state.isRestricted) {
-            if (this.state.isRequesting) {
-                return (
-                    <div>
-                        <Button inverted fluid size="large" disabled={true}>Request Sent!</Button>
-                    </div>
-                )
-            }
-            else {
-                return (<div><Button loading={this.state.isRequestLoading} fluid size="large" disabled={this.state.isRequestLoading}
-                                onClick={this.handleRequestChallengeButton}>Send Join Request</Button></div>)
-            }
-        }
-        else {
-            //console.log(isJoinLoading);
-            return (<Button loading={this.state.isJoinLoading} fluid size="large" disabled={this.state.isJoinLoading}
-                            onClick={this.handleJoinChallengeButton}>Join</Button>)
-        }
-    }
-
-    createChallengeChatButton() {
-        
-        return null;
-    }
-    
-   profilePicture() {
-        if (this.props.user.profilePicture) {
-            
-            return (
-                <div>
-                    <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.props.user.profilePicture})`}}>
-                        <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
-                            <Icon name="upload" className='u-margin-right--0' size="large" inverted />
-                        </Label>
-                        <input type="file" accept="image/*" id="proPicUpload" hidden={true} onChange={this.setPicture}/>
-                    </div>
-                </div>
-            );
-        }
-        else {
-            return(
-                <Dimmer inverted>
-                    <Loader />
-                </Dimmer>
-            );
-        }
-    }
-
-    challengeDeleted() {
-        if(this.state.deleted) {
-            return (<Message negative>
-                <Message.Header>This Challenge is Deleted!</Message.Header>
-            </Message>);
-        }
-    }
-
-    render() {
-        if (!this.getChallengeAttribute("id")) {
-            return(
-                <Modal open={this.props.open} onClose={this.props.onClose.bind(this)}>
-                    <Message icon>
-                        <Icon name='spinner' size="small" loading />
-                        <Message.Content>
-                            <Message.Header>
-                                Loading...
-                            </Message.Header>
-                        </Message.Content>
-                    </Message>
-                </Modal>
-            );
-        }
-
-        if (this.state.canCallChecks) {
-            this.isJoined();
-            this.isOwned();
-            this.isRequesting();
-            this.isCompleted();
-            this.isRestricted();
-            //console.log("Render Owned: " + this.state.isOwned);
-            this.setState({canCallChecks: false});
-            //console.log("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
-        }
-	
-		 
-        //console.log("Challenge Info: " + JSON.stringify(this.state.event));
+    if (!getChallengeAttribute("id")) {
         return(
-        	<div>
-            <Modal open={this.props.open} onClose={this.props.onClose.bind(this)}>
-                <Icon className='close' onClick={() => this.props.onClose()}/>
+            <Modal open={props.open} onClose={() => props.onClose()} closeIcon>
+                <Spinner loading={true}/>
+            </Modal>
+        );
+    }
+    return (
+        <div>
+            <Modal open={props.open} onClose={() => props.onClose()}>
+                <Icon className='close' onClick={() => props.onClose()}/>
                 <Modal.Header align='center'><div>
-                {this.getChallengeAttribute("title")}</div>
-                    <div>{this.displayTagIcons(this.getChallengeAttribute("tags"))}</div>
+                {getChallengeAttribute("title")}</div>
+                    <div>{displayTagIcons(getChallengeAttribute("tags"))}</div>
                     <div>
-                        {this.props.daysLeft} days left
+                        {daysLeft(parseISOString(getChallengeAttribute("endTime")))} days left
                     </div>
                     </Modal.Header>
                 <Modal.Content align='center'>
@@ -495,54 +382,51 @@ class ChallengeDescriptionModal extends Component<Props> {
                         <Grid.Row centered>
                             <Icon.Group size='large'>
                                 <Icon name='bullseye' />
-                            </Icon.Group> {this.getChallengeAttribute("goal")}
+                            </Icon.Group> {getChallengeAttribute("goal")}
                         </Grid.Row>
                         <Grid.Row centered>
                             <div>
                                 <Icon.Group size='large'>
                                     <Icon name='trophy' />
-                                </Icon.Group> {this.getChallengeAttribute("prize")}
+                                </Icon.Group> {getChallengeAttribute("prize")}
                             </div>
                         </Grid.Row>
                         <Grid.Column floated='left' width={6}>
                             <Grid.Row>
-                                <Icon name='user'/><Button className="u-button--flat" onClick={this.openClientModal}>{this.getOwnerName()}</Button>
+                                <Icon name='user'/><Button className="u-button--flat" onClick={() => setOwnerModalOpen(true)}>{getOwnerAttribute("name")}</Button>
                             </Grid.Row>
                         </Grid.Column>
                         <Grid.Column floated='right' width={6}>
                             <Grid.Row>
                                 <Icon name='users' /><Modal trigger={<Button primary className="u-button--flat u-padding-left--1">Members</Button>} closeIcon>
                                     <Modal.Content>
-                                        <DatabaseObjectList ids={this.getChallengeAttribute("members")} noObjectsMessage={"No members yet!"}/>
+                                        <DatabaseObjectList ids={getChallengeAttribute("members")}
+                                                            noObjectsMessage={"No members yet!"}
+                                                            acceptedItemTypes={["Client", "Trainer"]}
+                                        />
                                     </Modal.Content>
                                 </Modal>
                             </Grid.Row>
                         </Grid.Column>
                     </Grid>
+                    {displayStreakInfo(challengeType === "streak", streak)}
                     <Divider/>
                     <Modal.Description>
-                        <ClientModal open={this.state.clientModalOpen} onClose={this.closeClientModal} clientID={this.getChallengeAttribute("owner")}/>
-                        <CompleteChallengeModal open={this.state.completeModalOpen} onClose={this.closeCompleteModal} challengeID={this.getChallengeAttribute("id")}/>
-                        <CreateSubmissionModal open={this.state.submitModalOpen} onClose={this.closeSubmitModal} challengeID={this.getChallengeAttribute("id")}/>
-                        {this.createCorrectButton()}
+                        {createCorrectModal(getChallengeAttribute("owner"), ownerModalOpen, setOwnerModalOpen)}
+                        <CompleteChallengeModal open={completeModalOpen} onClose={() => setCompleteModalOpen(false)} challengeID={props.challengeID}/>
+                        <CreateSubmissionModal open={submitModalOpen} onClose={() => setSubmitModalOpen(false)} challengeID={props.challengeID}/>
+                        {createCorrectButton(props.user.id, props.challengeID, getChallengeAttribute("submissions"),
+                            isLoading, isCompleted, isOwned, isJoined, isRestricted, isRequesting, setIsLoading,
+                            setSubmitModalOpen, setCompleteModalOpen, props.onClose)}
                     </Modal.Description>
-                    <div>{this.displayError()}{this.challengeDeleted()}</div>
-                    {/*
-                        <Modal trigger={<Button primary id="ui center aligned"><Icon name="comment outline"/></Button>}>
-                            <Grid>
-                                <div id="ui center align">
-
-                                </div>
-                            </Grid>
-                        </Modal>
-                        */}
+                    <div>{displayError(props.info.error)}{challengeDeleted(deleted)}</div>
                 </Modal.Content>
             </Modal>
-        {this.challengeDeleted()}
+            {challengeDeleted(deleted)}
         </div>
-        );
-    }
-}
+    );
+};
+
 const mapStateToProps = (state) => ({
     user: state.user,
     cache: state.cache,
@@ -560,8 +444,11 @@ const mapDispatchToProps = (dispatch) => {
         forceFetchUserAttributes: (attributeList) => {
             dispatch(forceFetchUserAttributes(attributeList));
         },
-        fetchChallenge: (id, variablesList) => {
-            dispatch(fetchChallenge(id, variablesList));
+        fetchChallenge: (id, variablesList, dataHandler, failureHandler) => {
+            dispatch(fetchChallenge(id, variablesList, dataHandler, failureHandler));
+        },
+        subscribeFetchChallenge: (id, variableList, dataHandler) => {
+            dispatch(subscribeFetchChallenge(id, variableList, dataHandler));
         },
         forceFetchChallenge: (id, variablesList) => {
             dispatch(forceFetchChallenge(id, variablesList));
@@ -569,8 +456,8 @@ const mapDispatchToProps = (dispatch) => {
         clearChallengeQuery: () => {
             dispatch(clearChallengeQuery());
         },
-        clearBoard: (board) => {
-            dispatch(clearBoard(board));
+        fetchStreak: (id, variableList, dataHandler) => {
+            dispatch(fetchStreak(id, variableList, dataHandler));
         }
     };
 };

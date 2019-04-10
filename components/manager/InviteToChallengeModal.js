@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import {Message, Button, Modal, Card} from 'semantic-ui-react';
 import { connect } from "react-redux";
 import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
-import {fetchChallenge} from "../../redux_actions/cacheActions";
+import {fetchChallenge} from "../../redux_convenience/cacheItemTypeActions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 import ChallengeCard from "../cards/ChallengeCard";
 

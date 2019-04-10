@@ -1,141 +1,97 @@
-import React, { Component, Fragment } from 'react';
-import {Button, Input, Icon} from "semantic-ui-react";
-import connect from "react-redux/es/connect/connect";
+import React, { useState, Fragment } from 'react';
+import {Button, Input, Icon, Grid} from "semantic-ui-react";
+import {connect} from "react-redux";
 import MessageFunctions from "../../database_functions/MessageFunctions";
-import {addMessageToBoard} from "../../redux_actions/messageActions";
+import {err, log} from "../../../Constants";
 
 type Props = {
     board: string
 }
 
-class MessageInput extends Component<Props> {
-    state = {
-        board: null,
-        imagePath: '',
-        imageURL: '',
-        sentRequest: false,
-        canAddImage: true,
-        sendLoading: false
-    };
+const addMessage = (board, e, setIsLoading, userID, username, userProfileImagePath, ) => {
+    // Prevent the default behaviour of form submit
+    e.preventDefault();
 
-    constructor(props) {
-        super(props);
-        this.addMessage = this.addMessage.bind(this);
-        this.addPicture = this.addPicture.bind(this);
-        this.addVideo = this.addVideo.bind(this);
-        this.setPictureOrVideo = this.setPictureOrVideo.bind(this);
-        // this.addPicOrVid = this.addPicOrVid.bind(this);
-        // this.setPicture = this.setPicture.bind(this);
+    // Get the value of the comment box
+    // and make sure it not some empty strings
+    let message = e.target.elements.message.value.trim();
+
+    // Make sure name and comment boxes are filled
+    if (message) {
+        setIsLoading(true);
+        MessageFunctions.createTextMessage(userID, userID, username, userProfileImagePath, board, message, () => {
+            log&&console.log("Successfully sent message!");
+            setIsLoading(false);
+        }, (error) => {
+            err&&console.error("Failed to send message! Error = " + JSON.stringify(error));
+            setIsLoading(false);
+        });
+
+        // Clear input fields
+        e.target.elements.message.value = '';
     }
+};
 
-    componentWillReceiveProps(newProps) {
-        if (newProps.board !== this.state.board) {
-            this.state.board = newProps.board;
-        }
-        // if (newProps.user && this.props.user && newProps.user.id !== this.props.user.id) {
-        //     this.resetState();
-        // }
-        //console.error("Comment User: " + JSON.stringify(this.props));
+const addPicture = (picture, board, userID, username, userProfileImagePath, setIsLoading) => {
+    setIsLoading(true);
+    MessageFunctions.createPictureMessage(userID, userID, username, userProfileImagePath, board, picture, "picture", () => {
+        setIsLoading(false);
+        log&&console.log("Successfully created picture message!");
+    }, (error) => {
+        setIsLoading(false);
+        err&&console.error("FAILED ADDING PICTURE. ERROR = " + JSON.stringify(error));
+    });
+};
+
+const addVideo = (video, board, userID, username, userProfileImagePath, setIsLoading) => {
+    this.setState({sendLoading: true});
+    MessageFunctions.createVideoMessage(userID, userID, username, userProfileImagePath, board, video, "video", () => {
+        setIsLoading(false);
+        log&&console.log("Successfully created video message!");
+    }, (error) => {
+        setIsLoading(false);
+        err&&console.error("FAILED ADDING VIDEO. ERROR = " + JSON.stringify(error));
+    });
+};
+
+const addPictureOrVideo = (event, board, userID, username, userProfileImagePath, setIsLoading) => {
+    const file = event.target.files[0];
+    const fileType = file["type"];
+    const validImageTypes = ["image/gif", "image/jpeg", "image/png"];
+    const validVideoTypes = ["video/mp4", "video/mv4", "video/avi", "video/mpg"];
+    if (validImageTypes.includes(fileType)) {
+        addPicture(file, board, userID, username, userProfileImagePath, setIsLoading);
     }
-
-    addMessage(e) {
-        // Prevent the default behaviour of form submit
-        e.preventDefault();
-
-        // Get the value of the comment box
-        // and make sure it not some empty strings
-        let message = e.target.elements.message.value.trim();
-
-        // Make sure name and comment boxes are filled
-        if (message) {
-            this.setState({sendLoading: true});
-            MessageFunctions.createTextMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.props.user.profileImagePath, this.state.board, message, () => {
-                console.log("Successfully sent message!");
-                this.setState({sendLoading: false});
-            }, (error) => {
-                console.error("Failed to send message! Error = " + JSON.stringify(error));
-                this.setState({sendLoading: false});
-            });
-
-            // Clear input fields
-            e.target.elements.message.value = '';
-        }
+    else if (validVideoTypes.includes(fileType)) {
+        addVideo(file, board, userID, username, userProfileImagePath, setIsLoading);
     }
-
-    addPicture(picture) {
-        this.setState({sendLoading: true});
-        MessageFunctions.createPictureMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.props.user.profileImagePath, this.state.board,
-            picture, "picture", () => {
-                this.setState({sendLoading: false});
-                console.log("Successfully created picture message!");
-            }, (error) => {
-                this.setState({sendLoading: false});
-                console.error("FAILED ADDING PICTURE. ERROR = " + JSON.stringify(error));
-            })
+    else {
+        console.log("PROBLEMATIC FILE TYPE = " + fileType);
     }
+};
 
-    addVideo(video) {
-        this.setState({sendLoading: true});
-        MessageFunctions.createVideoMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.props.user.profileImagePath, this.state.board,
-            video, "video", () => {
-                this.setState({sendLoading: false});
-                console.log("Successfully created video message!");
-            }, (error) => {
-                this.setState({sendLoading: false});
-                console.error("FAILED ADDING VIDEO. ERROR = " + JSON.stringify(error));
-            })
-    }
+const MessageInput = (props: Props) => {
+    const [isLoading, setIsLoading] = useState(false);
 
-    setPictureOrVideo(event) {
-        const file = event.target.files[0];
-        const fileType = file["type"];
-        const validImageTypes = ["image/gif", "image/jpeg", "image/png"];
-        const validVideoTypes = ["video/mp4", "video/mv4", "video/avi", "video/mpg"];
-        if (validImageTypes.includes(fileType)) {
-            this.addPicture(file);
-        }
-        else if (validVideoTypes.includes(fileType)) {
-            this.addVideo(file);
-        }
-        else {
-            console.log("PROBLEMATIC FILE TYPE = " + fileType);
-        }
-    }
-
-    render() {
-        // if(this.state.imageURL && this.state.canAddImage) {
-        //     console.error("Image URL found: " + this.state.imageURL);
-        //     this.addPicOrVid(this.state.path);
-        //     this.setState({canAddImage: false});
-        // }
-        return (
-            <Fragment>
-                <form onSubmit={this.addMessage} className='u-margin-top--2'>
-                    <Input type='text' action fluid className="textarea" name="message" placeholder="Write Message...">
-                        <input />
-                        <Button as='label' for='proPicUpload'  >
-                            <Icon name='camera' size = "Large"/>
-                            <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden='true' onChange={this.setPictureOrVideo}/>
-                        </Button>
-                        <Button loading={this.state.sendLoading} primary>Send</Button>
-                    </Input>
-                </form>
-            </Fragment>
-        );
-    }
-}
+    return (
+        <Fragment>
+            <form onSubmit={e => addMessage(props.board, e, setIsLoading, props.user.id, props.user.name, props.user.profileImagePath)} className='u-margin-top--2'>
+                <Input type='text' action fluid className="textarea" name="message" placeholder="Write Message...">
+                    <input/>
+                    <Button as='label' for='proPicUpload'>
+                        <Icon name='camera' size = "large" style={{marginLeft: '8px'}}/>
+                        <input type="file" accept="image/*;video/*;capture=camcorder" id="proPicUpload" hidden='true' onChange={e => addPictureOrVideo(e, props.board, props.user.id, props.user.name, props.user.profileImagePath, setIsLoading)}/>
+                    </Button>
+                    <Button loading={isLoading} primary>Send</Button>
+                </Input>
+            </form>
+        </Fragment>
+    );
+};
 
 const mapStateToProps = (state) => ({
     user: state.user,
     message: state.message
 });
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        addMessageToBoard: (board, message) => {
-            dispatch(addMessageToBoard(board, message));
-        }
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MessageInput);
+export default connect(mapStateToProps)(MessageInput);
