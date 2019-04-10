@@ -1,4 +1,4 @@
-import {consoleLog} from "./DebuggingHelper";
+import {err, log} from "../../Constants";
 
 const ItemType = {
     Client: "Client",
@@ -10,26 +10,56 @@ const ItemType = {
     Challenge: "Challenge",
     Invite: "Invite",
     Post: "Post",
+    Submission: "Submission",
     Group: "Group",
     Comment: "Comment",
     Sponsor: "Sponsor",
     Message: "Message",
+    Streak: "Streak",
 };
 
-export function getItemTypeFromID(id) {
-    const numPrefix = 2;
-    const prefix = id.substring(0, numPrefix);
-    const itemTypeKeys = Object.keys(ItemType);
-    for (let i = 0; i < itemTypeKeys.length; i++) {
-        const type = itemTypeKeys[i];
-        if (prefix === (type.substring(0, numPrefix).toUpperCase())) {
-            return type;
-        }
+const numPrefix = 2;
+const prefixes = {};
+for (const key in ItemType) {
+    if (ItemType.hasOwnProperty(key)) {
+        const type = ItemType[key];
+        prefixes[type.substring(0, numPrefix).toUpperCase()] = type;
     }
-    return null;
 }
 
-export function switchReturnItemType(itemType, clientValue, trainerValue, gymValue, workoutValue, reviewValue, eventValue, challengeValue, inviteValue, postValue, groupValue, commentValue, sponsorValue, messageValue, errorMessage) {
+/**
+ * TODO
+ *
+ * @param id
+ * @return {*}
+ */
+export function getItemTypeFromID(id) {
+    return prefixes[id.substring(0, numPrefix)];
+}
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param clientValue
+ * @param trainerValue
+ * @param gymValue
+ * @param workoutValue
+ * @param reviewValue
+ * @param eventValue
+ * @param challengeValue
+ * @param inviteValue
+ * @param postValue
+ * @param submissionValue
+ * @param groupValue
+ * @param commentValue
+ * @param sponsorValue
+ * @param messageValue
+ * @param streakValue
+ * @param errorMessage
+ * @return {*}
+ */
+export function switchReturnItemType(itemType, clientValue, trainerValue, gymValue, workoutValue, reviewValue, eventValue, challengeValue, inviteValue, postValue, submissionValue, groupValue, commentValue, sponsorValue, messageValue, streakValue, errorMessage) {
     let returnValue = null;
     switch (itemType) {
         case "Client":
@@ -59,6 +89,9 @@ export function switchReturnItemType(itemType, clientValue, trainerValue, gymVal
         case "Post":
             returnValue = postValue;
             break;
+        case "Submission":
+            returnValue = submissionValue;
+            break;
         case "Group":
             returnValue = groupValue;
             break;
@@ -71,6 +104,9 @@ export function switchReturnItemType(itemType, clientValue, trainerValue, gymVal
         case "Message":
             returnValue = messageValue;
             break;
+        case "Streak":
+            returnValue = streakValue;
+            break;
         default:
             returnValue = null;
             break;
@@ -79,11 +115,33 @@ export function switchReturnItemType(itemType, clientValue, trainerValue, gymVal
         return returnValue;
     }
     else {
-        consoleLog(errorMessage + " ~ itemType = " + itemType + " not recognized...");
+        err&&console.error(errorMessage + " ~ itemType = " + itemType + " not recognized...");
         return null;
     }
 }
-export function switchHandleItemType(itemType, clientHandler, trainerHandler, gymHandler, workoutHandler, reviewHandler, eventHandler, challengeHandler, inviteHandler, postHandler, groupHandler, commentHandler, sponsorHandler, messageHandler, errorMessage) {
+
+/**
+ * TODO
+ *
+ * @param itemType
+ * @param clientHandler
+ * @param trainerHandler
+ * @param gymHandler
+ * @param workoutHandler
+ * @param reviewHandler
+ * @param eventHandler
+ * @param challengeHandler
+ * @param inviteHandler
+ * @param postHandler
+ * @param submissionHandler
+ * @param groupHandler
+ * @param commentHandler
+ * @param sponsorHandler
+ * @param messageHandler
+ * @param streakHandler
+ * @param errorMessage
+ */
+export function switchHandleItemType(itemType, clientHandler, trainerHandler, gymHandler, workoutHandler, reviewHandler, eventHandler, challengeHandler, inviteHandler, postHandler, submissionHandler, groupHandler, commentHandler, sponsorHandler, messageHandler, streakHandler, errorMessage) {
     let itemHandler = null;
     switch (itemType) {
         case "Client":
@@ -113,6 +171,9 @@ export function switchHandleItemType(itemType, clientHandler, trainerHandler, gy
         case "Post":
             itemHandler = postHandler;
             break;
+        case "Submission":
+            itemHandler = submissionHandler;
+            break;
         case "Group":
             itemHandler = groupHandler;
             break;
@@ -125,6 +186,9 @@ export function switchHandleItemType(itemType, clientHandler, trainerHandler, gy
         case "Message":
             itemHandler = messageHandler;
             break;
+        case "Streak":
+            itemHandler = streakHandler;
+            break;
         default:
             itemHandler = null;
             break;
@@ -133,7 +197,7 @@ export function switchHandleItemType(itemType, clientHandler, trainerHandler, gy
         itemHandler();
     }
     else {
-        consoleLog(errorMessage + " ~ itemType = " + itemType + " not recognized...");
+        err&&console.error(errorMessage + " ~ itemType = " + itemType + " not recognized...");
     }
 }
 

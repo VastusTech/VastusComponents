@@ -1,8 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {Message, Icon} from "semantic-ui-react";
 
-const Spinner = (props) => {
+type Props = {
+    loading: boolean
+}
+
+const Spinner = (props: Props) => {
     if (props.loading) {
         return (
             <Message icon>
@@ -16,10 +19,6 @@ const Spinner = (props) => {
         );
     }
     return null;
-};
-
-Spinner.propTypes = {
-    loading: PropTypes.bool
 };
 
 Spinner.defaultProps = {

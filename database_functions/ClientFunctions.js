@@ -8,16 +8,16 @@ class ClientFunctions extends UserFunctions {
     // =============================================================================
     // Create Functions ============================================================
     static createClient(fromID, name, email, username, successHandler, failureHandler) {
-        this.create(fromID, name, null, null, email, username, null, null, null, successHandler, failureHandler);
+        return this.create(fromID, name, null, null, email, username, null, null, null, successHandler, failureHandler);
     }
     static createClientOptional(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
-        this.create(fromID, name, gender, birthday, email, username, bio, null, null, successHandler, failureHandler);
+        return this.create(fromID, name, gender, birthday, email, username, bio, null, null, successHandler, failureHandler);
     }
     static createFederatedClient(fromID, name, email, username, federatedID, successHandler, failureHandler) {
-        this.create(fromID, name, null, null, email, username, null, federatedID, null, successHandler, failureHandler);
+        return this.create(fromID, name, null, null, email, username, null, federatedID, null, successHandler, failureHandler);
     }
-    static createFederatedClientOptional(fromID, name, gender, birthday, email, username, federatedID, bio, successHandler, failureHander) {
-        this.create(fromID, name, gender, birthday, email, username, null, federatedID, bio, successHandler, failureHander);
+    static createFederatedClientOptional(fromID, name, gender, birthday, email, username, federatedID, bio, successHandler, failureHandler) {
+        return this.create(fromID, name, gender, birthday, email, username, null, federatedID, bio, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
@@ -25,7 +25,7 @@ class ClientFunctions extends UserFunctions {
     // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
     static create(fromID, name, gender, birthday, email, username, stripeID, federatedID, bio, successHandler, failureHandler) {
-        Lambda.create(fromID, itemType, {
+        return Lambda.create(fromID, itemType, {
             name,
             gender,
             birthday,

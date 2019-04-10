@@ -1,12 +1,28 @@
-import React, { Component } from 'react';
-import { Card } from 'semantic-ui-react';
+import React, { useState } from 'react';
+import { Card, Dimmer } from 'semantic-ui-react';
 import EventDescriptionModal from '../modals/EventDescriptionModal';
-import { connect } from 'react-redux';
-import {fetchEvent} from "../../redux_actions/cacheActions";
 import {convertFromISO} from "../../logic/TimeHelper";
+import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
+import Spinner from "../props/Spinner";
+
+export const EventCardInfo = {
+    fetchList: ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty", "restriction", "access"],
+    ifSubscribe: false
+};
 
 type Props = {
-    eventID: string
+    event: {
+        id: string,
+        title: string,
+        time: string,
+        time_created: string,
+        owner: string,
+        members: [string],
+        capacity: string,
+        difficulty: string,
+        restriction: string,
+        access: string
+    }
 }
 
 /*
@@ -15,86 +31,37 @@ type Props = {
 * This is the generic view for how a challenge shows up in any feeds or lists.
 * It is used as a modal trigger in the feed.
  */
-class EventCard extends Component<Props> {
-    state = {
-        error: null,
-        eventID: null,
-        eventModalOpen: false
+const EventCard = (props: Props) => {
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const getEventAttribute = (attributeName) => {
+        return getAttributeFromObject(props.event, attributeName);
     };
 
-    componentDidMount() {
-        this.componentWillReceiveProps(this.props);
-    }
-
-    componentWillReceiveProps(newProps) {
-        if (newProps.eventID && !this.state.eventID) {
-            // this.props.fetchEvent(newProps.eventID, ["id", "title", "goal", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
-            this.setState({eventID: newProps.eventID});
-        }
-    }
-
-    getEventAttribute(attribute) {
-        if (this.state.eventID) {
-            let event = this.props.cache.events[this.state.eventID];
-            if (event) {
-                if (attribute.substr(attribute.length - 6) === "Length") {
-                    attribute = attribute.substr(0, attribute.length - 6);
-                    if (event[attribute] && event[attribute].length) {
-                        return event[attribute].length;
-                    }
-                    else {
-                        return 0;
-                    }
-                }
-                return event[attribute];
-            }
-        }
-        return null;
-    }
-
-    openEventModal = () => { this.setState({eventModalOpen: true})};
-    closeEventModal = () => {this.setState({eventModalOpen: false})};
-
-    render() {
-        if (!this.getEventAttribute("id")) {
-            return(
-                <Card fluid raised>
-                    <h1>Loading...</h1>
-                </Card>
-            );
-        }
+    if (!props.event) {
         return(
-            // This is displays a few important pieces of information about the challenge for the feed view.
-            <Card fluid raised onClick={this.openEventModal.bind(this)}>
-                <Card.Content>
-                    <Card.Header textAlign = 'center'>{this.getEventAttribute("title")}</Card.Header>
-                    <Card.Meta textAlign = 'center' >{this.convertFromISO(this.getEventAttribute("time"))}</Card.Meta>
-                    <EventDescriptionModal open={this.state.eventModalOpen} onClose={this.closeEventModal.bind(this)} eventID={this.state.eventID}
-                    closeEventModal={this.closeEventModal}/>
-                </Card.Content>
-                <Card.Content extra>
-                    <Card.Meta>{convertFromISO(this.getEventAttribute("time_created"))}</Card.Meta>
-                    <Card.Meta textAlign = 'center'>
-                        {this.getEventAttribute("membersLength")} of {this.getEventAttribute("capacity")} spots taken.
-                    </Card.Meta>
-                </Card.Content>
-            </Card>
+            <Dimmer>
+                <Spinner/>
+            </Dimmer>
         );
     }
-}
-
-const mapStateToProps = (state) => ({
-    user: state.user,
-    cache: state.cache,
-    info: state.info
-});
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchEvent: (id, variablesList) => {
-            dispatch(fetchEvent(id, variablesList));
-        }
-    };
+    return(
+        // This is displays a few important pieces of information about the challenge for the feed view.
+        <Card fluid raised onClick={setModalOpen.bind(true)}>
+            <Card.Content>
+                <Card.Header textAlign = 'center'>{getEventAttribute("title")}</Card.Header>
+                <Card.Meta textAlign = 'center' >{convertFromISO(this.getEventAttribute("time"))}</Card.Meta>
+                <EventDescriptionModal open={modalOpen} onClose={setModalOpen.bind(false)} eventID={props.event.id}/>
+            </Card.Content>
+            <Card.Content extra>
+                <Card.Meta>{convertFromISO(getEventAttribute("time_created"))}</Card.Meta>
+                <Card.Meta textAlign = 'center'>
+                    {getEventAttribute("membersLength")} of {getEventAttribute("capacity")} spots taken.
+                </Card.Meta>
+            </Card.Content>
+        </Card>
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EventCard);
+export default EventCard;
+

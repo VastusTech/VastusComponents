@@ -17,16 +17,16 @@ class ReviewFunctions {
         console.log("Not implemented...");
     }
     static updateAdd(fromID, reviewID, attributeName, attributeValue, successHandler, failureHandler) {
-        Lambda.updateAddToAttribute(fromID, reviewID, itemType, attributeName, attributeValue, successHandler, failureHandler);
+        return Lambda.updateAddToAttribute(fromID, reviewID, itemType, attributeName, attributeValue, successHandler, failureHandler);
     }
     static updateRemove(fromID, reviewID, attributeName, attributeValue, successHandler, failureHandler) {
-        Lambda.updateRemoveFromAttribute(fromID, reviewID, itemType, attributeName, attributeValue, successHandler, failureHandler);
+        return Lambda.updateRemoveFromAttribute(fromID, reviewID, itemType, attributeName, attributeValue, successHandler, failureHandler);
     }
     static updateSet(fromID, reviewID, attributeName, attributeValue, successHandler, failureHandler) {
-        Lambda.updateSetAttribute(fromID, reviewID, itemType, attributeName, attributeValue, successHandler, failureHandler);
+        return Lambda.updateSetAttribute(fromID, reviewID, itemType, attributeName, attributeValue, successHandler, failureHandler);
     }
     static delete(fromID, reviewID, successHandler, failureHandler) {
-        Lambda.delete(fromID, reviewID, itemType, successHandler, failureHandler);
+        return Lambda.delete(fromID, reviewID, itemType, successHandler, failureHandler);
     }
 }
 

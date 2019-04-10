@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { List, Message } from 'semantic-ui-react';
 import ChallengeCard from "../cards/ChallengeCard";
 import { connect } from "react-redux";
-import { fetchChallenge } from "../../redux_actions/cacheActions";
+import { fetchChallenge } from "../../redux_convenience/cacheItemTypeActions";
 import Spinner from "../props/Spinner";
 
 type Props = {
@@ -55,7 +55,7 @@ class ChallengeList extends Component<Props> {
                 if (challengeList.hasOwnProperty(key)) {
                     components.push(
                         <List.Item key={key}>
-                            <ChallengeCard challengeID={challengeList[key].id}/>
+                            <ChallengeCard challenge={challengeList[key]}/>
                         </List.Item>
                     );
                 }

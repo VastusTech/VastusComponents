@@ -17,16 +17,16 @@ class WorkoutFunctions {
         console.log("Not implemented...");
     }
     static updateAdd(fromID, workoutID, attributeName, attributeValue, successHandler, failureHandler) {
-        Lambda.updateAddToAttribute(fromID, workoutID, itemType, attributeName, attributeValue, successHandler, failureHandler);
+        return Lambda.updateAddToAttribute(fromID, workoutID, itemType, attributeName, attributeValue, successHandler, failureHandler);
     }
     static updateRemove(fromID, workoutID, attributeName, attributeValue, successHandler, failureHandler) {
-        Lambda.updateRemoveFromAttribute(fromID, workoutID, itemType, attributeName, attributeValue, successHandler, failureHandler);
+        return Lambda.updateRemoveFromAttribute(fromID, workoutID, itemType, attributeName, attributeValue, successHandler, failureHandler);
     }
     static updateSet(fromID, workoutID, attributeName, attributeValue, successHandler, failureHandler) {
-        Lambda.updateSetAttribute(fromID, workoutID, itemType, attributeName, attributeValue, successHandler, failureHandler);
+        return Lambda.updateSetAttribute(fromID, workoutID, itemType, attributeName, attributeValue, successHandler, failureHandler);
     }
     static delete(fromID, workoutID, successHandler, failureHandler) {
-        Lambda.delete(fromID, workoutID, itemType, successHandler, failureHandler);
+        return Lambda.delete(fromID, workoutID, itemType, successHandler, failureHandler);
     }
 }
 
