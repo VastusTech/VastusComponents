@@ -33,16 +33,17 @@ const setGalleryPicture = (userID, image, displayImage, pos, profileImagePaths, 
     // alert(this.state.reactSwipeElement.getPos());
     setIsLoading(true);
     if (pos !== 0) {
-        let path = "";
+        let path = getGalleryImageS3Name(userID, );
         // for length 2, 2 is inside, 3 is outside
         // for length 0, 1 is outside
-        if (pos <= profileImagePaths.length) {
+        if (pos <= profileImagePaths ? profileImagePaths.length : 0) {
             path = profileImagePaths[pos - 1];
         }
         else {
             // Keep checking to see that the new path added is going to be larger than the last path
             let profilePosID = pos;
-            while (path <= profileImagePaths[profileImagePaths.length - 1]) {
+            path = getGalleryImageS3Name(userID, profilePosID);
+            while (profileImagePaths && path <= profileImagePaths[profileImagePaths.length - 1]) {
                 path = getGalleryImageS3Name(userID, profilePosID);
                 profilePosID++;
             }
