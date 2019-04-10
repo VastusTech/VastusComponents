@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {setError} from "../../redux_actions/infoActions";
 import {fetchChallenge, putChallenge} from "../../redux_convenience/cacheItemTypeActions";
 import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
-import {getNowTimeString, parseISOString} from "../../logic/TimeHelper";
+import {getNowTimeString} from "../../logic/TimeHelper";
 import {streakUpdateInfo} from "../../logic/StreakHelper";
 
 const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, access, restriction, prize, challengeType,
