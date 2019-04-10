@@ -20,6 +20,11 @@ type Props = {
     editable: boolean
 };
 
+/**
+ *
+ * @param userID {string}
+ * @return {string}
+ */
 const getProfileImageS3Name = (userID) => {
     return "ClientFiles/" + userID + "/profileImage";
 };
