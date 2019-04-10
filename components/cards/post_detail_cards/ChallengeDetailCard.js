@@ -18,6 +18,13 @@ type Props = {
     }
 };
 
+/**
+ * TODO
+ *
+ * @param props
+ * @return {*}
+ * @constructor
+ */
 const ChallengeDetailCard = (props: Props) => (
     <ChallengeCard challenge={props.challenge}/>
 );

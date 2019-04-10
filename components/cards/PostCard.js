@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import {Button, Card, Dimmer, Grid, Loader} from 'semantic-ui-react';
+import {Button, Card, Dimmer, Grid} from 'semantic-ui-react';
 import {connect} from "react-redux";
 import PostDescriptionModal from '../modals/PostDescriptionModal';
 import {Player} from "video-react";
-import ItemType, {getItemTypeFromID} from "../../logic/ItemType";
-import SubmissionDetailCard from "./post_detail_cards/SubmissionDetailCard";
+import ItemType from "../../logic/ItemType";
 import ChallengeDetailCard, {ChallengeDetailCardInfo} from "./post_detail_cards/ChallengeDetailCard";
 import PostDetailCard from "./post_detail_cards/PostDetailCard";
 import ClientDetailCard from "./post_detail_cards/ClientDetailCard";
@@ -141,9 +140,6 @@ const getCorrectDetailCard = (postType, about) => {
                 //     this.setState({postMessage: "posted", postMessageSet: true});
                 // }
                 return (<PostDetailCard postID={about.id}/>);
-            }
-            else if (postType === "submission") {
-                return (<SubmissionDetailCard postID={about.id}/>);
             }
         }
     }

@@ -1,7 +1,8 @@
 import React, { useState, Fragment } from 'react';
-import { Card, Dimmer, Loader, Grid, Header } from 'semantic-ui-react';
+import { Card, Grid, Header } from 'semantic-ui-react';
 import ClientModal from '../modals/ClientModal';
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
+import StyledProfileImage from "../props/StyledProfileImage";
 
 export const ClientCardInfo = {
     fetchList: ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "friendRequests"],
@@ -21,21 +22,6 @@ type Props = {
         scheduledEvents: [string],
         profileImagePath: string,
         friendRequests: [string]
-    }
-};
-
-const profilePicture = (profileImage) => {
-    if (profileImage) {
-        return(
-            <div className="u-avatar u-avatar--small" style={{backgroundImage: `url(${profileImage})`}}/>
-        );
-    }
-    else {
-        return(
-            <Dimmer inverted>
-                <Loader />
-            </Dimmer>
-        );
     }
 };
 
@@ -61,14 +47,14 @@ const ClientCard = (props: Props) => {
     }
     return(
         // This is displays a few important pieces of information about the challenge for the feed view.
-        <Card fluid raised onClick={() => setModalOpen.bind(true)}>
+        <Card fluid raised onClick={() => setModalOpen(true)}>
             <Card.Content>
                 {/* If no rank */}
                 {!props.rank && (
                     <Fragment>
                         <Card.Header>
                             <div className="u-flex u-flex-justify--center u-margin-bottom--2">
-                                {profilePicture()}
+                                <StyledProfileImage profileImage={getClientAttribute("profileImage")} type={"Small"}/>
                             </div>
                         </Card.Header>
                         <Card.Header textAlign = 'center'>
@@ -85,8 +71,11 @@ const ClientCard = (props: Props) => {
                             </Grid.Column>
                             <Grid.Column width={12}>
                                 <div className="u-flex u-flex-align--center">
-                                    {profilePicture(getClientAttribute("profileImage"))} <Header size='small' className='u-margin-top--0 u-margin-left--2'>{getClientAttribute("name")}</Header>
+                                    <StyledProfileImage profileImage={getClientAttribute("profileImage")} type="Small"/>
                                 </div>
+                            </Grid.Column>
+                            <Grid.Column textAlign = 'center'>
+                                {getClientAttribute("name")}
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>

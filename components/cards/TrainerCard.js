@@ -3,6 +3,7 @@ import {Card, Dimmer, Loader, Grid, Icon, Image, Divider, Button, Feed} from 'se
 import TrainerPortalModal from '../modals/TrainerModal';
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
 import Spinner from "../props/Spinner";
+import StyledProfileImage from "../props/StyledProfileImage";
 
 export const TrainerCardInfo = {
     fetchList: ["id", "name", "profileImagePath"],
@@ -28,20 +29,6 @@ const TrainerCard = (props: Props) => {
     const getTrainerAttribute = (attributeName) => {
         return getAttributeFromObject(props.trainer, attributeName);
     };
-    const profilePicture = () => {
-        if (getTrainerAttribute("profileImage")) {
-            return(
-                <div className="u-avatar u-avatar--large u-margin-bottom--neg2 u-margin-x--auto" style={{backgroundImage: `url(${getTrainerAttribute("profileImage")})`}}/>
-            );
-        }
-        else {
-            return(
-                <Dimmer inverted>
-                    <Spinner />
-                </Dimmer>
-            );
-        }
-    };
 
     if (!props.trainer) {
         return(
@@ -53,7 +40,7 @@ const TrainerCard = (props: Props) => {
     return (
         <Card fluid raised centered onClick={() => modalOpen||setModalOpen(true)}>
             <div className="u-container">
-                {profilePicture()}
+                <StyledProfileImage profileImage={getTrainerAttribute("profileImage")} type="LargeCenter"/>
             </div>
             <Card.Content textAlign='center'>
                 <Card.Header>
