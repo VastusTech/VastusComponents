@@ -6,7 +6,8 @@ import Spinner from "../props/Spinner";
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
 
 export const ChallengeCardInfo = {
-    fetchList: ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "difficulty", "time_created", "capacity", "members", "prize", "goal", "owner", "access", "restriction", "submissions"],
+    fetchList: ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "difficulty", "time_created", "capacity",
+        "members", "prize", "goal", "owner", "access", "restriction", "submissions"],
     ifSubscribe: false,
 };
 
@@ -22,7 +23,6 @@ type Props = {
     }
 };
 
-
 const pictures = {
     Performance: require('../../img/Performance_icon.png'),
     Strength: require('../../img/Strength_icon.png'),
@@ -30,6 +30,12 @@ const pictures = {
     HIIT: require('../../img/HIIT_icon.png')
 };
 
+/**
+ * Displays the tag icons for the Challenge.
+ *
+ * @param tags {[string]} The array of names for the tags.
+ * @return {*} The React JSX to display the tags.
+ */
 const displayTagIcons = (tags) => {
     if (tags) {
         if (tags.length === 1) {
@@ -73,6 +79,11 @@ const displayTagIcons = (tags) => {
     }
 };
 
+/**
+ *
+ * @param {string} endTime The ISO string for the time the Challenge finishes.
+ * @return {string}
+ */
 const getDaysLeft = (endTime) => {
     if (daysLeft(parseISOString(endTime)) <= 0) {
         return "Challenge Completed"
@@ -83,10 +94,12 @@ const getDaysLeft = (endTime) => {
 };
 
 /**
- * Challenge Card
- *
  * This is the generic view for how a challenge shows up in any feeds or lists.
  * It is used as a modal trigger in the feed.
+ *
+ * @param props {Props} The given props to the Component.
+ * @return {*} The React JSX to display the Challenge Card.
+ * @constructor
  */
 const ChallengeCard = (props: Props) => {
     const [modalOpen, setModalOpen] = useState(false);
