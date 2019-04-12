@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { List, Icon, Grid, Button, Message, Modal } from 'semantic-ui-react';
 import ClientCard, {ClientCardInfo} from "../cards/ClientCard";
 import { connect } from "react-redux";
-import {fetchItem} from "../../redux_actions/cacheActions";
+import {fetchItem} from "../../redux/actions/cacheActions";
 import Spinner from "../props/Spinner";
 import {getItemTypeFromID, switchHandleItemType, switchReturnItemType} from "../../logic/ItemType";
 import TrainerCard, {TrainerCardInfo} from "../cards/TrainerCard";

@@ -4,7 +4,7 @@ import {
     forceFetchItem, forceFetchItemQuery,
     forceFetchItems, putItem, putItemQuery,
     subscribeFetchItem
-} from "../redux_actions/cacheActions";
+} from "../actions/cacheActions";
 
 export function fetchClient(id, variablesList, dataHandler, failureHandler) {
     return fetchItem(id, "Client", variablesList, dataHandler, failureHandler);

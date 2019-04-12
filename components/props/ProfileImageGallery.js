@@ -10,7 +10,7 @@ import {
     removeFromItemAttributeAtIndex,
     setItemAttribute,
     setItemAttributeIndex
-} from "../../redux_actions/cacheActions";
+} from "../../redux/actions/cacheActions";
 
 type Props = {
     userID?: string,

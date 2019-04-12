@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {Icon, Modal, Button} from 'semantic-ui-react'
 import { connect } from 'react-redux';
-import {fetchPost, putPost, fetchChallenge, putChallenge, fetchClient} from "../../redux_convenience/cacheItemTypeActions";
-import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
+import {fetchPost, putPost, fetchChallenge, putChallenge, fetchClient} from "../../redux/convenience/cacheItemTypeActions";
+import {fetchUserAttributes} from "../../redux/actions/userActions";
 import CreateChallengeProp from "./CreateChallenge";
 
 /**

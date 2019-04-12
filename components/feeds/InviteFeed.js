@@ -2,7 +2,7 @@ import React, {useState, useEffect, Fragment} from 'react'
 import _ from 'lodash'
 import {Dimmer, Loader, Message, Grid} from 'semantic-ui-react'
 import InviteCard, {InviteCardInfo} from "../cards/InviteCard";
-import {fetchUserAttributes, forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
+import {fetchUserAttributes, forceFetchUserAttributes} from "../../redux/actions/userActions";
 import {connect} from 'react-redux';
 import {
     fetchInvite,
@@ -11,7 +11,7 @@ import {
     fetchGroup,
     fetchClient,
     fetchTrainer
-} from "../../redux_convenience/cacheItemTypeActions";
+} from "../../redux/convenience/cacheItemTypeActions";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import {err, log} from "../../../Constants";
 import Spinner from "../props/Spinner";

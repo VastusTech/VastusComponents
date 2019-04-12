@@ -3,13 +3,13 @@ import {Dimmer, Header, Loader, Grid} from "semantic-ui-react";
 import {connect} from "react-redux";
 import Spinner from "../../components/props/Spinner";
 import MessageBoardCard from "./MessageBoardCard";
-import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
+import {fetchUserAttributes} from "../../redux/actions/userActions";
 import {err, log} from "../../../Constants";
 import MessageHandler from "../../api/MessageHandler";
 import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
-import {fetchItem} from "../../redux_actions/cacheActions";
+import {fetchItem} from "../../redux/actions/cacheActions";
 import {getItemTypeFromID} from "../../logic/ItemType";
-import {queryNextMessagesFromBoard, setBoardRead} from "../../redux_actions/messageActions";
+import {queryNextMessagesFromBoard, setBoardRead} from "../../redux/actions/messageActions";
 import MessageFunctions from "../../database_functions/MessageFunctions";
 
 type Props = {

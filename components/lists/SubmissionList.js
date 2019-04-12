@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { List, Message, Visibility } from 'semantic-ui-react';
 import { connect } from "react-redux";
-import {fetchSubmission} from "../../redux_convenience/cacheItemTypeActions";
+import {fetchSubmission} from "../../redux/convenience/cacheItemTypeActions";
 import Spinner from "../props/Spinner";
 import SubmissionCard, {SubmissionCardInfo} from "../cards/SubmissionCard";
 import {getItemTypeFromID} from "../../logic/ItemType";

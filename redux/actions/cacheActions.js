@@ -1,10 +1,10 @@
 import { setIsNotLoading, setError, setIsLoading } from "./infoActions";
 import { addHandlerAndUnsubscription } from "./ablyActions";
-import QL from "../api/GraphQL";
-import S3 from "../api/S3Storage";
-import defaultProfilePicture from "../img/roundProfile.png";
-import notFoundPicture from "../img/not_found.png";
-import {getItemTypeFromID, switchReturnItemType} from "../logic/ItemType";
+import QL from "../../api/GraphQL";
+import S3 from "../../api/S3Storage";
+import defaultProfilePicture from "../../img/roundProfile.png";
+import notFoundPicture from "../../img/not_found.png";
+import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
 import {
     getObjectChannelName,
     FETCH_CLIENT, FETCH_TRAINER, FETCH_GYM, FETCH_WORKOUT, FETCH_REVIEW, FETCH_EVENT, FETCH_CHALLENGE, FETCH_INVITE,
@@ -28,10 +28,10 @@ import {
     REMOVE_COMMENT_ATTRIBUTE_INDEX, REMOVE_GROUP_ATTRIBUTE_INDEX, REMOVE_CLIENT, REMOVE_TRAINER, REMOVE_GYM,
     REMOVE_WORKOUT, REMOVE_REVIEW, REMOVE_EVENT, REMOVE_STREAK, REMOVE_SPONSOR, REMOVE_COMMENT,
     REMOVE_GROUP, REMOVE_SUBMISSION, REMOVE_POST, REMOVE_INVITE, REMOVE_CHALLENGE
-} from "../redux_reducers/cacheReducer";
-import {err, log} from "../../Constants";
+} from "../reducers/cacheReducer";
+import {err, log} from "../../../Constants";
 import {addMessageFromNotification} from "./messageActions";
-import {updateUserFromCache} from "../../redux_helpers/actions/userActions";
+import {updateUserFromCache} from "./userActions";
 
 // ======================================================================================================
 // Fetching S3 Data ~

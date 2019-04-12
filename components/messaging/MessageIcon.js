@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Icon, Label} from 'semantic-ui-react';
 import {
     peekAtFirstMessageFromBoard,
-} from "../../redux_actions/messageActions";
+} from "../../redux/actions/messageActions";
 import {connect} from "react-redux";
 import MessageHandler from "../../api/MessageHandler";
 

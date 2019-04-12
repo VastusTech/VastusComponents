@@ -1,4 +1,4 @@
-import {err, log} from "../../Constants";
+import {err, log} from "../../../Constants";
 
 export const ADD_HANDLER = 'ADD_HANDLER';
 export const SET_HANDLER = 'SET_HANDLER';

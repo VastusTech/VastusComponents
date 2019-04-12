@@ -8,8 +8,8 @@ import {
     fetchTrainer,
     forceFetchTrainer,
     putPost,
-} from "../../redux_convenience/cacheItemTypeActions";
-import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
+} from "../../redux/convenience/cacheItemTypeActions";
+import {fetchUserAttributes} from "../../redux/actions/userActions";
 
 type Props = {
     trainerID: string

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import {Grid, Button, Message, Image, Modal, Form, Container, Checkbox, Header, Dropdown, Label} from 'semantic-ui-react';
 import {connect} from "react-redux";
-import {setError} from "../../redux_actions/infoActions";
-import {fetchChallenge, putChallenge} from "../../redux_convenience/cacheItemTypeActions";
+import {setError} from "../../redux/actions/infoActions";
+import {fetchChallenge, putChallenge} from "../../redux/convenience/cacheItemTypeActions";
 import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
 import {getNowTimeString} from "../../logic/TimeHelper";
 import {streakUpdateInfo} from "../../logic/StreakHelper";

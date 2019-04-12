@@ -8,7 +8,7 @@ import MessageBoard from "../messaging/MessageBoard";
 import MessageHandler from "../../api/MessageHandler";
 import {getTrainerAttribute} from "../../logic/CacheRetrievalHelper";
 import ProfileImage from "../props/ProfileImage";
-import {fetchPost, fetchTrainer} from "../../redux_convenience/cacheItemTypeActions";
+import {fetchPost, fetchTrainer} from "../../redux/convenience/cacheItemTypeActions";
 import {PostCardInfo} from "../cards/PostCard";
 
 const TrainerModalInfo = {

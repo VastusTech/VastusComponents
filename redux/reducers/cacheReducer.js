@@ -1,6 +1,6 @@
-import {err} from "../../Constants";
-import {removeChannelSubscription} from "../redux_actions/ablyActions";
-import {addUniqueToArray, subtractArray} from "../logic/ArrayHelper";
+import {err} from "../../../Constants";
+import {removeChannelSubscription} from "../actions/ablyActions";
+import {addUniqueToArray, subtractArray} from "../../logic/ArrayHelper";
 
 /**
  * Gets the object channel Ably name from the given id.

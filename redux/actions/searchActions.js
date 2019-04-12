@@ -1,9 +1,9 @@
 import {setIsLoading, setIsNotLoading} from "./infoActions";
-import QL from "../api/GraphQL";
+import QL from "../../api/GraphQL";
 import {fetchItemQuery, putItem} from "./cacheActions";
-import {err, log} from "../../Constants";
+import {err, log} from "../../../Constants";
 import {ENABLE_TYPE, DISABLE_SEARCH_BAR, ENABLE_SEARCH_BAR, RESET_QUERY, RESET_TYPE_QUERY, SET_TYPE_NEXT_TOKEN,
-    SET_SEARCH_QUERY, ADD_TYPE_RESULTS, DISABLE_TYPE, SET_TYPE_FILTER} from "../redux_reducers/searchReducer";
+    SET_SEARCH_QUERY, ADD_TYPE_RESULTS, DISABLE_TYPE, SET_TYPE_FILTER} from "../reducers/searchReducer";
 
 // =========================================================================================================
 // ~ High-Level Search Actions

@@ -1,4 +1,4 @@
-import {err} from "../../Constants";
+import {err} from "../../../Constants";
 
 export const SET_ERROR = 'SET_ERROR';
 export const CLEAR_ERROR = 'CLEAR_ERROR';

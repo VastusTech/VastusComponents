@@ -4,8 +4,8 @@ import {Modal, Button, List, Dimmer, Loader, Message, Icon, Image, Label, Grid} 
 import { connect } from "react-redux";
 import InviteToChallengeModalProp from "../manager/InviteToChallengeModal";
 import _ from "lodash";
-import {fetchClient} from "../../redux_convenience/cacheItemTypeActions";
-import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
+import {fetchClient} from "../../redux/convenience/cacheItemTypeActions";
+import {forceFetchUserAttributes} from "../../redux/actions/userActions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 import UserFunctions from "../../database_functions/UserFunctions";
 import {debugAlert} from "../../logic/DebuggingHelper";

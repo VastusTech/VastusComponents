@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import {Message, Button, Modal, Card} from 'semantic-ui-react';
 import { connect } from "react-redux";
-import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
-import {fetchChallenge} from "../../redux_convenience/cacheItemTypeActions";
+import {fetchUserAttributes} from "../../redux/actions/userActions";
+import {fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 import ChallengeCard from "../cards/ChallengeCard";
 

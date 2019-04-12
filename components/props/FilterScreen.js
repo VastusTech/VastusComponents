@@ -1,7 +1,7 @@
 import React, {useState, useEffect, Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Grid, Checkbox, Header} from "semantic-ui-react";
-import {disableType, enableType} from "../../redux_actions/searchActions";
+import {disableType, enableType} from "../../redux/actions/searchActions";
 
 const getCheckBoxes = (filterTypes, setFilterTypes, enableType, disableType) => {
     const checkBoxes = [];

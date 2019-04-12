@@ -8,9 +8,9 @@ import {
     fetchChallenge,
     clearChallengeQuery,
     subscribeFetchChallenge, fetchStreak
-} from "../../redux_convenience/cacheItemTypeActions";
+} from "../../redux/convenience/cacheItemTypeActions";
 import CompleteChallengeModal from "../manager/CompleteChallengeModal";
-import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
+import {forceFetchUserAttributes} from "../../redux/actions/userActions";
 import CommentScreen from "../messaging/MessageBoard";
 import UserFunctions from "../../database_functions/UserFunctions";
 import InviteFunctions from "../../database_functions/InviteFunctions";

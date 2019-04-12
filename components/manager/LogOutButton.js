@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Button} from "semantic-ui-react";
 import {connect} from "react-redux";
-import {logOut} from "../../../redux_helpers/actions/authActions";
+import {logOut} from "../../redux/actions/authActions";
 
 // TODO Make sure the bind call works here!
 

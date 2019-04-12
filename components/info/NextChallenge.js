@@ -2,8 +2,8 @@ import React, {Component, Fragment} from 'react'
 import {Icon, Message} from 'semantic-ui-react';
 import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
 import { connect } from "react-redux";
-import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
-import {fetchChallenge} from "../../redux_convenience/cacheItemTypeActions";
+import {fetchUserAttributes} from "../../redux/actions/userActions";
+import {fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
 import {parseISOString, timeLeft} from "../../logic/TimeHelper";
 import Spinner from "../props/Spinner";
 

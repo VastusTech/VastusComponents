@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {Checkbox, Modal, Button, Form, Segment, TextArea, Dropdown, Label, Image, Message} from 'semantic-ui-react';
 import {connect} from "react-redux";
-import {setError} from "../../redux_actions/infoActions";
+import {setError} from "../../redux/actions/infoActions";
 import VTLogo from "../../img/vt_new.svg";
-import {fetchEvent, putEvent} from "../../redux_convenience/cacheItemTypeActions";
+import {fetchEvent, putEvent} from "../../redux/convenience/cacheItemTypeActions";
 
 // Take from StackOverflow, nice snippit!
 // https://stackoverflow.com/a/17415677

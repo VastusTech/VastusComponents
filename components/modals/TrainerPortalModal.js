@@ -2,7 +2,7 @@ import React from 'react'
 import {Button, Card, Modal, Dimmer, Loader, List, Icon, Label, Divider } from 'semantic-ui-react'
 import { Storage } from 'aws-amplify';
 import ChallengeList from "../lists/ChallengeList";
-import {fetchUserAttributes, forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
+import {fetchUserAttributes, forceFetchUserAttributes} from "../../redux/actions/userActions";
 import { connect } from "react-redux";
 import TrainerFunctions from "../../database_functions/TrainerFunctions";
 import {calculateAge} from "../../logic/TimeHelper";

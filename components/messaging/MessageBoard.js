@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import CommentBox from "./MessageInput";
 import Messages from './Messages';
 import { Icon, Message, Divider } from "semantic-ui-react";
-import {fetchClient, fetchTrainer} from "../../redux_convenience/cacheItemTypeActions";
+import {fetchClient, fetchTrainer} from "../../redux/convenience/cacheItemTypeActions";
 import {
     queryNextMessagesFromBoard,
     discardBoard
-} from "../../redux_actions/messageActions";
+} from "../../redux/actions/messageActions";
 import {connect} from "react-redux";
 import ScrollView from "react-inverted-scrollview";
 // import {inspect} from 'util';

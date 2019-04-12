@@ -1,5 +1,5 @@
 import {err} from "../../Constants";
-import {getCacheName} from "../redux_actions/cacheActions";
+import {getCacheName} from "../redux/actions/cacheActions";
 import {getItemTypeFromID} from "./ItemType";
 /**
  * This helps access the redux actions properly, like getting cache object attributes

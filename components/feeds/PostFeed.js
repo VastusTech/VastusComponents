@@ -9,8 +9,8 @@ import {
     fetchClient,
     fetchTrainer,
     fetchPostQuery, fetchGroup
-} from "../../redux_convenience/cacheItemTypeActions";
-import {fetchUserAttributes} from "../../../redux_helpers/actions/userActions";
+} from "../../redux/convenience/cacheItemTypeActions";
+import {fetchUserAttributes} from "../../redux/actions/userActions";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import {log, err} from "../../../Constants";
 import {debugAlert} from "../../logic/DebuggingHelper";

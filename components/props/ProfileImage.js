@@ -5,7 +5,7 @@ import UploadImage from "../manager/UploadImage";
 import Spinner from "./Spinner";
 import ClientFunctions from "../../database_functions/UserFunctions";
 import ProfileImageGallery from "./ProfileImageGallery";
-import {setItemAttribute} from "../../redux_actions/cacheActions";
+import {setItemAttribute} from "../../redux/actions/cacheActions";
 
 type Props = {
     userID: string,

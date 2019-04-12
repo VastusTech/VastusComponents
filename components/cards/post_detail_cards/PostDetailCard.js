@@ -7,10 +7,10 @@
 import React, { Component } from 'react';
 import {Card, Modal, Button, Label, Icon, Divider, Image, Message, Dimmer, Loader} from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import {removeItem} from "../../../redux_actions/cacheActions";
-import {fetchClient, fetchTrainer, forceFetchPost, fetchPost} from "../../../redux_convenience/cacheItemTypeActions";
+import {removeItem} from "../../../redux/actions/cacheActions";
+import {fetchClient, fetchTrainer, forceFetchPost, fetchPost} from "../../../redux/convenience/cacheItemTypeActions";
 import { convertFromISO } from "../../../logic/TimeHelper";
-import { forceFetchUserAttributes } from "../../../../redux_helpers/actions/userActions";
+import { forceFetchUserAttributes } from "../../../redux/actions/userActions";
 import PostFunctions from "../../../database_functions/PostFunctions";
 import {Player} from "video-react";
 import { Storage } from "aws-amplify";

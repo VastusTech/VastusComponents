@@ -1,4 +1,4 @@
-import {SET_ERROR, TOGGLE_IS_LOADING, SET_IS_NOT_LOADING, SET_IS_LOADING, CLEAR_ERROR} from "../redux_reducers/infoReducer";
+import {SET_ERROR, TOGGLE_IS_LOADING, SET_IS_NOT_LOADING, SET_IS_LOADING, CLEAR_ERROR} from "../reducers/infoReducer";
 
 export function setError(error) {
     return {

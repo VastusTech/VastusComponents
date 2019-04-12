@@ -1,6 +1,6 @@
 import {setIsLoading, setIsNotLoading} from "./infoActions";
-import {log} from "../../Constants";
-import { ADD_HANDLER, REMOVE_CHANNEL, SET_PERMANENT_HANDLER, SET_HANDLER, CLEAR_CHANNELS } from "../redux_reducers/ablyReducer";
+import {log} from "../../../Constants";
+import { ADD_HANDLER, REMOVE_CHANNEL, SET_PERMANENT_HANDLER, SET_HANDLER, CLEAR_CHANNELS } from "../reducers/ablyReducer";
 
 // =========================================================================================================
 // ~ High-Level Ably Actions

@@ -2,12 +2,12 @@ import React, {Component, Fragment} from 'react'
 import {Grid, Button, Message, Image, Modal, Card, Icon, Form, Container, TextArea, Checkbox, Header} from 'semantic-ui-react';
 import { Storage } from 'aws-amplify';
 import {connect} from "react-redux";
-import {setError} from "../../redux_actions/infoActions";
+import {setError} from "../../redux/actions/infoActions";
 import {
     fetchPost,
     clearPostQuery,
     putPost,
-} from "../../redux_convenience/cacheItemTypeActions";
+} from "../../redux/convenience/cacheItemTypeActions";
 import PostFunctions from "../../database_functions/PostFunctions";
 import {Player} from "video-react";
 import {err, log} from "../../../Constants";

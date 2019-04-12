@@ -1,5 +1,5 @@
-import {removeChannelSubscription} from "../redux_actions/ablyActions";
-import {err} from "../../Constants";
+import {removeChannelSubscription} from "../actions/ablyActions";
+import {err} from "../../../Constants";
 
 export const ADD_MESSAGE = 'ADD_MESSAGE';
 export const ADD_QUERY = 'ADD_QUERY';
