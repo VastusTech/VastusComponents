@@ -14,12 +14,12 @@ class TrainerFunctions extends UserFunctions {
     // Create Functions ============================================================
 
     /**
-     * TODO
+     * Creates a Trainer in the database using as little info as allowed.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param name
-     * @param email
-     * @param username
+     * @param {string} name The display name of the Trainer to place into the database.
+     * @param {string} email The email address of the Trainer.
+     * @param {string} username The Cognito User Pool Username of the User.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -30,15 +30,15 @@ class TrainerFunctions extends UserFunctions {
     }
 
     /**
-     * TODO
+     * Creates a Trainer in the database using all the optional info that can be used for a normal Trainer.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param name
-     * @param gender
-     * @param birthday
-     * @param email
-     * @param username
-     * @param bio
+     * @param {string} name The display name of the Trainer to place into the database.
+     * @param {string} gender The gender of the Trainer.
+     * @param {string} birthday The ISO string of the date of birth for the Trainer.
+     * @param {string} email The email address of the Trainer.
+     * @param {string} username The Cognito User Pool Username of the User.
+     * @param {string} bio The biographical information description for the Trainer.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -49,13 +49,13 @@ class TrainerFunctions extends UserFunctions {
     }
 
     /**
-     * TODO
+     * Creates a Trainer with as little info as possible from a federated identity (Google, Facebook, ...).
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param name
-     * @param email
-     * @param username
-     * @param federatedID
+     * @param {string} name The display name of the Trainer to place into the database.
+     * @param {string} email The email address of the Trainer.
+     * @param {string} username The Cognito User Pool Username of the User.
+     * @param {string} federatedID The unique federated ID from the federated identity.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -66,16 +66,17 @@ class TrainerFunctions extends UserFunctions {
     }
 
     /**
-     * TODO
+     * Creates a Trainer in the database using all the optional info that can be used from a federated identity (Google,
+     * Facebook, ...).
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param name
-     * @param gender
-     * @param birthday
-     * @param email
-     * @param username
-     * @param federatedID
-     * @param bio
+     * @param {string} name The display name of the Trainer to place into the database.
+     * @param {string} gender The gender of the Trainer.
+     * @param {string} birthday The ISO string of the date of birth for the Trainer.
+     * @param {string} email The email address of the Trainer.
+     * @param {string} username The Cognito User Pool Username of the User.
+     * @param {string} federatedID The unique federated ID from the federated identity.
+     * @param {string} bio The biographical information description for the Trainer.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -92,17 +93,17 @@ class TrainerFunctions extends UserFunctions {
     // ======================================================================================================
 
     /**
-     * TODO
+     * Places a Trainer inside of the database using the given information.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param name
-     * @param gender
-     * @param birthday
-     * @param email
-     * @param username
-     * @param stripeID
-     * @param federatedID
-     * @param bio
+     * @param {string} name The display name of the Trainer to place into the database.
+     * @param {string} gender The gender of the Trainer.
+     * @param {string} birthday The ISO string of the date of birth for the Trainer.
+     * @param {string} email The email address of the Trainer.
+     * @param {string} username The Cognito User Pool Username of the User.
+     * @param {string} stripeID The Stripe ID for the Trainer.
+     * @param {string} federatedID The unique federated ID from the federated identity.
+     * @param {string} bio The biographical information description for the Trainer.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -132,10 +133,10 @@ class TrainerFunctions extends UserFunctions {
     }
 
     /**
-     * TODO
+     * Deletes a Trainer in the database and its dependencies.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param trainerID
+     * @param {string} trainerID The ID of the Trainer to delete.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.

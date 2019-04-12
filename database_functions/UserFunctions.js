@@ -331,6 +331,7 @@ class UserFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static delete(fromID, userID, successHandler, failureHandler) {
+        // TODO Delete all the S3 Paths within the User?
         return Lambda.delete(fromID, userID, getItemTypeFromID(userID), successHandler, failureHandler);
     }
 }

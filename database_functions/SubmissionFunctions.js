@@ -10,17 +10,16 @@ class SubmissionFunctions {
     // ======================================================================================================
 
     // Create Functions ============================================================
-    // TODO IMPORTANT: pictures and videos are objects with { key = S3Path : value = file }
 
     /**
-     * TODO
+     * Creates a Submission within a Challenge to become a candidate for winning a Challenge.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param by
-     * @param challengeID
-     * @param description
-     * @param pictures
-     * @param videos
+     * @param {string} by The ID of the User who created the Submission.
+     * @param {string} challengeID The ID of the Challenge to complete the submission for.
+     * @param {string} description The string description for the Submission.
+     * @param {{}} pictures The picture map with key/value = S3Path : file, dictating the pictures to add with what key.
+     * @param {{}} videos The video map with key/value = S3Path : file, dictating the videos to add with what key.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -33,34 +32,34 @@ class SubmissionFunctions {
     // Update Functions ============================================================
 
     /**
-     * TODO
+     * Updates the description of a Submission in the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param postID
-     * @param description
+     * @param {string} submissionID The ID of the Submission to update.
+     * @param {string} description The description for the Submission to set.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static updateDescription(fromID, postID, description, successHandler, failureHandler) {
-        return this.updateSet(fromID, postID, "description", description, successHandler, failureHandler);
+    static updateDescription(fromID, submissionID, description, successHandler, failureHandler) {
+        return this.updateSet(fromID, submissionID, "description", description, successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Adds a picture to a Submission object in the database and in S3.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param postID
-     * @param picture
-     * @param picturePath
+     * @param {string} submissionID The ID of the Submission to update.
+     * @param {*} picture The picture file to place into S3.
+     * @param {string} picturePath The path of the picture to put into S3 and add to the Submission.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      */
-    static addPicture(fromID, postID, picture, picturePath, successHandler, failureHandler) {
+    static addPicture(fromID, submissionID, picture, picturePath, successHandler, failureHandler) {
         S3.putImage(picturePath, picture, () => {
-            return this.updateAdd(fromID, postID, "picturePaths", picturePath, successHandler, (error) => {
+            return this.updateAdd(fromID, submissionID, "picturePaths", picturePath, successHandler, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(picturePath);
                 failureHandler(error);
@@ -69,19 +68,19 @@ class SubmissionFunctions {
     }
 
     /**
-     * TODO
+     * Adds a video to a Submission object in the database and in S3.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param postID
-     * @param video
-     * @param videoPath
+     * @param {string} submissionID The ID of the Submission to update.
+     * @param {*} video The video file to place into S3.
+     * @param {string} videoPath The path of the video to put into S3 and add to the Submission.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      */
-    static addVideo(fromID, postID, video, videoPath, successHandler, failureHandler) {
+    static addVideo(fromID, submissionID, video, videoPath, successHandler, failureHandler) {
         S3.putVideo(videoPath, video, successHandler, failureHandler, () => {
-            return this.updateAdd(fromID, postID, "videoPaths", videoPath, successHandler, (error) => {
+            return this.updateAdd(fromID, submissionID, "videoPaths", videoPath, successHandler, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(videoPath);
                 failureHandler(error);
@@ -90,18 +89,18 @@ class SubmissionFunctions {
     }
 
     /**
-     * TODO
+     * Removes a picture from a Submission in the database and in S3.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param postID
-     * @param picturePath
+     * @param {string} submissionID The ID of the Submission to update.
+     * @param {string} picturePath The S3 path of the picture.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static removePicture(fromID, postID, picturePath, successHandler, failureHandler) {
-        return this.updateRemove(fromID, postID, "picturePaths", picturePath, (data) => {
+    static removePicture(fromID, submissionID, picturePath, successHandler, failureHandler) {
+        return this.updateRemove(fromID, submissionID, "picturePaths", picturePath, (data) => {
             S3.delete(picturePath, () => {
                 successHandler(data);
             }, failureHandler);
@@ -109,18 +108,18 @@ class SubmissionFunctions {
     }
 
     /**
-     * TODO
+     * Removes a video from a Submission in the database and in S3.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param postID
-     * @param videoPath
+     * @param {string} submissionID The ID of the Submission to update.
+     * @param {string} videoPath The S3 path of the video.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static removeVideo(fromID, postID, videoPath, successHandler, failureHandler) {
-        return this.updateRemove(fromID, postID, "videoPaths", videoPath, (data) => {
+    static removeVideo(fromID, submissionID, videoPath, successHandler, failureHandler) {
+        return this.updateRemove(fromID, submissionID, "videoPaths", videoPath, (data) => {
             S3.delete(videoPath, () => {
                 successHandler(data);
             }, failureHandler);
@@ -132,14 +131,14 @@ class SubmissionFunctions {
     // ======================================================================================================
 
     /**
-     * TODO
+     * Creates a Submission object in the database using the information given.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param by
-     * @param description
-     * @param about
-     * @param pictures
-     * @param videos
+     * @param {string} by The ID of the User who created the Submission.
+     * @param {string} about The ID of the object to complete the submission for.
+     * @param {string} description The string description for the Submission.
+     * @param {{}} pictures The picture map with key/value = S3Path : file, dictating the pictures to add with what key.
+     * @param {{}} videos The video map with key/value = S3Path : file, dictating the videos to add with what key.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -199,28 +198,29 @@ class SubmissionFunctions {
         }, failureHandler);
     }
 
-    static updateAdd(fromID, postID, attributeName, attributeValue, successHandler, failureHandler) {
-        return Lambda.updateAddToAttribute(fromID, postID, "Submission", attributeName, attributeValue, successHandler, failureHandler);
+    static updateAdd(fromID, submissionID, attributeName, attributeValue, successHandler, failureHandler) {
+        return Lambda.updateAddToAttribute(fromID, submissionID, "Submission", attributeName, attributeValue, successHandler, failureHandler);
     }
-    static updateRemove(fromID, postID, attributeName, attributeValue, successHandler, failureHandler) {
-        return Lambda.updateRemoveFromAttribute(fromID, postID, "Submission", attributeName, attributeValue, successHandler, failureHandler);
+    static updateRemove(fromID, submissionID, attributeName, attributeValue, successHandler, failureHandler) {
+        return Lambda.updateRemoveFromAttribute(fromID, submissionID, "Submission", attributeName, attributeValue, successHandler, failureHandler);
     }
-    static updateSet(fromID, postID, attributeName, attributeValue, successHandler, failureHandler) {
-        return Lambda.updateSetAttribute(fromID, postID, "Submission", attributeName, attributeValue, successHandler, failureHandler);
+    static updateSet(fromID, submissionID, attributeName, attributeValue, successHandler, failureHandler) {
+        return Lambda.updateSetAttribute(fromID, submissionID, "Submission", attributeName, attributeValue, successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Deletes a Submission from the database and all of its dependencies.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param postID
+     * @param {string} submissionID The ID of the Submission to delete.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static delete(fromID, postID, successHandler, failureHandler) {
-        return Lambda.delete(fromID, postID, "Submission", successHandler, failureHandler);
+    static delete(fromID, submissionID, successHandler, failureHandler) {
+        // TODO Delete all the S3 Paths within the Post?
+        return Lambda.delete(fromID, submissionID, "Submission", successHandler, failureHandler);
     }
 }
 

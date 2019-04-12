@@ -101,8 +101,8 @@ class ClientFunctions extends UserFunctions {
      * @param {string} birthday The ISO string of the date of birth for the Client.
      * @param {string} email The email address of the Client.
      * @param {string} username The Cognito User Pool Username of the User.
-     * @param stripeID
-     * @param federatedID
+     * @param {string} stripeID The Stripe ID for the Client.
+     * @param {string} federatedID The unique federated ID from the federated identity.
      * @param {string} bio The biographical information description for the Client.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
