@@ -11,7 +11,7 @@ import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
 import PostCard, {PostCardInfo} from "../cards/PostCard";
 import MessageBoardCard from "./MessageBoardCard";
 import MessageBoard from "./MessageBoard";
-import MessageHandler from "../../api/MessageHandler";
+import {getMessageBoardName} from "../../logic/MessageHelper";
 
 type Props = {
     ids: [string],
@@ -84,7 +84,7 @@ class DatabaseObjectList extends Component<Props> {
     }
 
     handleMessagePress(otherUserID) {
-        this.setState({board: MessageHandler.getBoard([this.props.user.id, otherUserID])})
+        this.setState({board: getMessageBoardName([this.props.user.id, otherUserID])})
     }
 
     render() {

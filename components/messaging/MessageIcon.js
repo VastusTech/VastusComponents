@@ -4,7 +4,7 @@ import {
     peekAtFirstMessageFromBoard,
 } from "../../redux/actions/messageActions";
 import {connect} from "react-redux";
-import MessageHandler from "../../api/MessageHandler";
+import {ifMessageUnreadFor} from "../../logic/MessageHelper";
 
 const MessageIcon = (props) => {
     useEffect(() => {
@@ -26,7 +26,7 @@ const MessageIcon = (props) => {
             for (let i = 0; i < numBoards; i++) {
                 const board = props.message.boards[boards[i]];
                 if (board && board.length > 0) {
-                    if (MessageHandler.ifUnreadFor(props.user.id, board[0])) {
+                    if (ifMessageUnreadFor(props.user.id, board[0])) {
                         unread++;
                     }
                 }

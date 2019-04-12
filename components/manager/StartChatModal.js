@@ -6,8 +6,9 @@ import {fetchClient, fetchTrainer} from "../../redux/convenience/cacheItemTypeAc
 import {fetchUserAttributes} from "../../redux/actions/userActions";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import TrainerCard from "../cards/TrainerCard";
-import MessageHandler from "../../api/MessageHandler";
 import UserFunctions from "../../database_functions/UserFunctions";
+import {getMessageBoardName} from "../../logic/MessageHelper";
+import {debugAlert} from "../../logic/DebuggingHelper";
 
 type Props = {
     open: boolean,
@@ -51,9 +52,9 @@ class StartChatModal extends Component<Props> {
     }
 
     createChat() {
-        alert("Creating chat with " + JSON.stringify(this.state.selectedIDs));
-        alert(MessageHandler.getBoard(this.state.selectedIDs));
-        UserFunctions.addMessageBoard(this.props.user.id, this.props.user.id, MessageHandler.getBoard(this.state.selectedIDs),
+        debugAlert("Creating chat with " + JSON.stringify(this.state.selectedIDs));
+        debugAlert(getMessageBoardName(this.state.selectedIDs));
+        UserFunctions.addMessageBoard(this.props.user.id, this.props.user.id, getMessageBoardName(this.state.selectedIDs),
             () => {
                 console.log("Successfully added message board to chat")
                 this.close();

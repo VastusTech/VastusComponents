@@ -2,14 +2,14 @@ import React, {useState, useEffect} from 'react'
 import {Button, Card, Modal, Dimmer, Loader, List, Icon } from 'semantic-ui-react'
 import ChallengeList from "../lists/ChallengeList";
 import { connect } from "react-redux";
-import TrainerPostFeed from "../lists/TrainerPostFeed";
+// import TrainerPostFeed from "../lists/TrainerPostFeed";
 import EventList from "../lists/EventList";
 import MessageBoard from "../messaging/MessageBoard";
-import MessageHandler from "../../api/MessageHandler";
 import {getTrainerAttribute} from "../../logic/CacheRetrievalHelper";
 import ProfileImage from "../props/ProfileImage";
 import {fetchPost, fetchTrainer} from "../../redux/convenience/cacheItemTypeActions";
 import {PostCardInfo} from "../cards/PostCard";
+import {getMessageBoardName} from "../../logic/MessageHelper";
 
 const TrainerModalInfo = {
     fetchList: [],
@@ -95,7 +95,7 @@ const TrainerModal = (props: Props) => {
                         </List.Item>
                         <List.Item>
                             <Modal trigger={<Button primary fluid><Icon name="wechat" /> Trainer Chat</Button>}>
-                                <MessageBoard board={MessageHandler.getBoard([getAttribute("id"), props.user.id])}/>
+                                <MessageBoard board={getMessageBoardName([getAttribute("id"), props.user.id])}/>
                             </Modal>
                         </List.Item>
                     </List>

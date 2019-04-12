@@ -9,11 +9,11 @@ import {forceFetchUserAttributes} from "../../redux/actions/userActions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 import UserFunctions from "../../database_functions/UserFunctions";
 import {debugAlert} from "../../logic/DebuggingHelper";
-import MessageHandler from "../../api/MessageHandler";
 import MessageBoard from "../messaging/MessageBoard";
 import {log, err} from "../../../Constants";
 import {getClientAttribute} from "../../logic/CacheRetrievalHelper";
 import Spinner from "../props/Spinner";
+import {getMessageBoardName} from "../../logic/MessageHelper";
 
 type Props = {
     open: boolean,
@@ -273,7 +273,7 @@ const ClientModal = (props: Props) => {
                 {/*{createSuccessLabel()}*/}
             {/*</Modal.Content>*/}
             <Modal trigger={<Button primary fluid><Icon name="wechat" /> Chat </Button>}>
-                <MessageBoard board={MessageHandler.getBoard([getAttribute("id"), props.user.id])}/>
+                <MessageBoard board={getMessageBoardName([getAttribute("id"), props.user.id])}/>
             </Modal>
         </Modal>
     );

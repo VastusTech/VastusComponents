@@ -5,12 +5,12 @@ import Spinner from "../../components/props/Spinner";
 import MessageBoardCard from "./MessageBoardCard";
 import {fetchUserAttributes} from "../../redux/actions/userActions";
 import {err, log} from "../../../Constants";
-import MessageHandler from "../../api/MessageHandler";
 import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import {fetchItem} from "../../redux/actions/cacheActions";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import {queryNextMessagesFromBoard, setBoardRead} from "../../redux/actions/messageActions";
 import MessageFunctions from "../../database_functions/MessageFunctions";
+import {getIDsFromMessageBoard, ifMessageUnreadFor} from "../../logic/MessageHelper";
 
 type Props = {
     userID: string
@@ -40,7 +40,7 @@ class MessageBoardFeed extends Component<Props> {
                     if (user.messageBoards.hasOwnProperty(key)) {
                         const board = user.messageBoards[key];
                         // this.props.queryNextMessagesFromBoard(board, 1);
-                        const ids = MessageHandler.getIDsFromBoard(board);
+                        const ids = getIDsFromMessageBoard(board);
                         for (const key in ids) {
                             if (ids.hasOwnProperty(key) && ids[key] !== newProps.userID) {
                                 // fetch the attributes
@@ -58,7 +58,7 @@ class MessageBoardFeed extends Component<Props> {
     }
 
     boardTitle(board) {
-        const ids = MessageHandler.getIDsFromBoard(board);
+        const ids = getIDsFromMessageBoard(board);
         if (ids.length === 1) {
             // challenge / event / group ? Will these be here? Actually totally yes!
         }
@@ -86,7 +86,7 @@ class MessageBoardFeed extends Component<Props> {
         return "";
     };
     boardProPic(board) {
-        const ids = MessageHandler.getIDsFromBoard(board);
+        const ids = getIDsFromMessageBoard(board);
         if (ids.length === 1) {
             // challenge / event / group ? Will these be here? Actually totally yes!
         }
@@ -107,7 +107,7 @@ class MessageBoardFeed extends Component<Props> {
     };
     unread(board) {
         if (board && this.props.message.boards[board] && this.props.message.boards[board].length > 0) {
-            return MessageHandler.ifUnreadFor(this.props.user.id, this.props.message.boards[board][0]);
+            return ifMessageUnreadFor(this.props.user.id, this.props.message.boards[board][0]);
         }
         return false;
     };
