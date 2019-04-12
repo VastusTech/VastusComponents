@@ -27,6 +27,14 @@ type Props = {
 }
 
 // TODO Make this look better?
+
+/**
+ * Displays the image and video media for the submissions.
+ *
+ * @param {[]} pictures A list of all the pictures in the submission
+ * @param {[]} videos A list of all the videos in the submission
+ * @returns {*} The React JSX used to display the video or image in a post.
+ */
 const getDisplayMedia = (pictures, videos) => {
     // TODO How to properly display videos and pictures?
     if (videos && videos.length > 0) {
@@ -58,10 +66,12 @@ const getDisplayMedia = (pictures, videos) => {
 // }
 
 /**
- * Trainer Card
- *
  * This is the generic view for how a trainer shows up in any feeds or lists.
  * It is used as a modal trigger in the feed.
+ *
+ * @param {Props} props The given props to the component.
+ * @returns {*} The React JSX used to display the component.
+ * @constructor
  */
 const SubmissionCard = (props: Props) => (
     <Card>
