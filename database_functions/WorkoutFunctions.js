@@ -2,6 +2,9 @@ import Lambda from "../api/Lambda";
 
 const itemType = "Workout";
 
+/**
+ * Holds all the potential properly formatted Lambda functions for Workouts.
+ */
 class WorkoutFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================

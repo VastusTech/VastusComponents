@@ -1,4 +1,4 @@
-// This will just be filled with a bunch of optimized array functions we'll need
+// Helpful and optimized functions for dealing with arrays
 
 /**
  * Deletes all the elements present in "minusArray" from "originalArray". Cannot be array of objects.

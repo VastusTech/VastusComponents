@@ -1,4 +1,6 @@
-import {err, log} from "../../Constants";
+import {err} from "../../Constants";
+
+// Handles the item type logic for the application.
 
 const ItemType = {
     Client: "Client",
@@ -28,36 +30,37 @@ for (const key in ItemType) {
 }
 
 /**
- * TODO
+ * Gets the item type from the ID given the prefix of the ID.
  *
- * @param id
- * @return {*}
+ * @param {string} id The object id in question.
+ * @return {string|null} The name of the item type that corresponds to the ID or null if not found.
  */
 export function getItemTypeFromID(id) {
     return prefixes[id.substring(0, numPrefix)];
 }
 
 /**
- * TODO
+ * Succinctly chooses action based on the potential values and the given item type. Returns which one the item type
+ * corresponds to.
  *
- * @param itemType
- * @param clientValue
- * @param trainerValue
- * @param gymValue
- * @param workoutValue
- * @param reviewValue
- * @param eventValue
- * @param challengeValue
- * @param inviteValue
- * @param postValue
- * @param submissionValue
- * @param groupValue
- * @param commentValue
- * @param sponsorValue
- * @param messageValue
- * @param streakValue
- * @param errorMessage
- * @return {*}
+ * @param {string} itemType The item type to switch.
+ * @param {string} clientValue The _ value.
+ * @param {string} trainerValue The Trainer value.
+ * @param {string} gymValue The Gym value.
+ * @param {string} workoutValue The Workout value.
+ * @param {string} reviewValue The Review value.
+ * @param {string} eventValue The Event value.
+ * @param {string} challengeValue The Challenge value.
+ * @param {string} inviteValue The Invite value.
+ * @param {string} postValue The Post value.
+ * @param {string} submissionValue The Submission value.
+ * @param {string} groupValue The Group value.
+ * @param {string} commentValue The Comment value.
+ * @param {string} sponsorValue The Sponsor value.
+ * @param {string} messageValue The Message value.
+ * @param {string} streakValue The Streak value.
+ * @param {string} errorMessage The error message to console if the item is unrecognized.
+ * @return {*} The specific item type value.
  */
 export function switchReturnItemType(itemType, clientValue, trainerValue, gymValue, workoutValue, reviewValue, eventValue, challengeValue, inviteValue, postValue, submissionValue, groupValue, commentValue, sponsorValue, messageValue, streakValue, errorMessage) {
     let returnValue = null;
@@ -121,25 +124,26 @@ export function switchReturnItemType(itemType, clientValue, trainerValue, gymVal
 }
 
 /**
- * TODO
+ * Succinctly chooses action based on the potential values and the given item type. Handles with handler the item type
+ * corresponds to.
  *
- * @param itemType
- * @param clientHandler
- * @param trainerHandler
- * @param gymHandler
- * @param workoutHandler
- * @param reviewHandler
- * @param eventHandler
- * @param challengeHandler
- * @param inviteHandler
- * @param postHandler
- * @param submissionHandler
- * @param groupHandler
- * @param commentHandler
- * @param sponsorHandler
- * @param messageHandler
- * @param streakHandler
- * @param errorMessage
+ * @param {string} itemType The item type to switch.
+ * @param {string} clientHandler The _ value.
+ * @param {string} trainerHandler The _ value.
+ * @param {string} gymHandler The _ value.
+ * @param {string} workoutHandler The _ value.
+ * @param {string} reviewHandler The _ value.
+ * @param {string} eventHandler The _ value.
+ * @param {string} challengeHandler The _ value.
+ * @param {string} inviteHandler The _ value.
+ * @param {string} postHandler The _ value.
+ * @param {string} submissionHandler The _ value.
+ * @param {string} groupHandler The _ value.
+ * @param {string} commentHandler The _ value.
+ * @param {string} sponsorHandler The _ value.
+ * @param {string} messageHandler The _ value.
+ * @param {string} streakHandler The _ value.
+ * @param errorMessage The error message to console if the item type is unrecognized.
  */
 export function switchHandleItemType(itemType, clientHandler, trainerHandler, gymHandler, workoutHandler, reviewHandler, eventHandler, challengeHandler, inviteHandler, postHandler, submissionHandler, groupHandler, commentHandler, sponsorHandler, messageHandler, streakHandler, errorMessage) {
     let itemHandler = null;

@@ -8,6 +8,16 @@ import ClientFunctions from "../../database_functions/ClientFunctions";
 import {appUserItemType, err, log} from "../../../Constants";
 import TrainerFunctions from "../../database_functions/TrainerFunctions";
 
+// =========================================================================================================
+// ~ High-Level Auth Actions
+// =========================================================================================================
+
+/**
+ * Updates the authentication status of the application. Used for when the user opens up the app again and the cookies
+ * still have their credentials, so we can automatically log them in.
+ *
+ * @return {function(function(*))} The given function to dispatch a new action in the redux system.
+ */
 export function updateAuth() {
     return (dispatch) => {
         // TODO This could totally be overkill lol
@@ -58,6 +68,14 @@ export function updateAuth() {
         });
     }
 }
+
+/**
+ * Logs into the application using the username and password fields.
+ *
+ * @param {string} username The username inputted for the login.
+ * @param {string} password The password inputted for the login.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
+ */
 export function logIn(username, password) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -105,6 +123,12 @@ export function logIn(username, password) {
         });
     };
 }
+
+/**
+ * Logs out of the application and cleans up the app from the user.
+ *
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
+ */
 export function logOut() {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -121,6 +145,14 @@ export function logOut() {
         });
     }
 }
+
+/**
+ * Signs into the application using the Google Sign in Auth Flow. If the user is just first joining in, then it creates
+ * a new User object for the person using the application.
+ *
+ * @param {{}} googleUser The Google User API object from the Authenticated response.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
+ */
 export function googleSignIn(googleUser) {
     return (dispatch, getStore) => {
         // Useful data for your client-side scripts:
@@ -215,9 +247,20 @@ export function googleSignIn(googleUser) {
         });
     };
 }
+
+/**
+ * Generates a new username from the Google User's information and checks that it actually is a unique username in the
+ * database before attempting to sign up with it.
+ *
+ * @param {string} name The name of the Google User.
+ * @param {function(string)} usernameHandler The function that handles the finished prepared username.
+ * @param {function(error)} failureHandler The function that handles any potential errors.
+ * @param {number} depth The recursion depth of the function. Initialized at 0.
+ */
 function generateGoogleUsername(name, usernameHandler, failureHandler, depth=0) {
     const randomInt = Math.floor((Math.random() * 10000000) + 1);
-    const randomGoogleUsername = name + randomInt;
+    // Remove white space from the name before creating the random google username
+    const randomGoogleUsername = name.replace(/\s+/g, '') + randomInt;
     QL.getItemByUsername(appUserItemType, randomGoogleUsername, ["username"], (user) => {
         if (user) {
             // That means there's a conflict
@@ -239,6 +282,17 @@ function generateGoogleUsername(name, usernameHandler, failureHandler, depth=0) 
         failureHandler(error);
     });
 }
+
+/**
+ * Signs up to the Vastus Application using the given fields in the sign up flow.
+ *
+ * @param {string} username The given (unique) username for the User to identify with.
+ * @param {string} password The password for the User to log in with.
+ * @param {string} name The display name for the User to show.
+ * @param {string} email The User's email address.
+ * @param {string} enterpriseID The potential enterprise ID given for a User for their enterprise account.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
+ */
 export function signUp(username, password, name, email, enterpriseID) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -291,6 +345,14 @@ export function signUp(username, password, name, email, enterpriseID) {
         });
     }
 }
+
+/**
+ * Confirms the Sign up from the verification code sent to the User's email.
+ *
+ * @param {string} username The username of the User.
+ * @param {string} confirmationCode The confirmation code for the user to input.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
+ */
 export function confirmSignUp(username, confirmationCode) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -306,6 +368,13 @@ export function confirmSignUp(username, confirmationCode) {
         });
     }
 }
+
+/**
+ * Triggers the forgot password flow, allowing the user to have a reset password token sent to their email.
+ *
+ * @param {string} username The username of the User.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
+ */
 export function forgotPassword(username) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -320,6 +389,15 @@ export function forgotPassword(username) {
         });
     };
 }
+
+/**
+ * Resets the User's password after receiving the forgot password confirmation code.
+ *
+ * @param {string} username The User's identifying username.
+ * @param {string} confirmationCode The confirmation code that the User received from the email.
+ * @param {string} newPassword The new password the want to give to their account.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
+ */
 export function confirmForgotPassword(username, confirmationCode, newPassword) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
@@ -335,6 +413,10 @@ export function confirmForgotPassword(username, confirmationCode, newPassword) {
         });
     }
 }
+
+// =========================================================================================================
+// ~ Low-Level Auth Actions
+// =========================================================================================================
 
 export function openSignUpModal() {
     return {

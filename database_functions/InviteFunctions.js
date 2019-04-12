@@ -2,6 +2,9 @@ import Lambda from "../api/Lambda";
 
 const itemType = "Invite";
 
+/**
+ * Holds all the potential properly formatted Lambda functions for Invites.
+ */
 class InviteFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
