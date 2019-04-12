@@ -12,12 +12,12 @@ const defaultProfilePicture = require("../img/roundProfile.png");
 // =========================================================================================================
 
 /**
- * TODO
+ * Fetches the first message in a board. Primarily used for previews of boards.
  *
- * @param board
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {string} board The name of the board to get the first message of.
+ * @param {function({})} dataHandler The function to handle the fetched first message.
+ * @param {function(error)} failureHandler The function to handle any errors that may occur.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function peekAtFirstMessageFromBoard(board, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
@@ -38,13 +38,13 @@ export function peekAtFirstMessageFromBoard(board, dataHandler, failureHandler) 
 }
 
 /**
- * TODO
+ * Fetches another batch of messages from a board. For actually looking at the messages in the board viewer.
  *
- * @param board
- * @param limit
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {string} board The board to receive the messages for.
+ * @param {number} limit The number of messages to receive from the query.
+ * @param {function([{}])} dataHandler The function to handle the number of messages received.
+ * @param {function(error)} failureHandler The function to handle any errors that may occur.
+ * @return {function(function(*))} The given function to dispatch a new action in the redux system.
  */
 export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHandler) {
     return (dispatch) => {
@@ -53,13 +53,14 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
 }
 
 /**
- * TODO
- * @param board
- * @param limit
- * @param ifSubscribe
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * Queries the next messages from the board, potentially also subscribing to the board's updates.
+ *
+ * @param {string} board The board to query the next messages from.
+ * @param {number} limit The limit of messages to receive from the query.
+ * @param {boolean} ifSubscribe If the query should also subscribe to the board.
+ * @param {function([{}])} dataHandler The function to handle the fetched messages.
+ * @param {function(error)} failureHandler The function to handle any errors that may occur.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 function queryNextMessagesFromBoardOptionalSubscribe(board, limit, ifSubscribe, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
@@ -119,13 +120,13 @@ function queryNextMessagesFromBoardOptionalSubscribe(board, limit, ifSubscribe, 
 /**
  * This function takes in a list of messages and fetches all of their image attributes from AWS S3.
  *
- * @param messages The list of messages to fetch the image attribute of.
- * @param messagePathField The field in the Message object that contains the S3 path for the image.
- * @param messageURLField The field in the Message object to put the URL in.
- * @param defaultURL The default URL to put into the URL field (if fails or not applicable).
- * @param fetchChecker The checker that takes in a Message object and returns a boolean for if the message
- * should be fetched
- * @param dataHandler The handler at the end of the function that returns the newly fetched messages array.
+ * @param {[{}]} messages The list of messages to fetch the image attribute of.
+ * @param {string} messagePathField The field in the Message object that contains the S3 path for the image.
+ * @param {string} messageURLField The field in the Message object to put the URL in.
+ * @param {string} defaultURL The default URL to put into the URL field (if fails or not applicable).
+ * @param {function({})} fetchChecker {boolean} The checker that takes in a Message object and returns a boolean for
+ * if the message should be fetched
+ * @param {function([{}])} dataHandler The handler that returns the updated messages.
  */
 function addURLToMessages(messages, messagePathField, messageURLField, defaultURL, fetchChecker, dataHandler) {
     const messagesLength = messages.length;
@@ -146,14 +147,15 @@ function addURLToMessages(messages, messagePathField, messageURLField, defaultUR
 }
 
 /**
- * TODO
+ * Adds S3 data to the message based on the fields given.
  *
- * @param message
- * @param messagePathField
- * @param messageURLField
- * @param defaultURL
- * @param fetchChecker
- * @param dataHandler
+ * @param {{}} message The message object to update.
+ * @param {string} messagePathField The field in the Message object that contains the S3 path for the image.
+ * @param {string} messageURLField The field in the Message object to put the URL in.
+ * @param {string} defaultURL The default URL to put into the URL field (if fails or not applicable).
+ * @param {function({message: string})} fetchChecker {boolean} The checker that takes in a Message object and returns a boolean for
+ * if the message should be fetched
+ * @param {function({})} dataHandler The handler that returns the updated message.
  */
 function addURLToMessage(message, messagePathField, messageURLField, defaultURL, fetchChecker, dataHandler) {
     if (fetchChecker(message)) {
@@ -173,13 +175,13 @@ function addURLToMessage(message, messagePathField, messageURLField, defaultURL,
 }
 
 /**
- * TODO
+ * Adds a message to its board from an Ably notification that comes in.
  *
- * @param board
- * @param message
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {string} board The board to update with the newly received message.
+ * @param {{message: string}} message The message received from the Ably notification.
+ * @param {function({})} dataHandler The function to handle the successfully placed message.
+ * @param {function(error)} failureHandler The function to handle any errors that may occur.
+ * @return {function(function(*))} The given function to dispatch a new action in the redux system.
  */
 export function addMessageFromNotification(board, message, dataHandler, failureHandler) {
     return (dispatch) => {

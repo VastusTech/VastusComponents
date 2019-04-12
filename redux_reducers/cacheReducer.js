@@ -2,6 +2,12 @@ import {err} from "../../Constants";
 import {removeChannelSubscription} from "../redux_actions/ablyActions";
 import {addUniqueToArray, subtractArray} from "../logic/ArrayHelper";
 
+/**
+ * Gets the object channel Ably name from the given id.
+ *
+ * @param id The id of the object to get the channel of.
+ * @return {string} The name of the channel.
+ */
 export function getObjectChannelName(id) {
     return id + "-Updates";
 }
@@ -240,50 +246,75 @@ const initialState = {
     streakQueryLRUHandler: [],
 };
 
+/**
+ * Cache Reducer:
+ *
+ * This reducer handles all the cache-ing of data and updating of all database data shown within the application.
+ * Handles all object permanence, LRU cache eviction, and query handling. Also can update the database manually using
+ * specific functions.
+ *
+ * @param {*} state The current state of the cache reducer.
+ * @param {{type: string, payload: *}} action The action to specify how to update the reducer.
+ * @return {*} The next state for the reducer.
+ */
 export default (state = initialState, action) => {
     switch (action.type) {
         // TODO Also make sure that the item to get also has all the attributes we desire?
         case FETCH_CLIENT:
-            state = addObjectToCache(state, "clients", clientCacheSize, "clientLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "clients", clientCacheSize, "clientLRUHandler", action.payload.object,
+                action.asyncDispatch);
             break;
         case FETCH_TRAINER:
-            state = addObjectToCache(state, "trainers", trainerCacheSize, "trainerLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "trainers", trainerCacheSize, "trainerLRUHandler", action.payload.object,
+                action.asyncDispatch);
             break;
         case FETCH_GYM:
-            state = addObjectToCache(state, "gyms", gymCacheSize, "gymLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "gyms", gymCacheSize, "gymLRUHandler", action.payload.object,
+                action.asyncDispatch);
             break;
         case FETCH_WORKOUT:
-            state = addObjectToCache(state, "workouts", workoutCacheSize, "workoutLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "workouts", workoutCacheSize, "workoutLRUHandler", action.payload.object,
+                action.asyncDispatch);
             break;
         case FETCH_REVIEW:
-            state = addObjectToCache(state, "reviews", reviewCacheSize, "reviewLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "reviews", reviewCacheSize, "reviewLRUHandler", action.payload.object,
+                action.asyncDispatch);
             break;
         case FETCH_EVENT:
-            state = addObjectToCache(state, "events", eventCacheSize, "eventLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "events", eventCacheSize, "eventLRUHandler", action.payload.object,
+                action.asyncDispatch);
             break;
         case FETCH_CHALLENGE:
-            state = addObjectToCache(state, "challenges", challengeCacheSize, "challengeLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "challenges", challengeCacheSize, "challengeLRUHandler",
+                action.payload.object, action.asyncDispatch);
             break;
         case FETCH_INVITE:
-            state = addObjectToCache(state, "invites", inviteCacheSize, "inviteLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "invites", inviteCacheSize, "inviteLRUHandler", action.payload.object,
+                action.asyncDispatch);
             break;
         case FETCH_POST:
-            state = addObjectToCache(state, "posts", postCacheSize, "postLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "posts", postCacheSize, "postLRUHandler", action.payload.object,
+                action.asyncDispatch);
             break;
         case FETCH_SUBMISSION:
-            state = addObjectToCache(state, "submissions", submissionCacheSize, "submissionLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "submissions", submissionCacheSize, "submissionLRUHandler",
+                action.payload.object, action.asyncDispatch);
             break;
         case FETCH_GROUP:
-            state = addObjectToCache(state, "groups", groupCacheSize, "groupLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "groups", groupCacheSize, "groupLRUHandler", action.payload.object,
+                action.asyncDispatch);
             break;
         case FETCH_COMMENT:
-            state = addObjectToCache(state, "comments", commentCacheSize, "commentLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "comments", commentCacheSize, "commentLRUHandler", action.payload.object,
+                action.asyncDispatch);
             break;
         case FETCH_SPONSOR:
-            state = addObjectToCache(state, "sponsors", sponsorCacheSize, "sponsorLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "sponsors", sponsorCacheSize, "sponsorLRUHandler", action.payload.object,
+                action.asyncDispatch);
             break;
         case FETCH_STREAK:
-            state = addObjectToCache(state, "streaks", streakCacheSize, "streakLRUHandler", action.payload.object, action.asyncDispatch);
+            state = addObjectToCache(state, "streaks", streakCacheSize, "streakLRUHandler", action.payload.object,
+                action.asyncDispatch);
             break;
         case SET_CLIENT_ATTRIBUTE_INDEX:
             state = setAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
@@ -426,46 +457,60 @@ export default (state = initialState, action) => {
             state = removeAttributes(state, action.payload.id, action.payload.attributes, "streaks");
             break;
         case REMOVE_CLIENT_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "clients");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "clients");
             break;
         case REMOVE_TRAINER_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "trainers");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "trainers");
             break;
         case REMOVE_GYM_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "gyms");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "gyms");
             break;
         case REMOVE_WORKOUT_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "workouts");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "workouts");
             break;
         case REMOVE_REVIEW_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "reviews");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "reviews");
             break;
         case REMOVE_EVENT_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "events");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "events");
             break;
         case REMOVE_CHALLENGE_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "challenges");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "challenges");
             break;
         case REMOVE_INVITE_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "invites");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "invites");
             break;
         case REMOVE_POST_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "posts");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "posts");
             break;
         case REMOVE_SUBMISSION_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "submissions");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "submissions");
             break;
         case REMOVE_GROUP_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "groups");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "groups");
             break;
         case REMOVE_COMMENT_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "comments");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "comments");
             break;
         case REMOVE_SPONSOR_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "sponsors");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "sponsors");
             break;
         case REMOVE_STREAK_ATTRIBUTE_INDEX:
-            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index, "streaks");
+            state = removeAttributeIndex(state, action.payload.id, action.payload.attributeName, action.payload.index,
+                "streaks");
             break;
         case REMOVE_CLIENT:
             state = removeItem(state, "clients", action.payload.id, action.asyncDispatch);
@@ -510,46 +555,60 @@ export default (state = initialState, action) => {
             state = removeItem(state, "streaks", action.payload.id, action.asyncDispatch);
             break;
         case FETCH_CLIENT_QUERY:
-            state = addQueryToCache(state, "clientQueries", clientQueryCacheSize, "clientQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "clientQueries", clientQueryCacheSize, "clientQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_TRAINER_QUERY:
-            state = addQueryToCache(state, "trainerQueries", trainerQueryCacheSize, "trainerQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "trainerQueries", trainerQueryCacheSize, "trainerQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_GYM_QUERY:
-            state = addQueryToCache(state, "gymQueries", gymQueryCacheSize, "gymQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "gymQueries", gymQueryCacheSize, "gymQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_WORKOUT_QUERY:
-            state = addQueryToCache(state, "workoutQueries", workoutQueryCacheSize, "workoutQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "workoutQueries", workoutQueryCacheSize, "workoutQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_REVIEW_QUERY:
-            state = addQueryToCache(state, "reviewQueries", reviewQueryCacheSize, "reviewQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "reviewQueries", reviewQueryCacheSize, "reviewQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_EVENT_QUERY:
-            state = addQueryToCache(state, "eventQueries", eventQueryCacheSize, "eventQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "eventQueries", eventQueryCacheSize, "eventQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_CHALLENGE_QUERY:
-            state = addQueryToCache(state, "challengeQueries", challengeQueryCacheSize, "challengeQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "challengeQueries", challengeQueryCacheSize, "challengeQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_INVITE_QUERY:
-            state = addQueryToCache(state, "inviteQueries", inviteQueryCacheSize, "inviteQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "inviteQueries", inviteQueryCacheSize, "inviteQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_POST_QUERY:
-            state = addQueryToCache(state, "postQueries", postQueryCacheSize, "postQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "postQueries", postQueryCacheSize, "postQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_SUBMISSION_QUERY:
-            state = addQueryToCache(state, "submissionQueries", submissionQueryCacheSize, "submissionQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "submissionQueries", submissionQueryCacheSize, "submissionQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_GROUP_QUERY:
-            state = addQueryToCache(state, "groupQueries", groupQueryCacheSize, "groupQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "groupQueries", groupQueryCacheSize, "groupQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_COMMENT_QUERY:
-            state = addQueryToCache(state, "commentQueries", commentQueryCacheSize, "commentQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "commentQueries", commentQueryCacheSize, "commentQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_SPONSOR_QUERY:
-            state = addQueryToCache(state, "sponsorQueries", sponsorQueryCacheSize, "sponsorQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "sponsorQueries", sponsorQueryCacheSize, "sponsorQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_STREAK_QUERY:
-            state = addQueryToCache(state, "streakQueries", streakQueryCacheSize, "streakQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            state = addQueryToCache(state, "streakQueries", streakQueryCacheSize, "streakQueryLRUHandler",
+                action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case CLEAR_NORMALIZED_CLIENT_QUERY:
             state = clearNormalizedCache(state, "clientQueries", action.payload);
@@ -644,6 +703,67 @@ export default (state = initialState, action) => {
     return state;
 };
 
+/**
+ * Adds an object to the cache, allowing its contents to be viewed inside of the entire application.
+ *
+ * @param {*} state The current state of the cache reducer.
+ * @param {string} cacheName The name of the exact cache that the object will lie in. It's determined by item type.
+ * @param {number} maxCacheSize The max size of the cache for that item type.
+ * @param {string} LRUHandlerName The LRU handler name for that item type.
+ * @param {*} object The object to put in the cache. Must have the "id" attribute.
+ * @param {function({})} dispatch The asynchronous dispatch function for redux.
+ * @return {*} The new state of the cache reducer after the addition.
+ */
+function addObjectToCache(state, cacheName, maxCacheSize, LRUHandlerName, object, dispatch) {
+    // TODO Check to see that this is all well-formed?
+    if (!object.id) {
+        err&&console.error("Adding object to cache does not include the id!!!");
+    }
+    state = {
+        ...state
+    };
+    if (!state[cacheName][object.id]) {
+        const cache = state[cacheName];
+        const LRUHandler = state[LRUHandlerName];
+        LRUHandler.unshift(object.id);
+        cache[object.id] = object.data;
+        if (LRUHandler.length >= maxCacheSize) {
+            // Then we have to pop something out
+            const deleteObjectID = LRUHandler.pop();
+            delete cache[deleteObjectID];
+            dispatch(removeChannelSubscription(getObjectChannelName(deleteObjectID)));
+        }
+        return state;
+    }
+    else {
+        // Update the object
+        let LRUHandler = state[LRUHandlerName];
+        let index = LRUHandler.indexOf(object.id);
+        if (index > -1) {
+            LRUHandler.splice(index, 1);
+        }
+        LRUHandler.unshift(object.id);
+        // Then we update the object with the additional fields that it may have (if this came from the other function)
+        state[cacheName][object.id] = {
+            ...state[cacheName][object.id],
+            ...object.data
+        };
+        return state;
+    }
+}
+
+/**
+ * Adds an object to the cache, allowing its contents to be viewed and referenced in the same query again.
+ *
+ * @param {*} state The current state of the cache reducer.
+ * @param {string} cacheName The name of the exact cache that the query will lie in. It's determined by item type.
+ * @param {number} maxCacheSize The max size of the cache for that item type.
+ * @param {string} LRUHandlerName The LRU handler name for that item type.
+ * @param {string} normalizedQueryString The normalized query string to input, without the next token variable.
+ * @param {string} nextToken The next token string to determine which section of the query to retrieve.
+ * @param {[object]} queryResult The result of the query, the list of items returned.
+ * @return {*} The new state of the cache reducer after the addition.
+ */
 function addQueryToCache(state, cacheName, maxCacheSize, LRUHandlerName, normalizedQueryString, nextToken, queryResult) {
     state = {
         ...state
@@ -685,43 +805,18 @@ function addQueryToCache(state, cacheName, maxCacheSize, LRUHandlerName, normali
         return state;
     }
 }
-function addObjectToCache(state, cacheName, maxCacheSize, LRUHandlerName, object, dispatch) {
-    // TODO Check to see that this is all well-formed?
-    if (!object.id) {
-        err&&console.error("Adding object to cache does not include the id!!!");
-    }
-    state = {
-        ...state
-    };
-    if (!state[cacheName][object.id]) {
-        const cache = state[cacheName];
-        const LRUHandler = state[LRUHandlerName];
-        LRUHandler.unshift(object.id);
-        cache[object.id] = object.data;
-        if (LRUHandler.length >= maxCacheSize) {
-            // Then we have to pop something out
-            const deleteObjectID = LRUHandler.pop();
-            delete cache[deleteObjectID];
-            dispatch(removeChannelSubscription(getObjectChannelName(deleteObjectID)));
-        }
-        return state;
-    }
-    else {
-        // Update the object
-        let LRUHandler = state[LRUHandlerName];
-        let index = LRUHandler.indexOf(object.id);
-        if (index > -1) {
-            LRUHandler.splice(index, 1);
-        }
-        LRUHandler.unshift(object.id);
-        // Then we update the object with the additional fields that it may have (if this came from the other function)
-        state[cacheName][object.id] = {
-            ...state[cacheName][object.id],
-            ...object.data
-        };
-        return state;
-    }
-}
+
+/**
+ * Sets the attribute index of a certain attribute list in an object inside the cache to a different value.
+ *
+ * @param {*} state The current state of the cache reducer.
+ * @param {string} id The id of the object to update.
+ * @param {string} attributeName The name
+ * @param {number} index The index of the list to set.
+ * @param {*} attributeValue The value to set the list index to.
+ * @param {string} cacheName The name of the specific cache in the reducer that holds the object.
+ * @return {*} The new state of the cache reducer after the addition.
+ */
 function setAttributeIndex(state, id, attributeName, index, attributeValue, cacheName) {
     state = {
         ...state,
@@ -732,6 +827,16 @@ function setAttributeIndex(state, id, attributeName, index, attributeValue, cach
     state[cacheName][id][attributeName][index] = attributeValue;
     return state;
 }
+
+/**
+ * Adds attributes to a attribute list in an object in cache already.
+ *
+ * @param {*} state The current state of the cache reducer.
+ * @param {string} id The id of the object to update.
+ * @param {[*]} attributes The attribute values to add to the object's attribute list.
+ * @param {string} cacheName The name of the cache that holds the object.
+ * @return {*} The new state of the cache reducer after the addition.
+ */
 function addAttributes(state, id, attributes, cacheName) {
     state = {
         ...state,
@@ -755,6 +860,37 @@ function addAttributes(state, id, attributes, cacheName) {
     }
     return state;
 }
+
+/**
+ * Removes an index from a object list attribute. Shortens the list by exactly one if valid.
+ *
+ * @param {*} state The current state of the cache reducer.
+ * @param {string} id The id of the object to update.
+ * @param {string} attributeName The name of the attribute in the object containing the list.
+ * @param {number} index The index of the list to remove the element from.
+ * @param {string} cacheName The name of the cache containing the object.
+ * @return {*} The new state of the cache reducer after the addition.
+ */
+function removeAttributeIndex(state, id, attributeName, index, cacheName) {
+    state = {
+        ...state,
+    };
+    state[cacheName][id] = {
+        ...state[cacheName][id],
+    };
+    state[cacheName][id][attributeName].splice(index, 1);
+    return state;
+}
+
+/**
+ * Removes one or more attributes from an object list attribute, using the value of the object inside the list.
+ *
+ * @param {*} state The current state of the cache reducer.
+ * @param {string} id The id of the object to update.
+ * @param {{}} attributes The map of attribute names of lists to attribute values to remove from them.
+ * @param {string} cacheName The name of the cache containing the object.
+ * @return {*} The new state of the cache reducer after the addition.
+ */
 function removeAttributes(state, id, attributes, cacheName) {
     state = {
         ...state,
@@ -778,16 +914,16 @@ function removeAttributes(state, id, attributes, cacheName) {
     }
     return state;
 }
-function removeAttributeIndex(state, id, attributeName, index, cacheName) {
-    state = {
-        ...state,
-    };
-    state[cacheName][id] = {
-        ...state[cacheName][id],
-    };
-    state[cacheName][id][attributeName].splice(index, 1);
-    return state;
-}
+
+/**
+ * Removes an object from the cache and removes the potential channel unsubscription associated.
+ *
+ * @param {*} state The current state of the cache reducer.
+ * @param {string} cacheName The name of the cache that contains the object.
+ * @param {string} id The id of the object to remove.
+ * @param {function({})} dispatch The asynchronous dispatch function for redux.
+ * @return {*} The new state of the cache reducer after the addition.
+ */
 function removeItem(state, cacheName, id, dispatch) {
     // Once you remove an object, simply unsubscribe
     dispatch(removeChannelSubscription(getObjectChannelName(id)));
@@ -799,12 +935,33 @@ function removeItem(state, cacheName, id, dispatch) {
         }
     };
 }
+
+/**
+ * Clears a cache entirely of all objects inside of it.
+ *
+ * TODO if we actually need to use this function, update it to unsubscribe.
+ *
+ * @param {*} state The current state of the cache reducer.
+ * @param {string} cacheName The name of the cache to clear.
+ * @return {*} The new state of the cache reducer after the addition.
+ */
 function clearCache(state, cacheName) {
+    console.log("don't use this!");
+    alert("don't use this!");
     return {
         ...state,
         [cacheName]: {}
     }
 }
+
+/**
+ * Clears a query cache of the specific normalized query within it.
+ *
+ * @param {*} state The current state of the cache reducer.
+ * @param {string} cacheName The name of the cache that holds the normalized query.
+ * @param {string} normalizedQuery The query string of the query to clear.
+ * @return {*} The new state of the cache reducer after the addition.
+ */
 function clearNormalizedCache(state, cacheName, normalizedQuery) {
     return {
         ...state,

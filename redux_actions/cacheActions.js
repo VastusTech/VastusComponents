@@ -48,8 +48,8 @@ import {updateUserFromCache} from "../../redux_helpers/actions/userActions";
  * fuck if that makes it an incorrect spelling, that's how I'm doing it.
  * (Ex. "profileImageWigglyPaths" -> "profileImageWigglys")
  *
- * @param data The data of the object to add S3 images/videos into.
- * @param callback The callback for the newly updated data.
+ * @param {{}} data The data of the object to add S3 images/videos into.
+ * @param {function({})} callback The callback for the newly updated data.
  */
 function addS3MediaToData(data, callback) {
     function addDefaultImage(mediaKey, data) {
@@ -160,54 +160,56 @@ function addS3MediaToData(data, callback) {
 // ======================================================================================================
 
 /**
- * TODO
+ * Fetches an object from the database, making sure that it hasn't already fetched the attributes in the list before.
  *
- * @param id
- * @param itemType
- * @param variablesList
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {string} id The id of the object to fetch.
+ * @param {string} itemType The item type of the object to fetch.
+ * @param {[string]} variableList The list of variables to fetch for the object.
+ * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(error)} failureHandler The function to handle any errors that occur with.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
-function fetch(id, itemType, variablesList, dataHandler, failureHandler) {
+function fetch(id, itemType, variableList, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         const cacheName = getCacheName(itemType);
         const currentObject = getStore().cache[cacheName][id];
         if (currentObject) {
             const objectKeyList = Object.keys(currentObject);
-            variablesList = variablesList.filter((v) => { return !objectKeyList.includes(v) });
-            // log&&console.log("Final filtered list is = " + JSON.stringify(variablesList));
+            variableList = variableList.filter((v) => { return !objectKeyList.includes(v) });
+            // log&&console.log("Final filtered list is = " + JSON.stringify(variableList));
         }
-        overwriteFetch(id, itemType, variablesList, dataHandler, failureHandler, dispatch, getStore);
+        overwriteFetch(id, itemType, variableList, dataHandler, failureHandler, dispatch, getStore);
     };
 }
 
 /**
- * TODO
+ * Fetches an object from the database, but always gets every attribute from the variables list. Used primarily for
+ * updating any stale data in the object there may be.
  *
- * @param id
- * @param itemType
- * @param variablesList
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {string} id The id of the object to fetch.
+ * @param {string} itemType The item type of the object to fetch.
+ * @param {[string]} variableList The list of variables to fetch for the object.
+ * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(error)} failureHandler The function to handle any errors that occur with.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
-function forceFetch(id, itemType, variablesList, dataHandler, failureHandler) {
+function forceFetch(id, itemType, variableList, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        overwriteFetch(id, itemType, variablesList, dataHandler, failureHandler, dispatch, getStore);
+        overwriteFetch(id, itemType, variableList, dataHandler, failureHandler, dispatch, getStore);
     };
 }
 
 /**
- * TODO
- * @param id
- * @param itemType
- * @param variableList
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * Fetches an object from the database and subscribes to it so that it receives all the automatic updates it receives.
+ *
+ * @param {string} id The id of the object to fetch.
+ * @param {string} itemType The item type of the object to fetch.
+ * @param {[string]} variableList The list of variables to fetch for the object.
+ * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(error)} failureHandler The function to handle any errors that occur with.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 function subscribeFetch(id, itemType, variableList, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
@@ -231,11 +233,12 @@ function subscribeFetch(id, itemType, variableList, dataHandler, failureHandler)
 }
 
 /**
- * TODO
+ * Subscribes to the update channel in Ably for this object and adds handlers so that it will update in real time in
+ * accordance to the changes.
  *
- * @param id
- * @param itemType
- * @return {Function}
+ * @param {string} id The id of the object to subscribe to.
+ * @param {string} itemType The item type of the object to subscribe to.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 function subscribeCacheUpdatesToObject(id, itemType) {
     return (dispatch, getStore) => {
@@ -289,29 +292,29 @@ function subscribeCacheUpdatesToObject(id, itemType) {
 }
 
 /**
- * TODO
+ * Fetches an object from the database, overwriting any changes already in the database with the data it receives.
  *
- * @param id
- * @param itemType
- * @param variablesList
- * @param dataHandler
- * @param failureHandler
- * @param dispatch
- * @param getStore
+ * @param {string} id The id of the object to fetch.
+ * @param {string} itemType The item type of the object to fetch.
+ * @param {[string]} variableList The list of variables to fetch for the object.
+ * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(error)} failureHandler The function to handle any errors that occur with.
+ * @param {function(*)} dispatch The dispatch handler function to call a new redux action with.
+ * @param {function()} getStore The get function for redux that receives the current store.
  */
-function overwriteFetch(id, itemType, variablesList, dataHandler, failureHandler, dispatch, getStore) {
-    if (variablesList.length > 0) {
-        if (!variablesList.includes("id")) {
-            variablesList = [...variablesList, "id"];
+function overwriteFetch(id, itemType, variableList, dataHandler, failureHandler, dispatch, getStore) {
+    if (variableList.length > 0) {
+        if (!variableList.includes("id")) {
+            variableList = [...variableList, "id"];
         }
-        if (!variablesList.includes("item_type")) {
-            variablesList = [...variablesList, "item_type"];
+        if (!variableList.includes("item_type")) {
+            variableList = [...variableList, "item_type"];
         }
         if (dataHandler) { log&&console.log("S H = " + dataHandler.toString()); }
         else { log&&console.log("No data handler...");}
         if (failureHandler) { log&&console.log("F H = " + failureHandler.toString()); }
         else { log&&console.log("No failure handler...");}
-        QL.getItem(itemType, id, variablesList, (data) => {
+        QL.getItem(itemType, id, variableList, (data) => {
             // log&&console.log("Successfully retrieved the QL info");
             if (data) {
                 addS3MediaToData(data, (updatedData) => {
@@ -357,18 +360,19 @@ function overwriteFetch(id, itemType, variablesList, dataHandler, failureHandler
 // ======================================================================================================
 
 /**
- * TODO
+ * Fetches a list of items from the database that all have the same item type. This also makes sure that we are not
+ * fetching more than we have to by checking all of the items already in the database.
  *
- * @param ids
- * @param itemType
- * @param variablesList
- * @param startIndex
- * @param maxFetch
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {[string]} ids The list of ids to fetch from the database.
+ * @param {string} itemType The item type of the objects to fetch.
+ * @param {[string]} variableList The list of variables to fetch for the objects.
+ * @param {number} startIndex The index to start with in the list of ids. (Kinda like a next token).
+ * @param {number} maxFetch The max number of items to fetch from the database.
+ * @param {function([{}])} dataHandler The function to handle the list of objects that are received.
+ * @param {function(error)} failureHandler The function to handle any errors that may occur.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
-function batchFetch(ids, itemType, variablesList, startIndex, maxFetch, dataHandler, failureHandler) {
+function batchFetch(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         let filteredVariablesList = [];
@@ -379,58 +383,59 @@ function batchFetch(ids, itemType, variablesList, startIndex, maxFetch, dataHand
             const currentObject = cacheSet[id];
             if (currentObject) {
                 // TODO TEST IF THIS works?
-                filteredVariablesList = variablesList.filter(filterFunction(Object.keys(currentObject)));
-                // variablesList = variablesList.filter((v) => { return !objectKeyList.includes(v) });
+                filteredVariablesList = variableList.filter(filterFunction(Object.keys(currentObject)));
+                // variableList = variableList.filter((v) => { return !objectKeyList.includes(v) });
             }
             else {
-                filteredVariablesList = variablesList;
+                filteredVariablesList = variableList;
                 break;
             }
         }
-        batchOverwriteFetch(ids, itemType, variablesList, startIndex, maxFetch, dataHandler, failureHandler, dispatch, getStore);
+        batchOverwriteFetch(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler, dispatch, getStore);
     };
 }
 
 /**
- * TODO
+ * Fetches a list of items from the database that all have the same item type. This does no checking for the variables
+ * to receive, so will overwrite all data. This is primarily for updating an item.
  *
- * @param ids
- * @param itemType
- * @param variablesList
- * @param startIndex
- * @param maxFetch
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {[string]} ids The list of ids to fetch from the database.
+ * @param {string} itemType The item type of the objects to fetch.
+ * @param {[string]} variableList The list of variables to fetch for the objects.
+ * @param {number} startIndex The index to start with in the list of ids. (Kinda like a next token).
+ * @param {number} maxFetch The max number of items to fetch from the database.
+ * @param {function([{}])} dataHandler The function to handle the list of objects that are received.
+ * @param {function(error)} failureHandler The function to handle any errors that may occur.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
-function batchForceFetch(ids, itemType, variablesList, startIndex, maxFetch, dataHandler, failureHandler) {
+function batchForceFetch(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        batchOverwriteFetch(ids, itemType, variablesList, startIndex, maxFetch, dataHandler, failureHandler, dispatch, getStore);
+        batchOverwriteFetch(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler, dispatch, getStore);
     };
 }
 
 /**
- * TODO
+ * Fetches a list of items from the database that all have the same item type. Overwrites any objects in the database.
  *
- * @param ids {array}
- * @param itemType {string}
- * @param variablesList {array}
- * @param startIndex {int}
- * @param maxFetch {int}
- * @param dataHandler {callback}
- * @param failureHandler {callback}
- * @param dispatch {function}
- * @param getStore {function}
+ * @param {[string]} ids The list of ids to fetch from the database.
+ * @param {string} itemType The item type of the objects to fetch.
+ * @param {[string]} variableList The list of variables to fetch for the objects.
+ * @param {number} startIndex The index to start with in the list of ids. (Kinda like a next token).
+ * @param {number} maxFetch The max number of items to fetch from the database.
+ * @param {function([{}])} dataHandler The function to handle the list of objects that are received.
+ * @param {function(error)} failureHandler The function to handle any errors that may occur.
+ * @param {function(*)} dispatch The dispatch handler function to call a new redux action with.
+ * @param {function()} getStore The get function for redux that receives the current store.
  */
-function batchOverwriteFetch(ids, itemType, variablesList, startIndex, maxFetch, dataHandler, failureHandler, dispatch, getStore) {
-    if (variablesList.length > 0) {
+function batchOverwriteFetch(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler, dispatch, getStore) {
+    if (variableList.length > 0) {
         // TODO Check the start index?
-        if (!variablesList.includes("id")) {
-            variablesList = [...variablesList, "id"];
+        if (!variableList.includes("id")) {
+            variableList = [...variableList, "id"];
         }
-        if (!variablesList.includes("item_type")) {
-            variablesList = [...variablesList, "item_type"];
+        if (!variableList.includes("item_type")) {
+            variableList = [...variableList, "item_type"];
         }
         const retrievedItems = [];
         let numFetched = 0;
@@ -478,7 +483,7 @@ function batchOverwriteFetch(ids, itemType, variablesList, startIndex, maxFetch,
                     fetch = restFetch.slice(0, QL.batchLimit);
                     restFetch = restFetch.slice(QL.batchLimit);
                 }
-                QL.getItems(itemType, fetch, variablesList, (data) => batchGetDataHandler(data, restFetch), batchGetFailHandler);
+                QL.getItems(itemType, fetch, variableList, (data) => batchGetDataHandler(data, restFetch), batchGetFailHandler);
             }
             if (data.hasOwnProperty("items") && data.items && data.items.length) {
                 for (let i = 0; i < data.items.length; i++) {
@@ -497,7 +502,7 @@ function batchOverwriteFetch(ids, itemType, variablesList, startIndex, maxFetch,
                 }
             }
         };
-        QL.getItems(itemType, firstFetchIDs, variablesList, (data) => batchGetDataHandler(data, restFetchIDs), batchGetFailHandler);
+        QL.getItems(itemType, firstFetchIDs, variableList, (data) => batchGetDataHandler(data, restFetchIDs), batchGetFailHandler);
     }
     else {
         const items = [];
@@ -516,31 +521,32 @@ function batchOverwriteFetch(ids, itemType, variablesList, startIndex, maxFetch,
 // ======================================================================================================
 
 /**
- * TODO
+ * Fetches a new query from the database, using the parameters to specify the exact query. Allows flexibility for
+ * how to filter, the limit of items to fetch, and which next token to use.
  *
- * @param itemType
- * @param variablesList
- * @param filter
- * @param limit
- * @param nextToken
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {string} itemType The item types of the items to receive in the query.
+ * @param {[string]} variableList The list of variables to fetch for the objects.
+ * @param {{}} filter The {@link QL} filter to dictate how the query filters the objects.
+ * @param {number} limit The limit of items for the query to SEARCH. Items length <= limit.
+ * @param {string} nextToken The next token string that dictates which part of the query to fetch.
+ * @param {function({nextToken: string, items: [{}]})} dataHandler The function to handle the fetched items.
+ * @param {function(error)} failureHandler The function to handle any potential errors that may occur.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
-export function fetchQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+export function fetchQuery(itemType, variableList, filter, limit, nextToken, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        if (!variablesList.includes("id")) {
-            variablesList.push("id");
+        if (!variableList.includes("id")) {
+            variableList.push("id");
         }
-        if (!variablesList.includes("item_type")) {
-            variablesList.push("item_type");
+        if (!variableList.includes("item_type")) {
+            variableList.push("item_type");
         }
         // TODO Make this sort alphabetically, so that it's deterministic
-        // variablesList = variablesList.sort();
+        // variableList = variableList.sort();
         // const fetchQueryDispatchType = getFetchQueryType(itemType);
-        let queryString = QL.constructItemQuery(itemType, variablesList, filter, limit, nextToken);
-        // let queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit, nextToken);
+        let queryString = QL.constructItemQuery(itemType, variableList, filter, limit, nextToken);
+        // let queryString = QL.getConstructQueryFunction(itemType)(variableList, filter, limit, nextToken);
         const nextTokenString = QL.getNextTokenString(nextToken);
         const normalizedQueryString = JSON.stringify(QL.getNormalizedQuery(queryString));
         // if (nextTokenString === "null") { console.log("N Q S = " + JSON.stringify(normalizedQueryString))}
@@ -572,45 +578,49 @@ export function fetchQuery(itemType, variablesList, filter, limit, nextToken, da
 }
 
 /**
- * TODO
+ * Fetches a new query from the database, using the parameters to specify the exact query. Allows flexibility for
+ * how to filter, the limit of items to fetch, and which next token to use. Does not check the cache for the query
+ * already fetched.
  *
- * @param itemType
- * @param variablesList
- * @param filter
- * @param limit
- * @param nextToken
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {string} itemType The item types of the items to receive in the query.
+ * @param {[string]} variableList The list of variables to fetch for the objects.
+ * @param {{}} filter The {@link QL} filter to dictate how the query filters the objects.
+ * @param {number} limit The limit of items for the query to SEARCH. Items length <= limit.
+ * @param {string} nextToken The next token string that dictates which part of the query to fetch.
+ * @param {function({nextToken: string, items: [{}]})} dataHandler The function to handle the fetched items.
+ * @param {function(error)} failureHandler The function to handle any potential errors that may occur.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
-export function forceFetchQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+export function forceFetchQuery(itemType, variableList, filter, limit, nextToken, dataHandler, failureHandler) {
     return (dispatch) => {
         dispatch(setIsLoading());
-        if (!variablesList.includes("id")) {
-            variablesList.push("id");
+        if (!variableList.includes("id")) {
+            variableList.push("id");
         }
-        if (!variablesList.includes("item_type")) {
-            variablesList.push("item_type");
+        if (!variableList.includes("item_type")) {
+            variableList.push("item_type");
         }
 
         // TODO Make this sort alphabetically, so that it's deterministic
-        // variablesList = variablesList.sort();
+        // variableList = variableList.sort();
 
-        // let queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit, nextToken);
-        let queryString = QL.constructItemQuery(itemType, variablesList, filter, limit, nextToken);
-        // const queryString = QL[QLFunctionName](variablesList, filter, limit, nextToken);
+        // let queryString = QL.getConstructQueryFunction(itemType)(variableList, filter, limit, nextToken);
+        let queryString = QL.constructItemQuery(itemType, variableList, filter, limit, nextToken);
+        // const queryString = QL[QLFunctionName](variableList, filter, limit, nextToken);
         overwriteFetchQuery(itemType, queryString, nextToken, dataHandler, failureHandler, dispatch);
     };
 }
 
 /**
- * TODO
+ * Fetches a new query from the database, using the parameters to specify the exact query. Allows flexibility for
+ * how to filter, the limit of items to fetch, and which next token to use. Overwrites any query data already in the
+ * cache.
  *
- * @param itemType
- * @param queryString
- * @param nextToken
- * @param dataHandler
- * @param failureHandler
+ * @param {string} itemType The item types of the items to receive in the query.
+ * @param {string} queryString The normalized query string for this specific query.
+ * @param {string} nextToken The next token string that dictates which part of the query to fetch.
+ * @param {function({nextToken: string, items: [{}]})} dataHandler The function to handle the fetched items.
+ * @param {function(error)} failureHandler The function to handle any potential errors that may occur.
  * @param dispatch
  */
 export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandler, failureHandler, dispatch) {
@@ -657,12 +667,12 @@ export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandle
 // ======================================================================================================
 
 /**
- * TODO
+ * Sets an item attribute in the cache to a specific value manually.
  *
- * @param id
- * @param attributeName
- * @param attributeValue
- * @return {Function}
+ * @param {string} id The id of the object to update.
+ * @param {string} attributeName The name of the attribute to update.
+ * @param {*} attributeValue The value to set to the attribute.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function setItemAttribute(id, attributeName, attributeValue) {
     return (dispatch, getStore) => {
@@ -674,13 +684,13 @@ export function setItemAttribute(id, attributeName, attributeValue) {
 }
 
 /**
- * TODO
+ * Sets a value at an index of an item's list attribute manually.
  *
- * @param id
- * @param attributeName
- * @param index
- * @param attributeValue
- * @return {Function}
+ * @param {string} id The id of the object to update.
+ * @param {string} attributeName The name of the list attribute to update.
+ * @param {number} index The index of the list to set to the value.
+ * @param {*} attributeValue The value to set the list index to.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function setItemAttributeIndex(id, attributeName, index, attributeValue) {
     return (dispatch, getStore) => {
@@ -692,12 +702,12 @@ export function setItemAttributeIndex(id, attributeName, index, attributeValue) 
 }
 
 /**
- * TODO
+ * Adds a value to a list in an item manually.
  *
- * @param id
- * @param attributeName
- * @param attributeValue
- * @return {Function}
+ * @param {string} id The id of the object to update.
+ * @param {string} attributeName The name of the list attribute to update.
+ * @param {*} attributeValue The value to add to the item's list.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function addToItemAttribute(id, attributeName, attributeValue) {
     return (dispatch, getStore) => {
@@ -716,12 +726,12 @@ export function addToItemAttribute(id, attributeName, attributeValue) {
 }
 
 /**
- * TODO
+ * Removes a specific value from an item's list manually.
  *
- * @param id
- * @param attributeName
- * @param attributeValue
- * @return {Function}
+ * @param {string} id The id of the object to update.
+ * @param {string} attributeName The name of the list attribute to update.
+ * @param {string} attributeValue The value to remove from the item's list.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function removeFromItemAttribute(id, attributeName, attributeValue) {
     return (dispatch, getStore) => {
@@ -740,12 +750,12 @@ export function removeFromItemAttribute(id, attributeName, attributeValue) {
 }
 
 /**
- * TODO
+ * Removes an index from an item's list manually.
  *
- * @param id
- * @param attributeName
- * @param index
- * @return {Function}
+ * @param {string} id The id of the object to update.
+ * @param {string} attributeName The name of the list attribute to update.
+ * @param {number} index The index of the list to remove.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function removeFromItemAttributeAtIndex(id, attributeName, index) {
     return (dispatch, getStore) => {
@@ -761,105 +771,112 @@ export function removeFromItemAttributeAtIndex(id, attributeName, index) {
 // ======================================================================================================
 
 /**
- * TODO
+ * Fetches an object from the database, making sure that it hasn't already fetched the attributes in the list before.
  *
- * @param id
- * @param itemType
- * @param variableList
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {string} id The id of the object to fetch.
+ * @param {string} itemType The item type of the object to fetch.
+ * @param {[string]} variableList The list of variables to fetch for the object.
+ * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(error)} failureHandler The function to handle any errors that occur with.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function fetchItem(id, itemType, variableList, dataHandler, failureHandler) {
     return fetch(id, itemType, variableList, dataHandler, failureHandler)
 }
 
 /**
- * TODO
+ * Fetches an object from the database, but always gets every attribute from the variables list. Used primarily for
+ * updating any stale data in the object there may be.
  *
- * @param itemType
- * @param id
- * @param variablesList
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
- */
-export function subscribeFetchItem(id, itemType, variablesList, dataHandler, failureHandler) {
-    return subscribeFetch(id, itemType, variablesList, dataHandler, failureHandler);
-}
-
-/**
- * TODO
- *
- * @param id
- * @param itemType
- * @param variableList
- * @param dataHandler
- * @param failureHandler
+ * @param {string} id The id of the object to fetch.
+ * @param {string} itemType The item type of the object to fetch.
+ * @param {[string]} variableList The list of variables to fetch for the object.
+ * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(error)} failureHandler The function to handle any errors that occur with.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function forceFetchItem(id, itemType, variableList, dataHandler, failureHandler) {
     return forceFetch(id, itemType, variableList, dataHandler, failureHandler);
 }
 
 /**
- * TODO
+ * Fetches an object from the database and subscribes to it so that it receives all the automatic updates it receives.
  *
- * @param ids
- * @param itemType
- * @param variableList
- * @param startIndex
- * @param maxFetch
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {string} id The id of the object to fetch.
+ * @param {string} itemType The item type of the object to fetch.
+ * @param {[string]} variableList The list of variables to fetch for the object.
+ * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(error)} failureHandler The function to handle any errors that occur with.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
+ */
+export function subscribeFetchItem(id, itemType, variableList, dataHandler, failureHandler) {
+    return subscribeFetch(id, itemType, variableList, dataHandler, failureHandler);
+}
+
+/**
+ * Fetches a list of items from the database that all have the same item type. This also makes sure that we are not
+ * fetching more than we have to by checking all of the items already in the database.
+ *
+ * @param {[string]} ids The list of ids to fetch from the database.
+ * @param {string} itemType The item type of the objects to fetch.
+ * @param {[string]} variableList The list of variables to fetch for the objects.
+ * @param {number} startIndex The index to start with in the list of ids. (Kinda like a next token).
+ * @param {number} maxFetch The max number of items to fetch from the database.
+ * @param {function([{}])} dataHandler The function to handle the list of objects that are received.
+ * @param {function(error)} failureHandler The function to handle any errors that may occur.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function fetchItems(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
     return batchFetch(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler);
 }
 
 /**
- * TODO
+ * Fetches a list of items from the database that all have the same item type. This does no checking for the variables
+ * to receive, so will overwrite all data. This is primarily for updating an item.
  *
- * @param ids
- * @param itemType
- * @param variableList
- * @param startIndex
- * @param maxFetch
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {[string]} ids The list of ids to fetch from the database.
+ * @param {string} itemType The item type of the objects to fetch.
+ * @param {[string]} variableList The list of variables to fetch for the objects.
+ * @param {number} startIndex The index to start with in the list of ids. (Kinda like a next token).
+ * @param {number} maxFetch The max number of items to fetch from the database.
+ * @param {function([{}])} dataHandler The function to handle the list of objects that are received.
+ * @param {function(error)} failureHandler The function to handle any errors that may occur.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function forceFetchItems(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
     return batchForceFetch(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler);
 }
 
 /**
- * TODO
+ * Fetches a new query from the database, using the parameters to specify the exact query. Allows flexibility for
+ * how to filter, the limit of items to fetch, and which next token to use.
  *
- * @param itemType
- * @param variablesList
- * @param filter
- * @param limit
- * @param nextToken
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {string} itemType The item types of the items to receive in the query.
+ * @param {[string]} variableList The list of variables to fetch for the objects.
+ * @param {{}} filter The {@link QL} filter to dictate how the query filters the objects.
+ * @param {number} limit The limit of items for the query to SEARCH. Items length <= limit.
+ * @param {string} nextToken The next token string that dictates which part of the query to fetch.
+ * @param {function({nextToken: string, items: [{}]})} dataHandler The function to handle the fetched items.
+ * @param {function(error)} failureHandler The function to handle any potential errors that may occur.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
-export function fetchItemQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    return fetchQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+export function fetchItemQuery(itemType, variableList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery(itemType, variableList, filter, limit, nextToken, dataHandler, failureHandler);
 }
 
 /**
- * TODO
+ * Fetches a new query from the database, using the parameters to specify the exact query. Allows flexibility for
+ * how to filter, the limit of items to fetch, and which next token to use. Does not check the cache for the query
+ * already fetched.
  *
- * @param itemType
- * @param variableList
- * @param filter
- * @param limit
- * @param nextToken
- * @param dataHandler
- * @param failureHandler
- * @return {Function}
+ * @param {string} itemType The item types of the items to receive in the query.
+ * @param {[string]} variableList The list of variables to fetch for the objects.
+ * @param {{}} filter The {@link QL} filter to dictate how the query filters the objects.
+ * @param {number} limit The limit of items for the query to SEARCH. Items length <= limit.
+ * @param {string} nextToken The next token string that dictates which part of the query to fetch.
+ * @param {function({nextToken: string, items: [{}]})} dataHandler The function to handle the fetched items.
+ * @param {function(error)} failureHandler The function to handle any potential errors that may occur.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function forceFetchItemQuery(itemType, variableList, filter, limit, nextToken, dataHandler, failureHandler) {
     return forceFetchQuery(itemType, variableList, filter, limit, nextToken, dataHandler, failureHandler);
@@ -869,28 +886,11 @@ export function forceFetchItemQuery(itemType, variableList, filter, limit, nextT
 // Mutate Database Low-Level Functions ~
 // ======================================================================================================
 
-/**
- * TODO
- *
- * @param itemType
- * @param queryString
- * @param queryResult
- * @return {Function}
- */
 export function putItemQuery(itemType, queryString, queryResult) {
     return (dispatch) => {
         dispatch(putQuery(queryString, queryResult, getFetchQueryType(itemType)));
     }
 }
-
-/**
- * TODO
- *
- * @param queryString
- * @param queryResult
- * @param actionType
- * @return {{type: *, payload: {queryString: *, queryResult: *}}}
- */
 function putQuery(queryString, queryResult, actionType) {
     return {
         type: actionType,
@@ -900,17 +900,6 @@ function putQuery(queryString, queryResult, actionType) {
         }
     };
 }
-
-/**
- * TODO
- *
- * @param itemType
- * @param id
- * @param attributeName
- * @param index
- * @param attributeValue
- * @return {{type, payload: {id: *, attributeName: *, index: *, attributeValue: *}}}
- */
 function setItemAttributeAtIndex(itemType, id, attributeName, index, attributeValue) {
     const setItemIndexType = switchReturnItemType(itemType, SET_CLIENT_ATTRIBUTE_INDEX, SET_TRAINER_ATTRIBUTE_INDEX,
         SET_GYM_ATTRIBUTE_INDEX, SET_WORKOUT_ATTRIBUTE_INDEX, SET_REVIEW_ATTRIBUTE_INDEX, SET_EVENT_ATTRIBUTE_INDEX,
@@ -927,15 +916,6 @@ function setItemAttributeAtIndex(itemType, id, attributeName, index, attributeVa
         }
     }
 }
-
-/**
- * TODO
- *
- * @param itemType
- * @param id
- * @param attributes
- * @return {{type, payload: {id: *, attributes: *}}}
- */
 function addItemAttributes(itemType, id, attributes) {
     const addAttributesType = switchReturnItemType(itemType, ADD_CLIENT_ATTRIBUTES, ADD_TRAINER_ATTRIBUTES, ADD_GYM_ATTRIBUTES,
         ADD_WORKOUT_ATTRIBUTES, ADD_REVIEW_ATTRIBUTES, ADD_EVENT_ATTRIBUTES, ADD_CHALLENGE_ATTRIBUTES, ADD_INVITE_ATTRIBUTES,
@@ -950,15 +930,6 @@ function addItemAttributes(itemType, id, attributes) {
         }
     }
 }
-
-/**
- * TODO
- *
- * @param itemType
- * @param id
- * @param attributes
- * @return {{type, payload: {id: *, attributes: *}}}
- */
 function removeItemAttributes(itemType, id, attributes) {
     const removeAttributesType = switchReturnItemType(itemType, REMOVE_CLIENT_ATTRIBUTES, REMOVE_TRAINER_ATTRIBUTES, REMOVE_GYM_ATTRIBUTES,
         REMOVE_WORKOUT_ATTRIBUTES, REMOVE_REVIEW_ATTRIBUTES, REMOVE_EVENT_ATTRIBUTES, REMOVE_CHALLENGE_ATTRIBUTES, REMOVE_INVITE_ATTRIBUTES,
@@ -972,16 +943,6 @@ function removeItemAttributes(itemType, id, attributes) {
         }
     }
 }
-
-/**
- * TODO
- *
- * @param itemType
- * @param id
- * @param attributeName
- * @param index
- * @return {{type, payload: {id: *, attributeName: *, index: *}}}
- */
 function removeItemAttributeIndex(itemType, id, attributeName, index) {
     const removeAttributesType = switchReturnItemType(itemType, REMOVE_CLIENT_ATTRIBUTE_INDEX, REMOVE_TRAINER_ATTRIBUTE_INDEX,
         REMOVE_GYM_ATTRIBUTE_INDEX, REMOVE_WORKOUT_ATTRIBUTE_INDEX, REMOVE_REVIEW_ATTRIBUTE_INDEX, REMOVE_EVENT_ATTRIBUTE_INDEX,
@@ -997,15 +958,6 @@ function removeItemAttributeIndex(itemType, id, attributeName, index) {
         }
     }
 }
-
-/**
- * TODO
- *
- * @param itemType
- * @param id
- * @param dispatch
- * @return {{type, payload: {id: *, dispatch: *}}}
- */
 export function removeItem(itemType, id, dispatch) {
     const removeType = switchReturnItemType(itemType, REMOVE_CLIENT, REMOVE_TRAINER, REMOVE_GYM, REMOVE_WORKOUT, REMOVE_REVIEW, REMOVE_EVENT,
         REMOVE_CHALLENGE, REMOVE_INVITE, REMOVE_POST, REMOVE_SUBMISSION, REMOVE_GROUP, REMOVE_COMMENT, REMOVE_SPONSOR, null, REMOVE_STREAK,
@@ -1018,14 +970,6 @@ export function removeItem(itemType, id, dispatch) {
         }
     }
 }
-
-/**
- * TODO
- *
- * @param item
- * @param itemType
- * @return {*}
- */
 export function putItem(item, itemType) {
     if (item && item.id) {
         return {
@@ -1045,36 +989,17 @@ export function putItem(item, itemType) {
 // Cache Reducer Getter Functions ~
 // ======================================================================================================
 
-/**
- * TODO
- *
- * @param itemType
- * @param getStore
- */
 export function getCache(itemType, getStore) {
     const cache = getStore().cache;
     return switchReturnItemType(itemType, cache.clients, cache.trainers, cache.gyms, cache.workouts, cache.reviews,
         cache.events, cache.challenges, cache.invites, cache.posts, cache.submissions, cache.groups, cache.comments,
         cache.sponsors, null, cache.streaks, "Retrieve cache not implemented");
 }
-
-/**
- * TODO
- *
- * @param itemType
- */
 export function getCacheName(itemType) {
     return switchReturnItemType(itemType, "clients", "trainers", "gyms", "workouts", "reviews", "events", "challenges",
         "invites", "posts", "submissions", "groups", "comments", "sponsors", null, "streaks",
         "Retrieve cache not implemented");
 }
-
-/**
- * TODO
- *
- * @param itemType
- * @param getStore
- */
 export function getQueryCache(itemType, getStore) {
     const cache = getStore().cache;
     return switchReturnItemType(itemType, cache.clientQueries, cache.trainerQueries, cache.gymQueries,
@@ -1082,23 +1007,11 @@ export function getQueryCache(itemType, getStore) {
         cache.postQueries, cache.submissionQueries, cache.groupQueries, cache.commentQueries, cache.sponsorQueries,
         null, cache.streakQueries, "Retrieve query cache not implemented");
 }
-
-/**
- * TODO
- *
- * @param itemType
- */
 export function getFetchType(itemType) {
     return switchReturnItemType(itemType, FETCH_CLIENT, FETCH_TRAINER, FETCH_GYM, FETCH_WORKOUT, FETCH_REVIEW,
         FETCH_EVENT, FETCH_CHALLENGE, FETCH_INVITE, FETCH_POST, FETCH_SUBMISSION, FETCH_GROUP, FETCH_COMMENT,
         FETCH_SPONSOR, null, FETCH_STREAK, "Retrieve fetch type not implemented for type.")
 }
-
-/**
- * TODO
- *
- * @param itemType
- */
 export function getFetchQueryType(itemType) {
     return switchReturnItemType(itemType, FETCH_CLIENT_QUERY, FETCH_TRAINER_QUERY, FETCH_GYM_QUERY, FETCH_WORKOUT_QUERY,
         FETCH_REVIEW_QUERY, FETCH_EVENT_QUERY, FETCH_CHALLENGE_QUERY, FETCH_INVITE_QUERY, FETCH_POST_QUERY,
