@@ -48,6 +48,22 @@ class GraphQL {
      * TODO
      *
      * @param itemType
+     * @param federatedID
+     * @param variablesList
+     * @param successHandler
+     * @param failureHandler
+     * @return {*}
+     */
+    static getItemByFederatedID(itemType, federatedID, variablesList, successHandler, failureHandler) {
+        const func = switchReturnItemType(itemType, GraphQL.getClientByFederatedID, GraphQL.getTrainerByFederatedID, GraphQL.getGymByFederatedID,
+            null, null, null, null, null, null, null, null, GraphQL.getSponsorByFederatedID, "GraphQL get Fetch Username function function not implemented");
+        if (func) { return func(federatedID, variablesList, successHandler, failureHandler); }
+    }
+
+    /**
+     * TODO
+     *
+     * @param itemType
      * @param ids
      * @param variablesList
      * @param successHandler
