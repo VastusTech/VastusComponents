@@ -14,11 +14,12 @@ export const DISABLE_SEARCH_BAR = 'DISABLE_SEARCH_BAR';
 // At most how many objects should be grabbed from a query at one time
 const queryLimit = 100;
 
-// This will determine the ratios of which objects to get out of the 
+// TODO This will determine the ratios of which objects to get out of the
 const typeRatios = {
     Client: 2, Trainer: 3, Gym: 5, Workout: 1, Review: 1, Event: 5, Challenge: 10, Invite: 1, Post: 15
 };
 
+// Initial states of each kind of search
 const initialClientState = {
     enabled: true,
     variableList: ["id", "item_type", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", /*"profilePicture"*/ "friendRequests"],
@@ -217,6 +218,17 @@ const initialState = {
     }
 };
 
+/**
+ * Search Reducer:
+ *
+ * Handles the search of the application, potentially searching through all the items in the database. Allows to update
+ * the kind of search that will happen through certain actions. Also handles the query, in order to search more than
+ * once (as in loading a new page of results).
+ *
+ * @param {*} state The current state of the search reducer.
+ * @param {{type: string, payload: *}} action The action to specify how to update the reducer.
+ * @return {*} The next state for the reducer.
+ */
 export default (state = initialState, action) => {
     switch (action.type) {
         // TODO Update the retrieval limits based on what is enabled and not
@@ -349,6 +361,12 @@ export default (state = initialState, action) => {
     return state;
 }
 
+/**
+ * Gets the current number of types that are enabled for search within the reducer.
+ *
+ * @param {*} state The current state of the search reducer.
+ * @return {number} The number of types enabled for search.
+ */
 function getNumTypesEnabled(state) {
     let numTypesEnabled = 0;
     for (const key in state.typeQueries) {
@@ -361,6 +379,13 @@ function getNumTypesEnabled(state) {
     return numTypesEnabled;
 }
 
+/**
+ * Gets if the entire query is finished. Based on if all the types that are enabled are not at the first query and do
+ * not have a next token.
+ *
+ * @param {*} state The current state of the search reducer.
+ * @return {boolean}
+ */
 function getIfFinished(state) {
     for (const key in state.typeQueries) {
         if (state.typeQueries.hasOwnProperty(key)) {

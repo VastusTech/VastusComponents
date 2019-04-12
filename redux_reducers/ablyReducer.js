@@ -17,6 +17,18 @@ const initialState = {
     numPermanentHandlers: 0
 };
 
+/**
+ * Ably Reducer:
+ *
+ * This reducer essentially handles all of the Ably channel subscriptions and real time updating. This reducer
+ * specifically maintains the list of channels that one is subscribed to at any moment so that it doesn't exceed too
+ * high a number. Also maintains a list of unsubscription handlers to call once the channels are automatically
+ * unsubscribed from.
+ *
+ * @param {*} state The current state of the ably reducer.
+ * @param {{type: string, payload: *}} action The action to specify how to update the reducer.
+ * @return {*} The next state for the reducer.
+ */
 export default (state = initialState, action) => {
     switch (action.type) {
         case ADD_HANDLER:
@@ -159,6 +171,7 @@ function setPermanentHandler(state, channel, handler, unsubscriptionHandler, mes
  *
  * @param state The redux ably state.
  * @param channel The channel to remove and unsubscribe from.
+ * @param asyncDispatch The asyncDispatch function scheduling a dispatch after the reducer finishes.
  */
 function removeChannelAndHandlers(state, channel, asyncDispatch) {
     removeChannel(state, channel, asyncDispatch);
@@ -226,6 +239,7 @@ function removeChannel(state, channel, asyncDispatch) {
  * Clears all the channels from the ably state. Ends up with a clean ably state. Handles unsubscription too.
  *
  * @param state The redux ably state.
+ * @param asyncDispatch The asyncDispatch function scheduling a dispatch after the reducer finishes.
  */
 function clearAllChannels(state, asyncDispatch) {
     const channels = state.subscribedChannels;

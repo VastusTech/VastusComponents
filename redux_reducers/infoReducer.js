@@ -11,6 +11,16 @@ const initialState = {
     error: null
 };
 
+/**
+ * Info Reducer:
+ *
+ * This reducer handles all the global states of the application. This includes global errors and global loading states.
+ * This might be more helpful later when we have a more integrated system.
+ *
+ * @param {*} state The current state of the info reducer.
+ * @param {{type: string, payload: *}} action The action to specify how to update the reducer.
+ * @return {*} The next state for the reducer.
+ */
 export default (state = initialState, action) => {
     switch (action.type) {
         case SET_ERROR:

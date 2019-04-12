@@ -7,12 +7,12 @@ import { ADD_HANDLER, REMOVE_CHANNEL, SET_PERMANENT_HANDLER, SET_HANDLER, CLEAR_
 // =========================================================================================================
 
 /**
- * TODO
+ * Adds a handler and and unsubscription handler to a channel from the ably reducer.
  *
- * @param channelName
- * @param handler
- * @param unsubscriptionHandler
- * @return {Function}
+ * @param {string} channelName The name of the channel to add a handler to.
+ * @param {function({})} handler The handler to call when the channel receives a message.
+ * @param {function()} unsubscriptionHandler The handler to call when the channel is unsubscribed from.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function addHandlerAndUnsubscription(channelName, handler, unsubscriptionHandler) {
     return (dispatch, getStore) => {
@@ -23,12 +23,13 @@ export function addHandlerAndUnsubscription(channelName, handler, unsubscription
 }
 
 /**
- * TODO
+ * Sets the handler and and unsubscription handler for a channel from the ably reducer. Maintains only a single handler
+ * for a given channel.
  *
- * @param channelName
- * @param handler
- * @param unsubscriptionHandler
- * @return {Function}
+ * @param {string} channelName The name of the channel to set the handler for.
+ * @param {function({})} handler The handler to call when the channel receives a message.
+ * @param {function()} unsubscriptionHandler The handler to call when the channel is unsubscribed from.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function setHandlerAndUnsubscription(channelName, handler, unsubscriptionHandler) {
     return (dispatch, getStore) => {
@@ -39,12 +40,12 @@ export function setHandlerAndUnsubscription(channelName, handler, unsubscription
 }
 
 /**
- * TODO
+ * Sets a permanent handler in the app that will never be unsubscribed from from a cache eviction.
  *
- * @param channelName
- * @param handler
- * @param unsubscriptionHandler
- * @return {Function}
+ * @param {string} channelName The name of the channel to set the permanent handler for.
+ * @param {function({})} handler The handler to call when the channel receives a message.
+ * @param {function()} unsubscriptionHandler The handler to call when the channel is unsubscribed from.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function setPermanentHandlerAndUnsubscription(channelName, handler, unsubscriptionHandler) {
     return (dispatch, getStore) => {
@@ -55,10 +56,10 @@ export function setPermanentHandlerAndUnsubscription(channelName, handler, unsub
 }
 
 /**
- * TODO
+ * Removes the subscription from a specific channel.
  *
- * @param channelName
- * @return {Function}
+ * @param {string} channelName The name of the channel to remove the channel subscription from.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function removeChannelSubscription(channelName) {
     return (dispatch, getStore) => {
@@ -85,10 +86,11 @@ export function removeChannelSubscription(channelName) {
 //         dispatch(setIsNotLoading());
 //     };
 // }
+
 /**
- * TODO
+ * Removes all the handlers from all the channels, regardless of their permanent status.
  *
- * @return {Function}
+ * @return {function(function(*))} The given function to dispatch a new action in the redux system.
  */
 export function removeAllHandlers() {
     return (dispatch) => {
@@ -99,11 +101,12 @@ export function removeAllHandlers() {
 }
 
 /**
- * TODO
+ * Gets the specific message handler for the channel. This handler receives all the notification handlers for the
+ * channel from the current store and handles them using the message.
  *
- * @param channelName
- * @param getStore
- * @return {Function}
+ * @param {string} channelName The name of the channel to get the overall message handler of.
+ * @param {function()} getStore The function to obtain the current state of the store.
+ * @return {function({})} The message handler for the specific channel.
  */
 function getMessageHandler(channelName, getStore) {
     return (message) => {
