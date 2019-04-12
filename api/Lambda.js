@@ -13,17 +13,28 @@ let lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
  * This is the static class that allows us to invoke the AWS Lambda function using the predefined JSON structure.
  */
 class Lambda {
-    // All the basic CRUD Functions with my own personally defined JSONs
-    // TODO Is there a case where we would need specify action yet?
+    // ======================================================================================================
+    // Lambda Low-Level Functions ~
+    // ======================================================================================================
+
     /**
-     * TODO
+     * Gets the Create Request JSON attribute name from the given item type.
      *
-     * @param fromID
-     * @param itemType
-     * @param createRequest
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} itemType The type of the item to send a create request for.
+     * @return {string} The name of the payload attribute to use for the request.
+     */
+    static getCreateRequestName = itemType => "create" + itemType + "Request";
+
+    /**
+     * Creates an item in the database with a given create request, which is just a value JSON for attributes.
+     *
+     * @param {string} fromID The user ID that is invoking this Lambda request.
+     * @param {string} itemType The type of the item to create.
+     * @param {{}} createRequest The create request JSON to send for creation.
+     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static create(fromID, itemType, createRequest, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
@@ -35,16 +46,17 @@ class Lambda {
     }
 
     /**
-     * TODO
+     * Indicates to the database Lambda function that an attribute should be set to a specific value in an object.
      *
-     * @param fromID
-     * @param objectID
-     * @param objectItemType
-     * @param attributeName
-     * @param attributeValue
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The user ID that is invoking this Lambda request.
+     * @param {string} objectID The ID of the object to update in the database.
+     * @param {string} objectItemType The item type of the object to update.
+     * @param {string} attributeName The name of the object's attribute.
+     * @param {*} attributeValue The value to set to the object's attribute.
+     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateSetAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
@@ -62,16 +74,17 @@ class Lambda {
     }
 
     /**
-     * TODO
+     * Indicates to the database Lambda function that a value should be added to an object's set (array) attribute.
      *
-     * @param fromID
-     * @param objectID
-     * @param objectItemType
-     * @param attributeName
-     * @param attributeValue
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The user ID that is invoking this Lambda request.
+     * @param {string} objectID The ID of the object to update in the database.
+     * @param {string} objectItemType The item type of the object to update.
+     * @param {string} attributeName The name of the object's set attribute.
+     * @param {*} attributeValue The value to add to the object's set attribute.
+     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateAddToAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
@@ -89,16 +102,17 @@ class Lambda {
     }
 
     /**
-     * TODO
+     * Indicates to the database Lambda function that a value should be removed from an object's set (array) attribute.
      *
-     * @param fromID
-     * @param objectID
-     * @param objectItemType
-     * @param attributeName
-     * @param attributeValue
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The user ID that is invoking this Lambda request.
+     * @param {string} objectID The ID of the object to update in the database.
+     * @param {string} objectItemType The item type of the object to update.
+     * @param {string} attributeName The name of the object's set attribute.
+     * @param {*} attributeValue The value to remove from the object's set attribute.
+     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateRemoveFromAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
@@ -116,14 +130,15 @@ class Lambda {
     }
 
     /**
-     * TODO
+     * Indicates to the database Lambda function that an object should be deleted.
      *
-     * @param fromID
-     * @param objectID
-     * @param objectItemType
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The user ID that is invoking this Lambda request.
+     * @param {string} objectID The ID of the object to delete in the database.
+     * @param {string} objectItemType The item type of the object to delete.
+     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static delete(fromID, objectID, objectItemType, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
@@ -137,16 +152,21 @@ class Lambda {
     }
 
     /**
-     * TODO
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * Sends a very quick lambda invocation to the database Lambda function in an attempt to reduce slow start times.
+     *
+     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static ping(successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
             action: "PING"
         }, successHandler, failureHandler);
     }
+
+    // Specific Lambda Function Calls
+
     static invokeDatabaseLambda(payload, successHandler, failureHandler) {
         return this.invokeLambda("VastusDatabaseLambdaFunction", payload, successHandler, failureHandler);
     }
@@ -158,13 +178,14 @@ class Lambda {
     }
 
     /**
-     * TODO
+     * Invokes an AWS Lambda function from the Lambda console using a specific payload.
      *
-     * @param functionName
-     * @param payload
-     * @param successHandler
-     * @param failureHandler
-     * @return {string}
+     * @param {string} functionName The name of the function from the Lambda console to invoke.
+     * @param {{}} payload The JSON payload to send through lambda.
+     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static invokeLambda(functionName, payload, successHandler, failureHandler) {
         log&&console.log("Sending lambda payload: " + JSON.stringify(payload));
@@ -210,7 +231,6 @@ class Lambda {
                 }
             }
         });
-        // console.log("Returning " + JSON.stpayload);
         return JSON.stringify(payload);
     }
 }
