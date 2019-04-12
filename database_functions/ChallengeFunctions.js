@@ -33,7 +33,7 @@ class ChallengeFunctions {
     static createChallenge(fromID, owner, endTime, capacity, title, goal, access, restriction, tags, successHandler,
                            failureHandler) {
         return this.create(fromID, owner, endTime, capacity, title, goal, null, null, null, tags, access, restriction,
-            null, null, null, null, null, successHandler, failureHandler);
+            null, null, null, null, null, null, successHandler, failureHandler);
     }
 
     /**
@@ -65,7 +65,65 @@ class ChallengeFunctions {
                                    tags, access, restriction, prize, challengeType, streakUpdateSpanType,
                                    streakUpdateInterval, streakN, successHandler, failureHandler) {
         return this.create(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs, tags,
-            access, restriction, prize, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
+            access, restriction, prize, null, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
+            successHandler, failureHandler);
+    }
+
+    /**
+     * Creates a bare minimum Challenge for a Group in the database with the given information.
+     *
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} groupID The Group that this Challenge is a part of.
+     * @param {string} owner The User to be the owner of the Challenge.
+     * @param {string} endTime The ISO string indicating when the Challenge will finish.
+     * @param {number} capacity The maximum number of Users who can join the Challenge.
+     * @param {string} title The title of the Challenge to display.
+     * @param {string} goal The goal for what people of the Challenge need to do to win.
+     * @param {string} access The access string of who can see the Challenge. ("public" or "private").
+     * @param {string|null} restriction The restriction value of if Users need to request entry. ("restricted" or null).
+     * @param {[string]} tags The tags indicating what kind of a Challenge this will be.
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
+     */
+    static createGroupChallenge(fromID, groupID, owner, endTime, capacity, title, goal, access, restriction, tags, successHandler,
+                           failureHandler) {
+        return this.create(fromID, owner, endTime, capacity, title, goal, null, null, null, tags, access, restriction,
+            null, groupID, null, null, null, null, successHandler, failureHandler);
+    }
+
+    /**
+     * Creates a Challenge for a Group with optional information in the database with the given information.
+     *
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} groupID The Group that this Challenge is a part of.
+     * @param {string} owner The User to be the owner of the Challenge.
+     * @param {string} endTime The ISO string indicating when the Challenge will finish.
+     * @param {number} capacity The maximum number of Users who can join the Challenge.
+     * @param {string} title The title of the Challenge to display.
+     * @param {string} goal The goal for what people of the Challenge need to do to win.
+     * @param {string} description The description for what the Challenge will entail in detail.
+     * @param {number} difficulty The difficulty of this given Challenge, in terms of intensity.
+     * @param {[string]|null} memberIDs The IDs of the Users who will be automatically signed up for the Challenge.
+     * @param {[string]} tags The tags indicating what kind of a Challenge this will be.
+     * @param {string} access The access string of who can see the Challenge. ("public" or "private").
+     * @param {string|null} restriction The restriction value of if Users need to request entry. ("restricted" or null).
+     * @param {string|null} prize The prize for winning a Challenge
+     * @param {string|null} challengeType The type of the Challenge that will be run. ("streak" or null).
+     * @param {string|null} streakUpdateSpanType The interval of the update span. (i.e. "daily", "hourly", ...).
+     * @param {string|null} streakUpdateInterval How many update spans pass for a Streak update.
+     * @param {number|null} streakN How many submissions to do until one Streak N is counted.
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
+     */
+    static createGroupChallengeOptional(fromID, groupID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs,
+                                   tags, access, restriction, prize, challengeType, streakUpdateSpanType,
+                                   streakUpdateInterval, streakN, successHandler, failureHandler) {
+        return this.create(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs, tags,
+            access, restriction, prize, groupID, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
             successHandler, failureHandler);
     }
 
@@ -322,11 +380,12 @@ class ChallengeFunctions {
      * @param {string} goal The goal for what people of the Challenge need to do to win.
      * @param {string} description The description for what the Challenge will entail in detail.
      * @param {number} difficulty The difficulty of this given Challenge, in terms of intensity.
-     * @param {[string]|null} memberIDs The IDs of the Users who will be automatically signed up for the Challenge.
+     * @param {[string]|null} members The IDs of the Users who will be automatically signed up for the Challenge.
      * @param {[string]} tags The tags indicating what kind of a Challenge this will be.
      * @param {string} access The access string of who can see the Challenge. ("public" or "private").
      * @param {string|null} restriction The restriction value of if Users need to request entry. ("restricted" or null).
      * @param {string|null} prize The prize for winning a Challenge
+     * @param {string|null} group The Group the Challenge is a part of.
      * @param {string|null} challengeType The type of the Challenge that will be run. ("streak" or null).
      * @param {string|null} streakUpdateSpanType The interval of the update span. (i.e. "daily", "hourly", ...).
      * @param {string|null} streakUpdateInterval How many update spans pass for a Streak update.
@@ -336,8 +395,8 @@ class ChallengeFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static create(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs, tags, access,
-                  restriction, prize, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN, successHandler, failureHandler) {
+    static create(fromID, owner, endTime, capacity, title, goal, description, difficulty, members, tags, access,
+                  restriction, prize, group, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN, successHandler, failureHandler) {
         return Lambda.create(fromID, "Challenge", {
             owner,
             endTime,
@@ -345,12 +404,13 @@ class ChallengeFunctions {
             title,
             goal,
             description,
-            difficulty,
-            memberIDs,
             tags,
+            difficulty,
+            prize,
+            members,
             access,
             restriction,
-            prize,
+            group,
             challengeType,
             streakUpdateSpanType,
             streakUpdateInterval,

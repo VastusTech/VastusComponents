@@ -14,14 +14,14 @@ class MessageFunctions {
     // Create Functions ============================================================
 
     /**
-     * TODO
+     * Creates a normal text Message in the database to send to a board.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param name
-     * @param profileImagePath
-     * @param board
-     * @param message
+     * @param {string} from The ID of the User who is sending this Message.
+     * @param {string} name The name of the User sending this Message.
+     * @param {string} profileImagePath The path of this User's profile image.
+     * @param {string} board The Message Board to send the Message to.
+     * @param {string} message The actual string text to send the Message with.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -32,15 +32,15 @@ class MessageFunctions {
     }
 
     /**
-     * TODO
+     * Creates a picture Message in the database and in S3 to send to a board.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param name
-     * @param profileImagePath
-     * @param board
-     * @param picture
-     * @param picturePath
+     * @param {string} from The ID of the User who is sending this Message.
+     * @param {string} name The name of the User sending this Message.
+     * @param {string} profileImagePath The path of this User's profile image.
+     * @param {string} board The Message Board to send the Message to.
+     * @param {string} picture The picture file to send with the Message.
+     * @param {string} picturePath The S3 path to add the picture to in the S3 bucket.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -51,15 +51,15 @@ class MessageFunctions {
     }
 
     /**
-     * TODO
+     * Creates a video Message in the database and in S3 to send to a board.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param name
-     * @param profileImagePath
-     * @param board
-     * @param video
-     * @param videoPath
+     * @param {string} from The ID of the User who is sending this Message.
+     * @param {string} name The name of the User sending this Message.
+     * @param {string} profileImagePath The path of this User's profile image.
+     * @param {string} board The Message Board to send the Message to.
+     * @param {string} video The video file to send with the Message.
+     * @param {string} videoPath The S3 path to add the video to in the S3 bucket.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -72,12 +72,12 @@ class MessageFunctions {
     // Update Functions ============================================================
 
     /**
-     * TODO
+     * Updates the last seen attribute of a Message, telling the board that its read status has been updated.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param board
-     * @param messageID
-     * @param userID
+     * @param {string} board The Message Board containing the Message.
+     * @param {string} messageID The ID of the message to update.
+     * @param {string} userID The User ID to add the read status of.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -92,16 +92,16 @@ class MessageFunctions {
     // ======================================================================================================
 
     /**
-     * TODO
+     * Creates a Message in the database and adds the paths to S3 using the information given.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param board
-     * @param from
-     * @param name
-     * @param profileImagePath
-     * @param type
-     * @param message
-     * @param file
+     * @param {string} board The Message Board to send the Message to.
+     * @param {string} from The ID of the User who is sending this Message.
+     * @param {string} name The name of the User sending this Message.
+     * @param {string} profileImagePath The path of this User's profile image.
+     * @param {string} type The type of Message to send to the database. ("picture", "video", or null).
+     * @param {string} message The main message to send to the board.
+     * @param {string} file The file to send with the Message.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.

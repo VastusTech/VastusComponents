@@ -13,11 +13,11 @@ class InviteFunctions {
     // Create Functions ============================================================
 
     /**
-     * TODO
+     * Sends a friend request to another User that they accept in order to add you as a friend.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param to
+     * @param {string} from The ID of the User sending the friend request.
+     * @param {string} to The ID of the User receiving the friend request.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -28,12 +28,12 @@ class InviteFunctions {
     }
 
     /**
-     * TODO
+     * Sends a friend request to another User that they accept in order to add you as a friend with a message.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param to
-     * @param message
+     * @param {string} from The ID of the User sending the friend request.
+     * @param {string} to The ID of the User receiving the friend request.
+     * @param {string} message The message they want to send along with the Invite.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -44,12 +44,12 @@ class InviteFunctions {
     }
 
     /**
-     * TODO
+     * Sends an Invite to a User, inviting them to become a member of an Event they are also a member of.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param to
-     * @param eventID
+     * @param {string} from The ID of the User sending the Invite.
+     * @param {string} to The ID of the User receiving the Invite.
+     * @param {string} eventID The ID of the Event that the "from" is inviting the "to" to.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -60,13 +60,13 @@ class InviteFunctions {
     }
 
     /**
-     * TODO
+     * Sends an Invite to a User, inviting them to become a member of an Event they are also a member of with a message.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param to
-     * @param eventID
-     * @param message
+     * @param {string} from The ID of the User sending the Invite.
+     * @param {string} to The ID of the User receiving the Invite.
+     * @param {string} eventID The ID of the Event that the "from" is inviting the "to" to.
+     * @param {string} message The message they want to send along with the Invite.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -77,12 +77,12 @@ class InviteFunctions {
     }
 
     /**
-     * TODO
+     * Sends an Invite to a User, inviting them to become a member of a Challenge they are also a member of.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param to
-     * @param challengeID
+     * @param {string} from The ID of the User sending the Invite.
+     * @param {string} to The ID of the User receiving the Invite.
+     * @param {string} challengeID The ID of the Challenge that the "from" is inviting the "to" to.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -93,13 +93,13 @@ class InviteFunctions {
     }
 
     /**
-     * TODO
+     * Sends an Invite to a User, inviting them to be a member of a Challenge they are also a member of with a message.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param to
-     * @param challengeID
-     * @param message
+     * @param {string} from The ID of the User sending the Invite.
+     * @param {string} to The ID of the User receiving the Invite.
+     * @param {string} challengeID The ID of the Challenge that the "from" is inviting the "to" to.
+     * @param {string} message The message they want to send along with the Invite.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -110,105 +110,12 @@ class InviteFunctions {
     }
 
     /**
-     * TODO
+     * Sends an Invite to a User, inviting them to become a member of a Group they are also a member of.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param eventID
-     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
-     * returned data from the invocation of the Lambda function.
-     * @param {function(error)} failureHandler The function to handle any errors that may occur.
-     * @return {*} Debugging info about the Lambda operation.
-     */
-    static createEventRequest(fromID, from, eventID, successHandler, failureHandler) {
-        return this.create(fromID, from, eventID, "eventRequest", from, null, successHandler, failureHandler);
-    }
-
-    /**
-     * TODO
-     *
-     * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param eventID
-     * @param message
-     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
-     * returned data from the invocation of the Lambda function.
-     * @param {function(error)} failureHandler The function to handle any errors that may occur.
-     * @return {*} Debugging info about the Lambda operation.
-     */
-    static createEventRequestOptional(fromID, from, eventID, message, successHandler, failureHandler) {
-        return this.create(fromID, from, eventID, "eventRequest", from, message, successHandler, failureHandler);
-    }
-
-    /**
-     * TODO
-     *
-     * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param challengeID
-     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
-     * returned data from the invocation of the Lambda function.
-     * @param {function(error)} failureHandler The function to handle any errors that may occur.
-     * @return {*} Debugging info about the Lambda operation.
-     */
-    static createChallengeRequest(fromID, from, challengeID, successHandler, failureHandler) {
-        return this.create(fromID, from, challengeID, "challengeRequest", from, null, successHandler, failureHandler);
-    }
-
-    /**
-     * TODO
-     *
-     * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param challengeID
-     * @param message
-     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
-     * returned data from the invocation of the Lambda function.
-     * @param {function(error)} failureHandler The function to handle any errors that may occur.
-     * @return {*} Debugging info about the Lambda operation.
-     */
-    static createChallengeRequestOptional(fromID, from, challengeID, message, successHandler, failureHandler) {
-        return this.create(fromID, from, challengeID, "challengeRequest", from, message, successHandler, failureHandler);
-    }
-
-    /**
-     * TODO
-     *
-     * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param groupID
-     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
-     * returned data from the invocation of the Lambda function.
-     * @param {function(error)} failureHandler The function to handle any errors that may occur.
-     * @return {*} Debugging info about the Lambda operation.
-     */
-    static createGroupRequest(fromID, from, groupID, successHandler, failureHandler) {
-        return this.create(fromID, from, groupID, "groupRequest", from, null, successHandler, failureHandler);
-    }
-
-    /**
-     * TODO
-     *
-     * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param groupID
-     * @param message
-     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
-     * returned data from the invocation of the Lambda function.
-     * @param {function(error)} failureHandler The function to handle any errors that may occur.
-     * @return {*} Debugging info about the Lambda operation.
-     */
-    static createGroupRequestOptional(fromID, from, groupID, message, successHandler, failureHandler) {
-        return this.create(fromID, from, groupID, "groupRequest", from, message, successHandler, failureHandler);
-    }
-
-    /**
-     * TODO
-     *
-     * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param to
-     * @param groupID
+     * @param {string} from The ID of the User sending the Invite.
+     * @param {string} to The ID of the User receiving the Invite.
+     * @param {string} groupID The ID of the Group that the "from" is inviting the "to" to.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -219,13 +126,13 @@ class InviteFunctions {
     }
 
     /**
-     * TODO
+     * Sends an Invite to a User, inviting them to become a member of a Group they are also a member of with a message.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param to
-     * @param groupID
-     * @param message
+     * @param {string} from The ID of the User sending the Invite.
+     * @param {string} to The ID of the User receiving the Invite.
+     * @param {string} groupID The ID of the Group that the "from" is inviting the "to" to.
+     * @param {string} message The message they want to send along with the Invite.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -235,6 +142,99 @@ class InviteFunctions {
         return this.create(fromID, from, to, "groupInvite", groupID, message, successHandler, failureHandler);
     }
 
+    /**
+     * Sends a Invite, requesting that the User be added to an Event that is restricted.
+     *
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} from The ID of the User sending the request Invite.
+     * @param {string} eventID The ID of the Event that the "from" is requesting to be a part of.
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
+     */
+    static createEventRequest(fromID, from, eventID, successHandler, failureHandler) {
+        return this.create(fromID, from, eventID, "eventRequest", from, null, successHandler, failureHandler);
+    }
+
+    /**
+     * Sends a Invite, requesting that the User be added to an Event that is restricted with a message.
+     *
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} from The ID of the User sending the request Invite.
+     * @param {string} eventID The ID of the Event that the "from" is requesting to be a part of.
+     * @param {string} message The message they want to send along with the Invite.
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
+     */
+    static createEventRequestOptional(fromID, from, eventID, message, successHandler, failureHandler) {
+        return this.create(fromID, from, eventID, "eventRequest", from, message, successHandler, failureHandler);
+    }
+
+    /**
+     * Sends a Invite, requesting that the User be added to an Challenge that is restricted.
+     *
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} from The ID of the User sending the request Invite.
+     * @param {string} challengeID The ID of the Challenge that the "from" is requesting to be a part of.
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
+     */
+    static createChallengeRequest(fromID, from, challengeID, successHandler, failureHandler) {
+        return this.create(fromID, from, challengeID, "challengeRequest", from, null, successHandler, failureHandler);
+    }
+
+    /**
+     * Sends a Invite, requesting that the User be added to an Challenge that is restricted with a message.
+     *
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} from The ID of the User sending the request Invite.
+     * @param {string} challengeID The ID of the Challenge that the "from" is requesting to be a part of.
+     * @param {string} message The message they want to send along with the Invite.
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
+     */
+    static createChallengeRequestOptional(fromID, from, challengeID, message, successHandler, failureHandler) {
+        return this.create(fromID, from, challengeID, "challengeRequest", from, message, successHandler, failureHandler);
+    }
+
+    /**
+     * Sends a Invite, requesting that the User be added to an Group that is restricted.
+     *
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} from The ID of the User sending the request Invite.
+     * @param {string} groupID The ID of the Group that the "from" is requesting to be a part of.
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
+     */
+    static createGroupRequest(fromID, from, groupID, successHandler, failureHandler) {
+        return this.create(fromID, from, groupID, "groupRequest", from, null, successHandler, failureHandler);
+    }
+
+    /**
+     * Sends a Invite, requesting that the User be added to an Group that is restricted with a message.
+     *
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} from The ID of the User sending the request Invite.
+     * @param {string} groupID The ID of the Group that the "from" is requesting to be a part of.
+     * @param {string} message The message they want to send along with the Invite.
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
+     */
+    static createGroupRequestOptional(fromID, from, groupID, message, successHandler, failureHandler) {
+        return this.create(fromID, from, groupID, "groupRequest", from, message, successHandler, failureHandler);
+    }
+
     // Update Functions ============================================================
 
     // ======================================================================================================
@@ -242,14 +242,14 @@ class InviteFunctions {
     // ======================================================================================================
 
     /**
-     * TODO
+     * Creates an Invite object in the database using the given information.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param from
-     * @param to
-     * @param inviteType
-     * @param about
-     * @param description
+     * @param {string} from The ID of the User sending the Invite.
+     * @param {string} to The ID of the object receiving the Invite.
+     * @param {string} inviteType The type of Invite being sent.
+     * @param {string} about The ID of the object that the Invite is about.
+     * @param {string} description The message sent along with the Invite.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -276,10 +276,10 @@ class InviteFunctions {
     }
 
     /**
-     * TODO
+     * Deletes an Invite and its dependencies from the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param inviteID
+     * @param {string} inviteID The ID of the Invite to delete.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
