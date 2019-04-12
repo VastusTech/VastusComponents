@@ -1,3 +1,5 @@
+// Helpful and optimized functions for dealing with ISO time and time intervals.
+
 /**
  * TODO
  *

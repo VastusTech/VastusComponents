@@ -6,6 +6,16 @@ const initialState = {
     id: null,
 };
 
+/**
+ * User Reducer:
+ *
+ * The reducer to essentially store the current user's information directly. Essentially updates using the cache reducer
+ * and keeps the state consistent. Convenience mostly and for maintaining who the user is.
+ *
+ * @param {*} state The current state of the user reducer.
+ * @param {{type: string, payload: *}} action The action to specify how to update the reducer.
+ * @return {*} The next state for the reducer.
+ */
 export default (state = initialState, action) => {
     switch (action.type) {
         // For the user, we want to be able to store all the pertinent information

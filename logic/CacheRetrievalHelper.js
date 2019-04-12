@@ -1,9 +1,8 @@
-import {err} from "../../Constants";
 import {getCacheName} from "../redux/actions/cacheActions";
 import {getItemTypeFromID} from "./ItemType";
-/**
- * This helps access the redux actions properly, like getting cache object attributes
- */
+
+// This file helps access the cache reducer properly, getting attributes within objects with ease.
+
 export function getClientAttribute(id, attributeName, cacheReducer) {
     return getObjectAttributeFromCache(id, attributeName, "clients", cacheReducer);
 }
@@ -52,6 +51,16 @@ export function getObjectAttribute(id, attributeName, cacheReducer) {
 export function getObjectAttributeWithItemType(id, itemType, attributeName, cacheReducer) {
     return getObjectAttributeFromCache(id, attributeName, getCacheName(itemType), cacheReducer);
 }
+
+/**
+ * Gets an object attribute from an object within the cache.
+ *
+ * @param {string} id The id of the object to get.
+ * @param {string} attributeName The name of the attribute within the object to get.
+ * @param {string} subCacheName The sub-cache within the cache that holds the object's item type.
+ * @param {{}} cacheReducer The current cache reducer within redux.
+ * @return {string|number} Either the attribute or the length of the array attribute
+ */
 function getObjectAttributeFromCache(id, attributeName, subCacheName, cacheReducer) {
     if (cacheReducer) {
         const object = cacheReducer[subCacheName][id];
@@ -67,18 +76,27 @@ function getObjectAttributeFromCache(id, attributeName, subCacheName, cacheReduc
     // }
     return null;
 }
+
+/**
+ * Gets an object from the cache using the id.
+ *
+ * @param {string} id The id of the object to get.
+ * @param {{}} cacheReducer The current cache reducer for redux.
+ * @return {{}} The object from the cache.
+ */
 export function getObjectFromCache(id, cacheReducer) {
     if (id && cacheReducer) {
         return cacheReducer[getCacheName(getItemTypeFromID(id))][id];
     }
     return null;
 }
+
 /**
  * Gets an attribute from an object, using my "Length" trick to get lengths of arrays. No checking for a real object here.
  *
- * @param object The object from the database in the redux cache.
- * @param attributeName The name of the attribute in the object to retrieve.
- * @return {*} Either the attribute or the length of the array attribute
+ * @param {{}} object The object from the database in the redux cache.
+ * @param {string} attributeName The name of the attribute in the object to retrieve.
+ * @return {string|number} Either the attribute or the length of the array attribute
  */
 export function getAttributeFromObject(object, attributeName) {
     if (object) {
