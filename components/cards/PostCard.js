@@ -63,6 +63,12 @@ type Props = {
     // }
 };
 
+/**
+ * Displays the profile image.
+ *
+ * @param {string} profileImage The url string for the profile image.
+ * @returns {*} Displays the JSX of the profile image given.
+ */
 const profilePicture = (profileImage) => {
     if (profileImage) {
         return(
@@ -78,6 +84,13 @@ const profilePicture = (profileImage) => {
     }
 };
 
+/**
+ * Displays the video or image media in the post.
+ *
+ * @param {[]} pictures A list of all the pictures in the post.
+ * @param {[]} videos A list of all the videos in the post.
+ * @returns {*} The React JSX used to display the video or image in a post.
+ */
 const getPostMedia = (pictures, videos) => {
     // TODO FIX THIS UP SO THAT IT CAN HANDLE A LOT MORE POSTS
     if (videos && videos.length > 0) {
@@ -90,6 +103,13 @@ const getPostMedia = (pictures, videos) => {
     return null;
 };
 
+/**
+ * Displays the correct detail card based on the type of post that it is.
+ *
+ * @param {string} postType The type of post that is being displayed.
+ * @param {string} about The id of the content that the post is about.
+ * @returns {*}
+ */
 const getCorrectDetailCard = (postType, about) => {
     if (postType && postType.length) {
         //alert("Item Type: " + itemType);
@@ -146,7 +166,15 @@ const getCorrectDetailCard = (postType, about) => {
     return (<div/>);
 };
 
-
+/**
+ * The modal of the user that the post is authored by.
+ *
+ * @param {string} id The id of the user that created the modal.
+ * @param {string} itemType
+ * @param {function()} byModalOpen Opens the modal relating to the user who authored the post.
+ * @param {function(boolean)} setByModalOpen Sets the by modal open attribute to true.
+ * @returns {*} The React JSX user to display the proper client modal state.
+ */
 const byModal = (id, itemType, byModalOpen, setByModalOpen) => {
     if (itemType === "Client") {
         return (
@@ -161,11 +189,13 @@ const byModal = (id, itemType, byModalOpen, setByModalOpen) => {
     return null;
 };
 
-/*
-* Post Card
-*
-* This is the generic view for how a post shows up in any feeds or lists.
-* It is used as a modal trigger in the feed.
+/**
+ * This is the generic view for how a post shows up in any feeds or lists.
+ * It is used as a modal trigger in the feed.
+ *
+ * @param {Props} props The given props to the component.
+ * @returns {*} The React JSX used to display the component.
+ * @constructor
  */
 const PostCard = (props: Props) => {
     const [postModalOpen, setPostModalOpen] = useState(false);

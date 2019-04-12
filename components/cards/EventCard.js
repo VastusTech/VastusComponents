@@ -30,7 +30,7 @@ type Props = {
  * It is used as a modal trigger in the feed.
  *
  * @param {Props} props The given props to the component.
- * @returns {*}
+ * @returns {*} The React JSX used to display the component.
  * @constructor
  */
 const EventCard = (props: Props) => {

@@ -19,10 +19,12 @@ type Props = {
 }
 
 /**
- * Trainer Card
- *
  * This is the generic view for how a trainer shows up in any feeds or lists.
  * It is used as a modal trigger in the feed.
+ *
+ * @param {Props} props The given props to the component.
+ * @returns {*} The React JSX used to display the component.
+ * @constructor
  */
 const TrainerCard = (props: Props) => {
     const [modalOpen, setModalOpen] = useState(false);

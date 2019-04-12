@@ -56,7 +56,7 @@ export const InviteCardInfo = {
  * @param {string} aboutID The id of the attribute that the request references.
  * @param {string} fromID The id of the user that is sending the request.
  * @param {string} toID The id of the user that the request is being sent to.
- * @returns {*}
+ * @returns {*} The React JSX used to display the component.
  */
 const isValidRequest = (userID, inviteID, aboutID, fromID, toID) => (userID && inviteID && aboutID && fromID && toID);
 
@@ -68,7 +68,7 @@ const isValidRequest = (userID, inviteID, aboutID, fromID, toID) => (userID && i
  * @param {string} aboutID The id of the attribute that the request references.
  * @param {string} fromID The id of the user that is sending the request.
  * @param {string} toID The id of the user that the request is being sent to.
- * @param {boolean} setIsLoading
+ * @param {boolean} setIsLoading Is the set currently in a loading state.
  * @param {function()} responseHandler {string}
  */
 const checkResponse = (userID, inviteID, aboutID, fromID, toID, setIsLoading, responseHandler) => {
@@ -89,10 +89,11 @@ const checkResponse = (userID, inviteID, aboutID, fromID, toID, setIsLoading, re
 };
 
 /**
+ * The action for deleting requests.
  *
  * @param {string} userID The current user's id.
  * @param {string} inviteID The id that represents the invite itself.
- * @param {boolean} setIsLoading
+ * @param {boolean} setIsLoading i=Is the set currently in a loading state.
  */
 const deleteRequest = (userID, inviteID, setIsLoading) => {
     checkResponse(userID, inviteID, {}, {}, {}, setIsLoading, (successHandler, failureHandler) => {
@@ -101,10 +102,11 @@ const deleteRequest = (userID, inviteID, setIsLoading) => {
 };
 
 /**
+ * Accepts a friend request for the current user.
  *
  * @param {string} userID The current user's id.
  * @param {string} aboutID The id of the user that the request is being sent to
- * @param setIsLoading
+ * @param setIsLoading Is the set currently in a loading state.
  */
 const handleAcceptFriendRequest = (userID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, {}, setIsLoading, (successHandler, failureHandler) => {
@@ -113,16 +115,18 @@ const handleAcceptFriendRequest = (userID, aboutID, setIsLoading) => {
 };
 
 /**
+ * Declines a friend request for the current user.
  *
  * @type {deleteRequest}
  */
 const handleDeclineFriendRequest = deleteRequest;
 
 /**
+ * Accepts the invite to an event for the current user.
  *
  * @param {string} userID The current user's id.
  * @param {string} aboutID The id of the user that the request is being sent to
- * @param setIsLoading
+ * @param {boolean} setIsLoading Is the set currently in a loading state.
  */
 const handleAcceptEventInvite = (userID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, {}, setIsLoading, (successHandler, failureHandler) => {
@@ -131,16 +135,18 @@ const handleAcceptEventInvite = (userID, aboutID, setIsLoading) => {
 };
 
 /**
+ * Declines an invite to an event for the current user.
  *
  * @type {deleteRequest}
  */
 const handleDeclineEventInvite = deleteRequest;
 
 /**
+ * Accepts invite to challenge for current user.
  *
  * @param {string} userID The current user's id.
  * @param {string} aboutID The id of the user that the request is being sent to
- * @param setIsLoading
+ * @param {boolean} setIsLoading Is the set currently in a loading state.
  */
 const handleAcceptChallengeInvite = (userID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, {}, setIsLoading, (successHandler, failureHandler) => {
@@ -149,16 +155,18 @@ const handleAcceptChallengeInvite = (userID, aboutID, setIsLoading) => {
 };
 
 /**
+ * Declines invite to challenge for current user.
  *
  * @type {deleteRequest}
  */
 const handleDeclineChallengeInvite = deleteRequest;
 
 /**
+ * Accepts the invite to a group for the current user.
  *
  * @param {string} userID The current user's id.
- * @param {string} aboutID The id of the user that the request is being sent to
- * @param setIsLoading
+ * @param {string} aboutID The id of the group that corresponds to the invite.
+ * @param {boolean} setIsLoading Is the set currently in a loading state.
  */
 const handleAcceptGroupInvite = (userID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, {}, setIsLoading, (successHandler, failureHandler) => {
@@ -167,17 +175,19 @@ const handleAcceptGroupInvite = (userID, aboutID, setIsLoading) => {
 };
 
 /**
+ * Declines an invite to a group for the current user.
  *
  * @type {deleteRequest}
  */
 const handleDeclineGroupInvite = deleteRequest;
 
 /**
+ * Accepts the request to a event to an event for the current user.
  *
- * @param userID
- * @param toID
- * @param aboutID
- * @param setIsLoading
+ * @param {string} userID The current user's id.
+ * @param {string} toID The id of the user that the event request is being sent to.
+ * @param {string} aboutID The id of the event that corresponds to the request.
+ * @param {boolean} setIsLoading Is the set currently in a loading state.
  */
 const handleAcceptEventRequest = (userID, toID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, toID, setIsLoading, (successHandler, failureHandler) => {
@@ -186,17 +196,19 @@ const handleAcceptEventRequest = (userID, toID, aboutID, setIsLoading) => {
 };
 
 /**
+ * Declines an invite to an event for the current user.
  *
  * @type {deleteRequest}
  */
 const handleDeclineEventRequest = deleteRequest;
 
 /**
+ * Accepts a challenge invite for the current user.
  *
- * @param userID
- * @param toID
- * @param aboutID
- * @param setIsLoading
+ * {string} userID The current user's id.
+ * @param {string} toID The id of the user that the event request is being sent to.
+ * @param {string} aboutID The id of the event that corresponds to the request.
+ * @param {boolean} setIsLoading Is the set currently in a loading state.
  */
 const handleAcceptChallengeRequest = (userID, toID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, toID, setIsLoading, (successHandler, failureHandler) => {
@@ -205,17 +217,19 @@ const handleAcceptChallengeRequest = (userID, toID, aboutID, setIsLoading) => {
 };
 
 /**
+ * Declines a challenge invite for the current user.
  *
  * @type {deleteRequest}
  */
 const handleDeclineChallengeRequest = deleteRequest;
 
 /**
+ * Accepts a group invite for the current user.
  *
- * @param userID
- * @param toID
- * @param aboutID
- * @param setIsLoading
+ * @param {string} userID The id of the author.
+ * @param {string} toID The id of the user being sent the invite.
+ * @param {string} aboutID The id of the group that the user is being invited to.
+ * @param {boolean} setIsLoading Is the set currently loading.
  */
 const handleAcceptGroupRequest = (userID, toID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, toID, setIsLoading, (successHandler, failureHandler) => {
@@ -224,17 +238,19 @@ const handleAcceptGroupRequest = (userID, toID, aboutID, setIsLoading) => {
 };
 
 /**
+ * Declines a group invite for the current user.
  *
  * @type {deleteRequest}
  */
 const handleDeclineGroupRequest = deleteRequest;
 
 /**
+ * Displays the modal of the user who sent the invite.
  *
- * @param fromID
- * @param fromModalOpen
- * @param setFromModalOpen
- * @returns {*}
+ * @param {string} fromID The id of the user who sent the invite.
+ * @param {function()} fromModalOpen Opens the modal for the user who sent the invite.
+ * @param {function()} setFromModalOpen Sets the open attribute of the from modal to open.
+ * @returns {*} The React JSX used to display the component.
  */
 const fromModal = (fromID, fromModalOpen, setFromModalOpen) => {
     const fromItemType = getItemTypeFromID(fromID);
@@ -247,11 +263,12 @@ const fromModal = (fromID, fromModalOpen, setFromModalOpen) => {
 };
 
 /**
+ * The modal relating to the client that the invite is to.
  *
- * @param toID
- * @param toModalOpen
- * @param setToModalOpen
- * @returns {*}
+ * @param {string} toID The id of the client that the invite is being sent to.
+ * @param {function()} toModalOpen Opens the modal for the client being sent the invite.
+ * @param {function(boolean)} setToModalOpen Sets the open attribute of the to modal to true.
+ * @returns {*} The React JSX used to display the component.
  */
 const toModal = (toID, toModalOpen, setToModalOpen) => {
     const toItemType = getItemTypeFromID(toID);
@@ -272,11 +289,12 @@ const toModal = (toID, toModalOpen, setToModalOpen) => {
 };
 
 /**
+ * Displays the modal for the element that the invite is about.
  *
- * @param aboutID
- * @param aboutModalOpen
- * @param setAboutModalOpen
- * @returns {*}
+ * @param {String} aboutID The id of the element that the invite is about.
+ * @param {function()} aboutModalOpen Opens the about modal.
+ * @param {function(boolean)} setAboutModalOpen Sets the open attribute of the about modal to true.
+ * @returns {*} The React JSX used to display the component.
  */
 const aboutModal = (aboutID, aboutModalOpen, setAboutModalOpen) => {
     const aboutItemType = getItemTypeFromID(aboutID);
@@ -297,21 +315,22 @@ const aboutModal = (aboutID, aboutModalOpen, setAboutModalOpen) => {
 };
 
 /**
+ * Gets the details of the invite function.
  *
- * @param userID
- * @param getInviteAttribute
- * @param getFromAttribute
- * @param getToAttribute
- * @param getAboutAttribute
- * @param fromModalOpen
- * @param setFromModalOpen
- * @param toModalOpen
- * @param setToModalOpen
- * @param aboutModalOpen
- * @param setAboutModalOpen
- * @param isLoading
- * @param setIsLoading
- * @returns {*}
+ * @param {string} userID The id of the current user.
+ * @param {function()} getInviteAttribute *
+ * @param {function()} getFromAttribute *
+ * @param {function()} getToAttribute *
+ * @param {function()} getAboutAttribute *
+ * @param {string} fromModalOpen Sets the modal for the from to open
+ * @param {function(string, function(), function())} setFromModalOpen
+ * @param {function()} toModalOpen Sets the open attribute of the to modal to open.
+ * @param {function(boolean)} setToModalOpen Sets modal of the recipient client open attribute to true.
+ * @param {function(boolean)} aboutModalOpen Sets the open attribute of the about modal to open.
+ * @param {string} setAboutModalOpen Sets the open attribute for the about model to open.
+ * @param {boolean} isLoading Shows whether the invite component is loading or not.
+ * @param {boolean} setIsLoading
+ * @returns {*} The React JSX used to display the component.
  */
 const getInviteDetails = (userID, getInviteAttribute, getFromAttribute, getToAttribute, getAboutAttribute,
                           fromModalOpen, setFromModalOpen, toModalOpen, setToModalOpen, aboutModalOpen,
@@ -516,9 +535,10 @@ type Props = {
 };
 
 /**
+ * The card for displaying different kinds of invites the user can receive.
  *
- * @param props
- * @returns {*}
+ * @param {Props} props The given props to the component.
+ * @returns {*} The React JSX used to display the component.
  * @constructor
  */
 const InviteCard = (props: Props) => {
