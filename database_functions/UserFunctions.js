@@ -15,12 +15,12 @@ class UserFunctions {
     // Update Functions ============================================================
 
     /**
-     * TODO
+     * Adds a profile image to a User's profile image gallery.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param image
-     * @param profileImagePath
+     * @param {string} userID The ID of the User to update.
+     * @param {*} image The image file to add to the User's profile images.
+     * @param {string} profileImagePath The S3 path to put the profile image into.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -36,11 +36,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Removes a profile image from a User's profile image gallery.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param profileImagePath
+     * @param {string} userID The ID of the User to update.
+     * @param {string} profileImagePath The S3 path of the image to remove from the User.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -55,11 +55,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Adds a friend to the User's buddy list and vice versa.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param friendID
+     * @param {string} userID The ID of the User to update.
+     * @param {string} friendID The ID of the User to add as a friend.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -70,11 +70,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Removes a User from another User's buddy list and vice versa.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param friendID
+     * @param {string} userID The ID of the User to update.
+     * @param {string} friendID The ID of the User to remove as a friend.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -85,11 +85,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Adds the User to a Challenge and the Challenge to the User in the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param challengeID
+     * @param {string} userID The ID of the User to update.
+     * @param {string} challengeID The ID of the Challenge to add the User to.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -100,11 +100,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Removes the User from a Challenge and the Challenge from the User in the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param challengeID
+     * @param {string} userID The ID of the User to update.
+     * @param {string} challengeID The ID of the Challenge to remove the User from.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -115,11 +115,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Adds the User to an Event and the Event to the User in the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param eventID
+     * @param {string} userID The ID of the User to update.
+     * @param {string} eventID The ID of the Event to add the User to.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -130,11 +130,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Removes the User from an Event and the Event from the User in the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param eventID
+     * @param {string} userID The ID of the User to update.
+     * @param {string} eventID The ID of the Event to add the User to.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -145,11 +145,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Adds the User to a Group and the Group to the User in the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param groupID
+     * @param {string} userID The ID of the User to update.
+     * @param {string} groupID The ID of the Group to add the User to.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -160,11 +160,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Removes the User from a Group and the Group from the User in the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param groupID
+     * @param {string} userID The ID of the User to update.
+     * @param {string} groupID The ID of the Group for the User to leave.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -175,11 +175,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Adds a message board to a User's message board feed in the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param messageBoard
+     * @param {string} userID The ID of the User to update.
+     * @param {string} messageBoard The message board to add to the User's message boards.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -190,11 +190,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Removes a message board from the User's message board feed in the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param messageBoard
+     * @param {string} userID The ID of the User to update.
+     * @param {string} messageBoard The message board to remove from the User's message boards.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -205,11 +205,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Updates the name of a User in the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param name
+     * @param {string} userID The ID of the User to update.
+     * @param {string} name The name to set for the User.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -220,11 +220,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Updates the gender of the User in the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param gender
+     * @param {string} userID The ID of the User to update.
+     * @param {string} gender The gender of the User to set.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -235,10 +235,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Updates the birthday of the User in the database.
+     *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param birthday
+     * @param {string} userID The ID of the User to update.
+     * @param {string} birthday The ISO string of the birth date of the User.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -249,11 +250,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Updates the location of the User in the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param location
+     * @param {string} userID The ID of the User to update.
+     * @param {string} location The general location of the User within the database.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -264,11 +265,11 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Updates the biographical information of the User in the database.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param bio
+     * @param {string} userID The ID of the User to update.
+     * @param {string} bio The biographical description to set for the User.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -279,12 +280,12 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Updates the main profile image of the User and places the image into S3.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
-     * @param profileImage
-     * @param profileImagePath
+     * @param {string} userID The ID of the User to update.
+     * @param {*} profileImage The profile image to place into S3.
+     * @param {string} profileImagePath The S3 path of where to place the file.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -320,10 +321,10 @@ class UserFunctions {
     }
 
     /**
-     * TODO
+     * Deletes a User from the database as well as all of its dependencies.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param userID
+     * @param {string} userID The ID of the User to delete.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.

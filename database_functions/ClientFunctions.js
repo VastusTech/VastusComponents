@@ -14,12 +14,12 @@ class ClientFunctions extends UserFunctions {
     // Create Functions ============================================================
 
     /**
-     * TODO
+     * Creates a Client in the database using as little info as allowed.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param name
-     * @param email
-     * @param username
+     * @param {string} name The display name of the Client to place into the database.
+     * @param {string} email The email address of the Client.
+     * @param {string} username The Cognito User Pool Username of the User.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -30,15 +30,15 @@ class ClientFunctions extends UserFunctions {
     }
 
     /**
-     * TODO
+     * Creates a Client in the database using all the optional info that can be used for a normal Client.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param name
-     * @param gender
-     * @param birthday
-     * @param email
-     * @param username
-     * @param bio
+     * @param {string} name The display name of the Client to place into the database.
+     * @param {string} gender The gender of the Client.
+     * @param {string} birthday The ISO string of the date of birth for the Client.
+     * @param {string} email The email address of the Client.
+     * @param {string} username The Cognito User Pool Username of the User.
+     * @param {string} bio The biographical information description for the Client.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -49,13 +49,13 @@ class ClientFunctions extends UserFunctions {
     }
 
     /**
-     * TODO
+     * Creates a Client with as little info as possible from a federated identity (Google, Facebook, ...).
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param name
-     * @param email
-     * @param username
-     * @param federatedID
+     * @param {string} name The display name of the Client to place into the database.
+     * @param {string} email The email address of the Client.
+     * @param {string} username The Cognito User Pool Username of the User.
+     * @param {string} federatedID The unique federated ID from the federated identity.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -66,16 +66,17 @@ class ClientFunctions extends UserFunctions {
     }
 
     /**
-     * TODO
+     * Creates a Client in the database using all the optional info that can be used from a federated identity (Google,
+     * Facebook, ...).
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param name
-     * @param gender
-     * @param birthday
-     * @param email
-     * @param username
-     * @param federatedID
-     * @param bio
+     * @param {string} name The display name of the Client to place into the database.
+     * @param {string} gender The gender of the Client.
+     * @param {string} birthday The ISO string of the date of birth for the Client.
+     * @param {string} email The email address of the Client.
+     * @param {string} username The Cognito User Pool Username of the User.
+     * @param {string} federatedID The unique federated ID from the federated identity.
+     * @param {string} bio The biographical information description for the Client.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -92,17 +93,17 @@ class ClientFunctions extends UserFunctions {
     // ======================================================================================================
 
     /**
-     * TODO
+     * Places a Client inside of the database using the given information.
      *
      * @param {string} fromID The User invoking the Lambda request.
-     * @param name
-     * @param gender
-     * @param birthday
-     * @param email
-     * @param username
+     * @param {string} name The display name of the Client to place into the database.
+     * @param {string} gender The gender of the Client.
+     * @param {string} birthday The ISO string of the date of birth for the Client.
+     * @param {string} email The email address of the Client.
+     * @param {string} username The Cognito User Pool Username of the User.
      * @param stripeID
      * @param federatedID
-     * @param bio
+     * @param {string} bio The biographical information description for the Client.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
