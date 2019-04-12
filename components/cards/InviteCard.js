@@ -19,7 +19,11 @@ import GroupDescriptionModal from "../modals/GroupDescriptionModal";
 /**
  * All of the different fetchLists used for the different types of cards.
  *
- * @type {{fetchList: string[], fromInfo: {clientFetchList: string[], trainerFetchList: string[]}, toInfo: {clientFetchList: string[], trainerFetchList: string[], eventFetchList: string[], challengeFetchList: string[], groupFetchList: string[]}, aboutInfo: {clientFetchList: string[], trainerFetchList: string[], eventFetchList: string[], challengeFetchList: string[], groupFetchList: string[]}, ifSubscribe: boolean}}
+ * @type {{fetchList: string[], fromInfo: {clientFetchList: string[], trainerFetchList: string[]},
+ * toInfo: {clientFetchList: string[], trainerFetchList: string[], eventFetchList: string[],
+ * challengeFetchList: string[], groupFetchList: string[]}, aboutInfo: {clientFetchList: string[],
+ * trainerFetchList: string[], eventFetchList: string[], challengeFetchList: string[], groupFetchList: string[]},
+ * ifSubscribe: boolean}}
  */
 export const InviteCardInfo = {
     fetchList: ["time_created", "from", "to", "inviteType", "about", "description"],
@@ -47,11 +51,11 @@ export const InviteCardInfo = {
 /**
  * Checks if the request contains all of the ids it requires.
  *
- * @param {string} userID
- * @param {string} inviteID
- * @param {string} aboutID
- * @param {string} fromID
- * @param {string} toID
+ * @param {string} userID The current user's id.
+ * @param {string} inviteID The id that represents the invite itself.
+ * @param {string} aboutID The id of the attribute that the request references.
+ * @param {string} fromID The id of the user that is sending the request.
+ * @param {string} toID The id of the user that the request is being sent to.
  * @returns {*}
  */
 const isValidRequest = (userID, inviteID, aboutID, fromID, toID) => (userID && inviteID && aboutID && fromID && toID);
@@ -59,13 +63,13 @@ const isValidRequest = (userID, inviteID, aboutID, fromID, toID) => (userID && i
 /**
  * Checks if the response has all of the necessary props.
  *
- * @param {string} userID 
- * @param {string} inviteID
- * @param {string} aboutID
- * @param {string} fromID
- * @param {string} toID
+ * @param {string} userID The current user's id.
+ * @param {string} inviteID The id that represents the invite itself.
+ * @param {string} aboutID The id of the attribute that the request references.
+ * @param {string} fromID The id of the user that is sending the request.
+ * @param {string} toID The id of the user that the request is being sent to.
  * @param {boolean} setIsLoading
- * @param {function} responseHandler
+ * @param {function()} responseHandler {string}
  */
 const checkResponse = (userID, inviteID, aboutID, fromID, toID, setIsLoading, responseHandler) => {
     setIsLoading(true);
@@ -86,9 +90,9 @@ const checkResponse = (userID, inviteID, aboutID, fromID, toID, setIsLoading, re
 
 /**
  *
- * @param userID
- * @param inviteID
- * @param setIsLoading
+ * @param {string} userID The current user's id.
+ * @param {string} inviteID The id that represents the invite itself.
+ * @param {boolean} setIsLoading
  */
 const deleteRequest = (userID, inviteID, setIsLoading) => {
     checkResponse(userID, inviteID, {}, {}, {}, setIsLoading, (successHandler, failureHandler) => {
@@ -98,8 +102,8 @@ const deleteRequest = (userID, inviteID, setIsLoading) => {
 
 /**
  *
- * @param userID
- * @param aboutID
+ * @param {string} userID The current user's id.
+ * @param {string} aboutID The id of the user that the request is being sent to
  * @param setIsLoading
  */
 const handleAcceptFriendRequest = (userID, aboutID, setIsLoading) => {
@@ -116,8 +120,8 @@ const handleDeclineFriendRequest = deleteRequest;
 
 /**
  *
- * @param userID
- * @param aboutID
+ * @param {string} userID The current user's id.
+ * @param {string} aboutID The id of the user that the request is being sent to
  * @param setIsLoading
  */
 const handleAcceptEventInvite = (userID, aboutID, setIsLoading) => {
@@ -134,8 +138,8 @@ const handleDeclineEventInvite = deleteRequest;
 
 /**
  *
- * @param userID
- * @param aboutID
+ * @param {string} userID The current user's id.
+ * @param {string} aboutID The id of the user that the request is being sent to
  * @param setIsLoading
  */
 const handleAcceptChallengeInvite = (userID, aboutID, setIsLoading) => {
@@ -152,8 +156,8 @@ const handleDeclineChallengeInvite = deleteRequest;
 
 /**
  *
- * @param userID
- * @param aboutID
+ * @param {string} userID The current user's id.
+ * @param {string} aboutID The id of the user that the request is being sent to
  * @param setIsLoading
  */
 const handleAcceptGroupInvite = (userID, aboutID, setIsLoading) => {
