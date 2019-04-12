@@ -15,13 +15,14 @@ class CommentFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param byID
      * @param onID
      * @param comment
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createComment(fromID, byID, onID, comment, successHandler, failureHandler) {
         return this.create(fromID, byID, onID, comment, successHandler, failureHandler);
@@ -32,12 +33,13 @@ class CommentFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param commentID
      * @param comment
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateComment(fromID, commentID, comment, successHandler, failureHandler) {
         return this.updateSet(fromID, commentID, "comment", comment, successHandler, failureHandler);
@@ -50,13 +52,14 @@ class CommentFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param by
      * @param on
      * @param comment
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static create(fromID, by, on, comment, successHandler, failureHandler) {
         return Lambda.create(fromID, itemType, {
@@ -78,11 +81,12 @@ class CommentFunctions {
 
     /**
      * TODO
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param commentID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static delete(fromID, commentID, successHandler, failureHandler) {
         return Lambda.delete(fromID, commentID, itemType, successHandler, failureHandler);

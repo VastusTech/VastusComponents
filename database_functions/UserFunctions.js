@@ -17,12 +17,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param image
      * @param profileImagePath
-     * @param successHandler
-     * @param failureHandler
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
      */
     static addProfileImage(fromID, userID, image, profileImagePath, successHandler, failureHandler) {
         S3.putImage(profileImagePath, image, () => {
@@ -37,12 +38,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param profileImagePath
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removeProfileImage(fromID, userID, profileImagePath, successHandler, failureHandler) {
         return this.updateRemove(fromID, userID, "profileImagePaths", profileImagePath, (data) => {
@@ -55,12 +57,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param friendID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static addFriend(fromID, userID, friendID, successHandler, failureHandler) {
         return this.updateAdd(fromID, userID, "friends", friendID, successHandler, failureHandler);
@@ -69,12 +72,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param friendID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removeFriend(fromID, userID, friendID, successHandler, failureHandler) {
         return this.updateRemove(fromID, userID, "friends", friendID, successHandler, failureHandler);
@@ -83,12 +87,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param challengeID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static addChallenge(fromID, userID, challengeID, successHandler, failureHandler) {
         return this.updateAdd(fromID, userID, "challenges", challengeID, successHandler, failureHandler);
@@ -97,12 +102,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param challengeID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removeChallenge(fromID, userID, challengeID, successHandler, failureHandler) {
         return this.updateRemove(fromID, userID, "challenges", challengeID, successHandler, failureHandler);
@@ -111,12 +117,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param eventID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static addEvent(fromID, userID, eventID, successHandler, failureHandler) {
         return this.updateAdd(fromID, userID, "scheduledEvents", eventID, successHandler, failureHandler);
@@ -125,12 +132,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param eventID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removeEvent(fromID, userID, eventID, successHandler, failureHandler) {
         return this.updateRemove(fromID, userID, "scheduledEvents", eventID, successHandler, failureHandler);
@@ -139,12 +147,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param groupID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static addGroup(fromID, userID, groupID, successHandler, failureHandler) {
         return this.updateAdd(fromID, userID, "groups", groupID, successHandler, failureHandler);
@@ -153,12 +162,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param groupID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removeGroup(fromID, userID, groupID, successHandler, failureHandler) {
         return this.updateRemove(fromID, userID, "groups", groupID, successHandler, failureHandler);
@@ -167,12 +177,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param messageBoard
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static addMessageBoard(fromID, userID, messageBoard, successHandler, failureHandler) {
         return this.updateAdd(fromID, userID, "messageBoards", messageBoard, successHandler, failureHandler);
@@ -181,12 +192,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param messageBoard
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removeMessageBoard(fromID, userID, messageBoard, successHandler, failureHandler) {
         return this.updateRemove(fromID, userID, "messageBoards", messageBoard, successHandler, failureHandler);
@@ -195,12 +207,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param name
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateName(fromID, userID, name, successHandler, failureHandler) {
         return this.updateSet(fromID, userID, "name", name, successHandler, failureHandler);
@@ -209,12 +222,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param gender
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateGender(fromID, userID, gender, successHandler, failureHandler) {
         return this.updateSet(fromID, userID, "gender", gender, successHandler, failureHandler);
@@ -222,12 +236,13 @@ class UserFunctions {
 
     /**
      * TODO
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param birthday
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateBirthday(fromID, userID, birthday, successHandler, failureHandler) {
         return this.updateSet(fromID, userID, "birthday", birthday, successHandler, failureHandler);
@@ -236,12 +251,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param location
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateLocation(fromID, userID, location, successHandler, failureHandler) {
         return this.updateSet(fromID, userID, "location", location, successHandler, failureHandler);
@@ -250,12 +266,13 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param bio
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateBio(fromID, userID, bio, successHandler, failureHandler) {
         return this.updateSet(fromID, userID, "bio", bio, successHandler, failureHandler);
@@ -264,13 +281,14 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
      * @param profileImage
      * @param profileImagePath
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateProfileImage(fromID, userID, profileImage, profileImagePath, successHandler, failureHandler) {
         if (profileImage && profileImagePath) {
@@ -304,11 +322,12 @@ class UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param userID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static delete(fromID, userID, successHandler, failureHandler) {
         return Lambda.delete(fromID, userID, getItemTypeFromID(userID), successHandler, failureHandler);

@@ -15,13 +15,14 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param by
      * @param description
      * @param access
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createBarePost(fromID, by, description, access, successHandler, failureHandler) {
         return this.createNormalPost(fromID, by, description, access, null, null, successHandler, failureHandler);
@@ -30,14 +31,15 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param by
      * @param description
      * @param access
      * @param eventID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createNewEventPost(fromID, by, description, access, eventID, successHandler, failureHandler) {
         return this.createNewItemPost(fromID, by, description, access, "Event", eventID, successHandler, failureHandler);
@@ -46,14 +48,15 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param by
      * @param description
      * @param access
      * @param challengeID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createNewChallengePost(fromID, by, description, access, challengeID, successHandler, failureHandler) {
         return this.createNewItemPost(fromID, by, description, access, "Challenge", challengeID, successHandler, failureHandler);
@@ -62,15 +65,16 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param by
      * @param description
      * @param access
      * @param pictures
      * @param videos
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createNormalPost(fromID, by, description, access, pictures, videos, successHandler, failureHandler) {
         return this.create(fromID, by, description, access, null, null, pictures, videos, successHandler, failureHandler);
@@ -79,7 +83,7 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param by
      * @param description
      * @param access
@@ -87,9 +91,10 @@ class PostFunctions {
      * @param itemID
      * @param pictures
      * @param videos
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createShareItemPost(fromID, by, description, access, itemType, itemID, pictures, videos, successHandler, failureHandler) {
         return this.create(fromID, by, description, access, itemType, itemID, pictures, videos, successHandler, failureHandler);
@@ -98,15 +103,16 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param by
      * @param description
      * @param access
      * @param itemType
      * @param itemID
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createNewItemPost(fromID, by, description, access, itemType, itemID, successHandler, failureHandler) {
         return this.create(fromID, by, description, access, "new" + itemType, itemID, null, null, successHandler, failureHandler);
@@ -117,12 +123,13 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param postID
      * @param description
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateDescription(fromID, postID, description, successHandler, failureHandler) {
         return this.updateSet(fromID, postID, "description", description, successHandler, failureHandler);
@@ -131,12 +138,13 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param postID
      * @param access
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateAccess(fromID, postID, access, successHandler, failureHandler) {
         return this.updateSet(fromID, postID, "access", access, successHandler, failureHandler);
@@ -145,12 +153,13 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param postID
      * @param picture
      * @param picturePath
-     * @param successHandler
-     * @param failureHandler
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
      */
     static addPicture(fromID, postID, picture, picturePath, successHandler, failureHandler) {
         S3.putImage(picturePath, picture, () => {
@@ -165,12 +174,13 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param postID
      * @param video
      * @param videoPath
-     * @param successHandler
-     * @param failureHandler
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
      */
     static addVideo(fromID, postID, video, videoPath, successHandler, failureHandler) {
         S3.putVideo(videoPath, video, successHandler, failureHandler, () => {
@@ -185,12 +195,13 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param postID
      * @param picturePath
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removePicture(fromID, postID, picturePath, successHandler, failureHandler) {
         return this.updateRemove(fromID, postID, "picturePaths", picturePath, (data) => {
@@ -203,12 +214,13 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param postID
      * @param videoPath
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removeVideo(fromID, postID, videoPath, successHandler, failureHandler) {
         return this.updateRemove(fromID, postID, "videoPaths", videoPath, (data) => {
@@ -225,7 +237,7 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param by
      * @param description
      * @param access
@@ -233,9 +245,10 @@ class PostFunctions {
      * @param about
      * @param pictures
      * @param videos
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static create(fromID, by, description, access, postType, about, pictures, videos, successHandler, failureHandler) {
         let picturePaths = null;
@@ -306,11 +319,12 @@ class PostFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param postID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static delete(fromID, postID, successHandler, failureHandler) {
         return Lambda.delete(fromID, postID, "Post", successHandler, failureHandler);

@@ -14,20 +14,21 @@ class ChallengeFunctions {
     // Create Functions ============================================================
 
     /**
-     * TODO
+     * Creates a bare minimum Challenge in the database with the given information.
      *
-     * @param fromID
-     * @param owner
-     * @param endTime
-     * @param capacity
-     * @param title
-     * @param goal
-     * @param access
-     * @param restriction
-     * @param tags
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} owner The User to be the owner of the Challenge.
+     * @param {string} endTime The ISO string indicating when the Challenge will finish.
+     * @param {number} capacity The maximum number of Users who can join the Challenge.
+     * @param {string} title The title of the Challenge to display.
+     * @param {string} goal The goal for what people of the Challenge need to do to win.
+     * @param {string} access The access string of who can see the Challenge. ("public" or "private").
+     * @param {string|null} restriction The restriction value of if Users need to request entry. ("restricted" or null).
+     * @param {[string]} tags The tags indicating what kind of a Challenge this will be.
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createChallenge(fromID, owner, endTime, capacity, title, goal, access, restriction, tags, successHandler,
                            failureHandler) {
@@ -36,28 +37,29 @@ class ChallengeFunctions {
     }
 
     /**
-     * TODO
+     * Creates a Challenge with optional information in the database with the given information.
      *
-     * @param fromID
-     * @param owner
-     * @param endTime
-     * @param capacity
-     * @param title
-     * @param goal
-     * @param description
-     * @param difficulty
-     * @param memberIDs
-     * @param tags
-     * @param access
-     * @param restriction
-     * @param prize
-     * @param challengeType
-     * @param streakUpdateSpanType
-     * @param streakUpdateInterval
-     * @param streakN
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} owner The User to be the owner of the Challenge.
+     * @param {string} endTime The ISO string indicating when the Challenge will finish.
+     * @param {number} capacity The maximum number of Users who can join the Challenge.
+     * @param {string} title The title of the Challenge to display.
+     * @param {string} goal The goal for what people of the Challenge need to do to win.
+     * @param {string} description The description for what the Challenge will entail in detail.
+     * @param {number} difficulty The difficulty of this given Challenge, in terms of intensity.
+     * @param {[string]|null} memberIDs The IDs of the Users who will be automatically signed up for the Challenge.
+     * @param {[string]} tags The tags indicating what kind of a Challenge this will be.
+     * @param {string} access The access string of who can see the Challenge. ("public" or "private").
+     * @param {string|null} restriction The restriction value of if Users need to request entry. ("restricted" or null).
+     * @param {string|null} prize The prize for winning a Challenge
+     * @param {string|null} challengeType The type of the Challenge that will be run. ("streak" or null).
+     * @param {string|null} streakUpdateSpanType The interval of the update span. (i.e. "daily", "hourly", ...).
+     * @param {string|null} streakUpdateInterval How many update spans pass for a Streak update.
+     * @param {number|null} streakN How many submissions to do until one Streak N is counted.
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createChallengeOptional(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs,
                                    tags, access, restriction, prize, challengeType, streakUpdateSpanType,
@@ -70,234 +72,236 @@ class ChallengeFunctions {
     // Update Functions ============================================================
 
     /**
-     * TODO
+     * Chooses the winner of a Challenge in order to complete the Challenge and declare the winner.
      *
-     * @param fromID
-     * @param challengeID
-     * @param winnerID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {string} winnerID The ID of the User to declare the winner.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateWinner(fromID, challengeID, winnerID, successHandler, failureHandler) {
         return this.updateSet(fromID, challengeID, "winner", winnerID, successHandler, failureHandler);
     };
 
     /**
-     * TODO
+     * Changes the Challenge access to private so that only friends can view it.
      *
-     * @param fromID
-     * @param challengeID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateToPrivate(fromID, challengeID, successHandler, failureHandler) {
         return this.updateSet(fromID, challengeID, "access", "private", successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Changes the Challenge access to public so that anyone can view it.
      *
-     * @param fromID
-     * @param challengeID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateToPublic(fromID, challengeID, successHandler, failureHandler) {
         return this.updateSet(fromID, challengeID, "access", "public", successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Changes the Challenge restriction to invite only so that Users need to send a request to join the Challenge.
      *
-     * @param fromID
-     * @param challengeID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateToInviteOnly(fromID, challengeID, successHandler, failureHandler) {
         return this.updateAdd(fromID, challengeID, "restriction", "invite", successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Changes the Challenge restriction to unrestricted so that Users can directly join the Challenge.
      *
-     * @param fromID
-     * @param challengeID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateToUnrestricted(fromID, challengeID, successHandler, failureHandler) {
         return this.updateSet(fromID, challengeID, "restriction", null, successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Adds a tag to the Challenge's tags.
      *
-     * @param fromID
-     * @param challengeID
-     * @param tag
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {string} tag The name of the tag to add to the Challenge.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static addTag(fromID, challengeID, tag, successHandler, failureHandler) {
         return this.updateAdd(fromID, challengeID, "tags", tag, successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Removes a tag from the Challenge's tags.
      *
-     * @param fromID
-     * @param challengeID
-     * @param tag
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {string} tag The name of the tag to remove from the Challenge.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removeTag(fromID, challengeID, tag, successHandler, failureHandler) {
         return this.updateRemove(fromID, challengeID, "tags", tag, successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Adds a member to the Challenge directly. Also finishes any invites involved with this operation.
      *
-     * @param fromID
-     * @param challengeID
-     * @param userID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {string} userID The ID of the User to join the Challenge.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static addMember(fromID, challengeID, userID, successHandler, failureHandler) {
         return UserFunctions.addChallenge(fromID, userID, challengeID, successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Removes a member from the Challenge directly.
      *
-     * @param fromID
-     * @param challengeID
-     * @param userID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {string} userID The ID of the User to remove from the Challenge.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removeMember(fromID, challengeID, userID, successHandler, failureHandler) {
         return UserFunctions.removeChallenge(fromID, userID, challengeID, successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Updates the end time for a Challenge to indicate when the Challenge will be completed.
      *
-     * @param fromID
-     * @param challengeID
-     * @param eventID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
-     */
-    static addEvent(fromID, challengeID, eventID, successHandler, failureHandler) {
-        return this.updateAdd(fromID, challengeID, "events", eventID, successHandler, failureHandler);
-    }
-
-    /**
-     * TODO
-     *
-     * @param fromID
-     * @param challengeID
-     * @param endTime
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {string} endTime The ISO string of when the Challenge will be finished.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateEndTime(fromID, challengeID, endTime, successHandler, failureHandler) {
         return this.updateSet(fromID, challengeID, "endTime", endTime, successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Updates the capacity for a Challenge to indicate the maximum number of Users that can be in a Challenge.
      *
-     * @param fromID
-     * @param challengeID
-     * @param capacity
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {string} capacity How many members at most can be a part of the Challenge.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateCapacity(fromID, challengeID, capacity, successHandler, failureHandler) {
         return this.updateSet(fromID, challengeID, "capacity", capacity, successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Updates the goal for a Challenge to indicate what the members must do to win the Challenge.
      *
-     * @param fromID
-     * @param challengeID
-     * @param goal
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {string} goal A description of what members must do in order to win the Challenge.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateGoal(fromID, challengeID, goal, successHandler, failureHandler) {
         return this.updateSet(fromID, challengeID, "goal", goal, successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Updates the prize for a Challenge to display what the User who wins will earn.
      *
-     * @param fromID
-     * @param challengeID
-     * @param prize
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {string} prize What the winner will get for winning the Challenge.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updatePrize(fromID, challengeID, prize, successHandler, failureHandler) {
         return this.updateSet(fromID, challengeID, "prize", prize, successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Updates the title for a Challenge to display for the Challenge.
      *
-     * @param fromID
-     * @param challengeID
-     * @param title
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {string} title The title of the Challenge to display as preliminary information.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateTitle(fromID, challengeID, title, successHandler, failureHandler) {
         return this.updateSet(fromID, challengeID, "title", title, successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Updates the description for a Challenge to give the details of the Challenge.
      *
-     * @param fromID
-     * @param challengeID
-     * @param description
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {string} description The detailed description for information about the Challenge.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateDescription(fromID, challengeID, description, successHandler, failureHandler) {
         return this.updateSet(fromID, challengeID, "description", description, successHandler, failureHandler);
     }
 
     /**
-     * TODO
+     * Updates the difficulty for a Challenge to indicate the intensity of the Challenge.
      *
-     * @param fromID
-     * @param challengeID
-     * @param difficulty
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to update.
+     * @param {number} difficulty The difficulty ("1", "2", or "3") or the intensity of the Challenge.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateDifficulty(fromID, challengeID, difficulty, successHandler, failureHandler) {
         return this.updateSet(fromID, challengeID, "difficulty", difficulty, successHandler, failureHandler);
@@ -306,29 +310,31 @@ class ChallengeFunctions {
     // ======================================================================================================
     // Challenge Low-Level Functions ~
     // ======================================================================================================
+
     /**
-     * TODO
+     * Creates a Challenge object in the database using the given information.
      *
-     * @param fromID
-     * @param owner
-     * @param endTime
-     * @param capacity
-     * @param title
-     * @param goal
-     * @param description
-     * @param difficulty
-     * @param memberIDs
-     * @param tags
-     * @param access
-     * @param restriction
-     * @param prize
-     * @param challengeType
-     * @param streakUpdateSpanType
-     * @param streakUpdateInterval
-     * @param streakN
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} owner The User to be the owner of the Challenge.
+     * @param {string} endTime The ISO string indicating when the Challenge will finish.
+     * @param {number} capacity The maximum number of Users who can join the Challenge.
+     * @param {string} title The title of the Challenge to display.
+     * @param {string} goal The goal for what people of the Challenge need to do to win.
+     * @param {string} description The description for what the Challenge will entail in detail.
+     * @param {number} difficulty The difficulty of this given Challenge, in terms of intensity.
+     * @param {[string]|null} memberIDs The IDs of the Users who will be automatically signed up for the Challenge.
+     * @param {[string]} tags The tags indicating what kind of a Challenge this will be.
+     * @param {string} access The access string of who can see the Challenge. ("public" or "private").
+     * @param {string|null} restriction The restriction value of if Users need to request entry. ("restricted" or null).
+     * @param {string|null} prize The prize for winning a Challenge
+     * @param {string|null} challengeType The type of the Challenge that will be run. ("streak" or null).
+     * @param {string|null} streakUpdateSpanType The interval of the update span. (i.e. "daily", "hourly", ...).
+     * @param {string|null} streakUpdateInterval How many update spans pass for a Streak update.
+     * @param {number|null} streakN How many submissions to do until one Streak N is counted.
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static create(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs, tags, access,
                   restriction, prize, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN, successHandler, failureHandler) {
@@ -363,13 +369,14 @@ class ChallengeFunctions {
     }
 
     /**
-     * TODO
+     * Deletes a Challenge from the database and all of its dependencies.
      *
-     * @param fromID
-     * @param challengeID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} challengeID The ID of the Challenge to delete.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static delete(fromID, challengeID, successHandler, failureHandler) {
         return Lambda.delete(fromID, challengeID, itemType, successHandler, failureHandler);

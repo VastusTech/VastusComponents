@@ -15,15 +15,16 @@ class SubmissionFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param by
      * @param challengeID
      * @param description
      * @param pictures
      * @param videos
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createSubmission(fromID, by, challengeID, description, pictures, videos, successHandler, failureHandler) {
         return this.create(fromID, by, description, challengeID, pictures, videos, successHandler, failureHandler);
@@ -34,12 +35,13 @@ class SubmissionFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param postID
      * @param description
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateDescription(fromID, postID, description, successHandler, failureHandler) {
         return this.updateSet(fromID, postID, "description", description, successHandler, failureHandler);
@@ -48,12 +50,13 @@ class SubmissionFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param postID
      * @param picture
      * @param picturePath
-     * @param successHandler
-     * @param failureHandler
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
      */
     static addPicture(fromID, postID, picture, picturePath, successHandler, failureHandler) {
         S3.putImage(picturePath, picture, () => {
@@ -68,12 +71,13 @@ class SubmissionFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param postID
      * @param video
      * @param videoPath
-     * @param successHandler
-     * @param failureHandler
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
      */
     static addVideo(fromID, postID, video, videoPath, successHandler, failureHandler) {
         S3.putVideo(videoPath, video, successHandler, failureHandler, () => {
@@ -88,12 +92,13 @@ class SubmissionFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param postID
      * @param picturePath
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removePicture(fromID, postID, picturePath, successHandler, failureHandler) {
         return this.updateRemove(fromID, postID, "picturePaths", picturePath, (data) => {
@@ -106,12 +111,13 @@ class SubmissionFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param postID
      * @param videoPath
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removeVideo(fromID, postID, videoPath, successHandler, failureHandler) {
         return this.updateRemove(fromID, postID, "videoPaths", videoPath, (data) => {
@@ -128,15 +134,16 @@ class SubmissionFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param by
      * @param description
      * @param about
      * @param pictures
      * @param videos
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static create(fromID, by, description, about, pictures, videos, successHandler, failureHandler) {
         let picturePaths = null;
@@ -205,11 +212,12 @@ class SubmissionFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param postID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static delete(fromID, postID, successHandler, failureHandler) {
         return Lambda.delete(fromID, postID, "Submission", successHandler, failureHandler);

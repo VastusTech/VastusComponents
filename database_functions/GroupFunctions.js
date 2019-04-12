@@ -17,13 +17,14 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param title
      * @param description
      * @param access
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createGroup(fromID, title, description, access, successHandler, failureHandler) {
         return this.create(fromID, title, description, null, null, access, null, null, null, null, successHandler, failureHandler);
@@ -32,7 +33,7 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param title
      * @param description
      * @param motto
@@ -42,9 +43,10 @@ class GroupFunctions {
      * @param owners
      * @param members
      * @param tags
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createGroupOptional(fromID, title, description, motto, groupImage, access, restriction, owners, members, tags, successHandler, failureHandler) {
         return this.create(fromID, title, description, motto, groupImage, access, restriction, owners, members, tags, successHandler, failureHandler);
@@ -55,11 +57,12 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param eventID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateToPrivate(fromID, eventID, successHandler, failureHandler) {
         return this.updateSet(fromID, eventID, "access", "private", successHandler, failureHandler);
@@ -68,11 +71,12 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param eventID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateToPublic(fromID, eventID, successHandler, failureHandler) {
         return this.updateSet(fromID, eventID, "access", "public", successHandler, failureHandler);
@@ -81,11 +85,12 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param eventID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateToInviteOnly(fromID, eventID, successHandler, failureHandler) {
         return this.updateAdd(fromID, eventID, "restriction", "invite", successHandler, failureHandler);
@@ -94,11 +99,12 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param eventID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateToUnrestricted(fromID, eventID, successHandler, failureHandler) {
         return this.updateSet(fromID, eventID, "restriction", null, successHandler, failureHandler);
@@ -107,12 +113,13 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param eventID
      * @param tag
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static addTag(fromID, eventID, tag, successHandler, failureHandler) {
         return this.updateAdd(fromID, eventID, "tags", tag, successHandler, failureHandler);
@@ -121,12 +128,13 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param eventID
      * @param tag
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removeTag(fromID, eventID, tag, successHandler, failureHandler) {
         return this.updateRemove(fromID, eventID, "tags", tag, successHandler, failureHandler);
@@ -135,12 +143,13 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param groupID
      * @param userID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static addMember(fromID, groupID, userID, successHandler, failureHandler) {
         return UserFunctions.addGroup(fromID, userID, groupID, successHandler, failureHandler);
@@ -149,12 +158,13 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param groupID
      * @param userID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static removeMember(fromID, groupID, userID, successHandler, failureHandler) {
         return UserFunctions.removeGroup(fromID, userID, groupID, successHandler, failureHandler);
@@ -163,12 +173,13 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param groupID
      * @param title
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateTitle(fromID, groupID, title, successHandler, failureHandler) {
         return this.updateSet(fromID, groupID, "title", title, successHandler, failureHandler);
@@ -177,12 +188,13 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param groupID
      * @param description
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static updateDescription(fromID, groupID, description, successHandler, failureHandler) {
         return this.updateSet(fromID, groupID, "description", description, successHandler, failureHandler);
@@ -195,7 +207,7 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param title
      * @param description
      * @param motto
@@ -205,9 +217,10 @@ class GroupFunctions {
      * @param owners
      * @param members
      * @param tags
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static create(fromID, title, description, motto, groupImage, access, restriction, owners, members, tags, successHandler, failureHandler) {
         return Lambda.create(fromID, itemType, {
@@ -244,11 +257,12 @@ class GroupFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param eventID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static delete(fromID, eventID, successHandler, failureHandler) {
         return Lambda.delete(fromID, eventID, itemType, successHandler, failureHandler);

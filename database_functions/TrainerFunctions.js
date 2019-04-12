@@ -16,13 +16,14 @@ class TrainerFunctions extends UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param name
      * @param email
      * @param username
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createTrainer(fromID, name, email, username, successHandler, failureHandler) {
         return this.create(fromID, name, null, null, username, email, null, null, null, successHandler, failureHandler);
@@ -31,16 +32,17 @@ class TrainerFunctions extends UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param name
      * @param gender
      * @param birthday
      * @param email
      * @param username
      * @param bio
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createTrainerOptional(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
         return this.create(fromID, name, gender, birthday, email, username, null, null, bio, successHandler, failureHandler);
@@ -49,14 +51,15 @@ class TrainerFunctions extends UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param name
      * @param email
      * @param username
      * @param federatedID
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createFederatedTrainer(fromID, name, email, username, federatedID, successHandler, failureHandler) {
         return this.create(fromID, name, null, null, email, username, null, federatedID, null, successHandler, failureHandler);
@@ -65,7 +68,7 @@ class TrainerFunctions extends UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param name
      * @param gender
      * @param birthday
@@ -73,9 +76,10 @@ class TrainerFunctions extends UserFunctions {
      * @param username
      * @param federatedID
      * @param bio
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createFederatedTrainerOptional(fromID, name, gender, birthday, email, username, federatedID, bio, successHandler, failureHandler) {
         return this.create(fromID, name, gender, birthday, email, username, null, federatedID, bio, successHandler, failureHandler);
@@ -90,7 +94,7 @@ class TrainerFunctions extends UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param name
      * @param gender
      * @param birthday
@@ -99,9 +103,10 @@ class TrainerFunctions extends UserFunctions {
      * @param stripeID
      * @param federatedID
      * @param bio
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static create(fromID, name, gender, birthday, email, username, stripeID, federatedID, bio, successHandler, failureHandler) {
         return Lambda.create(fromID, itemType, {
@@ -129,11 +134,12 @@ class TrainerFunctions extends UserFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param trainerID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static delete(fromID, trainerID, successHandler, failureHandler) {
         return super.delete(fromID, itemType, trainerID, successHandler, failureHandler);

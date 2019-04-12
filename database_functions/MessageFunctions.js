@@ -16,15 +16,16 @@ class MessageFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param from
      * @param name
      * @param profileImagePath
      * @param board
      * @param message
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createTextMessage(fromID, from, name, profileImagePath, board, message, successHandler, failureHandler) {
         return this.create(fromID, board, from, name, profileImagePath, null, message, null, successHandler, failureHandler);
@@ -33,16 +34,17 @@ class MessageFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param from
      * @param name
      * @param profileImagePath
      * @param board
      * @param picture
      * @param picturePath
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createPictureMessage(fromID, from, name, profileImagePath, board, picture, picturePath, successHandler, failureHandler) {
         return this.create(fromID, board, from, name, profileImagePath, "picture", picturePath, picture, successHandler, failureHandler);
@@ -51,16 +53,17 @@ class MessageFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param from
      * @param name
      * @param profileImagePath
      * @param board
      * @param video
      * @param videoPath
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static createVideoMessage(fromID, from, name, profileImagePath, board, video, videoPath, successHandler, failureHandler) {
         return this.create(fromID, board, from, name, profileImagePath, "video", videoPath, video, successHandler, failureHandler);
@@ -71,13 +74,14 @@ class MessageFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param board
      * @param messageID
      * @param userID
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static addLastSeen(fromID, board, messageID, userID, successHandler, failureHandler) {
         return this.updateAdd(fromID, board, messageID, "lastSeenFor", userID, successHandler, failureHandler);
@@ -90,7 +94,7 @@ class MessageFunctions {
     /**
      * TODO
      *
-     * @param fromID
+     * @param {string} fromID The User invoking the Lambda request.
      * @param board
      * @param from
      * @param name
@@ -98,9 +102,10 @@ class MessageFunctions {
      * @param type
      * @param message
      * @param file
-     * @param successHandler
-     * @param failureHandler
-     * @return {fromID}
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
      */
     static create(fromID, board, from, name, profileImagePath, type, message, file, successHandler, failureHandler) {
         return Lambda.create(fromID, "Message", {

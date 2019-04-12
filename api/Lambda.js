@@ -31,7 +31,7 @@ class Lambda {
      * @param {string} fromID The user ID that is invoking this Lambda request.
      * @param {string} itemType The type of the item to create.
      * @param {{}} createRequest The create request JSON to send for creation.
-     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
@@ -53,7 +53,7 @@ class Lambda {
      * @param {string} objectItemType The item type of the object to update.
      * @param {string} attributeName The name of the object's attribute.
      * @param {*} attributeValue The value to set to the object's attribute.
-     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
@@ -81,7 +81,7 @@ class Lambda {
      * @param {string} objectItemType The item type of the object to update.
      * @param {string} attributeName The name of the object's set attribute.
      * @param {*} attributeValue The value to add to the object's set attribute.
-     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
@@ -109,7 +109,7 @@ class Lambda {
      * @param {string} objectItemType The item type of the object to update.
      * @param {string} attributeName The name of the object's set attribute.
      * @param {*} attributeValue The value to remove from the object's set attribute.
-     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
@@ -135,7 +135,7 @@ class Lambda {
      * @param {string} fromID The user ID that is invoking this Lambda request.
      * @param {string} objectID The ID of the object to delete in the database.
      * @param {string} objectItemType The item type of the object to delete.
-     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
@@ -154,7 +154,7 @@ class Lambda {
     /**
      * Sends a very quick lambda invocation to the database Lambda function in an attempt to reduce slow start times.
      *
-     * @param {function({secretKey: string, timestamp: string, data: *})} successHandler The function to handle the
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
