@@ -5,18 +5,56 @@ import S3 from "../api/S3Storage";
  * Holds all the potential properly formatted Lambda functions for Submissions.
  */
 class SubmissionFunctions {
-    // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
-    // =============================================================================
+    // ======================================================================================================
+    // Submission High-Level Functions ~
+    // ======================================================================================================
+
     // Create Functions ============================================================
     // TODO IMPORTANT: pictures and videos are objects with { key = S3Path : value = file }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param by
+     * @param challengeID
+     * @param description
+     * @param pictures
+     * @param videos
+     * @param successHandler
+     * @param failureHandler
+     * @return {fromID}
+     */
     static createSubmission(fromID, by, challengeID, description, pictures, videos, successHandler, failureHandler) {
         return this.create(fromID, by, description, challengeID, pictures, videos, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param postID
+     * @param description
+     * @param successHandler
+     * @param failureHandler
+     * @return {*}
+     */
     static updateDescription(fromID, postID, description, successHandler, failureHandler) {
         return this.updateSet(fromID, postID, "description", description, successHandler, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param postID
+     * @param picture
+     * @param picturePath
+     * @param successHandler
+     * @param failureHandler
+     */
     static addPicture(fromID, postID, picture, picturePath, successHandler, failureHandler) {
         S3.putImage(picturePath, picture, () => {
             return this.updateAdd(fromID, postID, "picturePaths", picturePath, successHandler, (error) => {
@@ -26,6 +64,17 @@ class SubmissionFunctions {
             });
         }, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param postID
+     * @param video
+     * @param videoPath
+     * @param successHandler
+     * @param failureHandler
+     */
     static addVideo(fromID, postID, video, videoPath, successHandler, failureHandler) {
         S3.putVideo(videoPath, video, successHandler, failureHandler, () => {
             return this.updateAdd(fromID, postID, "videoPaths", videoPath, successHandler, (error) => {
@@ -35,6 +84,17 @@ class SubmissionFunctions {
             });
         }, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param postID
+     * @param picturePath
+     * @param successHandler
+     * @param failureHandler
+     * @return {*}
+     */
     static removePicture(fromID, postID, picturePath, successHandler, failureHandler) {
         return this.updateRemove(fromID, postID, "picturePaths", picturePath, (data) => {
             S3.delete(picturePath, () => {
@@ -42,6 +102,17 @@ class SubmissionFunctions {
             }, failureHandler);
         }, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param postID
+     * @param videoPath
+     * @param successHandler
+     * @param failureHandler
+     * @return {*}
+     */
     static removeVideo(fromID, postID, videoPath, successHandler, failureHandler) {
         return this.updateRemove(fromID, postID, "videoPaths", videoPath, (data) => {
             S3.delete(videoPath, () => {
@@ -49,8 +120,24 @@ class SubmissionFunctions {
             }, failureHandler);
         }, failureHandler);
     }
-    // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
-    // =============================================================================
+
+    // ======================================================================================================
+    // Submission Low-Level Functions ~
+    // ======================================================================================================
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param by
+     * @param description
+     * @param about
+     * @param pictures
+     * @param videos
+     * @param successHandler
+     * @param failureHandler
+     * @return {fromID}
+     */
     static create(fromID, by, description, about, pictures, videos, successHandler, failureHandler) {
         let picturePaths = null;
         let videoPaths = null;
@@ -104,6 +191,7 @@ class SubmissionFunctions {
             }
         }, failureHandler);
     }
+
     static updateAdd(fromID, postID, attributeName, attributeValue, successHandler, failureHandler) {
         return Lambda.updateAddToAttribute(fromID, postID, "Submission", attributeName, attributeValue, successHandler, failureHandler);
     }
@@ -113,6 +201,16 @@ class SubmissionFunctions {
     static updateSet(fromID, postID, attributeName, attributeValue, successHandler, failureHandler) {
         return Lambda.updateSetAttribute(fromID, postID, "Submission", attributeName, attributeValue, successHandler, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param postID
+     * @param successHandler
+     * @param failureHandler
+     * @return {*}
+     */
     static delete(fromID, postID, successHandler, failureHandler) {
         return Lambda.delete(fromID, postID, "Submission", successHandler, failureHandler);
     }

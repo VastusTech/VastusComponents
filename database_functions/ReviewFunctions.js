@@ -2,19 +2,23 @@ import Lambda from "../api/Lambda";
 
 const itemType = "Review";
 
+// TODO Revisit once we re-implement this potentially
+
 /**
  * Holds all the potential properly formatted Lambda functions for Reviews.
  */
 class ReviewFunctions {
-    // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
-    // =============================================================================
+    // ======================================================================================================
+    // Review High-Level Functions ~
+    // ======================================================================================================
+
     // Create Functions ============================================================
 
     // Update Functions ============================================================
 
-
-    // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
-    // =============================================================================
+    // ======================================================================================================
+    // Review Low-Level Functions ~
+    // ======================================================================================================
     static create() {
         // TODO Implement
         console.log("Not implemented...");

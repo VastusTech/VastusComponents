@@ -2,22 +2,29 @@ import Lambda from "../api/Lambda";
 
 const itemType = "Workout";
 
+// TODO Revisit once we re-implement this potentially
+
 /**
  * Holds all the potential properly formatted Lambda functions for Workouts.
  */
 class WorkoutFunctions {
-    // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
-    // =============================================================================
+    // ======================================================================================================
+    // Workout High-Level Functions ~
+    // ======================================================================================================
+
     // Create Functions ============================================================
 
     // Update Functions ============================================================
 
 
-    // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
-    // =============================================================================
+    // ======================================================================================================
+    // Workout Low-Level Functions ~
+    // ======================================================================================================
+
     static create() {
         // TODO Implement
         console.log("Not implemented...");
+        alert("Not implemented...");
     }
     static updateAdd(fromID, workoutID, attributeName, attributeValue, successHandler, failureHandler) {
         return Lambda.updateAddToAttribute(fromID, workoutID, itemType, attributeName, attributeValue, successHandler, failureHandler);

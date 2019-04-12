@@ -3,19 +3,26 @@ import UserFunctions from "./UserFunctions";
 
 const itemType = "Gym";
 
+// TODO Revisit once we re-implement this potentially
+
 /**
  * Holds all the potential properly formatted Lambda functions for Gyms.
  */
 class GymFunctions extends UserFunctions {
-    // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
+    // ======================================================================================================
+    // Gym High-Level Functions ~
+    // ======================================================================================================
+
     // =============================================================================
     // Create Functions ============================================================
 
     // Update Functions ============================================================
 
 
-    // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
-    // =============================================================================
+
+    // ======================================================================================================
+    // Gym Low-Level Functions ~
+    // ======================================================================================================
     static create(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
         return super.create(fromID, itemType, name, gender, birthday, email, username, bio, successHandler, failureHandler);
     }

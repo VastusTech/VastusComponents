@@ -7,26 +7,101 @@ const itemType = "Message";
  * Holds all the potential properly formatted Lambda functions for Messages.
  */
 class MessageFunctions {
-    // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
-    // =============================================================================
+    // ======================================================================================================
+    // Message High-Level Functions ~
+    // ======================================================================================================
+
     // Create Functions ============================================================
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param from
+     * @param name
+     * @param profileImagePath
+     * @param board
+     * @param message
+     * @param successHandler
+     * @param failureHandler
+     * @return {fromID}
+     */
     static createTextMessage(fromID, from, name, profileImagePath, board, message, successHandler, failureHandler) {
         return this.create(fromID, board, from, name, profileImagePath, null, message, null, successHandler, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param from
+     * @param name
+     * @param profileImagePath
+     * @param board
+     * @param picture
+     * @param picturePath
+     * @param successHandler
+     * @param failureHandler
+     * @return {fromID}
+     */
     static createPictureMessage(fromID, from, name, profileImagePath, board, picture, picturePath, successHandler, failureHandler) {
         return this.create(fromID, board, from, name, profileImagePath, "picture", picturePath, picture, successHandler, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param from
+     * @param name
+     * @param profileImagePath
+     * @param board
+     * @param video
+     * @param videoPath
+     * @param successHandler
+     * @param failureHandler
+     * @return {fromID}
+     */
     static createVideoMessage(fromID, from, name, profileImagePath, board, video, videoPath, successHandler, failureHandler) {
         return this.create(fromID, board, from, name, profileImagePath, "video", videoPath, video, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param board
+     * @param messageID
+     * @param userID
+     * @param successHandler
+     * @param failureHandler
+     * @return {*}
+     */
     static addLastSeen(fromID, board, messageID, userID, successHandler, failureHandler) {
         return this.updateAdd(fromID, board, messageID, "lastSeenFor", userID, successHandler, failureHandler);
     }
 
-    // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
-    // =============================================================================
+    // ======================================================================================================
+    // Message Low-Level Functions ~
+    // ======================================================================================================
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param board
+     * @param from
+     * @param name
+     * @param profileImagePath
+     * @param type
+     * @param message
+     * @param file
+     * @param successHandler
+     * @param failureHandler
+     * @return {fromID}
+     */
     static create(fromID, board, from, name, profileImagePath, type, message, file, successHandler, failureHandler) {
         return Lambda.create(fromID, "Message", {
             from,
@@ -62,6 +137,9 @@ class MessageFunctions {
             attributeValues: [attributeValue],
         }, successHandler, failureHandler);
     }
+
+    // TODO Implement this when we find use cases for this.
+
     // static updateRemove(fromID, inviteID, attributeName, attributeValue, successHandler, failureHandler) {
     //     Lambda.updateRemoveFromAttribute(fromID, inviteID, itemType, attributeName, attributeValue, successHandler, failureHandler);
     // }

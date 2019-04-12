@@ -7,26 +7,102 @@ const itemType = "Client";
  * Holds all the potential properly formatted Lambda functions for Clients.
  */
 class ClientFunctions extends UserFunctions {
-    // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
-    // =============================================================================
+    // ======================================================================================================
+    // Client High-Level Functions ~
+    // ======================================================================================================
+
     // Create Functions ============================================================
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param name
+     * @param email
+     * @param username
+     * @param successHandler
+     * @param failureHandler
+     * @return {fromID}
+     */
     static createClient(fromID, name, email, username, successHandler, failureHandler) {
         return this.create(fromID, name, null, null, email, username, null, null, null, successHandler, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param name
+     * @param gender
+     * @param birthday
+     * @param email
+     * @param username
+     * @param bio
+     * @param successHandler
+     * @param failureHandler
+     * @return {fromID}
+     */
     static createClientOptional(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
         return this.create(fromID, name, gender, birthday, email, username, bio, null, null, successHandler, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param name
+     * @param email
+     * @param username
+     * @param federatedID
+     * @param successHandler
+     * @param failureHandler
+     * @return {fromID}
+     */
     static createFederatedClient(fromID, name, email, username, federatedID, successHandler, failureHandler) {
         return this.create(fromID, name, null, null, email, username, null, federatedID, null, successHandler, failureHandler);
     }
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param name
+     * @param gender
+     * @param birthday
+     * @param email
+     * @param username
+     * @param federatedID
+     * @param bio
+     * @param successHandler
+     * @param failureHandler
+     * @return {fromID}
+     */
     static createFederatedClientOptional(fromID, name, gender, birthday, email, username, federatedID, bio, successHandler, failureHandler) {
         return this.create(fromID, name, gender, birthday, email, username, null, federatedID, bio, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
 
-    // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
-    // =============================================================================
+    // ======================================================================================================
+    // Client Low-Level Functions ~
+    // ======================================================================================================
+
+    /**
+     * TODO
+     *
+     * @param fromID
+     * @param name
+     * @param gender
+     * @param birthday
+     * @param email
+     * @param username
+     * @param stripeID
+     * @param federatedID
+     * @param bio
+     * @param successHandler
+     * @param failureHandler
+     * @return {fromID}
+     */
     static create(fromID, name, gender, birthday, email, username, stripeID, federatedID, bio, successHandler, failureHandler) {
         return Lambda.create(fromID, itemType, {
             name,
