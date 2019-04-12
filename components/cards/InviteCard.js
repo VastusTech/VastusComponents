@@ -16,6 +16,15 @@ import {err} from "../../../Constants";
 import GroupFunctions from "../../database_functions/GroupFunctions";
 import GroupDescriptionModal from "../modals/GroupDescriptionModal";
 
+/**
+ * All of the different fetchLists used for the different types of cards.
+ *
+ * @type {{fetchList: string[], fromInfo: {clientFetchList: string[], trainerFetchList: string[]},
+ * toInfo: {clientFetchList: string[], trainerFetchList: string[], eventFetchList: string[],
+ * challengeFetchList: string[], groupFetchList: string[]}, aboutInfo: {clientFetchList: string[],
+ * trainerFetchList: string[], eventFetchList: string[], challengeFetchList: string[], groupFetchList: string[]},
+ * ifSubscribe: boolean}}
+ */
 export const InviteCardInfo = {
     fetchList: ["time_created", "from", "to", "inviteType", "about", "description"],
     fromInfo: {
@@ -39,7 +48,29 @@ export const InviteCardInfo = {
     ifSubscribe: false
 };
 
+/**
+ * Checks if the request contains all of the ids it requires.
+ *
+ * @param {string} userID The current user's id.
+ * @param {string} inviteID The id that represents the invite itself.
+ * @param {string} aboutID The id of the attribute that the request references.
+ * @param {string} fromID The id of the user that is sending the request.
+ * @param {string} toID The id of the user that the request is being sent to.
+ * @returns {*}
+ */
 const isValidRequest = (userID, inviteID, aboutID, fromID, toID) => (userID && inviteID && aboutID && fromID && toID);
+
+/**
+ * Checks if the response has all of the necessary props.
+ *
+ * @param {string} userID The current user's id.
+ * @param {string} inviteID The id that represents the invite itself.
+ * @param {string} aboutID The id of the attribute that the request references.
+ * @param {string} fromID The id of the user that is sending the request.
+ * @param {string} toID The id of the user that the request is being sent to.
+ * @param {boolean} setIsLoading
+ * @param {function()} responseHandler {string}
+ */
 const checkResponse = (userID, inviteID, aboutID, fromID, toID, setIsLoading, responseHandler) => {
     setIsLoading(true);
     if (isValidRequest(userID, inviteID, aboutID, fromID, toID)) {
@@ -56,54 +87,155 @@ const checkResponse = (userID, inviteID, aboutID, fromID, toID, setIsLoading, re
         setIsLoading(false);
     }
 };
+
+/**
+ *
+ * @param {string} userID The current user's id.
+ * @param {string} inviteID The id that represents the invite itself.
+ * @param {boolean} setIsLoading
+ */
 const deleteRequest = (userID, inviteID, setIsLoading) => {
     checkResponse(userID, inviteID, {}, {}, {}, setIsLoading, (successHandler, failureHandler) => {
         InviteFunctions.delete(userID, inviteID, successHandler, failureHandler);
     });
 };
+
+/**
+ *
+ * @param {string} userID The current user's id.
+ * @param {string} aboutID The id of the user that the request is being sent to
+ * @param setIsLoading
+ */
 const handleAcceptFriendRequest = (userID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, {}, setIsLoading, (successHandler, failureHandler) => {
         UserFunctions.addFriend(userID, userID, aboutID, successHandler, failureHandler);
     });
 };
+
+/**
+ *
+ * @type {deleteRequest}
+ */
 const handleDeclineFriendRequest = deleteRequest;
+
+/**
+ *
+ * @param {string} userID The current user's id.
+ * @param {string} aboutID The id of the user that the request is being sent to
+ * @param setIsLoading
+ */
 const handleAcceptEventInvite = (userID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, {}, setIsLoading, (successHandler, failureHandler) => {
         UserFunctions.addEvent(userID, userID, aboutID, successHandler, failureHandler);
     });
 };
+
+/**
+ *
+ * @type {deleteRequest}
+ */
 const handleDeclineEventInvite = deleteRequest;
+
+/**
+ *
+ * @param {string} userID The current user's id.
+ * @param {string} aboutID The id of the user that the request is being sent to
+ * @param setIsLoading
+ */
 const handleAcceptChallengeInvite = (userID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, {}, setIsLoading, (successHandler, failureHandler) => {
         UserFunctions.addChallenge(userID, userID, aboutID, successHandler, failureHandler);
     });
 };
+
+/**
+ *
+ * @type {deleteRequest}
+ */
 const handleDeclineChallengeInvite = deleteRequest;
+
+/**
+ *
+ * @param {string} userID The current user's id.
+ * @param {string} aboutID The id of the user that the request is being sent to
+ * @param setIsLoading
+ */
 const handleAcceptGroupInvite = (userID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, {}, setIsLoading, (successHandler, failureHandler) => {
         UserFunctions.addGroup(userID, userID, aboutID, successHandler, failureHandler);
     });
 };
+
+/**
+ *
+ * @type {deleteRequest}
+ */
 const handleDeclineGroupInvite = deleteRequest;
+
+/**
+ *
+ * @param userID
+ * @param toID
+ * @param aboutID
+ * @param setIsLoading
+ */
 const handleAcceptEventRequest = (userID, toID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, toID, setIsLoading, (successHandler, failureHandler) => {
         EventFunctions.addMember(userID, toID, aboutID, successHandler, failureHandler);
     });
 };
+
+/**
+ *
+ * @type {deleteRequest}
+ */
 const handleDeclineEventRequest = deleteRequest;
+
+/**
+ *
+ * @param userID
+ * @param toID
+ * @param aboutID
+ * @param setIsLoading
+ */
 const handleAcceptChallengeRequest = (userID, toID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, toID, setIsLoading, (successHandler, failureHandler) => {
         ChallengeFunctions.addMember(userID, toID, aboutID, successHandler, failureHandler);
     });
 };
+
+/**
+ *
+ * @type {deleteRequest}
+ */
 const handleDeclineChallengeRequest = deleteRequest;
+
+/**
+ *
+ * @param userID
+ * @param toID
+ * @param aboutID
+ * @param setIsLoading
+ */
 const handleAcceptGroupRequest = (userID, toID, aboutID, setIsLoading) => {
     checkResponse(userID, {}, aboutID, {}, toID, setIsLoading, (successHandler, failureHandler) => {
         GroupFunctions.addMember(userID, toID, aboutID, successHandler, failureHandler);
     });
 };
+
+/**
+ *
+ * @type {deleteRequest}
+ */
 const handleDeclineGroupRequest = deleteRequest;
 
+/**
+ *
+ * @param fromID
+ * @param fromModalOpen
+ * @param setFromModalOpen
+ * @returns {*}
+ */
 const fromModal = (fromID, fromModalOpen, setFromModalOpen) => {
     const fromItemType = getItemTypeFromID(fromID);
     return switchReturnItemType(fromItemType,
@@ -113,6 +245,14 @@ const fromModal = (fromID, fromModalOpen, setFromModalOpen) => {
                       onClose={() => setFromModalOpen(false)}/>,
         null, null, null, null, null, null, null, null, null, null, null, null, "INVITE FROM MODAL");
 };
+
+/**
+ *
+ * @param toID
+ * @param toModalOpen
+ * @param setToModalOpen
+ * @returns {*}
+ */
 const toModal = (toID, toModalOpen, setToModalOpen) => {
     const toItemType = getItemTypeFromID(toID);
     return switchReturnItemType(toItemType,
@@ -130,6 +270,14 @@ const toModal = (toID, toModalOpen, setToModalOpen) => {
                                groupID={toID}/>,
         null, null, null, null, "INVITE ABOUT MODAL");
 };
+
+/**
+ *
+ * @param aboutID
+ * @param aboutModalOpen
+ * @param setAboutModalOpen
+ * @returns {*}
+ */
 const aboutModal = (aboutID, aboutModalOpen, setAboutModalOpen) => {
     const aboutItemType = getItemTypeFromID(aboutID);
     return switchReturnItemType(aboutItemType,
@@ -148,6 +296,23 @@ const aboutModal = (aboutID, aboutModalOpen, setAboutModalOpen) => {
         null, null, null, null, "INVITE ABOUT MODAL");
 };
 
+/**
+ *
+ * @param userID
+ * @param getInviteAttribute
+ * @param getFromAttribute
+ * @param getToAttribute
+ * @param getAboutAttribute
+ * @param fromModalOpen
+ * @param setFromModalOpen
+ * @param toModalOpen
+ * @param setToModalOpen
+ * @param aboutModalOpen
+ * @param setAboutModalOpen
+ * @param isLoading
+ * @param setIsLoading
+ * @returns {*}
+ */
 const getInviteDetails = (userID, getInviteAttribute, getFromAttribute, getToAttribute, getAboutAttribute,
                           fromModalOpen, setFromModalOpen, toModalOpen, setToModalOpen, aboutModalOpen,
                           setAboutModalOpen, isLoading, setIsLoading) => {
@@ -351,7 +516,10 @@ type Props = {
 };
 
 /**
- * Basically an InviteCard
+ *
+ * @param props
+ * @returns {*}
+ * @constructor
  */
 const InviteCard = (props: Props) => {
     const [fromModalOpen, setFromModalOpen] = useState(false);

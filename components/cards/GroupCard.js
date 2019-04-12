@@ -23,58 +23,13 @@ type Props = {
     }
 };
 
-// const pictures = {
-//     Performance: require('../../img/Performance_icon.png'),
-//     Strength: require('../../img/Strength_icon.png'),
-//     Endurance: require('../../img/Endurance_icon.png'),
-//     HIIT: require('../../img/HIIT_icon.png')
-// };
-
-// const displayTagIcons = (tags) => {
-//     if (tags) {
-//         if (tags.length === 1) {
-//             return (
-//                 <Image size='small' src={pictures[tags[0]]}/>
-//             );
-//         }
-//         else if (tags.length === 2) {
-//             return (
-//                 <div>
-//                     <Image size='tiny' src={pictures[tags[0]]}/>
-//                     <Image size='tiny' src={pictures[tags[1]]}/>
-//                 </div>
-//             );
-//         }
-//         else if (tags.length === 3) {
-//             return(
-//                 <div>
-//                     <Image avatar src={pictures[tags[0]]}/>
-//                     <Image avatar src={pictures[tags[1]]}/>
-//                     <Image avatar src={pictures[tags[2]]}/>
-//                 </div>
-//             );
-//         }
-//         else if (tags.length === 4) {
-//             return(
-//                 <div>
-//                     <Image avatar src={pictures[tags[0]]}/>
-//                     <Image avatar src={pictures[tags[1]]}/>
-//                     <Image avatar src={pictures[tags[2]]}/>
-//                     <Image avatar src={pictures[tags[3]]}/>
-//                 </div>
-//             );
-//         }
-//     }
-//     else {
-//         return null;
-//     }
-// };
-
 /**
- * Group Card
- *
  * This is the generic view for how a Group shows up in any feeds or lists.
  * It is used as a modal trigger in the feed.
+ *
+ * @param {Props} props The given props to the component.
+ * @returns {*}
+ * @constructor
  */
 const GroupCard = (props: Props) => {
     const [modalOpen, setModalOpen] = useState(false);
