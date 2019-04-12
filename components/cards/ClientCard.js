@@ -26,10 +26,12 @@ type Props = {
 };
 
 /**
- * Client Card
- *
  * This is the generic view for how a client shows up in any feeds or lists.
  * It is used as a modal trigger in the feed.
+ *
+ * @param {Props} props The given props to the component.
+ * @returns {*}
+ * @constructor
  */
 const ClientCard = (props: Props) => {
     const [modalOpen, setModalOpen] = useState(false);
