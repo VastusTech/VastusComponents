@@ -10,12 +10,13 @@ import {ENABLE_TYPE, DISABLE_SEARCH_BAR, ENABLE_SEARCH_BAR, RESET_QUERY, RESET_T
 // =========================================================================================================
 
 /**
- * TODO
+ * Clears the current search results and immediately starts a new search for the new search query.
  *
- * @param queryString
- * @param minResults
- * @param dataHandler
- * @return {Function}
+ * @param queryString The string to query for using the current search settings.
+ * @param {number} minResults The least number of results to receive from the search, unless there are no more results
+ * to receive.
+ * @param {function([{}])} dataHandler The function to handle the received search results.
+ * @return {function(function(*))} The given function to dispatch a new action in the redux system.
  */
 export function newSearch(queryString, minResults, dataHandler) {
     return (dispatch) => {
@@ -38,19 +39,19 @@ export function newSearch(queryString, minResults, dataHandler) {
 }
 
 /**
- * TODO
+ * Loads more results for the current search query and makes sure that it is still the same search query.
  *
- * @param searchQuery
- * @param minResults
- * @param dataHandler
- * @return {Function}
+ * @param searchQuery The string to query for using the current search settings.
+ * @param {number} minResults The least number of results to receive from the search, unless there are no more results
+ * to receive.
+ * @param {function([{}])} dataHandler The function to handle the received search results.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function loadMoreResults(searchQuery, minResults, dataHandler) {
     return (dispatch, getStore) => {
         if (getStore().search.searchQuery === searchQuery && getStore().search.results.length < minResults &&
                 !getStore().search.ifFinished) {
             // alert("Current results = " + JSON.stringify(getStore().search.results));
-            // alert("Still need " + (parseInt(minResults) - parseInt(getStore().search.results.length)) + " more results!");
             performAllQueries(searchQuery, dispatch, getStore, () => {
                 dispatch(loadMoreResults(searchQuery, minResults, dataHandler));
             });
@@ -62,12 +63,12 @@ export function loadMoreResults(searchQuery, minResults, dataHandler) {
 }
 
 /**
- * TODO
+ * Performs every query for every single data type enabled in the search settings.
  *
- * @param searchQuery
- * @param dispatch
- * @param getStore
- * @param dataHandler
+ * @param {string} searchQuery The query string to search for in the database using the search settings.
+ * @param {function(*)} dispatch The dispatch handler function to call a new redux action with.
+ * @param {function()} getStore The get function for redux that receives the current store.
+ * @param {function([{}])} dataHandler The function to handle the successfully fetched results from all item types.
  */
 function performAllQueries(searchQuery, dispatch, getStore, dataHandler) {
     if (searchQuery && searchQuery.length > 0) {
@@ -82,7 +83,8 @@ function performAllQueries(searchQuery, dispatch, getStore, dataHandler) {
                 results.push(...data.items);
             }
             else {
-                err&&console.error("Received a weird value from query in the newSearch search redux function. Value = " + JSON.stringify(data));
+                err&&console.error("Received a weird value from query in the newSearch search redux function. " +
+                    "Value = " + JSON.stringify(data));
             }
             numResults++;
             if (numTypesEnabled <= numResults) {
@@ -109,13 +111,13 @@ function performAllQueries(searchQuery, dispatch, getStore, dataHandler) {
 }
 
 /**
- * TODO
+ * Performs a query for a single item type based on the current search settings.
  *
- * @param itemType
- * @param dispatch
- * @param getStore
- * @param successHandler
- * @param failureHandler
+ * @param {string} itemType The item type to perform the query for.
+ * @param {function(*)} dispatch The dispatch handler function to call a new redux action with.
+ * @param {function()} getStore The get function for redux that receives the current store.
+ * @param {function([{}])} successHandler The function to handle the successfully received items.
+ * @param {function(error)} failureHandler The function to handle any errors that may occur.
  */
 function performQuery(itemType, dispatch, getStore, successHandler, failureHandler) {
     const searchQuery = getStore().search.searchQuery;
@@ -133,7 +135,8 @@ function performQuery(itemType, dispatch, getStore, successHandler, failureHandl
         log&&console.log("nextToken = " + nextToken);
         if (nextToken || ifFirst) {
             // Fetch the query for the items
-            fetchItemQuery(itemType, variableList, QL.generateFilter(filterJSON, filterParameters), limit, nextToken, (data) => {
+            fetchItemQuery(itemType, variableList, QL.generateFilter(filterJSON, filterParameters), limit, nextToken,
+                (data) => {
                 // console.log("Ay lmao it came back");
                 if (data) {
                     dispatch(setTypeNextToken(itemType, data.nextToken));
