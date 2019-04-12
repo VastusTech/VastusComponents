@@ -3,6 +3,9 @@ import UserFunctions from "./UserFunctions";
 
 const itemType = "Client";
 
+/**
+ * Holds all the potential properly formatted Lambda functions for Clients.
+ */
 class ClientFunctions extends UserFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================

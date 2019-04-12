@@ -2,6 +2,9 @@ import Lambda from "../api/Lambda";
 
 const itemType = "Comment";
 
+/**
+ * Holds all the potential properly formatted Lambda functions for Comments.
+ */
 class CommentFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================

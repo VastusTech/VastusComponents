@@ -4,6 +4,9 @@ import S3 from "../api/S3Storage";
 
 const itemType = "Group";
 
+/**
+ * Holds all the potential properly formatted Lambda functions for Groups.
+ */
 class GroupFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================

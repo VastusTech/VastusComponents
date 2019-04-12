@@ -3,6 +3,9 @@ import S3 from "../api/S3Storage";
 
 const itemType = "Message";
 
+/**
+ * Holds all the potential properly formatted Lambda functions for Messages.
+ */
 class MessageFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================

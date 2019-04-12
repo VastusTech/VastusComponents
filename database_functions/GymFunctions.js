@@ -3,6 +3,9 @@ import UserFunctions from "./UserFunctions";
 
 const itemType = "Gym";
 
+/**
+ * Holds all the potential properly formatted Lambda functions for Gyms.
+ */
 class GymFunctions extends UserFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================

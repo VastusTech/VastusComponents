@@ -3,6 +3,9 @@ import UserFunctions from "./UserFunctions";
 
 const itemType = "Challenge";
 
+/**
+ * Holds all the potential properly formatted Lambda functions for Challenges.
+ */
 class ChallengeFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================

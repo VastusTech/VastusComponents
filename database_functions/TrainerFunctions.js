@@ -3,6 +3,9 @@ import UserFunctions from "./UserFunctions";
 
 const itemType = "Trainer";
 
+/**
+ * Holds all the potential properly formatted Lambda functions for Trainers.
+ */
 class TrainerFunctions extends UserFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================

@@ -2,6 +2,9 @@ import Lambda from "../api/Lambda";
 
 const itemType = "Streak";
 
+/**
+ * Holds all the potential properly formatted Lambda functions for Streaks.
+ */
 class StreakFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================

@@ -2,6 +2,9 @@ import Lambda from "../api/Lambda";
 import S3 from "../api/S3Storage";
 import { getItemTypeFromID } from "../logic/ItemType";
 
+/**
+ * Holds all the potential properly formatted Lambda functions for Users.
+ */
 class UserFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================

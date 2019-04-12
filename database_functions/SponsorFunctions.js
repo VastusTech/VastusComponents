@@ -3,6 +3,9 @@ import UserFunctions from "./UserFunctions";
 
 const itemType = "Sponsor";
 
+/**
+ * Holds all the potential properly formatted Lambda functions for Sponsors.
+ */
 class SponsorFunctions extends UserFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================

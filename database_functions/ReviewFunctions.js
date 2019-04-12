@@ -2,6 +2,9 @@ import Lambda from "../api/Lambda";
 
 const itemType = "Review";
 
+/**
+ * Holds all the potential properly formatted Lambda functions for Reviews.
+ */
 class ReviewFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
