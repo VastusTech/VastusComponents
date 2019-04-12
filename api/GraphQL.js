@@ -4,6 +4,10 @@ import _ from 'lodash';
 import {switchReturnItemType} from "../logic/ItemType";
 import TestHelper from "../logic/TestHelper";
 
+/**
+ * This class handles all of the GraphQL Query Library logic, like sending queries and fetch requests to our AWS AppSync
+ * GraphQL endpoint.
+ */
 class GraphQL {
     // Represents the amount of items that can be fetched before a batch fetch operation will definitely send items back
     static batchLimit = 100;
@@ -13,183 +17,110 @@ class GraphQL {
     // =================================================================================================================
 
     /**
-     * TODO
+     * Gets a single item from the database using its name and calls on the GraphQL endpoint.
      *
-     * @param itemType
-     * @param id
-     * @param variablesList
-     * @param successHandler
-     * @param failureHandler
+     * @param {string} itemType The item type for the item to retrieve.
+     * @param {string} id The id of the item to get.
+     * @param {[string]} variableList The list of attributes to receive as the item data.
+     * @param {function({})} successHandler The function to handle the successfully received item.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging information from the GraphQL query.
      */
-    static getItem(itemType, id, variablesList, successHandler, failureHandler) {
+    static getItem(itemType, id, variableList, successHandler, failureHandler) {
         const func = switchReturnItemType(itemType, GraphQL.getClient, GraphQL.getTrainer, GraphQL.getGym, GraphQL.getWorkout, GraphQL.getReview,
             GraphQL.getEvent, GraphQL.getChallenge, GraphQL.getInvite, GraphQL.getPost, GraphQL.getSubmission,
             GraphQL.getGroup, GraphQL.getComment, GraphQL.getSponsor, GraphQL.getMessage, GraphQL.getStreak,
             "GraphQL get Fetch function function not implemented");
-        if (func) { return func(id, variablesList, successHandler, failureHandler); }
+        if (func) { return func(id, variableList, successHandler, failureHandler); }
     }
 
     /**
-     * TODO
+     * Gets an item from the database using its username and calls on the GraphQl endpoint. Should only work for users.
      *
-     * @param itemType
-     * @param username
-     * @param variablesList
-     * @param successHandler
-     * @param failureHandler
+     * @param {string} itemType The item type for the item to retrieve.
+     * @param {string} username The username of the item to retrieve.
+     * @param {[string]} variableList The list of attributes to receive as the item data.
+     * @param {function({})} successHandler The function to handle the successfully received item.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging information from the GraphQL query.
      */
-    static getItemByUsername(itemType, username, variablesList, successHandler, failureHandler) {
+    static getItemByUsername(itemType, username, variableList, successHandler, failureHandler) {
         const func = switchReturnItemType(itemType, GraphQL.getClientByUsername, GraphQL.getTrainerByUsername, GraphQL.getGymByUsername,
             null, null, null, null, null, null, null, null, GraphQL.getSponsorByUsername, "GraphQL get Fetch Username function function not implemented");
-        if (func) { return func(username, variablesList, successHandler, failureHandler); }
+        if (func) { return func(username, variableList, successHandler, failureHandler); }
     }
 
     /**
-     * TODO
+     * Gets an item from the database using its federated ID (Google or Facebook) and calls on the GraphQL endpoint.
+     * Should only work for users.
      *
-     * @param itemType
-     * @param federatedID
-     * @param variablesList
-     * @param successHandler
-     * @param failureHandler
-     * @return {*}
+     * @param {string} itemType The item type for the item to retrieve.
+     * @param {string} federatedID The federated identities ID of the item to retrieve.
+     * @param {[string]} variableList The list of attributes to receive as the item data.
+     * @param {function({})} successHandler The function to handle the successfully received item.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging information from the GraphQL query.
      */
-    static getItemByFederatedID(itemType, federatedID, variablesList, successHandler, failureHandler) {
+    static getItemByFederatedID(itemType, federatedID, variableList, successHandler, failureHandler) {
         const func = switchReturnItemType(itemType, GraphQL.getClientByFederatedID, GraphQL.getTrainerByFederatedID, GraphQL.getGymByFederatedID,
             null, null, null, null, null, null, null, null, GraphQL.getSponsorByFederatedID, "GraphQL get Fetch Username function function not implemented");
-        if (func) { return func(federatedID, variablesList, successHandler, failureHandler); }
+        if (func) { return func(federatedID, variableList, successHandler, failureHandler); }
     }
 
     /**
-     * TODO
+     * Batch fetches a list of items from the database using their IDs and calls on the GraphQL endpoint.
      *
-     * @param itemType
-     * @param ids
-     * @param variablesList
-     * @param successHandler
-     * @param failureHandler
+     * @param {string} itemType The item type for the item to retrieve.
+     * @param {[string]} ids The list of ids to retrieve the items for.
+     * @param {[string]} variableList The list of attributes to receive as the item data.
+     * @param {function({items: [{}], unretrievedItems: [string]})} successHandler The function to handle the
+     * successfully received items and return the unretrieved items as a string.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging information from the GraphQL query.
      */
-    static getItems(itemType, ids, variablesList, successHandler, failureHandler) {
+    static getItems(itemType, ids, variableList, successHandler, failureHandler) {
         const func = switchReturnItemType(itemType, GraphQL.getClients, GraphQL.getTrainers, GraphQL.getGyms, GraphQL.getWorkouts,
             GraphQL.getReviews, GraphQL.getEvents, GraphQL.getChallenges, GraphQL.getInvites, GraphQL.getPosts,
             GraphQL.getSubmissions, GraphQL.getGroups, GraphQL.getComments, GraphQL.getSponsors, GraphQL.getMessages, GraphQL.getStreaks,
             "GraphQL get Batch Fetch function function not implemented");
-        if (func) { return func(ids, variablesList, successHandler, failureHandler); }
+        if (func) { return func(ids, variableList, successHandler, failureHandler); }
     }
 
     /**
-     * TODO
+     * Constructs a query object using the given parameters that define the query.
      *
-     * @param itemType
-     * @param variablesList
-     * @param filter
-     * @param limit
-     * @param nextToken
+     * @param {string} itemType The item type to construct the query for.
+     * @param {[string]} variableList The list of attributes to receive as the item data.
+     * @param {{}} filter The {@link generateFilter} filter to dictate how the query filters the objects.
+     * @param {number} limit The maximum number of items to SEARCH for in the query. Items length <= limit.
+     * @param {string} nextToken The next token for the query, so that it can be separated into multiple queries.
+     * @return {{query: string, variables: {}}} The item query to use in the {@link queryItems} method.
      */
-    static constructItemQuery(itemType, variablesList, filter, limit, nextToken) {
+    static constructItemQuery(itemType, variableList, filter, limit, nextToken) {
         const func = switchReturnItemType(itemType, GraphQL.constructClientQuery, GraphQL.constructTrainerQuery, GraphQL.constructGymQuery,
             GraphQL.constructWorkoutQuery, GraphQL.constructReviewQuery, GraphQL.constructEventQuery, GraphQL.constructChallengeQuery,
             GraphQL.constructInviteQuery, GraphQL.constructPostQuery, GraphQL.constructSubmissionQuery, GraphQL.constructGroupQuery,
             GraphQL.constructCommentQuery, GraphQL.constructSponsorQuery, GraphQL.constructMessageQuery, GraphQL.constructStreakQuery,
             "GraphQL get construct Query function not implemented");
-        if (func) { return func(variablesList, filter, limit, nextToken); }
+        if (func) { return func(variableList, filter, limit, nextToken); }
     }
 
     /**
-     * TODO
+     * Fetches a list of items that fit a query based on the inputs of that query.
      *
-     * @param itemType
-     * @param queryString
-     * @param successHandler
-     * @param failureHandler
+     * @param {string} itemType The item type to perform the query on.
+     * @param {{query: string, variables: {}}} query The query payload to send through the query function.
+     * @param {function([{}])} successHandler The function to handle the successfully received items.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging information from the GraphQL query.
      */
-    static queryItems(itemType, queryString, successHandler, failureHandler) {
+    static queryItems(itemType, query, successHandler, failureHandler) {
         const func = switchReturnItemType(itemType, GraphQL.queryClients, GraphQL.queryTrainers, GraphQL.queryGyms, GraphQL.queryWorkouts,
             GraphQL.queryReviews, GraphQL.queryEvents, GraphQL.queryChallenges, GraphQL.queryInvites, GraphQL.queryPosts,
             GraphQL.querySubmissions, GraphQL.queryGroups, GraphQL.queryComments, GraphQL.querySponsors, GraphQL.queryMessages,
             GraphQL.queryStreaks, "GraphQL get Query function function not implemented for type");
-        if (func) { return func(queryString, successHandler, failureHandler); }
+        if (func) { return func(query, successHandler, failureHandler); }
     }
-
-    // =================================================================================================================
-    // ~ GraphQL Switch Specific Item Type Functions
-    // =================================================================================================================
-
-    // Gives back function with parameters (id, variablesList, successHandler, failureHandler)
-    /**
-     *
-     * @param itemType
-     * @return {null}
-     */
-    static getGetByIDFunction(itemType) {
-        return switchReturnItemType(itemType, GraphQL.getClient, GraphQL.getTrainer, GraphQL.getGym, GraphQL.getWorkout, GraphQL.getReview,
-            GraphQL.getEvent, GraphQL.getChallenge, GraphQL.getInvite, GraphQL.getPost, GraphQL.getSubmission,
-            GraphQL.getGroup, GraphQL.getComment, GraphQL.getSponsor, GraphQL.getMessage, GraphQL.getStreak,
-            "GraphQL get Fetch function function not implemented");
-    }
-    // Gives back function with parameters (username, variablesList, successHandler, failureHandler)
-    /**
-     * TODO
-     *
-     * @param itemType
-     * @return {null}
-     */
-    // static getGetByUsernameFunction(itemType) {
-    //     return switchReturnItemType(itemType, GraphQL.getClientByUsername, GraphQL.getTrainerByUsername, GraphQL.getGymByUsername,
-    //         null, null, null, null, null, null, null, null, GraphQL.getSponsorByUsername, "GraphQL get Fetch Username function function not implemented");
-    // }
-
-    // Gives back function with parameters (federatedID, variablesList, successHandler, failureHandler)
-    /**
-     * TODO
-     *
-     * @param itemType
-     * @return {null}
-     */
-    // static getGetByFederatedIDFunction(itemType) {
-    //     return switchReturnItemType(itemType, GraphQL.getClientByFederatedID, GraphQL.getTrainerByFederatedID, GraphQL.getGymByFederatedID,
-    //         null, null, null, null, null, null, null, null, null, GraphQL.getSponsorByFederatedID, null, null, "GraphQL get Fetch FederatedID function function not implemented");
-    // }
-    // Gives back function with parameters (ids, variablesList, successHandler, failureHandler)
-    /**
-     * TODO
-     *
-     * @param itemType
-     * @return {null}
-     */
-    // static getBatchGetFunction(itemType) {
-    //     return switchReturnItemType(itemType, GraphQL.getClients, GraphQL.getTrainers, GraphQL.getGyms, GraphQL.getWorkouts,
-    //         GraphQL.getReviews, GraphQL.getEvents, GraphQL.getChallenges, GraphQL.getInvites, GraphQL.getPosts,
-    //         GraphQL.getSubmissions, GraphQL.getGroups, GraphQL.getComments, GraphQL.getSponsors, GraphQL.getMessages, GraphQL.getStreaks,
-    //         "GraphQL get Batch Fetch function function not implemented");
-    // }
-    // Gives back function with parameters (variablesList, filter, limit, nextToken)
-    /**
-     * TODO
-     *
-     * @param itemType
-     * @return {null}
-     */
-    // static getConstructQueryFunction(itemType) {
-    //     return switchReturnItemType(itemType, GraphQL.constructClientQuery, GraphQL.constructTrainerQuery, GraphQL.constructGymQuery,
-    //         GraphQL.constructWorkoutQuery, GraphQL.constructReviewQuery, GraphQL.constructEventQuery, GraphQL.constructChallengeQuery,
-    //         GraphQL.constructInviteQuery, GraphQL.constructPostQuery, GraphQL.constructSubmissionQuery, GraphQL.constructGroupQuery,
-    //         GraphQL.constructCommentQuery, GraphQL.constructSponsorQuery, GraphQL.constructMessageQuery, GraphQL.constructStreakQuery,
-    //         "GraphQL get construct Query function not implemented");
-    // }
-    // Gives back function with parameters (queryString, successHandler, failureHandler)
-    /**
-     * TODO
-     *
-     * @param itemType
-     * @return {null}
-     */
-    // static getQueryFunction(itemType) {
-    //     return switchReturnItemType(itemType, GraphQL.queryClients, GraphQL.queryTrainers, GraphQL.queryGyms, GraphQL.queryWorkouts,
-    //         GraphQL.queryReviews, GraphQL.queryEvents, GraphQL.queryChallenges, GraphQL.queryInvites, GraphQL.queryPosts,
-    //         GraphQL.querySubmissions, GraphQL.queryGroups, GraphQL.queryComments, GraphQL.querySponsors, GraphQL.queryMessages,
-    //         GraphQL.queryStreaks, "GraphQL get Query function function not implemented for type");
-    // }
 
     // =================================================================================================================
     // ~ GraphQL Specific Item Type Functions
@@ -567,8 +498,10 @@ class GraphQL {
 
     /**
      *
-     * @param filterJSON The filter in JSON format using $ in front of variable names, and using and, or, and not to consolidate
-     * @param variableValues The exact values for the variables in the JSON
+     * @param {{}} filterJSON The filter in JSON format using $ in front of variable names, and using and, or, and not
+     * to consolidate.
+     * @param {{}} variableValues The exact values for the variables in the JSON.
+     * @return {{parameterString: string, parameters: {}}} The object to use in the actual usage of the filter.
      * @example
      *      const filter = generateFilter({
      *          and: [
@@ -607,10 +540,12 @@ class GraphQL {
     }
 
     /**
-     * TODO
+     * Generates an ID List object that is usable by the query string generator in order to properly use the IDs in a
+     * query.
      *
-     * @param ids
-     * @return {{parameterString: string, parameters}}
+     * @param {[string]} ids The IDs to reference in the query.
+     * @return {{parameterString: string, parameters: {}}} The properly formatted object for the query string generator
+     * to use.
      */
     static generateIDList(ids) {
         let idListString = "ids: [";
@@ -624,22 +559,23 @@ class GraphQL {
         idListString += "]";
         return {
             parameterString: idListString,
-            parameters: parameters
+            parameters
         }
     }
     // TODO GraphQL only supports input String! regular types. Reason to change?
     // TODO Make GraphQL more resilient to an empty filter?
     /**
-     * TODO
+     * Constructs a query object in order to be able to send through the payload of the request using the parameters to
+     * specifically define the query expression.
      *
-     * @param queryName
-     * @param queryFunction
-     * @param inputVariables
-     * @param outputVariables
-     * @param filter
-     * @param ifBatch
-     * @param ifQuery
-     * @return {{query: string, variables: *}}
+     * @param {string} queryName The name of this specific query to send.
+     * @param {string} queryFunction The name of the query function to use in the GraphQL endpoint.
+     * @param {{}} inputVariables The names and values of all the input variables for the query.
+     * @param {[string]} outputVariables The variables to receive from the GraphQL query.
+     * @param {{parameterString: string, parameters: {}}} filter The defined filter to receive only wanted elements.
+     * @param {boolean} ifBatch If this query is a batch fetch operation as opposed to a regular fetch.
+     * @param {boolean} ifQuery If this query function is an actual query as opposed to a fetch.
+     * @return {{query: string, variables: {}}} The properly formatted query object for executing the payload.
      */
     static constructQuery(queryName, queryFunction, inputVariables, outputVariables, filter = null, ifBatch = false, ifQuery = false) {
         let query = '';
@@ -694,10 +630,12 @@ class GraphQL {
             query += '        items {\n';
         }
         for (let i in outputVariables) {
-            if (ifQuery || ifBatch) {
-                query += '    ';
+            if (outputVariables.hasOwnProperty(i)) {
+                if (ifQuery || ifBatch) {
+                    query += '    ';
+                }
+                query += '        ' + outputVariables[i] + '\n';
             }
-            query += '        ' + outputVariables[i] + '\n';
         }
         if (ifQuery) {
             query += '        }\n        nextToken\n';
@@ -714,15 +652,17 @@ class GraphQL {
     }
 
     /**
-     * TODO
+     * Gets the next token String from the next token object.
      *
-     * @param nextToken
-     * @return {string}
+     * TODO I don't remember what this does actually...
+     *
+     * @param {string} nextToken The next token received from the query.
+     * @return {string} TODO The next token but never null?
      */
     static getNextTokenString(nextToken) { return nextToken ? nextToken : "null"; }
 
     /**
-     * TODO
+     * Gets a normalized query from t
      *
      * @param query
      * @return {{variables: {nextToken: string}}}
@@ -738,10 +678,10 @@ class GraphQL {
     }
 
     /**
-     * TODO
+     * Gets the actual properly formatted query from the normalized query and the next token to use.
      *
-     * @param normalizedQuery
-     * @param nextToken
+     * @param {{}} normalizedQuery The query minus the nextToken.
+     * @param {string} nextToken The next token that defines the query.
      * @return {{variables: {nextToken: *}}}
      */
     static getQueryFromNormalizedQuery(normalizedQuery, nextToken) {
@@ -755,10 +695,11 @@ class GraphQL {
     }
 
     /**
-     * TODO
+     * Compresses the query results by only including the ids of the objects, as opposed to the entire objects
+     * themselves.
      *
-     * @param queryResult
-     * @return {{ids: Array, nextToken: *}}
+     * @param {{items: [{}], nextToken: string}} queryResult The direct query result object from the query.
+     * @return {{ids: [string], nextToken: string}} The compressed query results.
      */
     static getCompressedFromQueryResult(queryResult) {
         const items = queryResult.items;
@@ -775,9 +716,9 @@ class GraphQL {
     }
 
     /**
-     * TODO
+     * Gets the query results from the compressed query placed into the cache.
      *
-     * @param compressedResult
+     * @param {{ids: [string], nextToken: string}} compressedResult The compressed query result placed in the database.
      * @param itemTypeCache
      * @return {{items: Array, nextToken: *}}
      */
@@ -797,15 +738,16 @@ class GraphQL {
     }
 
     /**
-     * TODO
+     * Executes a given query using the payload given.
      *
-     * @param query
-     * @param queryFunctionName
-     * @param successHandler
-     * @param failureHandler
-     * @param queryCache
-     * @param putQuery
-     * @return {*}
+     * @param {{query: string, variables: {}}} query
+     * @param {string} queryFunctionName The name of the query function to execute within the GraphQL endpoint.
+     * @param {function(*)} successHandler The function that handles the successful results of the query request.
+     * @param {function(error)} failureHandler The function that handles any errors that may arise.
+     * TODO These two parameters are depreciated?
+     * @param {{}} queryCache The cache to check the query of and see if it hasn't already been used.
+     * @param {function(string, {})} putQuery The function to put the query into the cache.
+     * @return {*} Debugging information from the GraphQL query.
      */
     static execute(query, queryFunctionName, successHandler, failureHandler, queryCache, putQuery) {
         const queryString = JSON.stringify(query.query) + JSON.stringify(query.variables);

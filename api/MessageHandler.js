@@ -17,6 +17,7 @@ New Table: Messages
         *
  */
 
+// TODO Change to MessageHelper and put into the logic module
 class MessageHandler {
     /*
     There are three kinds of boards.

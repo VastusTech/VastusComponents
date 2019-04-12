@@ -1,13 +1,13 @@
-import Lambda from "./Lambda";
+// import Lambda from "./Lambda";
 
-class Stripe {
-    static createCharge(token) {
-        Lambda.invokePaymentLambda({
-            token
-        });
-    }
+// class Stripe {
+//     static createCharge(token) {
+//         Lambda.invokePaymentLambda({
+//             token
+//         });
+//     }
+//
+//     static create
+// }
 
-    static create
-}
-
-export default Stripe;
+// export default Stripe;
