@@ -10,6 +10,8 @@ import UserFunctions from "../../database_functions/UserFunctions";
 import {getMessageBoardName} from "../../logic/MessageHelper";
 import {debugAlert} from "../../logic/DebuggingHelper";
 
+// TODO Refactor
+
 type Props = {
     open: boolean,
     onClose: any

@@ -11,6 +11,8 @@ import {
 } from "../../redux/convenience/cacheItemTypeActions";
 import {fetchUserAttributes} from "../../redux/actions/userActions";
 
+// TODO Refactor
+
 type Props = {
     trainerID: string
 };

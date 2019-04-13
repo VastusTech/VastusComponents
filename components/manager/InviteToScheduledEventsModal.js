@@ -6,6 +6,8 @@ import {fetchUserAttributes} from "../../redux/actions/userActions";
 import {fetchEvent} from "../../redux/convenience/cacheItemTypeActions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 
+// TODO Refactor
+
 class InviteToScheduledEventsModalProp extends Component {
     state = {
         isLoading: true,

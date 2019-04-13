@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import { fetchClient } from "../../redux/convenience/cacheItemTypeActions";
 import Spinner from "../props/Spinner";
 
+// TODO Refactor
+
 type Props = {
     clientIDs: [string],
     noClientsMessage: string,

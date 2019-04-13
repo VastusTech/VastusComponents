@@ -5,6 +5,8 @@ import {setError} from "../../redux/actions/infoActions";
 import VTLogo from "../../img/vt_new.svg";
 import {fetchEvent, putEvent} from "../../redux/convenience/cacheItemTypeActions";
 
+// TODO Not only refactor, but rewrite altogether
+
 // Take from StackOverflow, nice snippit!
 // https://stackoverflow.com/a/17415677
 Date.prototype.toIsoString = function() {

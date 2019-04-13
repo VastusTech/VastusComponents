@@ -12,6 +12,8 @@ import PostFunctions from "../../database_functions/PostFunctions";
 import {Player} from "video-react";
 import {err, log} from "../../../Constants";
 
+// TODO Rewrite and refactor
+
 // Take from StackOverflow, nice snippit!
 // https://stackoverflow.com/a/17415677
 Date.prototype.toIsoString = function() {

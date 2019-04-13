@@ -13,7 +13,7 @@ import MessageBoardCard from "./MessageBoardCard";
 import MessageBoard from "./MessageBoard";
 import {getMessageBoardName} from "../../logic/MessageHelper";
 
-// TODO Refactor this stuff!
+// TODO Refactor this stuff! What does this class even do?
 
 type Props = {
     ids: [string],

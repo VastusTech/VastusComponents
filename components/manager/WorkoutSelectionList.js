@@ -4,6 +4,8 @@ import CreateEventProp from "./CreateEvent";
 import {connect} from "react-redux";
 // import {Form} from "semantic-ui-react/dist/commonjs/collections/Form/Form";
 
+// TODO Refactor
+
 class WorkoutSelectionList extends Component {
     state = {
         error: null,

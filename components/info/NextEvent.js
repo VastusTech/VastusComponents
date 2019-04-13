@@ -6,6 +6,8 @@ import {fetchUserAttributes} from "../../redux/actions/userActions";
 import { inspect } from 'util';
 import {fetchEvent} from "../../redux/convenience/cacheItemTypeActions";
 
+// TODO Refactor
+
 class NextEventProp extends Component {
     state = {
         isLoading: true,

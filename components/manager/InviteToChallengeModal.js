@@ -6,6 +6,8 @@ import {fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 import ChallengeCard from "../cards/ChallengeCard";
 
+// TODO Refactor
+
 class InviteToChallengeModalProp extends Component {
     state = {
         isLoading: true,

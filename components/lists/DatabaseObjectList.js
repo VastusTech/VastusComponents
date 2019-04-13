@@ -13,11 +13,7 @@ import {shuffleArray} from "../../logic/ArrayHelper";
 
 // TODO Test the new "visibility" fetch system!
 // TODO USING VISIBILITY WITH A MODAL DOESN'T WORK?
-// TODO ALSO OFTEN ONE PERSON IS MISSING for some reason?
 
-/*
-For a BatchFetch, we use the accepted
- */
 const numFetch = 10000000;
 
 type Props = {
@@ -28,7 +24,13 @@ type Props = {
     sortFunction?: any
 }
 
-function objectComponents(objects) {
+/**
+ * Gets the components for the objects in the list.
+ *
+ * @param {[{id: string, item_type: string}]} objects The database objects to display in the list.
+ * @return {[*]} The list of React JSX components to display in the list.
+ */
+const objectComponents = (objects) => {
     const components = [];
     for (const key in objects) {
         if (objects.hasOwnProperty(key)) {
@@ -40,8 +42,16 @@ function objectComponents(objects) {
         }
     }
     return components;
-}
-const getObjectComponent = (key, object: {id: string, item_type: string}) => (
+};
+
+/**
+ * Gets a single database object component card for the list.
+ *
+ * @param {number} key The key of the object in the list (order / rank).
+ * @param {{id: string, item_type: string}} object The object to display as the component.
+ * @return {*} The React JSX to display the object component.
+ */
+const getObjectComponent = (key, object) => (
     switchReturnItemType(object.item_type,
         <ClientCard rank={key} client={object}/>,
         <TrainerCard rank={key} trainer={object}/>,
@@ -59,6 +69,19 @@ const getObjectComponent = (key, object: {id: string, item_type: string}) => (
         "Get database object list object not implemented for item type"
     )
 );
+
+/**
+ * Uses the Batch Fetch system of GraphQL to fetch more objects of the same type together.
+ *
+ * @param {{}} typeIDs The map of item types to the ids for that type.
+ * @param {{}} typeHiddenIDIndex The map of item types to the hidden id index for that type.
+ * @param {boolean} randomized If the list should be randomized.
+ * @param {function(*, *)} sortFunction Function to sort the list by, if applicable.
+ * @param {function([{}])} setVisibleObjects Sets the visible objects state.
+ * @param {function(boolean)} setIsLoading Sets the loading state.
+ * @param {function(string, string, [string], number, number, function([{}]), function(error))} fetchItems Cache redux
+ * function to perform a batch fetch operation.
+ */
 const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, sortFunction, setVisibleObjects, setIsLoading, fetchItems) => {
     setIsLoading(true);
     for (const itemType in typeIDs) {
@@ -84,6 +107,16 @@ const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, sortFunct
         }
     }
 };
+
+/**
+ * Adds a single object to the visible objects and randomizes or sorts the list.
+ *
+ * @param {{id: string, item_type: string}} object The object to add to the visible objects.
+ * @param {boolean} randomized Whether the list should be randomized or not.
+ * @param {function(*, *)} sortFunction Function to sort the list by, if applicable.
+ * @param {function([{}])} setVisibleObjects Sets the visible objects state.
+ * @param {function(boolean)} setIsLoading Sets the loading state.
+ */
 const addObject = (object, randomized, sortFunction, setVisibleObjects, setIsLoading) => {
     if (object && object.id) {
         setVisibleObjects(p => {
@@ -96,6 +129,13 @@ const addObject = (object, randomized, sortFunction, setVisibleObjects, setIsLoa
     }
 };
 
+/**
+ * Displays a list of objects from the database, using the props
+ *
+ * @param {Props} props The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
+ */
 const DatabaseObjectList = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [ids, setIDs] = useState(null);

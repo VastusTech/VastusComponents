@@ -6,6 +6,8 @@ import {fetchChallenge, putChallenge} from "../../redux/convenience/cacheItemTyp
 import GroupFunctions from "../../database_functions/GroupFunctions";
 import {Player} from "video-react";
 
+// TODO Refactor
+
 // Take from StackOverflow, nice snippit!
 // https://stackoverflow.com/a/17415677
 // Date.prototype.toIsoString = function() {

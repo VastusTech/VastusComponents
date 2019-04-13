@@ -7,6 +7,26 @@ import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
 import {getNowTimeString} from "../../logic/TimeHelper";
 import {streakUpdateInfo} from "../../logic/StreakHelper";
 
+/**
+ * Handles the actual creation of the Challenge given the inputted info from the User.
+ *
+ * @param {string} userID The ID of the User creating the Challenge.
+ * @param {string} endDate The ISO string of the date that the Challenge ends.
+ * @param {number} capacity The max number of members for the challenge.
+ * @param {string} title The display title for the Challenge.
+ * @param {string} goal The way for members to win the Challenge.
+ * @param {[string]} tagsPressed The tags that are applied to the Challenge.
+ * @param {string} access The access string for who can see the Challenge. ("public" or "private").
+ * @param {string|null} restriction The restriction string for if Users can join without a request. ("invite" or null).
+ * @param {string} prize The prize for winning the Challenge.
+ * @param {string|null} challengeType The type of Challenge this will be, how to win it. ("streak" or null).
+ * @param {string|null} streakUpdateSpanType The update span type, "hourly", "daily", ...
+ * @param {string|null} streakUpdateInterval How many update span types pass for a streak cycle.
+ * @param {number|null} streakN The number of submissions to do to maintain the streak.
+ * @param {function(boolean)} setIsLoading Sets the loading state.
+ * @param {function(error)} setError Sets the error state.
+ * @param {function(true)} setShowSuccessModal Sets the showing of success modal state.
+ */
 const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, access, restriction, prize, challengeType,
                       streakUpdateSpanType, streakUpdateInterval, streakN, setIsLoading, setError, setShowSuccessModal) => {
     this.setState({isSubmitLoading: true});
@@ -49,62 +69,12 @@ const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, acces
     }
 };
 
-// handleTag(tag) {
-//     if(tag === "HIIT" && !this.state.hiitPressed) {
-//         this.setState({tags: this.state.tags.concat(tag)},
-//             () => console.log(JSON.stringify(this.state.tags)));
-//         this.setState({hiitPressed: true});
-//     }
-//     else if(tag === "Performance" && !this.state.performancePressed) {
-//         this.setState({tags: this.state.tags.concat(tag)},
-//             () => console.log(JSON.stringify(this.state.tags)));
-//         this.setState({performancePressed: true});
-//     }
-//     else if(tag === "Endurance" && !this.state.endurancePressed) {
-//         this.setState({tags: this.state.tags.concat(tag)},
-//             () => console.log(JSON.stringify(this.state.tags)));
-//         this.setState({endurancePressed: true});
-//     }
-//     else if(tag === "Strength" && !this.state.strengthPressed) {
-//         this.setState({tags: this.state.tags.concat(tag)},
-//             () => console.log(JSON.stringify(this.state.tags)));
-//         this.setState({strengthPressed: true});
-//     }
-//     else if(tag === "HIIT" && this.state.hiitPressed) {
-//         this.setState({tags: arrayRemove(this.state.tags, tag)},
-//             () => console.log(JSON.stringify(this.state.tags)));
-//         this.setState({hiitPressed: false});
-//     }
-//     else if(tag === "Performance" && this.state.performancePressed) {
-//         this.setState({tags: arrayRemove(this.state.tags, tag)},
-//             () => console.log(JSON.stringify(this.state.tags)));
-//         this.setState({performancePressed: false});
-//     }
-//     else if(tag === "Endurance" && this.state.endurancePressed) {
-//         this.setState({tags: arrayRemove(this.state.tags, tag)},
-//             () => console.log(JSON.stringify(this.state.tags)));
-//         this.setState({endurancePressed: false});
-//     }
-//     else if(tag === "Strength" && this.state.strengthPressed) {
-//         this.setState({tags: arrayRemove(this.state.tags, tag)},
-//             () => console.log(JSON.stringify(this.state.tags)));
-//         this.setState({strengthPressed: false});
-//     }
-// }
-
-// const createSuccessModal = () => {
-//     if(this.state.showSuccessModal) {
-//         return (
-//             <Modal open={this.state.showSuccessModal}>
-//                 <Modal.Header align='center'>Successfully Created Event!</Modal.Header>
-//                 <Modal.Content>
-//                     <Button fluid negative size="small" onClick={this.closeSuccessModal}>Ok</Button>
-//                 </Modal.Content>
-//             </Modal>
-//         );
-//     }
-// };
-
+/**
+ * Shows a success label based on the given info.
+ *
+ * @param {boolean} show Whether the User has successfully created a Challenge or not.
+ * @return {*} The React JSX to display the success label or null if not applicable.
+ */
 const createSuccessLabel = (show) => {
     if (show) {
         return (<Message positive>
@@ -119,6 +89,12 @@ const createSuccessLabel = (show) => {
     }
 };
 
+/**
+ * Displays an error message if applicable.
+ *
+ * @param {string} error The error message string.
+ * @return {*} The React JSX to show the error message.
+ */
 const displayError = (error) => {
     if(error !== "") {
         return (<Message negative>
@@ -128,11 +104,13 @@ const displayError = (error) => {
     }
 };
 
-/*
-* Create Challenge Prop
-*
-* This is the modal for creating events. Every input is in the form of a normal text input.
-* Inputting the time and date utilizes the Semantic-ui Calendar React library which isn't vanilla Semantic.
+/**
+ * This is the modal for creating Challenges. Every input is in the form of a normal text input.
+ * Inputting the time and date utilizes the Semantic-ui Calendar React library which isn't vanilla Semantic.
+ *
+ * @param {{}} props The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
  */
 const CreateChallengeProp = (props) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -156,13 +134,6 @@ const CreateChallengeProp = (props) => {
     const [streakUpdateSpanType, setStreakUpdateSpanType] = useState(null);
     const [streakUpdateInterval, setStreakUpdateInterval] = useState(null);
     const [streakN, setStreakN] = useState(null);
-
-    // state = {
-    //     showModal: false,
-    //     showSuccessModal: false,
-    //     showSuccessLabel: false,
-    //     showSuccessLabelTimer: 0,
-    // };
 
     return (
         <div align='center'>

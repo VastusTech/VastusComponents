@@ -7,6 +7,8 @@ import {fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
 import {parseISOString, timeLeft} from "../../logic/TimeHelper";
 import Spinner from "../props/Spinner";
 
+// TODO Refactor
+
 class NextChallengeProp extends Component {
     state = {
         isLoading: true,

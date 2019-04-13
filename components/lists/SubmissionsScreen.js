@@ -4,7 +4,7 @@ import PostCard from "../cards/PostCard";
 import {connect} from "react-redux";
 import {fetchPost, fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
 
-// TODO 
+// TODO Refactor
 
 type Props = {
     challengeID: string

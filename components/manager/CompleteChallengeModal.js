@@ -4,6 +4,8 @@ import ClientCard from "../cards/ClientCard";
 import { connect } from "react-redux";
 import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
 
+// TODO Refactor
+
 /**
  * Takes in open, onClose, and challengeID
  */
