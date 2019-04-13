@@ -25,8 +25,8 @@ import {daysLeft, parseISOString} from "../../logic/TimeHelper";
 import TrainerModal from "./TrainerModal";
 import Spinner from "../props/Spinner";
 import {ifStreakExpired} from "../../logic/StreakHelper";
-import InviteToScheduledEventsModalProp from "../manager/InviteToScheduledEventsModal";
-import {arrayIntersection, arraysIntersect} from "../../logic/ArrayHelper";
+// import InviteToScheduledEventsModalProp from "../manager/InviteToScheduledEventsModal";
+import {arrayIntersection} from "../../logic/ArrayHelper";
 import {err} from "../../../Constants";
 
 export const ChallengeDescriptionModalInfo = {
@@ -42,6 +42,12 @@ type Props = {
     challengeID: string
 };
 
+/**
+ * TODO
+ *
+ * @param tags
+ * @return {*}
+ */
 const displayTagIcons = (tags) => {
     if (tags) {
         if (tags.length === 1) {
@@ -85,6 +91,14 @@ const displayTagIcons = (tags) => {
     }
 };
 
+/**
+ * TODO
+ *
+ * @param userID
+ * @param challengeID
+ * @param setIsLoading
+ * @param onClose
+ */
 const handleDeleteChallengeButton = (userID, challengeID, setIsLoading, onClose) => {
     //console.log("Handling deleting the event");
     setIsLoading(true);
@@ -101,6 +115,13 @@ const handleDeleteChallengeButton = (userID, challengeID, setIsLoading, onClose)
     })
 };
 
+/**
+ * TODO
+ *
+ * @param userID
+ * @param challengeID
+ * @param setIsLoading
+ */
 const handleLeaveChallengeButton = (userID, challengeID, setIsLoading) => {
     //console.log("Handling leaving the event");
     // this.setState({isLeaveLoading: true, isLoading: true});
@@ -117,6 +138,13 @@ const handleLeaveChallengeButton = (userID, challengeID, setIsLoading) => {
     })
 };
 
+/**
+ * TODO
+ *
+ * @param userID
+ * @param challengeID
+ * @param setIsLoading
+ */
 const handleJoinChallengeButton = (userID, challengeID, setIsLoading) => {
     //console.log("Handling joining the event");
     // this.setState({isJoinLoading: true, isLoading: true});
@@ -133,6 +161,13 @@ const handleJoinChallengeButton = (userID, challengeID, setIsLoading) => {
         });
 };
 
+/**
+ * TODO
+ *
+ * @param userID
+ * @param challengeID
+ * @param setIsLoading
+ */
 const handleRequestChallengeButton = (userID, challengeID, setIsLoading) => {
     // this.setState({isRequestLoading: true, isLoading: true});
     setIsLoading(true);
@@ -147,6 +182,14 @@ const handleRequestChallengeButton = (userID, challengeID, setIsLoading) => {
         });
 };
 
+/**
+ * TODO
+ *
+ * @param ownerID
+ * @param ownerModalOpen
+ * @param setOwnerModalOpen
+ * @return {*}
+ */
 const createCorrectModal = (ownerID, ownerModalOpen, setOwnerModalOpen) => {
     const itemType = getItemTypeFromID(ownerID);
     if (itemType === "Client") {
@@ -162,6 +205,24 @@ const createCorrectModal = (ownerID, ownerModalOpen, setOwnerModalOpen) => {
     return null;
 };
 
+/**
+ * TODO
+ *
+ * @param userID
+ * @param challengeID
+ * @param submissions
+ * @param isLoading
+ * @param isCompleted
+ * @param isOwned
+ * @param isJoined
+ * @param isRestricted
+ * @param isRequesting
+ * @param setIsLoading
+ * @param setSubmitModalOpen
+ * @param setCompleteModalOpen
+ * @param onClose
+ * @return {*}
+ */
 const createCorrectButton = (userID, challengeID, submissions, isLoading, isCompleted, isOwned, isJoined, isRestricted,
                              isRequesting, setIsLoading, setSubmitModalOpen, setCompleteModalOpen, onClose) => {
     const panes = [
@@ -226,6 +287,13 @@ const createCorrectButton = (userID, challengeID, submissions, isLoading, isComp
     }
 };
 
+/**
+ * TODO
+ *
+ * @param ifStreak
+ * @param streak
+ * @return {*}
+ */
 const displayStreakInfo = (ifStreak, streak) => {
     if (ifStreak) {
         if (streak) {
@@ -254,6 +322,12 @@ const displayStreakInfo = (ifStreak, streak) => {
     return null;
 };
 
+/**
+ * TODO
+ *
+ * @param error
+ * @return {*}
+ */
 const displayError = (error) => {
     if (error === "Error while trying to update an item in the database safely. Error: The item failed the checkHandler: That challenge is already filled up!") {
         return (<Message negative>
@@ -263,6 +337,12 @@ const displayError = (error) => {
     }
 };
 
+/**
+ * TODO
+ *
+ * @param isDeleted
+ * @return {*}
+ */
 const challengeDeleted = (isDeleted) => {
     if(isDeleted) {
         return (<Message negative>
@@ -271,11 +351,12 @@ const challengeDeleted = (isDeleted) => {
     }
 };
 
-/*
-* Event Description Modal
-*
-* This is the event description which displays more in depth information about a challenge, and allows the user
-* to join the challenge.
+/**
+ * TODO
+ *
+ * @param props
+ * @return {*}
+ * @constructor
  */
 const ChallengeDescriptionModal = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);

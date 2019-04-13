@@ -15,16 +15,20 @@ import {getClientAttribute} from "../../logic/CacheRetrievalHelper";
 import Spinner from "../props/Spinner";
 import {getMessageBoardName} from "../../logic/MessageHelper";
 
+// TODO Move the functions outside of the component to improve efficiency
+
 type Props = {
     open: boolean,
     onClose: any,
     clientID: string
 }
 
-/*
-* Client Modal
-*
-* This is the generic profile view for any user that the current logged in user clicks on.
+/**
+ * TODO
+ *
+ * @param props
+ * @return {*}
+ * @constructor
  */
 const ClientModal = (props: Props) => {
     const [clientID, setClientID] = useState(null);

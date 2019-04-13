@@ -48,10 +48,10 @@ const getGalleryImageS3Name = (userID, pos) => {
  * @param {*} image The image file to set for the gallery picture.
  * @param {*} displayImage The temporary image to use instead of the S3 generated URL to update in real time the object.
  * @param {number} pos The position of the gallery in the carousel.
- * @param {[string]} profileImagePaths The profile image paths of the
- * @param setItemAttribute
- * @param setItemAttributeIndex
- * @param setIsLoading
+ * @param {[string]} profileImagePaths The profile image paths of the User for the profile image gallery.
+ * @param {function(string, string, *)} setItemAttribute The function to update an item's attribute in the database.
+ * @param {function(string, string, number, *)} setItemAttributeIndex Function to update item's index in a list.
+ * @param {function(boolean)} setIsLoading Sets the component's loading state.
  */
 const setGalleryPicture = (userID, image, displayImage, pos, profileImagePaths, setItemAttribute, setItemAttributeIndex, setIsLoading) => {
     // console.log("This is calling set gallery picture");
@@ -95,14 +95,14 @@ const setGalleryPicture = (userID, image, displayImage, pos, profileImagePaths, 
 };
 
 /**
- * TODO
+ * Deletes a gallery picture from the User's profile images / profile image.
  *
- * @param userID
- * @param pos
- * @param profileImagePaths
- * @param setItemAttribute
- * @param removeItemAttributeIndex
- * @param setIsLoading
+ * @param {string} userID The ID of the User for the profile image gallery.
+ * @param {number} pos The position of the carousel, to indicate which image to remove.
+ * @param {[string]} profileImagePaths The User's profile image paths.
+ * @param {function(string, string, *)} setItemAttribute Function for updating item's attribute manually.
+ * @param {function(string, string, number)} removeItemAttributeIndex Function for removing index from item's list.
+ * @param {function(boolean)} setIsLoading Sets the component's loading state.
  */
 const removeGalleryPicture = (userID, pos, profileImagePaths, setItemAttribute, removeItemAttributeIndex, setIsLoading) => {
     setIsLoading(true);
@@ -129,20 +129,20 @@ const removeGalleryPicture = (userID, pos, profileImagePaths, setItemAttribute, 
 };
 
 /**
- * TODO
+ * Constructs the list of images to display for the profile image gallery.
  *
- * @param userID
- * @param profileImage
- * @param profileImagePaths
- * @param profileImages
- * @param editable
- * @param swipeRef
- * @param setUploadModalOpen
- * @param setTempImageInfo
- * @param setItemAttribute
- * @param removeItemAttributeIndex
- * @param setIsLoading
- * @return {*}
+ * @param {string} userID The ID of the User for the profile image gallery.
+ * @param {*} profileImage The main profile image for the User.
+ * @param {[string]} profileImagePaths The User's profile image paths.
+ * @param {[*]} profileImages The User's profile images.
+ * @param {boolean} editable Whether the profile image gallery is editable or not.
+ * @param {*} swipeRef The reference to the React Swipe component.
+ * @param {function(boolean)} setUploadModalOpen Sets the upload modal open state.
+ * @param {function(*)} setTempImageInfo Sets the temp image info state.
+ * @param {function(string, string, *)} setItemAttribute Function for updating item's attribute manually.
+ * @param {function(string, string, number)} removeItemAttributeIndex Function for removing index from item's list.
+ * @param {function(boolean)} setIsLoading Sets the component's loading state.
+ * @return {*} The React JSX to display the list of images.
  */
 const getImageComponents = (userID, profileImage, profileImagePaths, profileImages, editable, swipeRef,
                             setUploadModalOpen, setTempImageInfo, setItemAttribute, removeItemAttributeIndex, setIsLoading) => {

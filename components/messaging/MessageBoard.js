@@ -12,6 +12,8 @@ import ScrollView from "react-inverted-scrollview";
 // import {inspect} from 'util';
 // import {getMethods} from "../../logic/DebuggingHelper";
 
+// TODO Refactor
+
 type Props = {
     board: string,
 };

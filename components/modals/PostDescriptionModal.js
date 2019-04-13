@@ -16,6 +16,13 @@ type Props = {
     onClose: any
 };
 
+/**
+ * TODO
+ *
+ * @param userID
+ * @param postID
+ * @param setIsLoading
+ */
 const handleDeletePostButton = (userID, postID, setIsLoading) => {
     //log&&console.log("Handling deleting the event");
     if (userID && postID) {
@@ -35,6 +42,16 @@ const handleDeletePostButton = (userID, postID, setIsLoading) => {
 
 //This modal displays the challenge information and at the bottom contains a button which allows the user
 //to join a challenge.
+/**
+ * TODO
+ *
+ * @param userID
+ * @param postID
+ * @param isOwned
+ * @param isDeleteLoading
+ * @param setIsLoading
+ * @return {*}
+ */
 const createCorrectButton = (userID, postID, isOwned, isDeleteLoading, setIsLoading) => {
     //log&&console.log("Owned: " + isOwned + " Joined: " + isJoined);
     // log&&console.log(ifCompleted);
@@ -52,11 +69,12 @@ const createCorrectButton = (userID, postID, isOwned, isDeleteLoading, setIsLoad
     }
 };
 
-/*
-* Event Description Modal
-*
-* This is the event description which displays more in depth information about a challenge, and allows the user
-* to join the challenge.
+/**
+ * TODO
+ *
+ * @param props
+ * @return {*}
+ * @constructor
  */
 const PostDescriptionModal = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);

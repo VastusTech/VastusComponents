@@ -3,7 +3,26 @@ import { Label, Grid, Icon, Container, Divider, Message, Segment, Button } from 
 import {Player} from "video-react";
 import Breakpoint from "react-socks";
 
-export default (props: {message: any, userID: string}) => {
+type Props = {
+    userID: string,
+    message: {
+        from: string,
+        name: string,
+        message: string,
+        type: string,
+        messageURL: string,
+        profilePicture: any
+    }
+};
+
+/**
+ * Component for displaying a single Message inside of a Message board. Styled like a normal text message looks like.
+ *
+ * @param {Props} props The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
+ */
+export default (props: Props) => {
     if (!props.message) {
         return null;
     }
@@ -36,7 +55,7 @@ export default (props: {message: any, userID: string}) => {
                 return (
                     <Grid class="ui computer vertically reversed equal width grid">
                         <Grid.Column width={2}>
-                            <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}/>
+                            <div align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}/>
                         </Grid.Column>
                         <Grid.Column>
                             <Grid.Row>
@@ -74,7 +93,7 @@ export default (props: {message: any, userID: string}) => {
                 return (
                     <Grid class="ui computer vertically reversed equal width grid">
                         <Grid.Column width={6}>
-                            <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}/>
+                            <div align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}/>
                         </Grid.Column>
                         <Grid.Column>
                             <Grid.Row>
@@ -117,7 +136,7 @@ export default (props: {message: any, userID: string}) => {
                 <Breakpoint medium up>
                 <Grid columns={2}>
                     <Grid.Column width={1}>
-                        <div avatar className="ui u-avatar mini" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}/>
+                        <div className="ui u-avatar mini" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}/>
                     </Grid.Column>
                     <Grid.Column>
                         <Grid.Row>
@@ -136,7 +155,7 @@ export default (props: {message: any, userID: string}) => {
                 <Breakpoint small down>
                     <Grid columns={2}>
                         <Grid.Column width={3} style={{marginRight: '10px'}}>
-                            <div avatar className="ui u-avatar mini" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}/>
+                            <div className="ui u-avatar mini" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}/>
                         </Grid.Column>
                         <Grid.Column>
                             <Grid.Row>

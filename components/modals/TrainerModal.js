@@ -37,9 +37,11 @@ type Props = {
 // };
 
 /**
- * Profile
+ * TODO
  *
- * This is the profile page which displays information about the current user.
+ * @param props
+ * @return {*}
+ * @constructor
  */
 const TrainerModal = (props: Props) => {
     const [ownedModalOpen, setOwnedModalOpen] = useState(false);

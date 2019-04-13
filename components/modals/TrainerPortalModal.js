@@ -9,6 +9,8 @@ import {calculateAge} from "../../logic/TimeHelper";
 import TrainerPostFeed from "../lists/TrainerPostFeed";
 import EventList from "../lists/EventList";
 
+// TODO Refactor
+
 type Props = {
     trainerID: string,
     open: boolean,

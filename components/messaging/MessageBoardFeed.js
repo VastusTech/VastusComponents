@@ -12,6 +12,8 @@ import {queryNextMessagesFromBoard, setBoardRead} from "../../redux/actions/mess
 import MessageFunctions from "../../database_functions/MessageFunctions";
 import {getIDsFromMessageBoard, ifMessageUnreadFor} from "../../logic/MessageHelper";
 
+// TODO Refactor
+
 type Props = {
     userID: string
 };

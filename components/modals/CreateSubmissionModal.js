@@ -4,6 +4,8 @@ import { Player } from "video-react";
 import { connect } from "react-redux";
 import SubmissionFunctions from "../../database_functions/SubmissionFunctions";
 
+// TODO Refactor
+
 type Props = {
     open: boolean,
     onClose: any,

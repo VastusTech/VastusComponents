@@ -11,6 +11,14 @@ type Props = {
     onClickCard: (board) => {}
 };
 
+/**
+ * The Message Board Card as it appears in the board feed. Shows preview information, user information and the unread
+ * status of the board to the user.
+ *
+ * @param {Props} props The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
+ */
 const MessageBoardCard = (props: Props) => {
     if(props.unread) {
         return (

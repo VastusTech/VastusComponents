@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import {Modal, Button, List, Grid, Message} from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
-// import EventMemberList from "../../screens/EventMemberList";
 import { connect } from 'react-redux';
 import {fetchClient, forceFetchEvent, fetchEvent} from "../../redux/convenience/cacheItemTypeActions";
 import CompleteChallengeModal from "../manager/CompleteChallengeModal";
 import {forceFetchUserAttributes} from "../../redux/actions/userActions";
 import UserFunctions from "../../database_functions/UserFunctions";
 import EventFunctions from "../../database_functions/EventFunctions";
-// import VideoUploadScreen from "../../screens/VideoUploadScreen";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
+
+// TODO Refactor
 
 type Props = {
     open: boolean,

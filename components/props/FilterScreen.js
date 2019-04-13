@@ -3,6 +3,15 @@ import {connect} from 'react-redux';
 import {Grid, Checkbox, Header} from "semantic-ui-react";
 import {disableType, enableType} from "../../redux/actions/searchActions";
 
+/**
+ * Constructs the visual checkboxes list of components using the search redux information.
+ *
+ * @param {{}} filterTypes The checked status of each of the filter types.
+ * @param {function({})} setFilterTypes Sets the filter types state.
+ * @param {function(string)} enableType Search redux function to enable a type for searching.
+ * @param {function(string)} disableType Search redux function to disable a type for searching.
+ * @return {[*]} The React JSX components for the check boxes.
+ */
 const getCheckBoxes = (filterTypes, setFilterTypes, enableType, disableType) => {
     const checkBoxes = [];
     for (const type in filterTypes) {
@@ -21,6 +30,14 @@ const getCheckBoxes = (filterTypes, setFilterTypes, enableType, disableType) => 
     return checkBoxes;
 };
 
+/**
+ * Toggles a type checkbox, based on which type is clicked.
+ *
+ * @param {string} type The type of the checkbox clicked.
+ * @param {function({})} setFilterTypes Sets the filter types state.
+ * @param {function(string)} enableType Search redux function to enable a type for searching.
+ * @param {function(string)} disableType Search redux function to disable a type for searching.
+ */
 const toggleTypeCheckbox = (type, setFilterTypes, enableType, disableType) => {
     setFilterTypes(p => {
         if (p[type]) {
@@ -43,8 +60,8 @@ const toggleTypeCheckbox = (type, setFilterTypes, enableType, disableType) => {
  * The Modal to filter out results from the search bar. Chooses which item types to include in the actual search
  * functionality.
  *
- * @param props The props to put into the functional component.
- * @return {*} The rendered component.
+ * @param props The props passed into the component.
+ * @return {*} The React JSX to display the component.
  * @constructor
  */
 const FilterScreen = (props) => {

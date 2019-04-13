@@ -2,6 +2,13 @@ import React from "react";
 import Message from './Message';
 import { Container } from "semantic-ui-react";
 
+/**
+ * TODO
+ *
+ * @param props
+ * @return {*}
+ * @constructor
+ */
 const Messages = (props: {messages: [any], userID: string}) => {
     return (
         <Container style={{width: '85%'}}>

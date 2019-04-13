@@ -13,6 +13,8 @@ import MessageBoardCard from "./MessageBoardCard";
 import MessageBoard from "./MessageBoard";
 import {getMessageBoardName} from "../../logic/MessageHelper";
 
+// TODO Refactor this stuff!
+
 type Props = {
     ids: [string],
     noObjectsMessage: string,

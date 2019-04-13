@@ -2,15 +2,16 @@ import connect from "react-redux/es/connect/connect";
 import React, { Component, Fragment } from 'react';
 import {clearGroupQuery, fetchGroup, fetchClient, forceFetchGroup} from "../../redux/convenience/cacheItemTypeActions";
 import {forceFetchUserAttributes} from "../../redux/actions/userActions";
-import {Button, Divider, Icon, Modal, Card, Grid, Image} from "semantic-ui-react";
+import {Button, Divider, Icon, Modal, Card, Grid, Image, Message} from "semantic-ui-react";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import CommentScreen from "../messaging/MessageBoard";
 import GroupFunctions from "../../database_functions/GroupFunctions";
 import UserFunctions from "../../database_functions/UserFunctions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
-import {Message} from "semantic-ui-react/dist/commonjs/collections/Message/Message";
 import Logo from "../../img/vt_new.svg";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
+
+// TODO Refactor
 
 type Props = {
     open: boolean,

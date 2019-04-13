@@ -15,6 +15,14 @@ type Props = {
     editable: boolean
 };
 
+/**
+ * Uploads the profile picture to update the main profile image of the User.
+ *
+ * @param {*} picture The picture to upload as the new profile image.
+ * @param {string} userID The ID of the User for the profile image.
+ * @param {*} displayPicture The picture to use to display when we manually update the object in the database.
+ * @param {function(string, string, *)} setItemAttribute Function to manually update the item attribute.
+ */
 const uploadProfilePicture = (picture, userID, displayPicture, setItemAttribute) => {
     if (picture && userID) {
         const path = "ClientFiles/" + userID + "/profileImage";
@@ -30,6 +38,14 @@ const uploadProfilePicture = (picture, userID, displayPicture, setItemAttribute)
     }
 };
 
+/**
+ * The Profile Image component displays a preview of the User's main profile image and opens a modal that shows the rest
+ * of the User's profile image gallery when it is clicked on. Also allows the profile image to be editable directly.
+ *
+ * @param props The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
+ */
 const ProfileImage = (props: Props) => {
     const [galleryModalOpen, setGalleryModalOpen] = useState(false);
     const [uploadModalOpen, setUploadModalOpen] = useState(false);

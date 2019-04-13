@@ -8,6 +8,16 @@ type Props = {
     board: string
 }
 
+/**
+ * TODO
+ *
+ * @param board
+ * @param e
+ * @param setIsLoading
+ * @param userID
+ * @param username
+ * @param userProfileImagePath
+ */
 const addMessage = (board, e, setIsLoading, userID, username, userProfileImagePath, ) => {
     // Prevent the default behaviour of form submit
     e.preventDefault();
@@ -32,6 +42,16 @@ const addMessage = (board, e, setIsLoading, userID, username, userProfileImagePa
     }
 };
 
+/**
+ * TODO
+ *
+ * @param picture
+ * @param board
+ * @param userID
+ * @param username
+ * @param userProfileImagePath
+ * @param setIsLoading
+ */
 const addPicture = (picture, board, userID, username, userProfileImagePath, setIsLoading) => {
     setIsLoading(true);
     MessageFunctions.createPictureMessage(userID, userID, username, userProfileImagePath, board, picture, "picture", () => {
@@ -43,6 +63,16 @@ const addPicture = (picture, board, userID, username, userProfileImagePath, setI
     });
 };
 
+/**
+ * TODO
+ *
+ * @param video
+ * @param board
+ * @param userID
+ * @param username
+ * @param userProfileImagePath
+ * @param setIsLoading
+ */
 const addVideo = (video, board, userID, username, userProfileImagePath, setIsLoading) => {
     this.setState({sendLoading: true});
     MessageFunctions.createVideoMessage(userID, userID, username, userProfileImagePath, board, video, "video", () => {
@@ -54,6 +84,16 @@ const addVideo = (video, board, userID, username, userProfileImagePath, setIsLoa
     });
 };
 
+/**
+ * TODO
+ *
+ * @param event
+ * @param board
+ * @param userID
+ * @param username
+ * @param userProfileImagePath
+ * @param setIsLoading
+ */
 const addPictureOrVideo = (event, board, userID, username, userProfileImagePath, setIsLoading) => {
     const file = event.target.files[0];
     const fileType = file["type"];
@@ -70,6 +110,13 @@ const addPictureOrVideo = (event, board, userID, username, userProfileImagePath,
     }
 };
 
+/**
+ * TODO
+ *
+ * @param props
+ * @return {*}
+ * @constructor
+ */
 const MessageInput = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);
 
