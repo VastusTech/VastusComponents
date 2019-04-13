@@ -5,6 +5,13 @@ type Props = {
     type: string
 };
 
+/**
+ * Creates the image based on the image and the type passed in as a prop.
+ *
+ * @param {*} image The image to display.
+ * @param {string} type The
+ * @return {*}
+ */
 const switchImageType = (image, type) => {
     switch (type) {
         case "Small":
@@ -16,6 +23,13 @@ const switchImageType = (image, type) => {
     }
 };
 
+/**
+ * A styled profile image to switch through various ways of displaying and laying out a profile image.
+ *
+ * @param {Props} props The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
+ */
 const StyledProfileImage = (props: Props) => switchImageType(props.profileImage, props.type);
 
 export default StyledProfileImage;

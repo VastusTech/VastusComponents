@@ -15,6 +15,14 @@ import GroupDescriptionModal from "../modals/GroupDescriptionModal";
 
 const minimumSearchResults = 6;
 
+/**
+ * Gets the selected modal from the search results, switching for the item type.
+ *
+ * @param {{item_type: string, id: string}} result The selected database object.
+ * @param {boolean} resultModalOpen If the result modal is open.
+ * @param {function(boolean)} setResultModalOpen Set's the component result modal open state.
+ * @return {*} The React JSX to display the result modal.
+ */
 const getResultModal = (result, resultModalOpen, setResultModalOpen) => {
     if (!result) {
         return null;
@@ -32,6 +40,14 @@ const getResultModal = (result, resultModalOpen, setResultModalOpen) => {
         null, null, null, null, "Item Type not implemented for Search Bar Result Modal");
 };
 
+/**
+ * Uses the search results in order to format them into a Semantic UI Search Bar usable format.
+ *
+ * @param {string} searchQuery The query search string for the search bar.
+ * @param {[{}]} results The array of objects returned from the search redux operation.
+ * @param {boolean} searchBarEnabled Whether the search bar is enabled or not.
+ * @return {*} The formatted results for the Search Bar component.
+ */
 const getFormattedResults = (searchQuery, results, searchBarEnabled) => {
     const formattedResults = [];
     if (searchBarEnabled) {
@@ -122,33 +138,48 @@ const getFormattedResults = (searchQuery, results, searchBarEnabled) => {
     }
 };
 
+/**
+ * Handles a result's click and opens the result modal for it.
+ *
+ * @param {{resultcontent: *}} result The result from the search bar component.
+ * @param {function(*)} setResult Sets the component's result state.
+ * @param {function(boolean)} setResultModalOpen Set's the component's result modal open state.
+ */
 const handleResultSelect = (result, setResult, setResultModalOpen) => {
     setResult(result.resultcontent);
     setResultModalOpen(true);
 };
 
-// const retrieveMoreResults = (searchQuery, numResults, loadMoreResults, setIsLoading) => {
-//     // alert("loading more results");
-//     loadMoreResults(searchQuery, (data) => {
-//         const ifFinished = data.length === 0;
-//         numResults += data.length;
-//         // alert("Finished = " + ifFinished);
-//         if (numResults < minimumSearchResults && !ifFinished) {
-//             // log&&console.log("Grabbing more results: numResults = " + results.length + ", ifFinished = " + this.props.search.ifFinished);
-//             retrieveMoreResults(searchQuery, numResults, loadMoreResults, setIsLoading);
-//         }
-//         else {
-//             setIsLoading(false);
-//         }
-//     });
-// };
-const retrieveSearchResults = _.debounce((searchQuery, newSearch, setIsLoading) => {
+/**
+ * Retrieves search results from a new search query in the search bar.
+ *
+ * @param {string} searchQuery The string to search for in the database.
+ * @param {function(string, number, function([{}]))} newSearch The redux function to start a new search in the reducer.
+ * @param {function(boolean)} setIsLoading Sets the component's is loading state.
+ */
+const retrieveSearchResults = (searchQuery, newSearch, setIsLoading) => {
     // alert("new search!");
     newSearch(searchQuery, minimumSearchResults, () => {
         setIsLoading(false);
     });
-}, 500);
-// const bufferedRetrieveSearchResults = _.debounce(retrieveSearchResults, 500);
+};
+
+/**
+ * Debounced retrieve search results function so that calling it multiple times will not actually activate it
+ * more than once.
+ *
+ * @type {Function|*|void}
+ */
+const debouncedRetrieveSearchResults = _.debounce(retrieveSearchResults, 500);
+
+/**
+ * TODO
+ *
+ * @param value
+ * @param newSearch
+ * @param setSearchQuery
+ * @param setIsLoading
+ */
 const handleSearchChange = (value, newSearch, setSearchQuery, setIsLoading) => {
     setSearchQuery(value);
     setIsLoading(true);
@@ -156,15 +187,24 @@ const handleSearchChange = (value, newSearch, setSearchQuery, setIsLoading) => {
     // _.debounce(function() {alert("3")}, 250);
     // alert("retrieving search results");
     console.log("retrieve search results");
-    retrieveSearchResults(value, newSearch, setIsLoading);
+    debouncedRetrieveSearchResults(value, newSearch, setIsLoading);
 };
 
+/**
+ * The search bar searches for things within our database based on the "search" redux settings. Search is global in
+ * redux so that we can set the settings in the search modal. This also allows you to click any of the results and view
+ * a modal for the object.
+ *
+ * @param {{}} props The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
+ */
 const SearchBarProp = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const [selectedResult, setSelectedResult] = useState(null);
+    // const [selectedResult, setSelectedResult] = useState(null);
     const [result, setResult] = useState(null);
-    const [resultModal, setResultModal] = useState(null);
+    // const [resultModal, setResultModal] = useState(null);
     const [resultModalOpen, setResultModalOpen] = useState(false);
 
     // constructor(props) {

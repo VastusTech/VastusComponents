@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Grid, Icon, Button, Image, Header, Modal} from 'semantic-ui-react';
 import ReactSwipe from 'react-swipe';
 import _ from "lodash";
 import {connect} from 'react-redux';
-// import {forceFetchUserAttributes} from "../../../redux_helpers/actions/userActions";
 import UserFunctions from "../../database_functions/UserFunctions";
 import UploadImage from "../manager/UploadImage";
 import {
@@ -21,17 +20,39 @@ type Props = {
 };
 
 /**
+ * Gets the S3 key path for the main profile image.
  *
- * @param userID {string}
- * @return {string}
+ * @param {string} userID The ID of the User of the profile image gallery.
+ * @return {string} The S3 key name for the main profile image.
  */
 const getProfileImageS3Name = (userID) => {
     return "ClientFiles/" + userID + "/profileImage";
 };
+
+/**
+ * Gets the gallery S3 name for a specific gallery image.
+ *
+ * @param {string} userID The ID of the User of the profile image gallery.
+ * @param {number} pos The current position of the gallery image carousel.
+ * @return {string} The S3 key path for the gallery image.
+ */
 const getGalleryImageS3Name = (userID, pos) => {
     return "ClientFiles/" + userID + "/galleryImages/" + pos;
 };
 
+/**
+ * Edits the gallery pictures to set one. Either replaces one existing picture or adds a new one on the end, making sure
+ * that it isn't overlapping with an existing gallery image.
+ *
+ * @param {string} userID The ID of the User for the profile image gallery.
+ * @param {*} image The image file to set for the gallery picture.
+ * @param {*} displayImage The temporary image to use instead of the S3 generated URL to update in real time the object.
+ * @param {number} pos The position of the gallery in the carousel.
+ * @param {[string]} profileImagePaths The profile image paths of the
+ * @param setItemAttribute
+ * @param setItemAttributeIndex
+ * @param setIsLoading
+ */
 const setGalleryPicture = (userID, image, displayImage, pos, profileImagePaths, setItemAttribute, setItemAttributeIndex, setIsLoading) => {
     // console.log("This is calling set gallery picture");
     // console.log(this.state.galleryNum);
@@ -73,6 +94,16 @@ const setGalleryPicture = (userID, image, displayImage, pos, profileImagePaths, 
     }
 };
 
+/**
+ * TODO
+ *
+ * @param userID
+ * @param pos
+ * @param profileImagePaths
+ * @param setItemAttribute
+ * @param removeItemAttributeIndex
+ * @param setIsLoading
+ */
 const removeGalleryPicture = (userID, pos, profileImagePaths, setItemAttribute, removeItemAttributeIndex, setIsLoading) => {
     setIsLoading(true);
     if (pos === 0) {
@@ -97,6 +128,22 @@ const removeGalleryPicture = (userID, pos, profileImagePaths, setItemAttribute, 
     }
 };
 
+/**
+ * TODO
+ *
+ * @param userID
+ * @param profileImage
+ * @param profileImagePaths
+ * @param profileImages
+ * @param editable
+ * @param swipeRef
+ * @param setUploadModalOpen
+ * @param setTempImageInfo
+ * @param setItemAttribute
+ * @param removeItemAttributeIndex
+ * @param setIsLoading
+ * @return {*}
+ */
 const getImageComponents = (userID, profileImage, profileImagePaths, profileImages, editable, swipeRef,
                             setUploadModalOpen, setTempImageInfo, setItemAttribute, removeItemAttributeIndex, setIsLoading) => {
     if (profileImage) {
@@ -145,6 +192,14 @@ const getImageComponents = (userID, profileImage, profileImagePaths, profileImag
     }
 };
 
+/**
+ * The component to handle the Modal view of a profile image gallery for any User. Allows the gallery to be editable or
+ * not. First displays the main profile image, then the gallery images in order by string value.
+ *
+ * @param {Props} props The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
+ */
 const ProfileImageGallery = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
