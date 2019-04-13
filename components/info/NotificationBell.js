@@ -4,10 +4,14 @@ import {fetchUserAttributes, forceFetchUserAttributes} from "../../redux/actions
 import {connect} from 'react-redux';
 import {fetchChallenge, fetchEvent, fetchGroup, fetchInvite} from "../../redux/convenience/cacheItemTypeActions";
 
-/*
-* NotificationCard Feed
-*
-* This is a feed which contains all of the buddy (friend) requests that have been sent to the current user.
+// TODO Refactor the functions outside of the component.
+
+/**
+ * Displays the notification info about the User, specifically how many pending notifications the User has.
+ *
+ * @param {{}} props The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
  */
 const NotificationBell = (props) => {
     const [numNotifications, setNumNotifications] = useState(0);

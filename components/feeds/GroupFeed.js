@@ -15,6 +15,20 @@ type Props = {
     filter: any
 };
 
+/**
+ * Fetches another set of Groups with a query for the feed.
+ *
+ * @param {{}} filter The GraphQL filter to dictate how the query filters the objects.
+ * @param {string|null} nextToken The next token from the previous query or null if it's the first query.
+ * @param {boolean} isFinished If the querying has finished and there are no more objects to fetch.
+ * @param {[string]} friends The friends list of the User viewing this Group Feed.
+ * @param {function([string], {}, number, string, function({}), function(error))} fetchGroupQuery The redux function to
+ * fetch a Group query.
+ * @param {function(boolean)} setIsLoading Sets the loading state.
+ * @param {function(boolean)} setIsFinished Sets the if finished state.
+ * @param {function(string)} setNextToken Sets the next token state.
+ * @param {function([{}])} setGroups Sets the groups state.
+ */
 const queryGroups = (filter, nextToken, isFinished, friends, fetchGroupQuery, setIsLoading, setIsFinished, setNextToken,
                     setGroups) => {
     if (!isFinished) {
@@ -51,10 +65,12 @@ const queryGroups = (filter, nextToken, isFinished, friends, fetchGroupQuery, se
 };
 
 /**
- * Event Feed
+ * Displays a feed of Groups which are queried using the filter provided. Also uses the semantic ui react Visibility
+ * module in order to delay fetching of Groups until directly requested.
  *
- * This is the main feed in the home page, it currently displays all public events inside of the database for
- * the user to see.
+ * @param {Props} props The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
  */
 const GroupFeed = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);

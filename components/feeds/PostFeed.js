@@ -1,6 +1,6 @@
 import React, {useState, useEffect, Fragment} from 'react'
 import _ from 'lodash'
-import {Visibility, Header, Grid} from 'semantic-ui-react'
+import {Visibility} from 'semantic-ui-react'
 import PostCard, {PostCardInfo} from "../cards/PostCard";
 import { connect } from 'react-redux';
 import {
@@ -14,7 +14,6 @@ import {fetchUserAttributes} from "../../redux/actions/userActions";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import {log, err} from "../../../Constants";
 import {debugAlert} from "../../logic/DebuggingHelper";
-import ChallengeCard from "../cards/ChallengeCard";
 import ClientDetailCard from "../cards/post_detail_cards/ClientDetailCard";
 import TrainerDetailCard from "../cards/post_detail_cards/TrainerDetailCard";
 import PostDetailCard from "../cards/post_detail_cards/PostDetailCard";
@@ -29,9 +28,28 @@ type Props = {
     filter: any
 };
 
+/**
+ * Fetches another set of Posts with a query for the feed.
+ *
+ * @param {{}} filter The GraphQL filter to dictate how the query filters the objects.
+ * @param {string|null} nextToken The next token from the previous query or null if it's the first query.
+ * @param {boolean} isFinished If the querying has finished and there are no more objects to fetch.
+ * @param {[string]} friends The friends list of the User viewing this Post Feed.
+ * @param {function([string], {}, number, string, function({}), function(error))} fetchPostQuery The redux function to
+ * fetch a Post query.
+ * @param {function(string, [string], function({}), function(error))} fetchClient Cache function to fetch a Client.
+ * @param {function(string, [string], function({}), function(error))} fetchTrainer Cache function to fetch a Trainer.
+ * @param {function(string, [string], function({}), function(error))} fetchEvent Cache function to fetch a Event.
+ * @param {function(string, [string], function({}), function(error))} fetchChallenge Cache function to fetch a Challenge.
+ * @param {function(string, [string], function({}), function(error))} fetchPost Cache function to fetch a Post.
+ * @param {function(string, [string], function({}), function(error))} fetchGroup Cache function to fetch a Group.
+ * @param {function(boolean)} setIsLoading Sets the loading state.
+ * @param {function(boolean)} setIsFinished Sets the if finished state.
+ * @param {function(string)} setNextToken Sets the next token state.
+ * @param {function([{}])} setPosts Sets the posts state.
+ */
 const queryPosts = (filter, nextToken, isFinished, friends, fetchPostQuery, fetchClient, fetchTrainer, fetchEvent,
-                    fetchChallenge, fetchPost, fetchGroup, setIsLoading, setIsFinished, setNextToken, setPosts,
-                    postQueries, putPostQuery) => {
+                    fetchChallenge, fetchPost, fetchGroup, setIsLoading, setIsFinished, setNextToken, setPosts) => {
     if (!isFinished) {
         setIsLoading(true);
         debugAlert("Fetching Post Feed Query");
@@ -97,19 +115,13 @@ const queryPosts = (filter, nextToken, isFinished, friends, fetchPostQuery, fetc
     }
 };
 
-// const getObject = (id, cacheReducer) => {
-//     const itemType = getItemTypeFromID(id);
-//     if (id && itemType) {
-//         return cacheReducer[getCacheName(itemType)][id];
-//     }
-//     return null;
-// };
-
 /**
- * Event Feed
+ * Displays a feed of Posts which are queried using the filter provided. Also uses the semantic ui react Visibility
+ * module in order to delay fetching of Posts until directly requested.
  *
- * This is the main feed in the home page, it currently displays all public events inside of the database for
- * the user to see.
+ * @param {Props} props The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
  */
 const PostFeed = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);

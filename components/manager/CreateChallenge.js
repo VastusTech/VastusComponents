@@ -286,12 +286,6 @@ const mapDispatchToProps = (dispatch) => {
         putChallenge: (event) => {
             dispatch(putChallenge(event));
         },
-        // putChallengeQuery: (queryString, queryResult) => {
-        //     dispatch(putChallengeQuery(queryString, queryResult));
-        // },
-        // clearChallengeQuery: () => {
-        //     dispatch(clearChallengeQuery());
-        // }
     }
 };
 

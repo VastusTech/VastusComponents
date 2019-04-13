@@ -16,6 +16,8 @@ import {getItemTypeFromID} from "../../logic/ItemType";
 import {err, log} from "../../../Constants";
 import Spinner from "../props/Spinner";
 
+// TODO Refactor functions outside of the component function.
+
 const fetchAboutAndFromInfo = (invite, fetchClient, fetchTrainer, fetchEvent, fetchChallenge, fetchGroup) => {
     // TODO We don't need this much stuff....
     if (invite && invite.from && invite.to && invite.inviteType && invite.about) {

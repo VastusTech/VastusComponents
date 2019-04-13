@@ -7,6 +7,8 @@ import SubmissionCard, {SubmissionCardInfo} from "../cards/SubmissionCard";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import {err} from "../../../Constants";
 
+// TODO Use this to write SingleDatabaseObjectList
+
 // TODO Test the new "visibility" fetch system!
 // TODO USING VISIBILITY WITH A MODAL DOESN'T WORK?
 // TODO ALSO OFTEN ONE PERSON IS MISSING for some reason?

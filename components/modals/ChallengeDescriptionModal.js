@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Dimmer, Label, Header } from 'semantic-ui-react';
+import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Header } from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 import { connect } from 'react-redux';
 import {
@@ -16,16 +16,13 @@ import UserFunctions from "../../database_functions/UserFunctions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
 import CreateSubmissionModal from "./CreateSubmissionModal";
-// import SubmissionsScreen from "../lists/SubmissionsScreen";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
-import SubmissionList from "../lists/SubmissionList";
 import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import {daysLeft, parseISOString} from "../../logic/TimeHelper";
 import TrainerModal from "./TrainerModal";
 import Spinner from "../props/Spinner";
 import {ifStreakExpired} from "../../logic/StreakHelper";
-// import InviteToScheduledEventsModalProp from "../manager/InviteToScheduledEventsModal";
 import {arrayIntersection} from "../../logic/ArrayHelper";
 import {err} from "../../../Constants";
 
@@ -228,7 +225,12 @@ const createCorrectButton = (userID, challengeID, submissions, isLoading, isComp
     const panes = [
         { menuItem: 'Submissions', render: () => (
                 <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
-                    <SubmissionList ids={submissions} noSubmissionsMessage="No submissions yet!"/>
+                    <DatabaseObjectList ids={submissions}
+                                        noObjectsMessage="No submissions yet!"
+                                        acceptedItemTypes={["Submission"]}
+                                        // TODO Check the sort...
+                                        sortFunction={(a, b) => a.time_created.localeCompare(b.time_created)}
+                    />
                 </Tab.Pane>
             )},
         { menuItem: 'Challenge Chat', render: () => (
