@@ -3,6 +3,7 @@ import { Card, Grid, Header } from 'semantic-ui-react';
 import ClientModal from '../modals/ClientModal';
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
 import StyledProfileImage from "../props/StyledProfileImage";
+import ProfileImage from "../props/ProfileImage";
 
 export const ClientCardInfo = {
     fetchList: ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "friendRequests"],
@@ -21,6 +22,7 @@ type Props = {
         challengesWon: [string],
         scheduledEvents: [string],
         profileImagePath: string,
+        profileImage: any,
         friendRequests: [string]
     }
 };
@@ -49,12 +51,14 @@ const ClientCard = (props: Props) => {
     }
     return(
         // This is displays a few important pieces of information about the challenge for the feed view.
-        <Card fluid raised onClick={() => setModalOpen(true)}>
+        <Card fluid raised onClick={() => modalOpen||setModalOpen(true)}>
             <Card.Content>
                 {/* If no rank */}
                 {!props.rank && (
                     <Fragment>
                         <Card.Header>
+                            <ProfileImage userID={props.client.id}
+                                          profileImage={props.client.profileImage}/>
                             <div className="u-flex u-flex-justify--center u-margin-bottom--2">
                                 <StyledProfileImage profileImage={getClientAttribute("profileImage")} type={"Small"}/>
                             </div>

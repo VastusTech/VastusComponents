@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Dimmer, Header, Loader, Grid} from "semantic-ui-react";
+import {Header, Grid} from "semantic-ui-react";
 import {connect} from "react-redux";
 import Spinner from "../../components/props/Spinner";
 import MessageBoardCard from "./MessageBoardCard";
@@ -139,7 +139,7 @@ class MessageBoardFeed extends Component<Props> {
                         messageBoardLastMessage={this.lastMessage(board)}
                         messageBoardID={board}
                         unread={this.unread(board)}
-                        onClickCard={this.clickCard.bind(this)}
+                        onClickCard={() => this.clickCard(board)}
                     />
                 );
             }

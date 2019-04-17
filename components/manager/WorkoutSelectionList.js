@@ -4,7 +4,7 @@ import CreateEventProp from "./CreateEvent";
 import {connect} from "react-redux";
 // import {Form} from "semantic-ui-react/dist/commonjs/collections/Form/Form";
 
-// TODO Refactor
+// TODO Refactor and Rewrite? What was this used for?
 
 class WorkoutSelectionList extends Component {
     state = {

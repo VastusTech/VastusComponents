@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {Icon, Label} from 'semantic-ui-react';
+import React, {useEffect} from 'react';
+import {Icon} from 'semantic-ui-react';
 import {
     peekAtFirstMessageFromBoard,
 } from "../../redux/actions/messageActions";

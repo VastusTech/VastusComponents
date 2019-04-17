@@ -9,6 +9,7 @@ import UserFunctions from "../../database_functions/UserFunctions";
 import EventFunctions from "../../database_functions/EventFunctions";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
 
+// TODO Rewrite for the new design
 // TODO Refactor
 
 type Props = {

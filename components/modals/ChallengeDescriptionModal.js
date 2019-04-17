@@ -15,7 +15,7 @@ import CommentScreen from "../messaging/MessageBoard";
 import UserFunctions from "../../database_functions/UserFunctions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
-import CreateSubmissionModal from "./CreateSubmissionModal";
+import CreateSubmissionModal from "../manager/CreateSubmissionModal";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
 import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";

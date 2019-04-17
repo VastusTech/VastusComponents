@@ -6,7 +6,7 @@ import {fetchUserAttributes} from "../../redux/actions/userActions";
 import {fetchEvent} from "../../redux/convenience/cacheItemTypeActions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 
-// TODO Refactor
+// TODO Refactor and Rewrite?
 
 class InviteToScheduledEventsModalProp extends Component {
     state = {

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {connect} from "react-redux";
 import {Label, Modal, Icon, Dimmer} from "semantic-ui-react";
 import UploadImage from "../manager/UploadImage";

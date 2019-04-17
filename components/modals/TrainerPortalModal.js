@@ -9,6 +9,7 @@ import {calculateAge} from "../../logic/TimeHelper";
 import TrainerPostFeed from "../lists/TrainerPostFeed";
 import EventList from "../lists/EventList";
 
+// TODO Rewrite for the new design
 // TODO Refactor
 
 type Props = {

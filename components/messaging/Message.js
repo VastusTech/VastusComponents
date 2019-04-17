@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Label, Grid, Icon, Container, Divider, Message, Segment, Button } from 'semantic-ui-react'
+import React  from 'react';
+import { Label, Grid, Button } from 'semantic-ui-react'
 import {Player} from "video-react";
 import Breakpoint from "react-socks";
 

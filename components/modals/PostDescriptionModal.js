@@ -10,6 +10,8 @@ import {getObjectAttribute, getPostAttribute} from "../../logic/CacheRetrievalHe
 // import {setIsLoading} from "../../redux_actions/infoActions";
 import Spinner from "../props/Spinner";
 
+// TODO Rewrite for the new design
+
 type Props = {
     postID: string,
     open: boolean,

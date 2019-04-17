@@ -30,25 +30,35 @@ export function removeFromArray(originalArray, element) {
 /**
  * Adds the elements not already in the original array from the newArray. Cannot be array of objects.
  *
- * @param originalArray The array to be added to.
- * @param newArray The array of elements to be added to the original array.
- * @return the original array that is updated.
+ * @param {[*]} originalArray The array to be added to.
+ * @param {[*]} newArray The array of elements to be added to the original array.
+ * @return {[*]} the original array that is updated.
  */
 export function addUniqueToArray(originalArray, newArray) {
     for (let i = 0; i < newArray.length; i++) {
         const e = newArray[i];
-        // Aborts if index is not -1
-        originalArray.indexOf(e) === -1 && originalArray.push(e);
+        addUniqueElementToArray(originalArray, e);
     }
     return originalArray;
 }
 
 /**
+ * Adds the element if it is not already in the given already. Element cannot be an object.
+ *
+ * @param {[*]} originalArray The array to be added to.
+ * @param {*} element The element to add uniquely.
+ */
+export function addUniqueElementToArray(originalArray, element) {
+    // Aborts if index is not -1
+    originalArray.indexOf(element) === -1 && originalArray.push(element);
+}
+
+/**
  * Returns whether there is any overlap between the two arrays. Uses pure === for equality checks.
  *
- * @param array1
- * @param array2
- * @return boolean
+ * @param {[*]} array1 The first array to check for overlap.
+ * @param {[*]} array2 The second array to check for overlap.
+ * @return {boolean} Whether there is overlap between the two arrays.
  */
 export function arraysIntersect(array1, array2) {
     for (let i = 0; i < array1.length; i++) {

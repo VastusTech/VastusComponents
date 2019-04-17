@@ -11,6 +11,7 @@ import InviteFunctions from "../../database_functions/InviteFunctions";
 import Logo from "../../img/vt_new.svg";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
 
+// TODO Rewrite for the new design
 // TODO Refactor
 
 type Props = {

@@ -1,142 +1,167 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Button, Modal, Grid, Header} from "semantic-ui-react";
 import {connect} from "react-redux";
-import ClientCard from "../cards/ClientCard";
-import {fetchClient, fetchTrainer} from "../../redux/convenience/cacheItemTypeActions";
-import {fetchUserAttributes} from "../../redux/actions/userActions";
+import {fetchItem} from "../../redux/actions/cacheActions";
+import {addToUserAttribute, fetchUserAttributes} from "../../redux/actions/userActions";
 import {getItemTypeFromID} from "../../logic/ItemType";
-import TrainerCard from "../cards/TrainerCard";
 import UserFunctions from "../../database_functions/UserFunctions";
 import {getMessageBoardName} from "../../logic/MessageHelper";
 import {debugAlert} from "../../logic/DebuggingHelper";
-
-// TODO Refactor
+import {UserCardInfo} from "../cards/UserCard";
+import {err} from "../../../Constants";
+import {addUniqueElementToArray, removeFromArray} from "../../logic/ArrayHelper";
+import Spinner from "../props/Spinner";
+import UserCard from "../cards/UserCard";
 
 type Props = {
     open: boolean,
     onClose: any
 };
 
-class StartChatModal extends Component<Props> {
-    state = {
-        sentRequest: false,
-        selectedIDs: []
-    };
+/**
+ * Creates a Chat with another user / multiple users and adds it to your Message boards.
+ *
+ * @param {string} userID The ID of the User starting the chat.
+ * @param {[string]} selectedIDs The IDs of the Users that the User is starting a chat with.
+ * @param {function(string, string)} addToUserAttribute User function to add to the main User's attributes manually.
+ * @param {function()} onClose Closes the modal.
+ */
+const createChat = (userID, selectedIDs, addToUserAttribute, onClose) => {
+    debugAlert("Creating chat with " + JSON.stringify(selectedIDs));
+    const board = getMessageBoardName(selectedIDs);
+    debugAlert(board);
+    UserFunctions.addMessageBoard(userID, userID, board, () => {
+            console.log("Successfully added message board to chat");
+            addToUserAttribute("messageBoards", board);
+            onClose();
+        }, (error) => {
+            err&&console.error(error);
+        });
+};
 
-    constructor(props) {
-        super(props);
-        this.close = this.close.bind(this);
-        this.createChat = this.createChat.bind(this);
+/**
+ * Gets the create button for the friend for starting the Chat. Includes logic for toggling the selected IDs.
+ *
+ * @param {string} friendID The ID of the User to create the button for.
+ * @param {[string]} selectedFriends The IDs of the friends who are currently selected.
+ * @param {function([string])} setSelectedFriends Sets the selected friends state.
+ * @return {*} The React JSX to display the create button.
+ */
+const createButton = (friendID, selectedFriends, setSelectedFriends) => {
+    if (selectedFriends.includes(friendID)) {
+        return(
+            <Button negative onClick={() =>
+                setSelectedFriends(p => {
+                    p = [...p];
+                    removeFromArray(p, friendID);
+                    return p;
+                })
+            }> Remove </Button>
+        );
     }
-
-    componentDidMount() {
-        this.componentWillReceiveProps(this.props);
+    else {
+        return(
+            <Button primary onClick={() =>
+                setSelectedFriends(p => {
+                    p = [...p];
+                    addUniqueElementToArray(p, friendID);
+                    return p;
+                })
+            }> Add </Button>
+        );
     }
+};
 
-    componentWillReceiveProps(newProps) {
-        if (!this.state.sentRequest) {
-            this.state.sentRequest = true;
-            this.props.fetchUserAttributes(["friends"], (user) => {
-                if (user.friends && user.friends.length) {
-                    for (let i = 0; i < user.friends.length; i++) {
-                        const id = user.friends[i];
-                        const itemType = getItemTypeFromID(id);
-                        if (itemType === "Client") {
-                            this.props.fetchClient(id, ClientCard.fetchVariableList);
+/**
+ * Creates the list of Users with the buttons to select them for the chat.
+ *
+ * @param {[{id: string}]} friends The User objects for the friends.
+ * @param {[string]} selectedFriends The IDs of the friends who are currently selected.
+ * @param {function([string])} setSelectedFriends Sets the selected friends state.
+ * @return {*} The React JSX to display the select chat ID buttons.
+ */
+const selectChatIDButtons = (friends, selectedFriends, setSelectedFriends) => {
+    const cards = [];
+    for (let i = 0; i < friends.length; i++) {
+        cards.push(
+            <Grid fluid centered>
+                <Grid.Column>
+                    <UserCard user={friends[i]}/>
+                </Grid.Column>
+                <Grid.Column>
+                    {createButton(friends[i].id, selectedFriends, setSelectedFriends)}
+                </Grid.Column>
+            </Grid>
+        )
+    }
+    return cards;
+};
+
+/**
+ * This component handles starting a chat with 1 or more other Users. Allows you to select the Users, then start the
+ * chat, but only with Users that you are friends with.
+ *
+ * @param props The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
+ */
+const StartChatModal = (props: Props) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [friends, setFriends] = useState([]);
+    const [selectedFriends, setSelectedFriends] = useState([]);
+
+    useEffect(() => {
+        setIsLoading(true);
+        props.fetchUserAttributes(["friends"], (user) => {
+            if (user && user.friends) {
+                for (let i = 0; i < user.friends.length; i++) {
+                    const itemType = getItemTypeFromID(user.friends[i]);
+                    props.fetchItem(user.friends[i], itemType, UserCardInfo.fetchList, (friend) => {
+                        if (friend) {
+                            setFriends(p => [...p, friend]);
                         }
-                        else if (itemType === "Trainer") {
-                            this.props.fetchTrainer(id, TrainerCard.fetchVariableList);
-                        }
-                    }
+                    }, (error) => {
+                        err&&console.error(error);
+                    });
                 }
-            });
-        }
-    }
-
-    createChat() {
-        debugAlert("Creating chat with " + JSON.stringify(this.state.selectedIDs));
-        debugAlert(getMessageBoardName(this.state.selectedIDs));
-        UserFunctions.addMessageBoard(this.props.user.id, this.props.user.id, getMessageBoardName(this.state.selectedIDs),
-            () => {
-                console.log("Successfully added message board to chat")
-                this.close();
-            }, (error) => {
-
-            });
-    }
-
-    selectID(id) {
-        this.state.selectedIDs.push(id);
-        this.setState({});
-    }
-
-    unselectID(id) {
-        const index = this.state.selectedIDs.indexOf(id);
-        if (index > -1) {
-            this.state.selectedIDs.splice(index, 1);
-        }
-        this.setState({});
-    }
-
-    close() {
-        this.setState({selectedIDs: []});
-        this.props.onClose();
-    }
+            }
+            setIsLoading(false);
+        }, (error) => {
+            err&&console.error(error);
+            setIsLoading(false);
+        });
+    }, [props.user.id]);
 
     // To choose someone to chat with, get the
-    render() {
-         const rows = (friendIDs) => {
-            if (!friendIDs) {
-                return (<Header> No friends yet! </Header>);
-            }
-            const cards = [];
-            const createButton = (friendID) => {
-                if (this.state.selectedIDs.includes(friendID)) {
-                    return(
-                        <Button negative onClick={() => {this.unselectID(friendID)}}> Remove </Button>
-                    );
-                }
-                else {
-                    return(
-                        <Button primary onClick={() => {this.selectID(friendID)}}> Add </Button>
-                    );
-                }
-            };
-
-            for (let i = 0; i < friendIDs.length; i++) {
-                cards.push(
-                    <Grid fluid centered>
-                        <Grid.Column>
-                            <ClientCard clientID={friendIDs[i]}/>
-                        </Grid.Column>
-                        <Grid.Column>
-                            {createButton(friendIDs[i])}
-                        </Grid.Column>
-                    </Grid>
-                )
-            }
-            return cards;
-        };
-
+    if (isLoading) {
         return (
-            <Modal open={this.props.open} onClose={this.close} fluid>
+            <Spinner/>
+        )
+    }
+    if (friends && friends.length > 0) {
+        return (
+            <Modal open={props.open} onClose={() => props.onClose()} closeIcon fluid>
                 <Modal.Header> Choose friends to start the chat with! </Modal.Header>
                 <Modal.Content fluid>
-                    {rows(this.props.user.friends)}
+                    {selectChatIDButtons(friends, selectedFriends, setSelectedFriends)}
                     <Grid fluid centered width={3}>
                         <Grid.Column>
-                            <Button primary fluid onClick={this.createChat}> Create </Button>
+                            <Button primary fluid onClick={() => createChat(props.user.id, selectedFriends,
+                                props.addToUserAttribute, props.onClose)}> Create </Button>
                         </Grid.Column>
                         <Grid.Column/>
                         <Grid.Column>
-                            <Button inverted fluid onClick={this.close}> Cancel </Button>
+                            <Button inverted fluid onClick={() => props.onClose()}> Cancel </Button>
                         </Grid.Column>
                     </Grid>
                 </Modal.Content>
             </Modal>
         );
     }
-}
+    else {
+        return (<Header> No friends yet! </Header>);
+    }
+};
 
 const mapStateToProps = state => ({
     user: state.user
@@ -147,11 +172,11 @@ const mapDispatchToProps = (dispatch) => {
         fetchUserAttributes: (variableList, dataHandler) => {
             dispatch(fetchUserAttributes(variableList, dataHandler));
         },
-        fetchClient: (id, variableList, dataHandler) => {
-            dispatch(fetchClient(id, variableList, dataHandler));
+        addToUserAttribute: (attributeName, attributeValue) => {
+            dispatch(addToUserAttribute(attributeName, attributeValue));
         },
-        fetchTrainer: (id, variableList, dataHandler) => {
-            dispatch(fetchTrainer(id, variableList, dataHandler));
+        fetchItem: (id, itemType, variableList, dataHandler, failureHandler) => {
+            dispatch(fetchItem(id, itemType, variableList, dataHandler, failureHandler));
         }
     };
 };

@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react'
 import {Button, Card, Modal, Dimmer, Loader, List, Icon } from 'semantic-ui-react'
 import ChallengeList from "../lists/ChallengeList";
 import { connect } from "react-redux";
-// import TrainerPostFeed from "../lists/TrainerPostFeed";
 import EventList from "../lists/EventList";
 import MessageBoard from "../messaging/MessageBoard";
 import {getTrainerAttribute} from "../../logic/CacheRetrievalHelper";
@@ -10,6 +9,8 @@ import ProfileImage from "../props/ProfileImage";
 import {fetchPost, fetchTrainer} from "../../redux/convenience/cacheItemTypeActions";
 import {PostCardInfo} from "../cards/PostCard";
 import {getMessageBoardName} from "../../logic/MessageHelper";
+
+// TODO Rewrite for the new design
 
 const TrainerModalInfo = {
     fetchList: [],

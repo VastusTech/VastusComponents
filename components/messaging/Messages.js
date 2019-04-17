@@ -3,10 +3,10 @@ import Message from './Message';
 import { Container } from "semantic-ui-react";
 
 /**
- * TODO
+ * The component for displaying a list of messages in the correct order based on how they appear in the message redux.
  *
- * @param props
- * @return {*}
+ * @param props The props passed into the component.
+ * @return {*} The React JSX required to display the component.
  * @constructor
  */
 const Messages = (props: {messages: [any], userID: string}) => {

@@ -9,8 +9,6 @@ import {
 } from "../../redux/actions/messageActions";
 import {connect} from "react-redux";
 import ScrollView from "react-inverted-scrollview";
-// import {inspect} from 'util';
-// import {getMethods} from "../../logic/DebuggingHelper";
 
 // TODO Refactor
 

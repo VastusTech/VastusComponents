@@ -4,6 +4,7 @@ import { Player } from "video-react";
 import { connect } from "react-redux";
 import SubmissionFunctions from "../../database_functions/SubmissionFunctions";
 
+// TODO Rewrite for the new design
 // TODO Refactor
 
 type Props = {

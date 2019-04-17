@@ -14,7 +14,9 @@ import {log, err} from "../../../Constants";
 import {getClientAttribute} from "../../logic/CacheRetrievalHelper";
 import Spinner from "../props/Spinner";
 import {getMessageBoardName} from "../../logic/MessageHelper";
+import ProfileImage from "../props/ProfileImage";
 
+// TODO Rewrite for the new design
 // TODO Move the functions outside of the component to improve efficiency
 
 type Props = {
@@ -231,7 +233,11 @@ const ClientModal = (props: Props) => {
             {errorMessage(error)}
             <Modal.Header>{getAttribute("name")}</Modal.Header>
             <Modal.Content image>
-                {profilePicture()}
+                <ProfileImage userID={props.user.id}
+                              profileImage={getAttribute("profileImage")}
+                              profileImages={getAttribute("profileImages")}
+                />
+                {/*{profilePicture()}*/}
                 <Modal.Description>
                     {/*<Button primary floated='right' loading={this.state.shareLoading} disabled={this.state.shareLoading} onClick={() => this.shareClient()}>Share Page</Button>*/}
                     <List relaxed>
@@ -264,11 +270,11 @@ const ClientModal = (props: Props) => {
                 {swipeGallery()}
             </Modal.Content>
             <Modal.Actions>
-                <Button primary onClick={setInviteModalOpen.bind(true)}>Invite to Challenge</Button>
+                <Button primary onClick={() => setInviteModalOpen(true)}>Invite to Challenge</Button>
                 <InviteToChallengeModalProp
                     open={inviteModalOpen}
-                    onOpen={setInviteModalOpen.bind(true)}
-                    onClose={setInviteModalOpen.bind(false)}
+                    onOpen={() => setInviteModalOpen(true)}
+                    onClose={() => setInviteModalOpen(false)}
                     friendID={getAttribute("id")}
                 />
                 {getCorrectFriendActionButton()}

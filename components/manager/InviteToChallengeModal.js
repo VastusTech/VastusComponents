@@ -1,200 +1,150 @@
-import React, { Component, Fragment } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import {Message, Button, Modal, Card} from 'semantic-ui-react';
 import { connect } from "react-redux";
 import {fetchUserAttributes} from "../../redux/actions/userActions";
-import {fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
+import {fetchChallenges} from "../../redux/convenience/cacheItemTypeActions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
-import ChallengeCard from "../cards/ChallengeCard";
+import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
+import {err} from "../../../Constants";
+import {daysLeft, parseISOString} from "../../logic/TimeHelper";
 
-// TODO Refactor
+type Props = {
+    friendID: string,
+    onClose: any,
+    open: boolean
+};
 
-class InviteToChallengeModalProp extends Component {
-    state = {
-        isLoading: true,
-        friendID: null,
-        loadedChallengeIDs: [],
-        sentRequest: false,
-        error: null,
-        isInviteLoading: false,
-        inviteButtonName: "Invite To Challenge",
-        isInviteDisabled: false
-    };
+/**
+ * Invites the friend to the Challenge.
+ *
+ * @param {string} userID The ID of the User sending the Invite.
+ * @param {string} friendID The ID of the User to send the Invite to.
+ * @param {string} challengeID The ID of the Challenge to invite the User to.
+ * @param {function()} onClose The function to close the modal.
+ * @param {function(boolean)} setIsLoading Sets the loading state.
+ * @param {function(boolean)} setIsDisabled Sets the disabled state.
+ */
+const handleInviteToChallenge = (userID, friendID, challengeID, onClose, setIsLoading, setIsDisabled, setError) => {
+    setIsLoading(true);
+    InviteFunctions.createChallengeInvite(userID, userID, friendID, challengeID, (data) => {
+        onClose();
+        setIsLoading(false);
+        setIsDisabled(true);
+    }, (error) => {
+        err&&console.error(error);
+        setIsLoading(false);
+    });
+};
 
-    constructor(props) {
-        super(props);
-        this.getChallengeAttribute = this.getChallengeAttribute.bind(this);
-        InviteToChallengeModalProp.getTodayDateString = InviteToChallengeModalProp.getTodayDateString.bind(this);
-        InviteToChallengeModalProp.convertMonth = InviteToChallengeModalProp.convertMonth.bind(this);
-        this.rows = this.rows.bind(this);
+/**
+ * Creates the Button components for Inviting the User to a particular Challenge.
+ *
+ * @param {string} userID The ID of the User inviting their friend to a Challenge.
+ * @param {string} friendID The ID of the User to invite.
+ * @param {[{id: string}]} challenges The Challenge objects to display.
+ * @param {boolean} isLoading State for loading.
+ * @param {boolean} isDisabled State for if inviting is disabled.
+ * @param {function(boolean)} setIsLoading Sets the loading state.
+ * @param {function(boolean)} setIsDisabled Sets the disabled state.
+ * @param {function()} onClose Closes the modal.
+ * @return {*} The React JSX to display the Challenge buttons.
+ */
+const challengeButtons = (userID, friendID, challenges, isLoading, isDisabled, setIsLoading, setIsDisabled, setError, onClose) => {
+    const rowProps = [];
+    for (let i = 0; i < challenges.length; i++) {
+        rowProps.push(
+            <Fragment key={i+1}>
+                <Card fluid raised>
+                    <Card.Content>
+                        <ChallengeCard challenge={challenges[i]}/>
+                        <Button disabled={isDisabled} loading={isLoading} primary fluid
+                                onClick={() => handleInviteToChallenge(userID, friendID, challenges[i].id, onClose, setIsLoading, setIsDisabled, setError)}>
+                            Invite to Challenge
+                        </Button>
+                    </Card.Content>
+                </Card>
+            </Fragment>
+        );
     }
+    return rowProps;
+};
 
-    update() {
-        // TODO Change this if we want to actually be able to do something while it's loading
-        const user = this.props.user;
-        //console.log("Updating Scheduled Events");
-        if (!user.id) {
-            console.error("Pretty bad error");
-            this.setState({isLoading: true});
-        }
+/**
+ * TODO
+ * @param error
+ * @return {*}
+ */
+const errorHandler = (error) => {
+    if (error) {
+        return (
+            <Message color='red'>
+                <h1>Error!</h1>
+                <p>{error.substr(102, 50)}</p>
+            </Message>
+        );
+    }
+};
 
-        if (this.state.isLoading && user.hasOwnProperty("challenges") && user.challenges && user.challenges.length) {
-            this.setState({isLoading: false});
-            for (let i = 0; i < user.challenges.length; i++) {
-                this.props.fetchChallenge(user.challenges[i], ["id", "title", "endTime", "time_created", "owner", "ifCompleted", "members", "capacity", "goal", "access", "restriction", "tags", "prize"],
-                    (challenge) => {
-                        if (challenge && challenge.id && !this.state.loadedChallengeIDs.includes(challenge.id)) {
-                            this.state.loadedChallengeIDs.push(challenge.id);
+const InviteToChallengeModalProp = (props: Props) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [isDisabled, setIsDisabled] = useState(false);
+    const [challenges, setChallenges] = useState([]);
+
+    useEffect(() => {
+        setIsLoading(true);
+        props.fetchUserAttributes(["challenges"], (user) => {
+            if (user.challenges && user.challenges.length > 0) {
+                props.fetchChallenges(user.challenges, ChallengeCardInfo.fetchList, 0, user.challenges.length, (challenges) => {
+                    for (let i = 0; i < challenges.length; i++) {
+                        const challenge = challenges[i];
+                        if (daysLeft(parseISOString(challenge.endTime)) >= 0) {
+                            setChallenges(p => [...p, challenge]);
                         }
-                    });
-            }
-            this.setState({isInviteLoading: false});
-        }
-        else if (!this.props.info.isLoading) {
-            if (!this.state.sentRequest && !this.props.info.error) {
-                this.props.fetchUserAttributes(["challenges"]);
-                this.setState({sentRequest: true});
-            }
-        }
-    }
-
-    handleInviteToChallenge(challengeID) {
-        InviteFunctions.createChallengeInvite(this.props.user.id, this.props.user.id, this.props.friendID, challengeID,
-            (data) => {
-                this.handleClose();
-                this.setState({isInviteLoading: false, isInviteDisabled: true, inviteButtonName: "Invite Sent"});
-
-            }, (error) => {
-                console.log(JSON.stringify(error));
-                this.setState({isInviteLoading: false, error: error});
-            });
-    }
-
-    handleOpen = () => {this.props.onOpen.bind(this);};
-    handleClose = () => {this.props.onClose.bind(this);};
-
-    componentDidMount() {
-        this.update();
-    }
-
-    componentWillReceiveProps(newProps, nextContext) {
-        this.update();
-    }
-
-    sendInvite(challenge) {
-        this.setState({isInviteLoading: true});
-        this.handleInviteToChallenge(challenge);
-    }
-
-    getChallengeAttribute = (challengeID, attribute) => {
-        if (challengeID) {
-            const challenge = this.props.cache.challenges[challengeID];
-            if (challenge) {
-                return challenge[attribute];
-            }
-        }
-        return null;
-    }
-
-    static getTodayDateString() {
-        // This is annoying just because we need to work with time zones :(
-        const shortestTimeInterval = 5;
-        const date = new Date();
-        date.setMinutes(date.getMinutes() + (shortestTimeInterval - (date.getMinutes() % shortestTimeInterval)));
-        return String(date);
-    }
-
-    static convertMonth(month) {
-        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        for(let i=0; i<12; i++) {
-            //console.log(month + "vs" + months[i]);
-            if(month === months[i]) {
-                return (i + 1);
-            }
-        }
-    }
-
-    getDaysLeft = (challengeID) => {
-        let curDate = InviteToChallengeModalProp.getTodayDateString();
-        let endTime = this.getChallengeAttribute(challengeID, "endTime");
-        let curMonth = InviteToChallengeModalProp.convertMonth(curDate.substr(4, 3));
-        let endMonth = endTime.substr(5, 2);
-        //console.log(endMonth + " vs " + curMonth + " = " + (endMonth - curMonth));
-        if(endTime && curDate) {
-            endTime = parseInt(endTime.substr(8, 2), 10);
-            curDate = parseInt(curDate.substr(8, 2), 10);
-            //console.log(endMonth - curMonth);
-            if((endMonth - curMonth) < 0) {
-                //console.log((endTime + (30 * (endMonth - curMonth + 12))));
-                return ((endTime + (30 * (endMonth - curMonth + 12))) - curDate);
+                    }
+                    setIsLoading(false);
+                }, (error) => {
+                    err&&console.error(error);
+                    setError(error);
+                    setIsLoading(false);
+                });
             }
             else {
-                return ((endTime + (30 * (endMonth - curMonth))) - curDate);
+                setIsLoading(false);
             }
-        }
+        }, (error) => {
+            err&&console.error(error);
+            setError(error);
+            setIsLoading(false);
+        });
+    }, [props.challengeID]);
+
+    if (isLoading) {
+        return(
+            <Modal dimmer='blurring' open={props.open} onClose={() => props.onClose()}>
+                <Message>Loading...</Message>
+            </Modal>
+        );
     }
-
-    errorHandler() {
-        if(this.state.error) {
-            return (
-                <Message color='red'>
-                    <h1>Error!</h1>
-                    <p>{this.state.error.substr(102, 50)}</p>
-                </Message>);
-        }
+    if (challenges && challenges.length > 0) {
+        return(
+            <Modal centered dimmer='blurring' size='large' open={props.open} onClose={() => props.onClose()} closeIcon>
+                <Modal.Header className="u-bg--bg">Select Challenge</Modal.Header>
+                <Modal.Content className="u-bg--bg">
+                    {challengeButtons(props.user.id, props.friendID, challenges, isLoading, isDisabled, setIsLoading, setIsDisabled, setError, props.onClose)}
+                </Modal.Content>
+                {errorHandler(error)}
+            </Modal>
+        );
     }
-
-    rows(userID, friendID, challenges, challengeInviteHandler, isInviteLoading, daysLeft) {
-        const rowProps = [];
-        for (let i = 0; i < challenges.length; i++) {
-            //console.log("see me");
-            if (challenges.hasOwnProperty(i) === true && daysLeft(challenges[i]) >= 0) {
-                rowProps.push(
-                    <Fragment key={i+1}>
-                        <Card fluid raised>
-                            <Card.Content>
-                                <ChallengeCard challengeID={challenges[i]}/>
-                                <Button disabled={this.state.isInviteDisabled} loading={this.state.isInviteLoading} primary fluid onClick={() => {challengeInviteHandler(challenges[i])}}>{this.state.inviteButtonName}</Button>
-                            </Card.Content>
-                        </Card>
-                    </Fragment>
-                );
-            }
-        }
-
-        return rowProps;
+    else {
+        return(
+            <Modal dimmer='blurring' open={props.open} onClose={() => props.onClose()}>
+                <Message>No current challenges...</Message>
+            </Modal>
+        );
     }
-
-    render() {
-
-        if (this.props.info.isLoading) {
-            //console.log("loading: " + JSON.stringify(this.state));
-            return(
-                <Modal dimmer='blurring' open={this.props.open} onClose={this.props.onClose.bind(this)}>
-                    <Message>Loading...</Message>
-                </Modal>
-            );
-        }
-        if (this.state.loadedChallengeIDs && this.state.loadedChallengeIDs.length && this.state.loadedChallengeIDs.length > 0) {
-            return(
-                <Modal centered dimmer='blurring' size='large' open={this.props.open} onClose={this.props.onClose.bind(this)} closeIcon>
-                    <Modal.Header className="u-bg--bg">Select Challenge</Modal.Header>
-                    <Modal.Content className="u-bg--bg">
-                        {this.rows(this.props.user.id, this.props.friendID, this.state.loadedChallengeIDs, this.sendInvite.bind(this),
-                            this.state.isInviteLoading, this.getDaysLeft)}
-                    </Modal.Content>
-                    {this.errorHandler()}
-                </Modal>
-            );
-        }
-        else {
-            return(
-                <Modal dimmer='blurring' open={this.props.open} onClose={this.props.onClose.bind(this)}>
-                    <Message>No current challenges...</Message>
-                </Modal>
-            );
-        }
-    }
-}
+};
 
 const mapStateToProps = (state) => ({
     user: state.user,
@@ -204,11 +154,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchUserAttributes: (attributeList) => {
-            dispatch(fetchUserAttributes(attributeList));
+        fetchUserAttributes: (variableList, dataHandler, failureHandler) => {
+            dispatch(fetchUserAttributes(variableList, dataHandler, failureHandler));
         },
-        fetchChallenge: (id, variablesList, dataHandler) => {
-            dispatch(fetchChallenge(id, variablesList, dataHandler));
+        fetchChallenges: (ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) => {
+            dispatch(fetchChallenges(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler));
         }
     };
 };

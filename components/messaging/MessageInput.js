@@ -9,16 +9,16 @@ type Props = {
 }
 
 /**
- * TODO
+ * Sends a text message to the message board.
  *
- * @param board
- * @param e
- * @param setIsLoading
- * @param userID
- * @param username
- * @param userProfileImagePath
+ * @param {{}} e The event value for the text input.
+ * @param {string} board The name of the message board to send the video to.
+ * @param {string} userID The ID of the User sending the message.
+ * @param {string} username The username of the User sending the message.
+ * @param {string} userProfileImagePath The S3 profile image path of the User sending the message.
+ * @param {function(boolean)} setIsLoading Sets the loading state.
  */
-const addMessage = (board, e, setIsLoading, userID, username, userProfileImagePath, ) => {
+const addMessage = (e, board, userID, username, userProfileImagePath, setIsLoading) => {
     // Prevent the default behaviour of form submit
     e.preventDefault();
 
@@ -43,14 +43,14 @@ const addMessage = (board, e, setIsLoading, userID, username, userProfileImagePa
 };
 
 /**
- * TODO
+ * Sends a picture message to the message board.
  *
- * @param picture
- * @param board
- * @param userID
- * @param username
- * @param userProfileImagePath
- * @param setIsLoading
+ * @param {*} picture The file of the picture to send.
+ * @param {string} board The name of the message board to send the video to.
+ * @param {string} userID The ID of the User sending the message.
+ * @param {string} username The username of the User sending the message.
+ * @param {string} userProfileImagePath The S3 profile image path of the User sending the message.
+ * @param {function(boolean)} setIsLoading Sets the loading state.
  */
 const addPicture = (picture, board, userID, username, userProfileImagePath, setIsLoading) => {
     setIsLoading(true);
@@ -64,14 +64,14 @@ const addPicture = (picture, board, userID, username, userProfileImagePath, setI
 };
 
 /**
- * TODO
+ * Sends a video message to the message board.
  *
- * @param video
- * @param board
- * @param userID
- * @param username
- * @param userProfileImagePath
- * @param setIsLoading
+ * @param {*} video The video file to send to the board.
+ * @param {string} board The name of the message board to send the video to.
+ * @param {string} userID The ID of the User sending the message.
+ * @param {string} username The username of the User sending the message.
+ * @param {string} userProfileImagePath The S3 profile image path of the User sending the message.
+ * @param {function(boolean)} setIsLoading Sets the loading state.
  */
 const addVideo = (video, board, userID, username, userProfileImagePath, setIsLoading) => {
     this.setState({sendLoading: true});
@@ -85,14 +85,15 @@ const addVideo = (video, board, userID, username, userProfileImagePath, setIsLoa
 };
 
 /**
- * TODO
+ * Takes a file from the camcorder of the device and sends that file through the message board, using the file type to
+ * identify it.
  *
- * @param event
- * @param board
- * @param userID
- * @param username
- * @param userProfileImagePath
- * @param setIsLoading
+ * @param {{}} event The event value for the file input.
+ * @param {string} board The name of the message board to send the video to.
+ * @param {string} userID The ID of the User sending the message.
+ * @param {string} username The username of the User sending the message.
+ * @param {string} userProfileImagePath The S3 profile image path of the User sending the message.
+ * @param {function(boolean)} setIsLoading Sets the loading state.
  */
 const addPictureOrVideo = (event, board, userID, username, userProfileImagePath, setIsLoading) => {
     const file = event.target.files[0];
@@ -111,10 +112,10 @@ const addPictureOrVideo = (event, board, userID, username, userProfileImagePath,
 };
 
 /**
- * TODO
+ * This is the component to send messages for a message board. Handles text, picture, and video messages.
  *
- * @param props
- * @return {*}
+ * @param props The props passed into the component.
+ * @return {*} The React JSX to display the component.
  * @constructor
  */
 const MessageInput = (props: Props) => {
@@ -122,7 +123,7 @@ const MessageInput = (props: Props) => {
 
     return (
         <Fragment>
-            <form onSubmit={e => addMessage(props.board, e, setIsLoading, props.user.id, props.user.name, props.user.profileImagePath)} className='u-margin-top--2'>
+            <form onSubmit={e => addMessage(e, props.board, props.user.id, props.user.username, props.user.profileImagePath, setIsLoading)} className='u-margin-top--2'>
                 <Input type='text' action fluid className="textarea" name="message" placeholder="Write Message...">
                     <input/>
                     <Button as='label' for='proPicUpload'>

@@ -5,7 +5,7 @@ import {fetchPost, putPost, fetchChallenge, putChallenge, fetchClient} from "../
 import {fetchUserAttributes} from "../../redux/actions/userActions";
 import CreateChallengeProp from "./CreateChallenge";
 
-// TODO Refactor
+// TODO Refactor and Rewrite with new Design
 
 /**
  * Event Feed

@@ -4,34 +4,9 @@ import {connect} from "react-redux";
 import {setError} from "../../redux/actions/infoActions";
 import {fetchChallenge, putChallenge} from "../../redux/convenience/cacheItemTypeActions";
 import GroupFunctions from "../../database_functions/GroupFunctions";
-import {Player} from "video-react";
+import {removeFromArray} from "../../logic/ArrayHelper";
 
 // TODO Refactor
-
-// Take from StackOverflow, nice snippit!
-// https://stackoverflow.com/a/17415677
-// Date.prototype.toIsoString = function() {
-//     var tzo = -this.getTimezoneOffset(),
-//         dif = tzo >= 0 ? '+' : '-',
-//         pad = function(num) {
-//             var norm = Math.floor(Math.abs(num));
-//             return (norm < 10 ? '0' : '') + norm;
-//         };
-//     return this.getFullYear() +
-//         '-' + pad(this.getMonth() + 1) +
-//         '-' + pad(this.getDate()) +
-//         'T' + pad(this.getHours()) +
-//         ':' + pad(this.getMinutes()) +
-//         ':' + pad(this.getSeconds()) +
-//         dif + pad(tzo / 60) +
-//         ':' + pad(tzo % 60);
-// };
-
-function arrayRemove(arr, value) {
-    return arr.filter(function(ele){
-        return ele !== value;
-    });
-}
 
 /*type Props = {
     queryChallenges: any
@@ -122,22 +97,22 @@ class CreateGroupProp extends Component {
             this.setState({strengthPressed: true});
         }
         else if(tag === "HIIT" && this.state.hiitPressed) {
-            this.setState({tags: arrayRemove(this.state.tags, tag)},
+            this.setState({tags: removeFromArray(this.state.tags, tag)},
                 () => console.log(JSON.stringify(this.state.tags)));
             this.setState({hiitPressed: false});
         }
         else if(tag === "Performance" && this.state.performancePressed) {
-            this.setState({tags: arrayRemove(this.state.tags, tag)},
+            this.setState({tags: removeFromArray(this.state.tags, tag)},
                 () => console.log(JSON.stringify(this.state.tags)));
             this.setState({performancePressed: false});
         }
         else if(tag === "Endurance" && this.state.endurancePressed) {
-            this.setState({tags: arrayRemove(this.state.tags, tag)},
+            this.setState({tags: removeFromArray(this.state.tags, tag)},
                 () => console.log(JSON.stringify(this.state.tags)));
             this.setState({endurancePressed: false});
         }
         else if(tag === "Strength" && this.state.strengthPressed) {
-            this.setState({tags: arrayRemove(this.state.tags, tag)},
+            this.setState({tags: removeFromArray(this.state.tags, tag)},
                 () => console.log(JSON.stringify(this.state.tags)));
             this.setState({strengthPressed: false});
         }

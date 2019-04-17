@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import TestConfig, {store} from "../../../../TestConfig";
-import CreateSubmissionModal from "../CreateSubmissionModal";
+import CreateSubmissionModal from "../../manager/CreateSubmissionModal";
 
 TestConfig();
 it('renders without crashing', () => {
