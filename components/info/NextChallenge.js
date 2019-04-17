@@ -1,125 +1,71 @@
-import React, {Component, Fragment} from 'react'
-import {Icon, Message} from 'semantic-ui-react';
+import React, {useState, useEffect, Fragment} from 'react'
+import {Message} from 'semantic-ui-react';
 import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
 import { connect } from "react-redux";
 import {fetchUserAttributes} from "../../redux/actions/userActions";
-import {fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
+import {fetchChallenges} from "../../redux/convenience/cacheItemTypeActions";
 import {parseISOString, timeLeft} from "../../logic/TimeHelper";
 import Spinner from "../props/Spinner";
 
-// TODO Refactor
+/**
+ * Calculates the next challenge for the current User. Bases on which end time is the closest to now without being over.
+ *
+ * @param {{}} props  The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
+ */
+const NextChallengeProp = props => {
+    const [nextChallenge, setNextChallenge] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
-class NextChallengeProp extends Component {
-    state = {
-        isLoading: true,
-        isFetching: false,
-        sentRequest: false,
-        challenges: [],
-        // nearestChallenge: null,
-        // nearestTimeLeft: null,
-        error: null
-    };
-
-    constructor(props) {
-        super(props);
-        //console.log("Got into Scheduled Events constructor");
-        this.update = this.update.bind(this);
-    }
-
-    componentDidMount() {
-        this.update(this.props);
-    }
-
-    componentWillReceiveProps(newProps, nextContext) {
-        if (newProps.user && this.props.user && newProps.user.id !== this.props.user.id) {
-            // console.log("resetting app for new user!");
-            this.resetState();
-        }
-        this.update(newProps);
-    }
-
-    resetState() {
-        this.setState({isLoading: true, sentRequest: false, error: null});
-    }
-
-    update(props) {
-        if (!props.user.id) {
-            console.error("No user ID...");
-            return;
-        }
-        //console.log("Cur User for grabbing Attributes: " + this.props.user.id);
-        if (!this.state.sentRequest) {
-            this.setState({isLoading: true});
-            this.state.sentRequest = true;
-            this.props.fetchUserAttributes(["challenges"], (user) => {
-                if (user.challenges) {
-                    const challenges = [];
-                    let numChallenges = 0;
-                    let numTotal = user.challenges.length;
-                    for (let i = 0; i < user.challenges.length; i++) {
-                        // console.log("Fetching challenge for next challenge");
-                        this.props.fetchChallenge(user.challenges[i], ChallengeCardInfo.fetchList, (challenge) => {
-                            if (challenge && challenge.endTime) {
-                                const challengeTimeLeft = timeLeft(parseISOString(challenge.endTime));
-                                // alert("Received challenge = " + JSON.stringify(challenge));
-                                // alert("Time left = " + challengeTimeLeft);
-                                if (challengeTimeLeft >= 0) {
-                                    challenges.push({
-                                        challenge,
-                                        timeLeft: challengeTimeLeft
-                                    });
+    useEffect(() => {
+        alert("ay");
+        setIsLoading(true);
+        if (props.user.challenges && props.user.challenges.length > 0) {
+            props.fetchChallenges(props.user.challenges, ChallengeCardInfo.fetchList, 0, props.user.challenges.length, (challenges) => {
+                for (let i = 0; i < challenges.length; i++) {
+                    const challenge = challenges[i];
+                    if (challenge && challenge.endTime) {
+                        setNextChallenge(p => {
+                            const challengeTimeLeft = timeLeft(parseISOString(challenge.endTime));
+                            if (p) {
+                                if (timeLeft(parseISOString(p.endTime)) < challengeTimeLeft && challengeTimeLeft > 0) {
+                                    return challenge;
                                 }
-                                // if (challengeTimeLeft >= 0) {
-                                //     if ((!this.state.nearestChallenge) || (challenge.endTime && challengeTimeLeft < this.state.nearestTimeLeft)) {
-                                //         this.state.nearestTimeLeft = challengeTimeLeft;
-                                //         this.state.nearestChallenge = challenge;
-                                //     }
-                                // }
+                                return p;
                             }
-                            numChallenges++;
-                            if (numChallenges >= numTotal) {
-                                this.setState({challenges: challenges});
-                            }
-                        }, () => {
-                            numChallenges++;
-                            if (numChallenges >= numTotal) {
-                                this.setState({challenges: challenges});
-                            }
+                            return challengeTimeLeft > 0 ? challenge : null;
                         });
                     }
                 }
-                this.setState({isLoading: false});
-            });
-        }
-    }
+                setIsLoading(false);
+            }, (error) => {
 
-    render() {
-        if (this.state.isLoading) {
-            return(
-                <Spinner/>
-            );
-        }
-        if (this.state.challenges && this.state.challenges.length > 0) {
-            let challenges = [...this.state.challenges];
-            challenges.sort((a, b) => {
-                return a.timeLeft - b.timeLeft;
             });
-            return (
-                <Fragment key={0}>
-                    <Message>
-                        <ChallengeCard challenge={challenges[0].challenge}/>
-                    </Message>
-                </Fragment>
-            );
         }
-        else {
-            // Then it's empty, no next scheduled event
-            return(
-                <Message>No scheduled challenges!</Message>
-            );
-        }
+    }, [props.user.challenges]);
+
+    if (isLoading) {
+        return(
+            <Spinner/>
+        );
     }
-}
+    else if (nextChallenge) {
+        return (
+            <Fragment key={0}>
+                <Message>
+                    <ChallengeCard challenge={nextChallenge}/>
+                </Message>
+            </Fragment>
+        );
+    }
+    else {
+        // Then it's empty, no next scheduled event
+        return(
+            <Message>No scheduled challenges!</Message>
+        );
+    }
+};
 
 const mapStateToProps = (state) => ({
     user: state.user,
@@ -132,8 +78,8 @@ const mapDispatchToProps = (dispatch) => {
         fetchUserAttributes: (attributeList, dataHandler) => {
             dispatch(fetchUserAttributes(attributeList, dataHandler));
         },
-        fetchChallenge: (id, variablesList, dataHandler, failureHandler) => {
-            dispatch(fetchChallenge(id, variablesList, dataHandler, failureHandler));
+        fetchChallenges: (ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) => {
+            dispatch(fetchChallenges(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler));
         }
     };
 };

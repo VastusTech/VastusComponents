@@ -144,7 +144,6 @@ class S3Storage {
      * @return {*} Debugging info about the S3 operation.
      */
     static multipartPut(path, file, contentType, progressHandler, successHandler, failureHandler) {
-        // TODO Test if this still works generalized like this...
         let bucket = new AWS.S3({params: {Bucket: S3Storage.bucketName}});
         let params = {Key: "public/" + path, ContentType: contentType, Body: file};
         let options = {partSize: S3Storage.multipartSize, queueSize: S3Storage.multipartQueueSize};

@@ -36,7 +36,11 @@ for (const key in ItemType) {
  * @return {string|null} The name of the item type that corresponds to the ID or null if not found.
  */
 export function getItemTypeFromID(id) {
-    return prefixes[id.substring(0, numPrefix)];
+    if (id) {
+        const prefix = prefixes[id.substring(0, numPrefix)];
+        return prefix ? prefix : null;
+    }
+    return null;
 }
 
 /**
@@ -198,7 +202,7 @@ export function switchHandleItemType(itemType, clientHandler, trainerHandler, gy
             break;
     }
     if (itemHandler) {
-        itemHandler();
+        return itemHandler();
     }
     else {
         err&&console.error(errorMessage + " ~ itemType = " + itemType + " not recognized...");

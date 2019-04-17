@@ -4,8 +4,6 @@ import {fetchUserAttributes, forceFetchUserAttributes} from "../../redux/actions
 import {connect} from 'react-redux';
 import {fetchChallenge, fetchEvent, fetchGroup, fetchInvite} from "../../redux/convenience/cacheItemTypeActions";
 
-// TODO Refactor the functions outside of the component.
-
 /**
  * Displays the notification info about the User, specifically how many pending notifications the User has.
  *

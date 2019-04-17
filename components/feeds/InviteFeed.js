@@ -1,6 +1,6 @@
 import React, {useState, useEffect, Fragment} from 'react'
 import _ from 'lodash'
-import {Dimmer, Loader, Message, Grid} from 'semantic-ui-react'
+import {Dimmer, Message} from 'semantic-ui-react'
 import InviteCard, {InviteCardInfo} from "../cards/InviteCard";
 import {fetchUserAttributes, forceFetchUserAttributes} from "../../redux/actions/userActions";
 import {connect} from 'react-redux';
@@ -15,8 +15,6 @@ import {
 import {getItemTypeFromID} from "../../logic/ItemType";
 import {err, log} from "../../../Constants";
 import Spinner from "../props/Spinner";
-
-// TODO Refactor functions outside of the component function.
 
 const fetchAboutAndFromInfo = (invite, fetchClient, fetchTrainer, fetchEvent, fetchChallenge, fetchGroup) => {
     // TODO We don't need this much stuff....

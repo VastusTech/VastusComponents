@@ -7,8 +7,8 @@
  * @param minusArray The array from which the remove elements will be taken.
  */
 export function subtractArray(originalArray, minusArray) {
-    for (let i = minusArray.length -1; i >= 0; i--) {
-        removeFromArray(minusArray[i]);
+    for (let i = minusArray.length - 1; i >= 0; i--) {
+        removeFromArray(originalArray, minusArray[i]);
     }
     return originalArray;
 }
@@ -20,7 +20,10 @@ export function subtractArray(originalArray, minusArray) {
  * @param element The element to remove from the array.
  */
 export function removeFromArray(originalArray, element) {
-    originalArray.splice(element, 1);
+    const indexOf = originalArray.indexOf(element);
+    if (indexOf !== -1) {
+        originalArray.splice(indexOf, 1);
+    }
     return originalArray;
 }
 
@@ -64,8 +67,7 @@ export function arraysIntersect(array1, array2) {
  */
 export function arrayIntersection(array1, array2) {
     const returnArray = [...array1];
-    returnArray.filter(v => array2.includes(v));
-    return returnArray;
+    return returnArray.filter(v => array2.includes(v));
 }
 
 /**

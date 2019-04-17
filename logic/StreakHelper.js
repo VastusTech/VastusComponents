@@ -8,7 +8,7 @@ import {err} from "../../Constants";
  * @param {string} updateSpanType At what interval the Streak updates.
  * @return {number} The number of update spans that have passed thus far.
  */
-const numberOfUpdateSpansPassed = (lastUpdated, updateSpanType) => {
+export const numberOfUpdateSpansPassed = (lastUpdated, updateSpanType) => {
     const lastUpdatedDate = parseISOString(lastUpdated);
     if (updateSpanType === "daily") {
         return midnightsPassed(lastUpdatedDate);

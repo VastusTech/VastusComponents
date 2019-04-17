@@ -45,11 +45,34 @@ export function getSponsorAttribute(id, attributeName, cacheReducer) {
 export function getStreakAttribute(id, attributeName, cacheReducer) {
     return getObjectAttributeFromCache(id, attributeName, "streaks", cacheReducer);
 }
+
+/**
+ * Assumes the item type from the ID and calls {@link getObjectAttributeWithItemType}.
+ *
+ * @param {string} id The ID of the object.
+ * @param {string} attributeName The name of the attribute to get.
+ * @param {{}} cacheReducer The entire cache reducer.
+ * @return {*} The attribute from the object.
+ */
 export function getObjectAttribute(id, attributeName, cacheReducer) {
     return getObjectAttributeWithItemType(id, getItemTypeFromID(id), attributeName, cacheReducer);
 }
+
+/**
+ * Gets an object from the entire cache reducer given the item type and the name of the attribute. Also allows to
+ * get the length of a list by adding "Length" to the end of an attribute. ("messagesLength").
+ *
+ * @param {string} id The ID of the object.
+ * @param {string} itemType The item type of the object.
+ * @param {string} attributeName The name of the attribute to get.
+ * @param {{}} cacheReducer The entire cache reducer.
+ * @return {*} The attribute or the length of the attribute list.
+ */
 export function getObjectAttributeWithItemType(id, itemType, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, getCacheName(itemType), cacheReducer);
+    if (itemType) {
+        return getObjectAttributeFromCache(id, attributeName, getCacheName(itemType), cacheReducer);
+    }
+    return null;
 }
 
 /**
@@ -62,7 +85,7 @@ export function getObjectAttributeWithItemType(id, itemType, attributeName, cach
  * @return {string|number} Either the attribute or the length of the array attribute
  */
 function getObjectAttributeFromCache(id, attributeName, subCacheName, cacheReducer) {
-    if (cacheReducer) {
+    if (id && attributeName && cacheReducer && subCacheName) {
         const object = cacheReducer[subCacheName][id];
         if (object) {
             return getAttributeFromObject(object, attributeName);
@@ -78,7 +101,7 @@ function getObjectAttributeFromCache(id, attributeName, subCacheName, cacheReduc
 }
 
 /**
- * Gets an object from the cache using the id.
+ * Gets an object from the cache using the ID.
  *
  * @param {string} id The id of the object to get.
  * @param {{}} cacheReducer The current cache reducer for redux.
@@ -99,7 +122,7 @@ export function getObjectFromCache(id, cacheReducer) {
  * @return {string|number} Either the attribute or the length of the array attribute
  */
 export function getAttributeFromObject(object, attributeName) {
-    if (object) {
+    if (object && attributeName) {
         if (attributeName.substr(attributeName.length - 6) === "Length") {
             attributeName = attributeName.substr(0, attributeName.length - 6);
             if (object[attributeName] && object[attributeName].length) {
