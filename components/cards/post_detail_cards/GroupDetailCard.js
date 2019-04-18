@@ -19,6 +19,13 @@ type Props = {
     }
 };
 
+/**
+ * The detail card for posts about groups.
+ *
+ * @param {Props} props The given props to the component.
+ * @return {*} The React JSX used to display the component.
+ * @constructor
+ */
 const GroupDetailCard = (props: Props) => (
     <GroupCard group={props.group}/>
 );

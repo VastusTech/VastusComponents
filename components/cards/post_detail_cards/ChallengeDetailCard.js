@@ -19,10 +19,10 @@ type Props = {
 };
 
 /**
- * TODO
+ * The detail card for posts about challenges.
  *
- * @param props
- * @return {*}
+ * @param {Props} props The given props to the component.
+ * @return {*} The React JSX used to display the component.
  * @constructor
  */
 const ChallengeDetailCard = (props: Props) => (
