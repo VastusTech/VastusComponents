@@ -224,7 +224,7 @@ export function setBoardRead(board, userID) {
 export function discardBoard(board) {
     return (dispatch) => {
         dispatch(setIsLoading());
-        dispatch(clearBoard(board, dispatch));
+        dispatch(clearBoard(board));
         dispatch(setIsNotLoading());
     };
 }
@@ -250,12 +250,11 @@ function addQueryToBoard(board, messages, nextToken, ifSubscribed, dispatch) {
         }
     };
 }
-function clearBoard(board, dispatch) {
+function clearBoard(board) {
     return {
         type: CLEAR_BOARD,
         payload: {
-            board,
-            dispatch
+            board
         }
     }
 }

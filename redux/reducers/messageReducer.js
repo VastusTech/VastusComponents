@@ -44,11 +44,11 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case ADD_MESSAGE:
             state = { ...state };
-            addMessage(state, action.payload.board, action.payload.message, action.payload.dispatch);
+            addMessage(state, action.payload.board, action.payload.message, action.asyncDispatch);
             break;
         case ADD_QUERY:
             state = { ...state };
-            addQuery(state, action.payload.board, action.payload.messages, action.payload.nextToken, action.payload.ifSubscribed, action.payload.dispatch);
+            addQuery(state, action.payload.board, action.payload.messages, action.payload.nextToken, action.payload.ifSubscribed, action.asyncDispatch);
             break;
         case SET_BOARD_READ:
             state = { ...state };
@@ -56,11 +56,11 @@ export default (state = initialState, action) => {
             break;
         case CLEAR_BOARD:
             state = { ...state };
-            clearBoard(state, action.payload.board, action.payload.dispatch);
+            clearBoard(state, action.payload.board, action.asyncDispatch);
             break;
         case CLEAR_ALL_BOARDS:
             state = { ...state };
-            clearAllBoards(state, action.payload.dispatch);
+            clearAllBoards(state, action.asyncDispatch);
             break;
         default:
             state = {

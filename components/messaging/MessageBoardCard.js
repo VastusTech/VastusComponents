@@ -8,7 +8,7 @@ type Props = {
     messageBoardLastMessage: string,
     messageBoardID: string,
     unread: boolean,
-    onClickCard: (board) => {}
+    onClickCard: any
 };
 
 /**
@@ -23,9 +23,9 @@ const MessageBoardCard = (props: Props) => {
     if(props.unread) {
         return (
             <Modal trigger={
-                <Card fluid color='purple' raised onClick={() => {
-                    props.onClickCard(props.messageBoardID)
-                }}>
+                <Card fluid color='purple' raised onClick={() =>
+                    props.onClickCard()
+                }>
                     <Card.Content>
                         <Grid columns={3} verticalAlign='middle'>
                             <Grid.Column width={1}>
@@ -55,9 +55,9 @@ const MessageBoardCard = (props: Props) => {
     else {
         return (
             <Modal trigger={
-                <Card fluid raised onClick={() => {
-                    props.onClickCard(props.messageBoardID)
-                }}>
+                <Card fluid raised onClick={() =>
+                    props.onClickCard()
+                }>
                     {props.unread ? <Label circular color='purple' floating/> : null}
                     <Card.Content>
                         <Grid columns={3}>

@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import CommentBox from "./MessageInput";
 import Messages from './Messages';
-import { Icon, Message, Divider } from "semantic-ui-react";
+import { Message, Divider } from "semantic-ui-react";
 import {fetchClient, fetchTrainer} from "../../redux/convenience/cacheItemTypeActions";
 import {
     queryNextMessagesFromBoard,
@@ -9,168 +9,176 @@ import {
 } from "../../redux/actions/messageActions";
 import {connect} from "react-redux";
 import ScrollView from "react-inverted-scrollview";
+import Spinner from "../props/Spinner";
+import {getIDsFromMessageBoard, ifMessageUnreadFor} from "../../logic/MessageHelper";
 
-// TODO Refactor
+const fetchLimit = 10;
+const messageMinimum = 10;
 
 type Props = {
     board: string,
 };
 
-class MessageBoard extends Component<Props> {
-    state = {
-        board: null,
-        isLoading: false,
-        fetchLimit: 10,
-        messageMinimum: 10,
-        canFetch: true,
-        canScroll: false
-    };
-
-    constructor(props) {
-        super(props);
-        // this.handleAddComment = this.handleAddComment.bind(this);
-        this.queryMessages = this.queryMessages.bind(this);
-    }
-
-    componentDidMount() {
-        // alert(this.scrollView);
-        this.componentWillReceiveProps(this.props);
-    }
-
-    componentWillUnmount() {
-        // Unsubscribe to the Ably messages
-        // Also potentially clear the board?
-        discardBoard(this.state.board);
-    }
-
-    componentWillReceiveProps(newProps, nextContext) {
-        if (this.state.board !== newProps.board) {
-            this.state.board = newProps.board;
-            this.setState({});
-            // this.props.setHandlerToBoard(newProps.board, (message) => {
-            //     // If you get a message, then that means that it is definitely a Message?
-            //     // console.log("What to do with this?\n\n" + JSON.stringify(message));
-            //
-            //     this.props.addMessageFromNotification(newProps.board, message.data);
-            // });
-            // Set up the board
-            // this.queryMessages();
-            this.scrollToBottom();
-            if (this.state.board && (!this.props.message.boards[this.state.board]
-                || this.props.message.boards[this.state.board].length < this.state.messageMinimum)) {
-                // alert("Not enough messages!");
-                this.queryMessages();
+/**
+ * Gets another batch of messages for the board.
+ *
+ * @param {string} board The name of the board to receive messages for.
+ * @param {number} fetchLimit The number of messages to fetch at most.
+ * @param {boolean} canFetch If the board can continue fetching.
+ * @param {function(boolean)} setCanFetch Sets the can fetch state.
+ * @param {function(boolean)} setIsLoading Sets the loading state.
+ * @param {function(string, number, function([{}]), function(error))} queryNextMessagesFromBoard Message function to
+ * retrieve the next batch of Messages from the database.
+ */
+const queryMessages = (board, fetchLimit, canFetch, setCanFetch, setIsLoading, queryNextMessagesFromBoard) => {
+    if (canFetch) {
+        // alert("Querying next messages from the board!");
+        setIsLoading(true);
+        queryNextMessagesFromBoard(board, fetchLimit, (items) => {
+            // TODO Fetch all the rest of the information for the User when I switch it back to that ~ Leo
+            if (!items) {
+                setCanFetch(false);
             }
-            // if (this.scrollView) {
-            //     alert("exists");
-            //     alert(JSON.stringify(getMethods(this.scrollView)));
-            //     alert(this.scrollView.getHeight());
-            // }
-            // if (this.scrollView && this.scrollView.scrollEnabled) {
-            //     alert("can scroll");
-            // }
-            // if(!this.state.canScroll) {
-            //     alert("can't scroll");
-            //     this.queryMessages();
-            // }
+            else {
+                // That means we're done getting messages
+            }
+            setIsLoading(false);
+        });
+    }
+};
+
+/**
+ * Scrolls to the bottom of the board.
+ *
+ * @param {{}} scrollViewRef The reference to the scroll view object, allowing it to perform functions.
+ */
+const scrollToBottom = (scrollViewRef) => {
+    if (!scrollViewRef) return;
+    scrollViewRef.scrollToBottom();
+};
+
+/**
+ * Scrolls to the top of the board.
+ *
+ * @param {{}} scrollViewRef The reference to the scroll view object, allowing it to perform functions.
+ */
+const scrollToTop = (scrollViewRef) => {
+    if (!scrollViewRef) return;
+    scrollViewRef.scrollToTop();
+};
+
+/**
+ * Handles the scroll for the message board and loads the next set of messages if applicable.
+ *
+ * @param {{}} ref The reference to the scroll view object, giving information about its current state.
+ * @param {string} board The name of the board to handle the scroll for.
+ * @param {number} fetchLimit The number of messages to fetch at most.
+ * @param {boolean} canFetch If the board can continue fetching.
+ * @param {function(boolean)} setCanScroll Sets the can scroll state.
+ * @param {function(boolean)} setCanFetch Sets the can fetch state.
+ * @param {function(boolean)} setIsLoading Sets the loading state.
+ * @param {function(string, number, function([{}]), function(error))} queryNextMessagesFromBoard Message function to
+ * retrieve the next batch of Messages from the database.
+ */
+const handleScroll = (ref, board, fetchLimit, canFetch, setCanScroll, setCanFetch, setIsLoading, queryNextMessagesFromBoard) => {
+    setCanScroll(true);
+    const scrollTop = ref.scrollTop;
+    const scrollBottom = ref.scrollBottom;
+    console.log('scrollTop', scrollTop);
+    console.log('scrollBottom', scrollBottom);
+    if (scrollTop < 1) {
+        // Then we fetch new stuff
+        setCanFetch(true);
+        queryMessages(board, fetchLimit, canFetch, setCanFetch, setIsLoading, queryNextMessagesFromBoard);
+    }
+};
+
+/**
+ * Figures out the other User's read status of the Message. (Like iMessage "read").
+ *
+ * @param {string} otherID The ID of the other user.
+ * @param {{from: string, lastSeenFor: [string]}} firstMessage The first message in the board, indicating read status.
+ * @return {*} React JSX to display. Returns "seen" if the other user has read the message that you sent. Otherwise "".
+ */
+const getOtherReadStatus = (otherID, firstMessage) => {
+    if (otherID && firstMessage) {
+        if (firstMessage.from !== otherID) {
+            if (!ifMessageUnreadFor(otherID, firstMessage)) {
+                return <Message>Seen</Message>;
+            }
+            else {
+                return <Message>Unseen</Message>;
+            }
         }
     }
+    return null;
+};
 
-    queryMessages() {
-        // console.log("Can we query?");
-        if (this.state.canFetch) {
-            // alert("Querying next messages from the board!");
-            this.setState({isLoading: true});
-            this.props.queryNextMessagesFromBoard(this.state.board, this.state.fetchLimit, (items) => {
-                if (items) {
-                    // this.setState({messages: [...this.state.messages, ...items]});
-                    // for (let i = 0; i < items.length; i++) {
-                    //     // Fetch everything we need to!
-                    //     const message = items[i];
-                    //     const fromItemType = getItemTypeFromID(message.from);
-                    //     if (fromItemType === "Client") {
-                    //         this.props.fetchClient(message.from, ["name"])
-                    //     }
-                    //     else if (fromItemType === "Trainer") {
-                    //         this.props.fetchTrainer(message.from, ["name"]);
-                    //     }
-                    // }
+/**
+ * Shows a message board with the input and its Messages. Handles querying for the Messages and the sending of
+ * everything.
+ *
+ * @param props The props passed into the component.
+ * @return {*} The React JSX to display the component.
+ * @constructor
+ */
+const MessageBoard = (props: Props) => {
+    const [otherID, setOtherID] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [canFetch, setCanFetch] = useState(true);
+    const [canScroll, setCanScroll] = useState(false);
+    const [scrollViewRef, setScrollViewRef] = useState(null);
+
+    useEffect(() => {
+        if (props.board) {
+            scrollToBottom(scrollViewRef);
+            if (props.board && (!props.message.boards[props.board]
+                || props.message.boards[props.board].length < messageMinimum)) {
+                // alert("Not enough messages!");
+                queryMessages(props.board, fetchLimit, canFetch, setCanFetch, setIsLoading,
+                    props.queryNextMessagesFromBoard);
+            }
+            const ids = getIDsFromMessageBoard(props.board);
+            if (ids.length === 2) {
+                for (let i = 0; i < 2; i++) {
+                    if (props.user.id && ids[i] !== props.user.id) {
+                        setOtherID(ids[i]);
+                    }
                 }
-                else {
-                    // That means we're done getting messages
-                    this.setState({canFetch: false});
-                }
-                this.setState({isLoading: false});
-            });
+            }
+            return () => {
+                // Unsubscribe to the Ably messages
+                // Also potentially clear the board?
+                // alert(props.board);
+                // props.discardBoard(props.board);
+            }
         }
-    }
+    }, [props.board]);
 
-    getBoardMessages() {
-        const board = this.state.board;
-        if (board && this.props.message.boards[board]) {
-            return this.props.message.boards[this.state.board];
-        }
-        return [];
-    }
-    scrollToBottom() {
-        if (!this.scrollView) return;
-        this.scrollView.scrollToBottom();
-    }
-
-    scrollToTop() {
-        if (!this.scrollView) return;
-        this.scrollView.scrollToTop();
-    }
-
-    handleScroll = ({ scrollTop, scrollBottom }) => {
-        this.setState({canScroll: true});
-        console.log('scrollTop', scrollTop);
-        console.log('scrollBottom', scrollBottom);
-        if (scrollTop < 1) {
-            // Then we fetch new stuff
-            this.setState({canFetch: true});
-            this.queryMessages();
-        }
-    };
-
-    loadHistory(historyLoading) {
-        if (historyLoading) {
-            return (
-                <Message icon>
-                    <Icon name='spinner' size="small" loading />
-                    <Message.Content>
-                        <Message.Header>
-                            Loading...
-                        </Message.Header>
-                    </Message.Content>
-                </Message>
-            )
-        }
-    }
-
-    render() {
-
-        return (
-            <div className='u-margin-top--2'>
-                {/*console.log("Comment screen render user: " + this.props.curUser)*/}
-                <ScrollView
-                    class='chat'
-                    width='100%'
-                    height='300px'
-                    ref={ref => (this.scrollView = ref)}
-                    onScroll={this.handleScroll}
-                >
-                    {(this.props.message.boardIfFirsts[this.props.board]
-                        ||this.props.message.boardNextTokens[this.props.board])
-                    &&this.loadHistory(true)}
-                    <Messages board={this.state.board} messages={this.getBoardMessages()} userID={this.props.user.id}/>
-                </ScrollView>
-                <Divider className='u-margin-top--2' />
-                <CommentBox board={this.state.board}/>
-            </div>
-        );
-    }
-}
+    return (
+        <div className='u-margin-top--2'>
+            {/*console.log("Comment screen render user: " + this.props.curUser)*/}
+            <ScrollView
+                class='chat'
+                width='100%'
+                height='300px'
+                ref={ref => setScrollViewRef(ref)}
+                onScroll={ref => handleScroll(ref, props.board, fetchLimit, canFetch, setCanScroll, setCanFetch,
+                    setIsLoading, props.queryNextMessagesFromBoard)}
+            >
+                <Spinner loading={(props.message.boardIfFirsts[props.board] || props.message.boardNextTokens[props.board])}/>
+                <Messages board={props.board}
+                          messages={(props.board && props.message.boards[props.board]) ?
+                              props.message.boards[props.board] :
+                              []}
+                          userID={props.user.id}/>
+                {getOtherReadStatus(otherID, props.message.boards[props.board] ? props.message.boards[props.board][0] : null)}
+            </ScrollView>
+            <Divider className='u-margin-top--2' />
+            <CommentBox board={props.board}/>
+        </div>
+    );
+};
 
 const mapStateToProps = (state) => ({
     user: state.user,
