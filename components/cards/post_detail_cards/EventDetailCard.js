@@ -21,6 +21,13 @@ type Props = {
     }
 };
 
+/**
+ * The detail card for posts about events.
+ *
+ * @param {Props} props The given props to the component.
+ * @return {*} The React JSX used to display the component.
+ * @constructor
+ */
 const EventDetailCard = (props: Props) => (
     <EventCard event={props.event}/>
 );
