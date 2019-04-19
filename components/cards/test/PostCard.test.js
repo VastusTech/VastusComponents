@@ -5,6 +5,27 @@ import TestConfig, {store} from "../../../../TestConfig";
 
 TestConfig();
 it('renders without crashing', () => {
-    const component = shallow(<PostCard store={store({})} postID={null}/>);
+    const reduxState = {
+        cache: {
+            clients: {
+                CL0001: {
+                    // TODO
+                }
+            },
+            challenges: {
+                CH0001: {
+                    // TODO
+                }
+            }
+        },
+    };
+    const post = {
+        id: "PO0001",
+        by: "CL0001",
+        about: "CH0001"
+        // TODO
+    };
+    const component = shallow(<PostCard post={post} store={store(reduxState)}/>);
+
     expect(component).toMatchSnapshot();
 });
