@@ -6,7 +6,6 @@ import {
     fetchClient,
     forceFetchChallenge,
     fetchChallenge,
-    clearChallengeQuery,
     subscribeFetchChallenge, fetchStreak
 } from "../../redux/convenience/cacheItemTypeActions";
 import CompleteChallengeModal from "../manager/CompleteChallengeModal";
@@ -535,9 +534,6 @@ const mapDispatchToProps = (dispatch) => {
         },
         forceFetchChallenge: (id, variablesList) => {
             dispatch(forceFetchChallenge(id, variablesList));
-        },
-        clearChallengeQuery: () => {
-            dispatch(clearChallengeQuery());
         },
         fetchStreak: (id, variableList, dataHandler) => {
             dispatch(fetchStreak(id, variableList, dataHandler));

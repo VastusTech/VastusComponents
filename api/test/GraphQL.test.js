@@ -19,7 +19,8 @@ describe("GraphQL.js", function () {
         }, {
 
         });
-        const string = string.replace(/\s\s+/g, ' ');
+        filter.par
+        string = string.replace(/\s\s+/g, ' ');
         expect
     });
 

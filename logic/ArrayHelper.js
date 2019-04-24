@@ -91,3 +91,31 @@ export const shuffleArray = (array) => {
         [array[i], array[j]] = [array[j], array[i]];
     }
 };
+
+/**
+ * Calculates whether the two arrays are equal in the set sense. That is, if they are subsets of each other.
+ *
+ * @param {[*]} array1 The first array to check set equality for.
+ * @param {[*]} array2 The seconds array to check set equality for.
+ * @return {boolean} Whether the two arrays are set equal.
+ */
+export const setEquals = (array1, array2) => {
+    return isSubset(array1, array2) && isSubset(array2, array1);
+};
+
+/**
+ * Finds out if an array is a subset of another array by making sure all the elements in the subset array are also
+ * present in the original array.
+ *
+ * @param {[*]} array The original array to check.
+ * @param {[*]} subsetArray The array to check all the elements for being in the original array.
+ * @return {boolean} If the second array is a subset of the first array.
+ */
+export const isSubset = (array, subsetArray) => {
+    for (let i = 0; i < subsetArray.length; i++) {
+        if (array.includes(subsetArray[i])) {
+            return false;
+        }
+    }
+    return true;
+};

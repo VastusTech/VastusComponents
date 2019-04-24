@@ -7,27 +7,8 @@ import notFoundPicture from "../../img/not_found.png";
 import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
 import {
     getObjectChannelName,
-    FETCH_CLIENT, FETCH_TRAINER, FETCH_GYM, FETCH_WORKOUT, FETCH_REVIEW, FETCH_EVENT, FETCH_CHALLENGE, FETCH_INVITE,
-    FETCH_POST, FETCH_SUBMISSION, FETCH_GROUP, FETCH_COMMENT, FETCH_SPONSOR, FETCH_STREAK, FETCH_CLIENT_QUERY,
-    FETCH_TRAINER_QUERY, FETCH_GYM_QUERY, FETCH_WORKOUT_QUERY, FETCH_REVIEW_QUERY, FETCH_EVENT_QUERY,
-    FETCH_CHALLENGE_QUERY, FETCH_INVITE_QUERY, FETCH_POST_QUERY, FETCH_SUBMISSION_QUERY, FETCH_GROUP_QUERY,
-    FETCH_COMMENT_QUERY, FETCH_SPONSOR_QUERY, FETCH_STREAK_QUERY, SET_CLIENT_ATTRIBUTE_INDEX, SET_TRAINER_ATTRIBUTE_INDEX,
-    SET_GYM_ATTRIBUTE_INDEX, SET_WORKOUT_ATTRIBUTE_INDEX, SET_REVIEW_ATTRIBUTE_INDEX, SET_EVENT_ATTRIBUTE_INDEX,
-    SET_CHALLENGE_ATTRIBUTE_INDEX, SET_INVITE_ATTRIBUTE_INDEX, SET_POST_ATTRIBUTE_INDEX, SET_SUBMISSION_ATTRIBUTE_INDEX,
-    SET_STREAK_ATTRIBUTE_INDEX, SET_SPONSOR_ATTRIBUTE_INDEX, SET_GROUP_ATTRIBUTE_INDEX, SET_COMMENT_ATTRIBUTE_INDEX,
-    ADD_CLIENT_ATTRIBUTES, ADD_TRAINER_ATTRIBUTES, ADD_GYM_ATTRIBUTES, ADD_INVITE_ATTRIBUTES, ADD_CHALLENGE_ATTRIBUTES,
-    ADD_EVENT_ATTRIBUTES, ADD_REVIEW_ATTRIBUTES, ADD_WORKOUT_ATTRIBUTES, ADD_POST_ATTRIBUTES, ADD_SUBMISSION_ATTRIBUTES,
-    ADD_GROUP_ATTRIBUTES, ADD_COMMENT_ATTRIBUTES, ADD_SPONSOR_ATTRIBUTES, ADD_STREAK_ATTRIBUTES, REMOVE_CLIENT_ATTRIBUTES,
-    REMOVE_TRAINER_ATTRIBUTES, REMOVE_GYM_ATTRIBUTES, REMOVE_INVITE_ATTRIBUTES, REMOVE_CHALLENGE_ATTRIBUTES,
-    REMOVE_EVENT_ATTRIBUTES, REMOVE_REVIEW_ATTRIBUTES, REMOVE_WORKOUT_ATTRIBUTES, REMOVE_POST_ATTRIBUTES,
-    REMOVE_SUBMISSION_ATTRIBUTES, REMOVE_GROUP_ATTRIBUTES, REMOVE_COMMENT_ATTRIBUTES, REMOVE_SPONSOR_ATTRIBUTES,
-    REMOVE_STREAK_ATTRIBUTES, REMOVE_CLIENT_ATTRIBUTE_INDEX, REMOVE_TRAINER_ATTRIBUTE_INDEX, REMOVE_EVENT_ATTRIBUTE_INDEX,
-    REMOVE_REVIEW_ATTRIBUTE_INDEX, REMOVE_WORKOUT_ATTRIBUTE_INDEX, REMOVE_GYM_ATTRIBUTE_INDEX,
-    REMOVE_CHALLENGE_ATTRIBUTE_INDEX, REMOVE_INVITE_ATTRIBUTE_INDEX, REMOVE_POST_ATTRIBUTE_INDEX,
-    REMOVE_SUBMISSION_ATTRIBUTE_INDEX, REMOVE_STREAK_ATTRIBUTE_INDEX, REMOVE_SPONSOR_ATTRIBUTE_INDEX,
-    REMOVE_COMMENT_ATTRIBUTE_INDEX, REMOVE_GROUP_ATTRIBUTE_INDEX, REMOVE_CLIENT, REMOVE_TRAINER, REMOVE_GYM,
-    REMOVE_WORKOUT, REMOVE_REVIEW, REMOVE_EVENT, REMOVE_STREAK, REMOVE_SPONSOR, REMOVE_COMMENT,
-    REMOVE_GROUP, REMOVE_SUBMISSION, REMOVE_POST, REMOVE_INVITE, REMOVE_CHALLENGE
+    PUT_ITEM, PUT_ITEM_QUERY, CLEAR_ITEM_CACHE, CLEAR_NORMALIZED_ITEM_QUERY, REMOVE_ITEM_ATTRIBUTE_INDEX,
+    REMOVE_ITEM_ATTRIBUTES, ADD_ITEM_ATTRIBUTES, SET_ITEM_ATTRIBUTE_INDEX, REMOVE_ITEM
 } from "../reducers/cacheReducer";
 import {err, log} from "../../../Constants";
 import {addMessageFromNotification} from "./messageActions";
@@ -221,7 +202,7 @@ function subscribeFetch(id, itemType, variableList, dataHandler, failureHandler)
             // Subscribe (potentially again?)
             dispatch(subscribeCacheUpdatesToObject(id, itemType));
             // Update the stale value for the object to false
-            dispatch(putItem({id, __stale__: false}, itemType));
+            dispatch(putItem(id, itemType, {__stale__: false}));
             // Then we force fetch everything!
             dispatch(forceFetch(id, itemType, variableList, dataHandler, failureHandler));
         }
@@ -265,7 +246,7 @@ function subscribeCacheUpdatesToObject(id, itemType) {
                         }
                         else {
                             // dispatch(getPutItemFunction(createJSON.item_type)(createJSON, dispatch));
-                            dispatch(putItem(createJSON, createJSON.item_type));
+                            dispatch(putItem(createJSON.id, createJSON.item_type, createJSON));
                         }
                     }
                 }
@@ -273,7 +254,7 @@ function subscribeCacheUpdatesToObject(id, itemType) {
                     // You simply put the item into the cache (overwriting existing attributes)
                     setJSON.id = id;
                     // dispatch(getPutItemFunction(itemType)(setJSON));
-                    dispatch(putItem(setJSON, itemType));
+                    dispatch(putItem(id, itemType, setJSON));
                 }
                 if (addJSON) {
                     // Adds the attributes to the object, which should already be in there!
@@ -286,7 +267,7 @@ function subscribeCacheUpdatesToObject(id, itemType) {
             }
         }, (asyncDispatch) => {
             // When the object is automatically unsubscribed, just add on the __stale__ variable
-            asyncDispatch(putItem({id, __stale__: true}, itemType, dispatch));
+            asyncDispatch(putItem(id, itemType, {__stale__: true}));
         }));
     };
 }
@@ -319,7 +300,7 @@ function overwriteFetch(id, itemType, variableList, dataHandler, failureHandler,
             if (data) {
                 addS3MediaToData(data, (updatedData) => {
                     // TODO __stale__
-                    dispatch(putItem(updatedData, itemType));
+                    dispatch(putItem(id, itemType, updatedData));
                     if (getStore().user.id === id) { dispatch(updateUserFromCache()); }
                     dispatch(setIsNotLoading());
                     if (dataHandler) {
@@ -349,7 +330,7 @@ function overwriteFetch(id, itemType, variableList, dataHandler, failureHandler,
         });
     }
     else {
-        dispatch(putItem({id}, itemType));
+        dispatch(putItem(id, itemType, null));
         dispatch(setIsNotLoading());
         if (dataHandler) { dataHandler(getCache(itemType, getStore)[id]); }
     }
@@ -450,7 +431,7 @@ function batchOverwriteFetch(ids, itemType, variableList, startIndex, maxFetch, 
             firstFetchIDs = firstFetchIDs.slice(0, QL.batchLimit);
         }
         const finishProcessItem = (item) => {
-            dispatch(putItem(item, itemType));
+            dispatch(putItem(item.id, itemType, item));
             retrievedItems.push(getStore().cache[getCacheName(itemType)][item.id]);
             numFetched++;
             if (numFetched >= totalFetch) {
@@ -508,7 +489,7 @@ function batchOverwriteFetch(ids, itemType, variableList, startIndex, maxFetch, 
         const items = [];
         for (let i = 0; i < ids.length; i++) {
             const id = ids[i];
-            dispatch(putItem({id}, itemType));
+            dispatch(putItem(id, itemType, {}));
             items.push(getStore().cache[getCacheName(itemType)][id]);
         }
         dispatch(setIsNotLoading());
@@ -561,14 +542,7 @@ export function fetchQuery(itemType, variableList, filter, limit, nextToken, dat
             // if (nextTokenString === "null") { console.log("GOt! Query Result = " + JSON.stringify(queryResult))}
         }
         if (queryResult) {
-            dispatch({
-                type: getFetchQueryType(itemType),
-                payload: {
-                    normalizedQueryString,
-                    nextToken: nextTokenString,
-                    queryResult
-                }
-            });
+            dispatch(putItemQuery(itemType, normalizedQueryString, nextTokenString, queryResult));
             dataHandler(QL.getQueryResultFromCompressed(queryResult, getCache(itemType, getStore)));
         }
         else {
@@ -630,28 +604,11 @@ export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandle
                 // TODO Handle the profile image path retrieval
                 const item = data.items[i];
                 const id = item.id;
-                addS3MediaToData(item, (updatedData) => {
-                    dispatch({
-                        type: getFetchType(itemType),
-                        payload: {
-                            object: {
-                                id,
-                                data: updatedData
-                            },
-                            dispatch
-                        }
-                    });
-                });
+                addS3MediaToData(item, (updatedData) => dispatch(putItem(id, itemType, updatedData)));
             }
         }
-        dispatch({
-            type: getFetchQueryType(itemType),
-            payload: {
-                normalizedQueryString: JSON.stringify(QL.getNormalizedQuery(queryString)),
-                nextToken: QL.getNextTokenString(nextToken),
-                queryResult: QL.getCompressedFromQueryResult(data)
-            }
-        });
+        dispatch(putItemQuery(itemType, JSON.stringify(QL.getNormalizedQuery(queryString)),
+            QL.getNextTokenString(nextToken), QL.getCompressedFromQueryResult(data)));
         if (dataHandler) { dataHandler(data);}
     }, (error) => {
         err&&console.error("Error in QUERY retrieval. ItemType = " + itemType + ", query string = " + JSON.stringify(queryString));
@@ -676,7 +633,7 @@ export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandle
  */
 export function setItemAttribute(id, attributeName, attributeValue) {
     return (dispatch, getStore) => {
-        dispatch(putItem({id, [attributeName]: attributeValue}, getItemTypeFromID(id)));
+        dispatch(putItem(id, getItemTypeFromID(id), {[attributeName]: attributeValue}));
         if (id === getStore().user.id) {
             dispatch(updateUserFromCache());
         }
@@ -886,30 +843,12 @@ export function forceFetchItemQuery(itemType, variableList, filter, limit, nextT
 // Mutate Database Low-Level Functions ~
 // ======================================================================================================
 
-export function putItemQuery(itemType, queryString, queryResult) {
-    return (dispatch) => {
-        dispatch(putQuery(queryString, queryResult, getFetchQueryType(itemType)));
-    }
-}
-function putQuery(queryString, queryResult, actionType) {
-    return {
-        type: actionType,
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
 function setItemAttributeAtIndex(itemType, id, attributeName, index, attributeValue) {
-    const setItemIndexType = switchReturnItemType(itemType, SET_CLIENT_ATTRIBUTE_INDEX, SET_TRAINER_ATTRIBUTE_INDEX,
-        SET_GYM_ATTRIBUTE_INDEX, SET_WORKOUT_ATTRIBUTE_INDEX, SET_REVIEW_ATTRIBUTE_INDEX, SET_EVENT_ATTRIBUTE_INDEX,
-        SET_CHALLENGE_ATTRIBUTE_INDEX, SET_INVITE_ATTRIBUTE_INDEX, SET_POST_ATTRIBUTE_INDEX, SET_SUBMISSION_ATTRIBUTE_INDEX,
-        SET_GROUP_ATTRIBUTE_INDEX, SET_COMMENT_ATTRIBUTE_INDEX, SET_SPONSOR_ATTRIBUTE_INDEX, null, SET_STREAK_ATTRIBUTE_INDEX,
-        "Receive set item attribute index item type not implemented for type!");
     return {
-        type: setItemIndexType,
+        type: SET_ITEM_ATTRIBUTE_INDEX,
         payload: {
             id,
+            itemType,
             attributeName,
             index,
             attributeValue
@@ -917,74 +856,84 @@ function setItemAttributeAtIndex(itemType, id, attributeName, index, attributeVa
     }
 }
 function addItemAttributes(itemType, id, attributes) {
-    const addAttributesType = switchReturnItemType(itemType, ADD_CLIENT_ATTRIBUTES, ADD_TRAINER_ATTRIBUTES, ADD_GYM_ATTRIBUTES,
-        ADD_WORKOUT_ATTRIBUTES, ADD_REVIEW_ATTRIBUTES, ADD_EVENT_ATTRIBUTES, ADD_CHALLENGE_ATTRIBUTES, ADD_INVITE_ATTRIBUTES,
-        ADD_POST_ATTRIBUTES, ADD_SUBMISSION_ATTRIBUTES, ADD_GROUP_ATTRIBUTES, ADD_COMMENT_ATTRIBUTES, ADD_SPONSOR_ATTRIBUTES,
-        null, ADD_STREAK_ATTRIBUTES,
-        "Receive add item attributes item type not implemented for type!");
     return {
-        type: addAttributesType,
+        type: ADD_ITEM_ATTRIBUTES,
         payload: {
             id,
+            itemType,
             attributes
         }
     }
 }
 function removeItemAttributes(itemType, id, attributes) {
-    const removeAttributesType = switchReturnItemType(itemType, REMOVE_CLIENT_ATTRIBUTES, REMOVE_TRAINER_ATTRIBUTES, REMOVE_GYM_ATTRIBUTES,
-        REMOVE_WORKOUT_ATTRIBUTES, REMOVE_REVIEW_ATTRIBUTES, REMOVE_EVENT_ATTRIBUTES, REMOVE_CHALLENGE_ATTRIBUTES, REMOVE_INVITE_ATTRIBUTES,
-        REMOVE_POST_ATTRIBUTES, REMOVE_SUBMISSION_ATTRIBUTES, REMOVE_GROUP_ATTRIBUTES, REMOVE_COMMENT_ATTRIBUTES, REMOVE_SPONSOR_ATTRIBUTES, null, REMOVE_STREAK_ATTRIBUTES,
-        "Receive remove item attributes item type not implemented for type!");
     return {
-        type: removeAttributesType,
+        type: REMOVE_ITEM_ATTRIBUTES,
         payload: {
             id,
+            itemType,
             attributes
         }
     }
 }
 function removeItemAttributeIndex(itemType, id, attributeName, index) {
-    const removeAttributesType = switchReturnItemType(itemType, REMOVE_CLIENT_ATTRIBUTE_INDEX, REMOVE_TRAINER_ATTRIBUTE_INDEX,
-        REMOVE_GYM_ATTRIBUTE_INDEX, REMOVE_WORKOUT_ATTRIBUTE_INDEX, REMOVE_REVIEW_ATTRIBUTE_INDEX, REMOVE_EVENT_ATTRIBUTE_INDEX,
-        REMOVE_CHALLENGE_ATTRIBUTE_INDEX, REMOVE_INVITE_ATTRIBUTE_INDEX, REMOVE_POST_ATTRIBUTE_INDEX, REMOVE_SUBMISSION_ATTRIBUTE_INDEX,
-        REMOVE_GROUP_ATTRIBUTE_INDEX, REMOVE_COMMENT_ATTRIBUTE_INDEX, REMOVE_SPONSOR_ATTRIBUTE_INDEX, null, REMOVE_STREAK_ATTRIBUTE_INDEX,
-        "Receive remove item attribute index item type not implemented for type!");
     return {
-        type: removeAttributesType,
+        type: REMOVE_ITEM_ATTRIBUTE_INDEX,
         payload: {
             id,
+            itemType,
             attributeName,
             index
         }
     }
 }
 export function removeItem(itemType, id, dispatch) {
-    const removeType = switchReturnItemType(itemType, REMOVE_CLIENT, REMOVE_TRAINER, REMOVE_GYM, REMOVE_WORKOUT, REMOVE_REVIEW, REMOVE_EVENT,
-        REMOVE_CHALLENGE, REMOVE_INVITE, REMOVE_POST, REMOVE_SUBMISSION, REMOVE_GROUP, REMOVE_COMMENT, REMOVE_SPONSOR, null, REMOVE_STREAK,
-        "Receive remove item type not implemented for type!");
     return {
-        type: removeType,
+        type: REMOVE_ITEM,
         payload: {
             id,
+            itemType,
             dispatch
         }
     }
 }
-export function putItem(item, itemType) {
-    if (item && item.id) {
-        return {
-            type: getFetchType(itemType),
-            payload: {
-                object: {
-                    id: item.id,
-                    data: item
-                }
-            }
+export function putItem(id, itemType, item) {
+    return {
+        type: PUT_ITEM,
+        payload: {
+            id,
+            itemType,
+            item
         }
     }
-    return {type: ""}
 }
-
+export function putItemQuery(itemType, normalizedQueryString, nextToken, queryResult) {
+    return {
+        type: PUT_ITEM_QUERY,
+        payload: {
+            itemType,
+            normalizedQueryString,
+            nextToken,
+            queryResult
+        }
+    };
+}
+const clearNormalizedQueryCache = (itemType, normalizedQueryString) => {
+    return {
+        type: CLEAR_NORMALIZED_ITEM_QUERY,
+        payload: {
+            itemType,
+            normalizedQueryString
+        }
+    };
+};
+const clearItemCache = (itemType) => {
+    return {
+        type: CLEAR_ITEM_CACHE,
+        payload: {
+            itemType
+        }
+    };
+};
 // ======================================================================================================
 // Cache Reducer Getter Functions ~
 // ======================================================================================================
@@ -1006,15 +955,4 @@ export function getQueryCache(itemType, getStore) {
         cache.workoutQueries, cache.reviewQueries, cache.eventQueries, cache.challengeQueries, cache.inviteQueries,
         cache.postQueries, cache.submissionQueries, cache.groupQueries, cache.commentQueries, cache.sponsorQueries,
         null, cache.streakQueries, "Retrieve query cache not implemented");
-}
-export function getFetchType(itemType) {
-    return switchReturnItemType(itemType, FETCH_CLIENT, FETCH_TRAINER, FETCH_GYM, FETCH_WORKOUT, FETCH_REVIEW,
-        FETCH_EVENT, FETCH_CHALLENGE, FETCH_INVITE, FETCH_POST, FETCH_SUBMISSION, FETCH_GROUP, FETCH_COMMENT,
-        FETCH_SPONSOR, null, FETCH_STREAK, "Retrieve fetch type not implemented for type.")
-}
-export function getFetchQueryType(itemType) {
-    return switchReturnItemType(itemType, FETCH_CLIENT_QUERY, FETCH_TRAINER_QUERY, FETCH_GYM_QUERY, FETCH_WORKOUT_QUERY,
-        FETCH_REVIEW_QUERY, FETCH_EVENT_QUERY, FETCH_CHALLENGE_QUERY, FETCH_INVITE_QUERY, FETCH_POST_QUERY,
-        FETCH_SUBMISSION_QUERY, FETCH_GROUP_QUERY, FETCH_COMMENT_QUERY, FETCH_SPONSOR_QUERY, null, FETCH_STREAK_QUERY,
-        "Retrieve fetch query type not implemented for type");
 }

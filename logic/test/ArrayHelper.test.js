@@ -5,7 +5,10 @@ import {
     addUniqueToArray,
     removeFromArray,
     arrayIntersection,
-    arraysIntersect } from "../ArrayHelper";
+    arraysIntersect,
+    isSubset,
+    setEquals
+} from "../ArrayHelper";
 
 describe("ArrayHelper.js", function () {
     it('Shuffles Array without removing elements', () => {
@@ -60,5 +63,30 @@ describe("ArrayHelper.js", function () {
 
     it('arrays intersect works', () => {
         expect(arraysIntersect([1, 2, 3, 4, 5], [6, 7, 8, 5, 9, 10]));
+    });
+
+    it("Calculates subset correctly", () => {
+        expect(isSubset([1, 2, 3, 4], [1, 2, 3]));
+        expect(isSubset([], []));
+        expect(isSubset([1], [1]));
+        expect(!isSubset([1, 2, 3, 4], [1, 2, 3, 5]));
+        expect(isSubset([1, 2, 3, 4, 5, 6, 7], [7]));
+        expect(isSubset([1, 2, 3, 4, 5, 6, 7], []));
+        expect(!isSubset([], [1, 2, 3, 5]));
+        expect(!isSubset([], [1]));
+    });
+
+    it("Calculates set equality correctly", () => {
+        expect(setEquals([1, 2, 3], [1, 2, 3]));
+        expect(setEquals([2, 1, 3], [1, 2, 3]));
+        expect(setEquals([2, 1, 3], [3, 2, 1]));
+        expect(setEquals([2, 1, 3, 3], [3, 2, 1]));
+        expect(setEquals([2, 1, 3], [3, 2, 3, 3, 2, 1]));
+        expect(setEquals([], []));
+        expect(!setEquals([4, 2, 1, 3], [3, 2, 3, 3, 2, 1]));
+        expect(!setEquals([4, 2, 1, 3], [3, 2, 1, 3, 3, 2, 1]));
+        expect(!setEquals([1], [3]));
+        expect(!setEquals([3], [3, 1]));
+        expect(!setEquals([3, 1], [3]));
     });
 });

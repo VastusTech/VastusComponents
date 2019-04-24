@@ -4,7 +4,12 @@ import {expect} from "chai";
 describe("cacheReducer.js", function () {
     it("Ignores other actions correctly", () => {
         const state = {};
-        expect(cache(state, {type: "__NOT_A_REAL_ACTION__", payload: null}).to.eql(state));
+        expect(cache(undefined, {type: "__NOT_A_REAL_ACTION__", payload: null}).to.eql({
+
+        }));
+    });
+    it("Sets fetched client successfully", function () {
+
     });
 });
 

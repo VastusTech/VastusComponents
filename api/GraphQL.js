@@ -1,4 +1,4 @@
-import { API, graphqlOperation} from 'aws-amplify';
+import { API, graphqlOperation } from 'aws-amplify';
 import {ifDebug, log, err} from "../../Constants";
 import _ from 'lodash';
 import {switchReturnItemType} from "../logic/ItemType";
@@ -110,7 +110,8 @@ class GraphQL {
      *
      * @param {string} itemType The item type to perform the query on.
      * @param {{query: string, variables: {}}} query The query payload to send through the query function.
-     * @param {function([{}])} successHandler The function to handle the successfully received items.
+     * @param {function([{nextToken: string, items: [{}]}])} successHandler The function to handle the successfully
+     * received items.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging information from the GraphQL query.
      */

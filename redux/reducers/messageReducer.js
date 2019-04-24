@@ -20,7 +20,21 @@ export function getBoardChannel(board) {
 // This is the number of MESSAGES that the cache can hold (not boards)!
 const messageCacheSize = 1000;
 
+type MessageReducer = {
+    boards: Map<string, [Object]>,
+    boardLRUHandler: [string],
+    boardNextTokens: Map<string, string>,
+    boardIfFirsts: Map<string, boolean>,
+    boardIfSubscribed: Map<string, boolean>,
+    numMessages: number,
+}
+
 // How to make sure that this doesn't get out of control?
+/**
+ * The initial state for the Message Reducer.
+ *
+ * @type {MessageReducer}
+ */
 const initialState = {
     boards: {},
     boardLRUHandler: [],
@@ -31,41 +45,55 @@ const initialState = {
 };
 
 /**
+ * Deeply copies the state of the Message reducer.
+ *
+ * @param {MessageReducer} state The current state of the Message Reducer.
+ * @return {MessageReducer} The newly copied reducer.
+ */
+const copyState = (state) => {
+    state = { ...state };
+    state.boards = { ...state.boards };
+    state.boardLRUHandler = [ ...state.boardLRUHandler ];
+    state.boardNextTokens = { ...state.boardNextTokens };
+    state.boardIfFirsts = { ...state.boardIfFirsts };
+    state.boardIfSubscribed = { ...state.boardIfSubscribed };
+    return state;
+};
+
+/**
  * Message Reducer:
  *
  * Handles all the message logic for the application. Basically the same as cache reducer, but more integrated and
  * optimized because Message objects are in a different table and need to handled differently.
  *
- * @param {*} state The current state of the message reducer.
- * @param {{type: string, payload: *}} action The action to specify how to update the reducer.
- * @return {*} The next state for the reducer.
+ * @param {MessageReducer} state The current state of the message reducer.
+ * @param {{type: string, payload: *, asyncDispatch: Function}} action The action to specify how to update the reducer.
+ * @return {MessageReducer} The next state for the reducer.
  */
-export default (state = initialState, action) => {
+export default (state: MessageReducer = initialState, action) => {
     switch (action.type) {
         case ADD_MESSAGE:
-            state = { ...state };
+            state = copyState(state);
             addMessage(state, action.payload.board, action.payload.message, action.asyncDispatch);
             break;
         case ADD_QUERY:
-            state = { ...state };
+            state = copyState(state);
             addQuery(state, action.payload.board, action.payload.messages, action.payload.nextToken, action.payload.ifSubscribed, action.asyncDispatch);
             break;
         case SET_BOARD_READ:
-            state = { ...state };
+            state = copyState(state);
             setBoardRead(state, action.payload.board, action.payload.userID);
             break;
         case CLEAR_BOARD:
-            state = { ...state };
+            state = copyState(state);
             clearBoard(state, action.payload.board, action.asyncDispatch);
             break;
         case CLEAR_ALL_BOARDS:
-            state = { ...state };
+            state = copyState(state);
             clearAllBoards(state, action.asyncDispatch);
             break;
         default:
-            state = {
-                ...state
-            };
+            state = copyState(state);
             break;
     }
     return state;
@@ -75,7 +103,7 @@ export default (state = initialState, action) => {
  * Adds a message to the beginning of the board and potentially deletes other messages to make room for it. This is
  * used whenever a NEW message has been discovered through Ably.
  *
- * @param {*} state The current state of the message reducer.
+ * @param {MessageReducer} state The current state of the message reducer.
  * @param {string} board The name of the board to add the message to.
  * @param {*} message The message object to add to the board.
  * @param {function({})} dispatch The asynchronous dispatch function for redux.
@@ -97,7 +125,7 @@ function addMessage(state, board, message, dispatch) {
  * Adds a new query of messages to the end of the board and potentially deletes other messages to make room for them.
  * This is used whenever another query of Messages is added to a board from an earlier time.
  *
- * @param {*} state The current state of the message reducer.
+ * @param {MessageReducer} state The current state of the message reducer.
  * @param {string} board The name of the board to add the messages to.
  * @param {[*]} messages The list of messages to add to the board.
  * @param {string} nextToken The next token string received from the query.
@@ -122,7 +150,7 @@ function addQuery(state, board, messages, nextToken, ifSubscribed, dispatch) {
 /**
  * Sets the board read for a specific board by a certain user. This sets the read status of this board.
  *
- * @param {*} state The current state of the message reducer.
+ * @param {MessageReducer} state The current state of the message reducer.
  * @param {string} boardName The name of the board to update the read status.
  * @param {string} userID The id of user to update the read status for.
  */
@@ -145,7 +173,7 @@ function setBoardRead(state, boardName, userID) {
 /**
  * Clears boards in order to make room for a number of messages that are going to be added to the cache.
  *
- * @param {*} state The current state of the message reducer.
+ * @param {MessageReducer} state The current state of the message reducer.
  * @param {string} board The name of the board that the messages will be added to.
  * @param {number} messagesLength The number of messages about to be added.
  * @param {function({})} dispatch The asynchronous dispatch function for redux.
@@ -162,7 +190,7 @@ function clearBoardsForMessages(state, board, messagesLength, dispatch) {
 /**
  * Updates the LRU status of a board within the cache. Puts it to the front of the LRU handler.
  *
- * @param {*} state The current state of the message reducer.
+ * @param {MessageReducer} state The current state of the message reducer.
  * @param {string} board The name of the board to update the LRU status of.
  */
 function updateLRUBoard(state, board) {
@@ -178,7 +206,7 @@ function updateLRUBoard(state, board) {
 /**
  * Removes the last board in the LRU handler from the state and unsubscribes from Ably.
  *
- * @param {*} state The current state of the message reducer.
+ * @param {MessageReducer} state The current state of the message reducer.
  * @param {function({})} dispatch The asynchronous dispatch function for redux.
  */
 function removeLastBoard(state, dispatch) {
@@ -194,7 +222,7 @@ function removeLastBoard(state, dispatch) {
  * Clears a board of the messages and removes it from the handlers involved. Also unsubscribes from the channel and
  * handles the unsubscription.
  *
- * @param {*} state The current state of the message reducer.
+ * @param {MessageReducer} state The current state of the message reducer.
  * @param {string} board The name of the board to clear.
  * @param {function({})} dispatch The asynchronous dispatch function for redux.
  */
@@ -217,7 +245,7 @@ function clearBoard(state, board, dispatch) {
 /**
  * Clears every single board from the cache.
  *
- * @param {*} state The current state of the message reducer.
+ * @param {MessageReducer} state The current state of the message reducer.
  * @param {function({})} dispatch The asynchronous dispatch function for redux.
  */
 function clearAllBoards(state, dispatch) {

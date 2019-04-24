@@ -1,4 +1,5 @@
-import {err, log} from "../../../Constants";
+import Ably from "../../api/Ably";
+import {err} from "../../../Constants";
 
 export const ADD_HANDLER = 'ADD_HANDLER';
 export const SET_HANDLER = 'SET_HANDLER';
@@ -9,12 +10,40 @@ export const CLEAR_CHANNELS = 'CLEAR_CHANNELS';
 // The max number of channels we can be subscribed to at any given moment
 const channelCacheSize = 10;
 
+type AblyReducer = {
+    subscribedChannels: Map<string, string>,
+    subscribedChannelLRUHandler: [Function],
+    notificationHandlers: Map<string, [Function]>,
+    unsubscriptionHandlers: Map<string, [Function]>,
+    numPermanentHandlers: number
+}
+
+/**
+ * The initial state for the Ably reducer.
+ *
+ * @type {AblyReducer}
+ */
 const initialState = {
     subscribedChannels: {},
     subscribedChannelLRUHandler: [],
     notificationHandlers: {},
     unsubscriptionHandlers: {},
     numPermanentHandlers: 0
+};
+
+/**
+ * Deeply copies the reducer state for the next reducer state.
+ *
+ * @param {AblyReducer} state The state of the Ably Reducer at the time.
+ * @return {AblyReducer} The deeply copied state to be updated.
+ */
+const copyState = (state) => {
+    state = { ...state };
+    state.subscribedChannels = { ...state.subscribedChannels };
+    state.subscribedChannelLRUHandler = [ ...state.subscribedChannelLRUHandler ];
+    state.notificationHandlers = { ...state.notificationHandlers };
+    state.unsubscriptionHandlers = { ...state.unsubscriptionHandlers };
+    return state;
 };
 
 /**
@@ -25,15 +54,14 @@ const initialState = {
  * high a number. Also maintains a list of unsubscription handlers to call once the channels are automatically
  * unsubscribed from.
  *
- * @param {*} state The current state of the ably reducer.
- * @param {{type: string, payload: *}} action The action to specify how to update the reducer.
- * @return {*} The next state for the reducer.
+ * @param {AblyReducer} state The current state of the ably reducer.
+ * @param {{type: string, payload: *, asyncDispatch: function}} action The action to specify how to update the reducer.
+ * @return {AblyReducer} The next state for the reducer.
  */
-export default (state = initialState, action) => {
+export default (state: AblyReducer = initialState, action) => {
     switch (action.type) {
         case ADD_HANDLER:
-            // TODO Will we need deep copying?
-            state = { ...state };
+            state = copyState(state);
             addHandler(
                 state,
                 action.payload.channel,
@@ -43,7 +71,7 @@ export default (state = initialState, action) => {
             );
             break;
         case SET_HANDLER:
-            state = { ...state };
+            state = copyState(state);
             setHandler(
                 state,
                 action.payload.channel,
@@ -53,7 +81,7 @@ export default (state = initialState, action) => {
             );
             break;
         case SET_PERMANENT_HANDLER:
-            state = { ...state };
+            state = copyState(state);
             setPermanentHandler(
                 state,
                 action.payload.channel,
@@ -63,17 +91,15 @@ export default (state = initialState, action) => {
             );
             break;
         case REMOVE_CHANNEL:
-            state = { ...state };
+            state = copyState(state);
             removeChannelAndHandlers(state, action.payload.channel, action.asyncDispatch);
             break;
         case CLEAR_CHANNELS:
-            state = { ...state };
+            state = copyState(state);
             clearAllChannels(state, action.asyncDispatch);
             break;
         default:
-            state = {
-                ...state
-            };
+            state = copyState(state);
             break;
     }
     return state;
@@ -83,11 +109,11 @@ export default (state = initialState, action) => {
  * Updates the Redux state object to add a handler to an Ably channel. Will automatically subscribe if hasn't already
  * and will unsubscribe the Least-recently-used channel if the cache is at capacity.
  *
- * @param state The redux ably state.
- * @param channel The channel to add the handler to.
- * @param handler The handler to receive messages with.
- * @param unsubscriptionHandler The handler to call when the channel is unsubscribed from.
- * @param messageHandler The overall message handler passed from ablyActions.js, uses getStore to get all handlers.
+ * @param {AblyReducer} state The redux ably state.
+ * @param {string} channel The channel to add the handler to.
+ * @param {function({})} handler The handler to receive messages with.
+ * @param {function(string)} unsubscriptionHandler The handler to call when the channel is unsubscribed from.
+ * @param {function({})} messageHandler The overall message handler passed from ablyActions.js, uses getStore to get all handlers.
  */
 function addHandler(state, channel, handler, unsubscriptionHandler, messageHandler) {
     // Check to see if we have already subscribed to the channel
@@ -112,11 +138,11 @@ function addHandler(state, channel, handler, unsubscriptionHandler, messageHandl
  * Updates the ably redux state to set a single handler for a channel. Will overwrite any existing handlers and ensure
  * that there is only one handler (both message and unsubscribe) for the channel.
  *
- * @param state The redux ably state.
- * @param channel The channel to set the handler of.
- * @param handler The message handler for the channel.
- * @param unsubscriptionHandler The handler to call when the channel is unsubscribed from.
- * @param messageHandler The overall message handler passed from ablyActions.js, uses getStore to get all handlers.
+ * @param {AblyReducer} state The redux ably state.
+ * @param {string} channel The channel to set the handler of.
+ * @param {function({})} handler The message handler for the channel.
+ * @param {function(string)} unsubscriptionHandler The handler to call when the channel is unsubscribed from.
+ * @param {function({})} messageHandler The overall message handler passed from ablyActions.js, uses getStore to get all handlers.
  */
 function setHandler(state, channel, handler, unsubscriptionHandler, messageHandler) {
     // Check to see if we have already subscribed to the channel
@@ -141,11 +167,11 @@ function setHandler(state, channel, handler, unsubscriptionHandler, messageHandl
  * Updates the ably redux state to set a single handler for a permanent channel. This channel will not be affected by
  * any logic in the LRU cache and will always stay in the app.
  *
- * @param state The redux ably state.
- * @param channel The channel to set the handler of.
- * @param handler The message handler for the channel.
- * @param unsubscriptionHandler The handler to call when the channel is unsubscribed from.
- * @param messageHandler The overall message handler passed from ablyActions.js, uses getStore to get all handlers.
+ * @param {AblyReducer} state The redux ably state.
+ * @param {string} channel The channel to set the handler of.
+ * @param {function({})} handler The message handler for the channel.
+ * @param {function(string)} unsubscriptionHandler The handler to call when the channel is unsubscribed from.
+ * @param {function({})} messageHandler The overall message handler passed from ablyActions.js, uses getStore to get all handlers.
  */
 function setPermanentHandler(state, channel, handler, unsubscriptionHandler, messageHandler) {
     // Check to see if we have already subscribed to the channel
@@ -169,9 +195,9 @@ function setPermanentHandler(state, channel, handler, unsubscriptionHandler, mes
 /**
  * Removes a single channel and its handlers and calls the unsubscription handlers as well.
  *
- * @param state The redux ably state.
- * @param channel The channel to remove and unsubscribe from.
- * @param asyncDispatch The asyncDispatch function scheduling a dispatch after the reducer finishes.
+ * @param {AblyReducer} state The redux ably state.
+ * @param {string} channel The channel to remove and unsubscribe from.
+ * @param {function({})} asyncDispatch The asyncDispatch function scheduling a dispatch after the reducer finishes.
  */
 function removeChannelAndHandlers(state, channel, asyncDispatch) {
     removeChannel(state, channel, asyncDispatch);
@@ -187,8 +213,8 @@ function removeChannelAndHandlers(state, channel, asyncDispatch) {
 /**
  * Adds the channel to the LRU Cache and potentially throws away a channel and unsubscribes from it.
  *
- * @param state The ably redux state.
- * @param channel The channel to add to the LRU Cache.
+ * @param {AblyReducer} state The ably redux state.
+ * @param {string} channel The channel to add to the LRU Cache.
  */
 function addLRUChannel(state, channel) {
     const lru = state.subscribedChannelLRUHandler;
@@ -203,8 +229,8 @@ function addLRUChannel(state, channel) {
 /**
  * Updates the redux ably state to push the LRU channel to the front of the LRU Cache list.
  *
- * @param state The redux ably state.
- * @param channel The channel to update in the LRU cache.
+ * @param {AblyReducer} state The redux ably state.
+ * @param {string} channel The channel to update in the LRU cache.
  */
 function updateLRUChannel(state, channel) {
     const lru = state.subscribedChannelLRUHandler;
@@ -222,9 +248,9 @@ function updateLRUChannel(state, channel) {
 /**
  * Updates the redux state to remove the channel from the ably redux fields (except for LRU Handler).
  *
- * @param state The ably redux state.
- * @param channel The channel to remove from the state.
- * @param asyncDispatch The asynchronous dispatch to call within an unsubscription handler.
+ * @param {AblyReducer} state The ably redux state.
+ * @param {string} channel The channel to remove from the state.
+ * @param {function({})} asyncDispatch The asynchronous dispatch to call within an unsubscription handler.
  */
 function removeChannel(state, channel, asyncDispatch) {
     // Unsubscribe from the channel, then remove from the redux state
@@ -238,8 +264,8 @@ function removeChannel(state, channel, asyncDispatch) {
 /**
  * Clears all the channels from the ably state. Ends up with a clean ably state. Handles unsubscription too.
  *
- * @param state The redux ably state.
- * @param asyncDispatch The asyncDispatch function scheduling a dispatch after the reducer finishes.
+ * @param {AblyReducer} state The redux ably state.
+ * @param {function({})} asyncDispatch The asyncDispatch function scheduling a dispatch after the reducer finishes.
  */
 function clearAllChannels(state, asyncDispatch) {
     const channels = state.subscribedChannels;
@@ -256,48 +282,30 @@ function clearAllChannels(state, asyncDispatch) {
  * Subscribes to an Ably channel and sets the main handler to the passed in messageHandler. This will be pulled from
  * ablyActions.js and most likely will contain "getStore"
  *
- * @param channel The name of the channel to subscribe to.
- * @param messageHandler The handler for each message that comes through the channel.
+ * @param {string} channel The name of the channel to subscribe to.
+ * @param {function({})} messageHandler The handler for each message that comes through the channel.
  */
 function subscribeToChannel(channel, messageHandler) {
-    /*global Ably*/
-    Ably.channels.get(channel).subscribe(messageHandler, (error) => {
-        if (error) {
-            err&&console.error("Failed to subscribe to the channel " + channel + "!");
-            err&&console.error(error);
-        }
-        else {
-            log&&console.log("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channel);
-            // log&&alert("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channel);
-        }
-    });
+    Ably.subscribeToChannel(channel, messageHandler);
 }
 
 /**
  * Uses Ably to unsubscribe from the channel and calls the unsubscribe handlers. Does not change state!
  *
- * @param channel The channel name that is currently subscribed
- * @param unsubscriptionHandlers The unsubscription handlers to call after un-subscribing.
- * @param asyncDispatch The asynchronous dispatch to call within unsubscription handlers.
+ * @param {string} channel The channel name that is currently subscribed
+ * @param {[function(function({}))]} unsubscriptionHandlers The unsubscription handlers to call after un-subscribing.
+ * @param {function({})} asyncDispatch The asynchronous dispatch to call within unsubscription handlers.
  */
 function unsubscribeFromChannel(asyncDispatch, channel, unsubscriptionHandlers) {
-    /* global Ably */
-    Ably.channels.get(channel).unsubscribe((error) => {
-        if (error) {
-            err&&console.error("Ably could not unsubscribe from " + channel + "!");
-            err&&console.error(error);
+    Ably.unsubscribeFromChannel(channel, () => {
+        if (unsubscriptionHandlers) {
+            for (let i = 0; i < unsubscriptionHandlers.length; i++) {
+                // Handle the un-subscription
+                unsubscriptionHandlers[i](asyncDispatch);
+            }
         }
         else {
-            log&&console.log("Ably successfully unsubscribed from " + channel + "!");
+            err&&console.error("Channel " + channel + " did not specify any unsubscribe handlers????");
         }
     });
-    if (unsubscriptionHandlers) {
-        for (let i = 0; i < unsubscriptionHandlers.length; i++) {
-            // Handle the un-subscription
-            unsubscriptionHandlers[i](asyncDispatch);
-        }
-    }
-    else {
-        err&&console.error("Channel " + channel + " did not specify any unsubscribe handlers????");
-    }
 }

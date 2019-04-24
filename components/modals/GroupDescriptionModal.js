@@ -1,6 +1,6 @@
 import connect from "react-redux/es/connect/connect";
 import React, { Component, Fragment } from 'react';
-import {clearGroupQuery, fetchGroup, fetchClient, forceFetchGroup} from "../../redux/convenience/cacheItemTypeActions";
+import {fetchGroup, fetchClient, forceFetchGroup} from "../../redux/convenience/cacheItemTypeActions";
 import {forceFetchUserAttributes} from "../../redux/actions/userActions";
 import {Button, Divider, Icon, Modal, Card, Grid, Image, Message} from "semantic-ui-react";
 import {getItemTypeFromID} from "../../logic/ItemType";
@@ -345,9 +345,6 @@ const mapDispatchToProps = (dispatch) => {
         },
         forceFetchGroup: (id, variablesList) => {
             dispatch(forceFetchGroup(id, variablesList));
-        },
-        clearGroupQuery: () => {
-            dispatch(clearGroupQuery());
         },
     };
 };
