@@ -15,12 +15,70 @@ export const DISABLE_SEARCH_BAR = 'DISABLE_SEARCH_BAR';
 const queryLimit = 100;
 
 // TODO This will determine the ratios of which objects to get out of the
-const typeRatios = {
-    Client: 2, Trainer: 3, Gym: 5, Workout: 1, Review: 1, Event: 5, Challenge: 10, Invite: 1, Post: 15
+// const typeRatios = {
+//     Client: 2, Trainer: 3, Gym: 5, Workout: 1, Review: 1, Event: 5, Challenge: 10, Invite: 1, Post: 15
+// };
+
+/**
+ * The Search Type State for the Search Reducer.
+ *
+ * @property {boolean} enabled Whether or not the type state is enabled.
+ * @property {[string]} variableList The variable list to query for in the type.
+ * @property {Object} filterJSON The JSON object to filter the type query with.
+ * @property {Map<string, string>} filterParameters The parameters to filter the search with.
+ * @property {string|null} nextToken The previous next token given from a query.
+ * @property {boolean} ifFirst If the type state has not been queried yet.
+ * @property {number} limit The limit of items to retrieve from the database.
+ * @property {[Object]} results The results received from the database for this type.
+ */
+type SearchTypeState = {
+    enabled: boolean,
+    variableList: [string],
+    filterJSON: Object,
+    filterParameters: Map<string, string>,
+    nextToken: string|null,
+    ifFirst: boolean,
+    limit: number,
+    results: [Object],
+};
+
+/**
+ * The initial state for a type in the search.
+ *
+ * @type {SearchTypeState}
+ */
+const initialTypeState = {
+    enabled: false,
+    variableList: [],
+    filterJSON: {},
+    filterParameters: {},
+    nextToken: null,
+    ifFirst: true,
+    limit: queryLimit,
+    results: [],
+};
+
+/**
+ * Deeply copies the type state in order to edit the state.
+ *
+ * @param {SearchTypeState} typeState The state to copy.
+ * @return {SearchTypeState} The copied state to update.
+ */
+const copyTypeState = (typeState) => {
+    typeState = { ...typeState };
+    typeState.filterParameters = { ...typeState.filterParameters };
+    typeState.results = [ ...typeState.results ];
+    return typeState;
 };
 
 // Initial states of each kind of search
+/**
+ * The initial state for the Client search.
+ *
+ * @type {SearchTypeState}
+ */
 const initialClientState = {
+    ...copyTypeState(initialTypeState),
     enabled: true,
     variableList: ["id", "item_type", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", /*"profilePicture"*/ "friendRequests"],
     filterJSON: {
@@ -45,7 +103,13 @@ const initialClientState = {
     results: [],
 };
 
+/**
+ * The initial state for the Trainer search.
+ *
+ * @type {SearchTypeState}
+ */
 const initialTrainerState = {
+    ...copyTypeState(initialTypeState),
     enabled: true,
     variableList: ["id", "name", "username", "item_type", "gender", "birthday", "profileImagePath", /*"profilePicture", */"profileImagePaths", "subscribers", "friendlinessRating", "" +
     "effectivenessRating", "posts"],
@@ -64,14 +128,16 @@ const initialTrainerState = {
             }
         }]
     },
-    filterParameters: {},
-    nextToken: null,
-    ifFirst: true,
     limit: queryLimit,
-    results: [],
 };
 
+/**
+ * The initial state for the Gym search.
+ *
+ * @type {SearchTypeState}
+ */
 const initialGymState = {
+    ...copyTypeState(initialTypeState),
     enabled: false,
     variableList: [],
     filterJSON: {
@@ -96,29 +162,33 @@ const initialGymState = {
     results: [],
 };
 
+/**
+ * The initial state for the Workout search.
+ *
+ * @type {SearchTypeState}
+ */
 const initialWorkoutState = {
+    ...copyTypeState(initialTypeState),
     enabled: false,
-    variableList: [],
-    filterJSON: {},
-    filterParameters: {},
-    nextToken: null,
-    ifFirst: true,
-    limit: queryLimit,
-    results: [],
 };
 
+/**
+ * The initial state for the Review search.
+ *
+ * @type {SearchTypeState}
+ */
 const initialReviewState = {
+    ...copyTypeState(initialTypeState),
     enabled: false,
-    variableList: [],
-    filterJSON: {},
-    filterParameters: {},
-    nextToken: null,
-    ifFirst: true,
-    limit: queryLimit,
-    results: [],
 };
 
+/**
+ * The initial state for the Event search.
+ *
+ * @type {SearchTypeState}
+ */
 const initialEventState = {
+    ...copyTypeState(initialTypeState),
     enabled: false,
     variableList: [],
     filterJSON: {
@@ -147,7 +217,13 @@ const initialEventState = {
     results: [],
 };
 
+/**
+ * The initial state for the Challenge search.
+ *
+ * @type {SearchTypeState}
+ */
 const initialChallengeState = {
+    ...copyTypeState(initialTypeState),
     enabled: true,
     variableList: ["id", "item_type", "title", "endTime", "time_created", "owner", "ifCompleted", "members", "capacity", "goal", "access", "description", "restriction", "tags", "prize", "submissions"],
     filterJSON: {
@@ -176,28 +252,62 @@ const initialChallengeState = {
     results: [],
 };
 
+/**
+ * The initial state for the Invite search.
+ *
+ * @type {SearchTypeState}
+ */
 const initialInviteState = {
+    ...copyTypeState(initialTypeState),
     enabled: false,
-    variableList: [],
-    filterJSON: {},
-    filterParameters: {},
-    nextToken: null,
-    ifFirst: true,
-    limit: queryLimit,
-    results: [],
 };
 
+/**
+ * The initial state for the Post search.
+ *
+ * @type {SearchTypeState}
+ */
 const initialPostState = {
+    ...copyTypeState(initialTypeState),
     enabled: false,
-    variableList: [],
-    filterJSON: {},
-    filterParameters: {},
-    nextToken: null,
-    ifFirst: true,
-    limit: queryLimit,
-    results: [],
 };
 
+/**
+ * The state for the Search Reducer at any given moment.
+ *
+ * @property {string} searchQuery The string to search for using the search bar.
+ * @property {[Object]} results The total results for the given search query.
+ * @property {number} limit The limit of objects to receive from the database in a query.
+ * @property {number} numTypesEnabled The number of types that are currently enabled for searching.
+ * @property {boolean} ifFinished If the search query has no more results to get with the search configuration.
+ * @property {boolean} searchBarEnabled If the search bar is currently enabled for searching.
+ * @property {Map<string, SearchTypeState>} typeQueries The individual Type settings for searching.
+ */
+type SearchReducer = {
+    searchQuery: string,
+    results: [Object],
+    limit: number,
+    numTypesEnabled: number,
+    ifFinished: boolean,
+    searchBarEnabled: boolean,
+    typeQueries: {
+        Client: SearchTypeState,
+        Trainer: SearchTypeState,
+        Gym: SearchTypeState,
+        Workout: SearchTypeState,
+        Review: SearchTypeState,
+        Event: SearchTypeState,
+        Challenge: SearchTypeState,
+        Invite: SearchTypeState,
+        Post: SearchTypeState
+    }
+};
+
+/**
+ * The initial state for the Search Reducer.
+ *
+ * @type {SearchReducer}
+ */
 const initialState = {
     searchQuery: "",
     results: [],
@@ -225,11 +335,11 @@ const initialState = {
  * the kind of search that will happen through certain actions. Also handles the query, in order to search more than
  * once (as in loading a new page of results).
  *
- * @param {*} state The current state of the search reducer.
+ * @param {SearchReducer} state The current state of the search reducer.
  * @param {{type: string, payload: *}} action The action to specify how to update the reducer.
- * @return {*} The next state for the reducer.
+ * @return {SearchReducer} The next state for the reducer.
  */
-export default (state = initialState, action) => {
+export default (state: SearchReducer = initialState, action) => {
     switch (action.type) {
         // TODO Update the retrieval limits based on what is enabled and not
         case ENABLE_TYPE:
@@ -364,7 +474,7 @@ export default (state = initialState, action) => {
 /**
  * Gets the current number of types that are enabled for search within the reducer.
  *
- * @param {*} state The current state of the search reducer.
+ * @param {SearchReducer} state The current state of the search reducer.
  * @return {number} The number of types enabled for search.
  */
 function getNumTypesEnabled(state) {
@@ -383,7 +493,7 @@ function getNumTypesEnabled(state) {
  * Gets if the entire query is finished. Based on if all the types that are enabled are not at the first query and do
  * not have a next token.
  *
- * @param {*} state The current state of the search reducer.
+ * @param {SearchReducer} state The current state of the search reducer.
  * @return {boolean}
  */
 function getIfFinished(state) {

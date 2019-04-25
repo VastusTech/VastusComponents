@@ -6,6 +6,16 @@ export const SET_IS_LOADING = 'SET_IS_LOADING';
 export const SET_IS_NOT_LOADING = 'SET_IS_NOT_LOADING';
 export const TOGGLE_IS_LOADING = 'TOGGLE_IS_LOADING';
 
+type InfoReducer = {
+    isLoading: boolean,
+    error: Error
+};
+
+/**
+ * The Initial State for the Info Reducer
+ *
+ * @type {InfoReducer}
+ */
 const initialState = {
     isLoading: false,
     error: null
@@ -17,11 +27,11 @@ const initialState = {
  * This reducer handles all the global states of the application. This includes global errors and global loading states.
  * This might be more helpful later when we have a more integrated system.
  *
- * @param {*} state The current state of the info reducer.
+ * @param {InfoReducer} state The current state of the info reducer.
  * @param {{type: string, payload: *}} action The action to specify how to update the reducer.
- * @return {*} The next state for the reducer.
+ * @return {InfoReducer} The next state for the reducer.
  */
-export default (state = initialState, action) => {
+export default (state: InfoReducer = initialState, action) => {
     switch (action.type) {
         case SET_ERROR:
             err&&console.error("Error inside a redux action/reducer! (Leo wrote this) Error = " + JSON.stringify(action.payload));
@@ -51,7 +61,7 @@ export default (state = initialState, action) => {
         case TOGGLE_IS_LOADING:
             state = {
                 ...state,
-                isLoading: !state.info.isLoading
+                isLoading: !state.isLoading
             };
             break;
         default:

@@ -320,238 +320,238 @@ export function forceFetchStreakQuery(variableList, filter, limit, nextToken, da
     return forceFetchItemQuery("Streak", variableList, filter, limit, nextToken, dataHandler, failureHandler);
 }
 export function putClient(client) {
-    return putItem(client, "Client");
+    return putItem(client.id, "Client", client);
 }
 export function putTrainer(trainer) {
-    return putItem(trainer, "Trainer");
+    return putItem(trainer.id, "Trainer", trainer);
 }
 export function putGym(gym) {
-    return putItem(gym, "Gym");
+    return putItem(gym.id, "Gym", gym);
 }
 export function putWorkout(workout) {
-    return putItem(workout, "Workout");
+    return putItem(workout.id, "Workout", workout);
 }
 export function putReview(review) {
-    return putItem(review, "Review");
+    return putItem(review.id, "Review", review);
 }
 export function putEvent(event) {
-    return putItem(event, "Event");
+    return putItem(event.id, "Event", event);
 }
 export function putChallenge(challenge) {
-    return putItem(challenge, "Challenge");
+    return putItem(challenge.id, "Challenge", challenge);
 }
 export function putInvite(invite) {
-    return putItem(invite, "Invite");
+    return putItem(invite.id, "Invite", invite);
 }
 export function putPost(post) {
-    return putItem(post, "Post");
+    return putItem(post.id, "Post", post);
 }
 export function putSubmission(submission) {
-    return putItem(submission, "Submission");
+    return putItem(submission.id, "Submission", submission);
 }
 export function putGroup(group) {
-    return putItem(group, "Group");
+    return putItem(group.id, "Group", group);
 }
 export function putComment(comment) {
-    return putItem(comment, "Comment");
+    return putItem(comment.id, "Comment", comment);
 }
 export function putSponsor(sponsor) {
-    return putItem(sponsor, "Sponsor");
+    return putItem(sponsor.id, "Sponsor", sponsor);
 }
 export function putStreak(streak) {
-    return putItem(streak, "Streak");
+    return putItem(streak.id, "Streak", streak);
 }
 // TODO Consider how this might scale? Another LRU Cache here?
-export function putClientQuery(queryString, queryResult) {
-    return putItemQuery("Client", queryString, queryResult);
-}
-export function putTrainerQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_TRAINER_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putGymQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_GYM_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putWorkoutQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_WORKOUT_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putReviewQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_REVIEW_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putEventQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_EVENT_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putChallengeQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_CHALLENGE_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putInviteQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_INVITE_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putPostQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_POST_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putSubmissionQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_SUBMISSION_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putGroupQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_GROUP_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putCommentQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_COMMENT_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putSponsorQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_SPONSOR_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function putStreakQuery(queryString, queryResult) {
-    return {
-        type: "FETCH_STREAK_QUERY",
-        payload: {
-            queryString,
-            queryResult
-        }
-    };
-}
-export function clearClientQuery() {
-    return {
-        type: "CLEAR_CLIENT_QUERY",
-    };
-}
-export function clearTrainerQuery() {
-    return {
-        type: "CLEAR_TRAINER_QUERY",
-    };
-}
-export function clearGymQuery() {
-    return {
-        type: "CLEAR_GYM_QUERY",
-    };
-}
-export function clearWorkoutQuery() {
-    return {
-        type: "CLEAR_WORKOUT_QUERY",
-    };
-}
-export function clearReviewQuery() {
-    return {
-        type: "CLEAR_REVIEW_QUERY",
-    };
-}
-export function clearEventQuery() {
-    return {
-        type: "CLEAR_EVENT_QUERY",
-    };
-}
-export function clearChallengeQuery() {
-    return {
-        type: "CLEAR_CHALLENGE_QUERY",
-    };
-}
-export function clearInviteQuery() {
-    return {
-        type: "CLEAR_INVITE_QUERY",
-    };
-}
-export function clearPostQuery() {
-    return {
-        type: "CLEAR_POST_QUERY",
-    };
-}
-export function clearSubmissionQuery() {
-    return {
-        type: "CLEAR_SUBMISSION_QUERY",
-    };
-}
-export function clearGroupQuery() {
-    return {
-        type: "CLEAR_GROUP_QUERY",
-    };
-}
-export function clearCommentQuery() {
-    return {
-        type: "CLEAR_COMMENT_QUERY",
-    };
-}
-export function clearSponsorQuery() {
-    return {
-        type: "CLEAR_SPONSOR_QUERY",
-    };
-}
-export function clearStreakQuery() {
-    return {
-        type: "CLEAR_STREAK_QUERY",
-    };
-}
+// export function putClientQuery(normalizedQuery, queryResult) {
+//     return putItemQuery("Client", queryString, queryResult);
+// }
+// export function putTrainerQuery(queryString, queryResult) {
+//     return {
+//         type: "FETCH_TRAINER_QUERY",
+//         payload: {
+//             queryString,
+//             queryResult
+//         }
+//     };
+// }
+// export function putGymQuery(queryString, queryResult) {
+//     return {
+//         type: "FETCH_GYM_QUERY",
+//         payload: {
+//             queryString,
+//             queryResult
+//         }
+//     };
+// }
+// export function putWorkoutQuery(queryString, queryResult) {
+//     return {
+//         type: "FETCH_WORKOUT_QUERY",
+//         payload: {
+//             queryString,
+//             queryResult
+//         }
+//     };
+// }
+// export function putReviewQuery(queryString, queryResult) {
+//     return {
+//         type: "FETCH_REVIEW_QUERY",
+//         payload: {
+//             queryString,
+//             queryResult
+//         }
+//     };
+// }
+// export function putEventQuery(queryString, queryResult) {
+//     return {
+//         type: "FETCH_EVENT_QUERY",
+//         payload: {
+//             queryString,
+//             queryResult
+//         }
+//     };
+// }
+// export function putChallengeQuery(queryString, queryResult) {
+//     return {
+//         type: "FETCH_CHALLENGE_QUERY",
+//         payload: {
+//             queryString,
+//             queryResult
+//         }
+//     };
+// }
+// export function putInviteQuery(queryString, queryResult) {
+//     return {
+//         type: "FETCH_INVITE_QUERY",
+//         payload: {
+//             queryString,
+//             queryResult
+//         }
+//     };
+// }
+// export function putPostQuery(queryString, queryResult) {
+//     return {
+//         type: "FETCH_POST_QUERY",
+//         payload: {
+//             queryString,
+//             queryResult
+//         }
+//     };
+// }
+// export function putSubmissionQuery(queryString, queryResult) {
+//     return {
+//         type: "FETCH_SUBMISSION_QUERY",
+//         payload: {
+//             queryString,
+//             queryResult
+//         }
+//     };
+// }
+// export function putGroupQuery(queryString, queryResult) {
+//     return {
+//         type: "FETCH_GROUP_QUERY",
+//         payload: {
+//             queryString,
+//             queryResult
+//         }
+//     };
+// }
+// export function putCommentQuery(queryString, queryResult) {
+//     return {
+//         type: "FETCH_COMMENT_QUERY",
+//         payload: {
+//             queryString,
+//             queryResult
+//         }
+//     };
+// }
+// export function putSponsorQuery(queryString, queryResult) {
+//     return {
+//         type: "FETCH_SPONSOR_QUERY",
+//         payload: {
+//             queryString,
+//             queryResult
+//         }
+//     };
+// }
+// export function putStreakQuery(queryString, queryResult) {
+//     return {
+//         type: "FETCH_STREAK_QUERY",
+//         payload: {
+//             queryString,
+//             queryResult
+//         }
+//     };
+// }
+// export function clearClientQuery() {
+//     return {
+//         type: "CLEAR_CLIENT_QUERY",
+//     };
+// }
+// export function clearTrainerQuery() {
+//     return {
+//         type: "CLEAR_TRAINER_QUERY",
+//     };
+// }
+// export function clearGymQuery() {
+//     return {
+//         type: "CLEAR_GYM_QUERY",
+//     };
+// }
+// export function clearWorkoutQuery() {
+//     return {
+//         type: "CLEAR_WORKOUT_QUERY",
+//     };
+// }
+// export function clearReviewQuery() {
+//     return {
+//         type: "CLEAR_REVIEW_QUERY",
+//     };
+// }
+// export function clearEventQuery() {
+//     return {
+//         type: "CLEAR_EVENT_QUERY",
+//     };
+// }
+// export function clearChallengeQuery() {
+//     return {
+//         type: "CLEAR_CHALLENGE_QUERY",
+//     };
+// }
+// export function clearInviteQuery() {
+//     return {
+//         type: "CLEAR_INVITE_QUERY",
+//     };
+// }
+// export function clearPostQuery() {
+//     return {
+//         type: "CLEAR_POST_QUERY",
+//     };
+// }
+// export function clearSubmissionQuery() {
+//     return {
+//         type: "CLEAR_SUBMISSION_QUERY",
+//     };
+// }
+// export function clearGroupQuery() {
+//     return {
+//         type: "CLEAR_GROUP_QUERY",
+//     };
+// }
+// export function clearCommentQuery() {
+//     return {
+//         type: "CLEAR_COMMENT_QUERY",
+//     };
+// }
+// export function clearSponsorQuery() {
+//     return {
+//         type: "CLEAR_SPONSOR_QUERY",
+//     };
+// }
+// export function clearStreakQuery() {
+//     return {
+//         type: "CLEAR_STREAK_QUERY",
+//     };
+// }
 // function getQueryCacheName(itemType)  {
 //     return switchReturnItemType(itemType, "clientQueries", "trainerQueries", "gymQueries", "workoutQueries",
 //         "reviewQueries", "eventQueries", "challengeQueries", "inviteQueries", "postQueries", "submissionQueries",

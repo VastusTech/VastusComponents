@@ -10,6 +10,20 @@ export const CLOSE_SIGN_UP_MODAL = 'CLOSE_SIGN_UP_MODAL';
 export const OPEN_FORGOT_PASSWORD_MODAL = 'OPEN_FORGOT_PASSWORD_MODAL';
 export const CLOSE_FORGOT_PASSWORD_MODAL = 'CLOSE_FORGOT_PASSWORD_MODAL';
 
+type AuthReducer = {
+    loggedIn: boolean,
+    confirmingSignUp: boolean,
+    confirmingForgotPassword: boolean,
+    signUpModalOpen: boolean,
+    forgotPasswordModalOpen: boolean,
+    ifFederatedSignIn: boolean
+};
+
+/**
+ * The initial state for the Auth reducer.
+ *
+ * @type {AuthReducer}
+ */
 const initialState = {
     loggedIn: false,
     confirmingSignUp: false,
@@ -20,20 +34,29 @@ const initialState = {
 };
 
 /**
+ * Deeply copies the Auth Reducer.
+ *
+ * @param {AuthReducer} state The current state of the Auth reducer.
+ * @return {AuthReducer} The copied state of the Auth reducer.
+ */
+const copyState = (state) => {
+    return { ...state };
+};
+
+/**
  * Auth Reducer:
  *
  * Used to maintain the authentication flow of the application. Keeps track of which modals are open and if they are
  * signed in or not.
  *
- * @param {*} state The current state of the auth reducer.
+ * @param {AuthReducer} state The current state of the auth reducer.
  * @param {{type: string, payload: *}} action The action to specify how to update the reducer.
- * @return {*} The next state for the reducer.
+ * @return {AuthReducer} The next state for the reducer.
  */
-export default (state = initialState, action) => {
+export default (state: AuthReducer = initialState, action) => {
     switch (action.type) {
         case LOG_IN:
             state = {
-                ...state,
                 loggedIn: true,
                 confirmingSignUp: false,
                 confirmingForgotPassword: false,
@@ -44,7 +67,6 @@ export default (state = initialState, action) => {
             break;
         case FEDERATED_LOG_IN:
             state = {
-                ...state,
                 loggedIn: true,
                 confirmingSignUp: false,
                 confirmingForgotPassword: false,
@@ -55,40 +77,52 @@ export default (state = initialState, action) => {
             break;
         case LOG_OUT:
             state = {
-                ...state,
                 loggedIn: false,
                 confirmingSignUp: false,
                 confirmingForgotPassword: false,
                 signUpModalOpen: false,
-                forgotPasswordModalOpen: false
+                forgotPasswordModalOpen: false,
+                ifFederatedSignIn: false
             };
             break;
         case SIGN_UP:
             state = {
-                ...state,
                 loggedIn: false,
-                confirmingSignUp: true
+                confirmingSignUp: true,
+                confirmingForgotPassword: false,
+                signUpModalOpen: true,
+                forgotPasswordModalOpen: false,
+                ifFederatedSignIn: false
             };
             break;
         case CONFIRM_SIGNUP:
             state = {
-                ...state,
                 loggedIn: false,
                 confirmingSignUp: false,
+                confirmingForgotPassword: false,
                 signUpModalOpen: false,
+                forgotPasswordModalOpen: false,
+                ifFederatedSignIn: false
             };
             break;
         case FORGOT_PASSWORD:
             state = {
-                ...state,
-                confirmingForgotPassword: true
+                loggedIn: false,
+                confirmingSignUp: false,
+                confirmingForgotPassword: true,
+                signUpModalOpen: false,
+                forgotPasswordModalOpen: true,
+                ifFederatedSignIn: false
             };
             break;
         case CONFIRM_FORGOT_PASSWORD:
             state = {
-                ...state,
+                loggedIn: false,
+                confirmingSignUp: false,
                 confirmingForgotPassword: false,
-                forgotPasswordModalOpen: false
+                signUpModalOpen: false,
+                forgotPasswordModalOpen: false,
+                ifFederatedSignIn: false
             };
             break;
         case OPEN_SIGN_UP_MODAL:
