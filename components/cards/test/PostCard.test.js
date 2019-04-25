@@ -1,4 +1,6 @@
 import React from 'react';
+import "../../../../testing/SetTesting";
+import { expect } from 'chai';
 import { shallow, mount, render } from 'enzyme';
 import PostCard from "../PostCard";
 import TestConfig, {store} from "../../../../TestConfig";
@@ -6,7 +8,7 @@ import PostDetailCard from "../post_detail_cards/PostDetailCard";
 
 TestConfig();
 
-describe('PostCard Button', () => {
+describe("PostCard Button", () => {
     const reduxState = {
         cache: {
             clients: {
@@ -28,23 +30,23 @@ describe('PostCard Button', () => {
         about: "CH0001"
     };
 
-    it('renders without crashing', () => {
+    it("renders without crashing", () => {
         const component = shallow(<PostCard post={post} store={store(reduxState)}/>);
 
-        expect(component).toMatchSnapshot();
+        global.expect(component).toMatchSnapshot();
     });
 
     const clickFn = jest.fn();
-    it('button click should open by modal', () => {
-        const component = mount(<PostCard post={post} store={store(reduxState)}/>);
+    it("button click should open by modal", () => {
+        const component = shallow(<PostCard post={post} store={store(reduxState)}/>);
         component
-            .find('.ui.button')
-            .simulate('click');
+            .find("Button")
+            .simulate("click");
         expect(clickFn).toHaveBeenCalled();
     });
 
 
-    it('profilePicture function displays image properly', () => {
+    it("profilePicture function displays image properly", () => {
         const component = mount(<PostCard post={post} store={store(reduxState)}/>);
 
         //const profilePicture;
@@ -52,7 +54,7 @@ describe('PostCard Button', () => {
         expect(component).toMatchSnapshot();
     });
 
-    it('getByAttribute returns proper elements', () => {
+    it("getByAttribute returns proper elements", () => {
         const component = shallow(<PostCard post={post} store={store(reduxState)}/>);
 
         //const profilePicture;
@@ -60,7 +62,7 @@ describe('PostCard Button', () => {
         expect(component).toMatchSnapshot();
     });
 
-    it('getCorrectDetailCard function displays proper detail card component', () => {
+    it("getCorrectDetailCard function displays proper detail card component", () => {
         const component = render(<PostCard post={post} store={store(reduxState)}/>);
 
         const postDetailCard = shallow(<PostDetailCard postID={post.id}/>);
@@ -69,7 +71,7 @@ describe('PostCard Button', () => {
         expect(postDetailCard).toMatchSnapshot();
     });
 
-    it('getPostAttribute returns correct attributes', () => {
+    it("getPostAttribute returns correct attributes", () => {
         const component = shallow(<PostCard post={post} store={store(reduxState)}/>);
 
         //const profilePicture;
