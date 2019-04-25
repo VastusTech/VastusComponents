@@ -1,10 +1,4 @@
-import ably from "../redux/reducers/ablyReducer";
-import auth from "../redux/reducers/authReducer";
-import cache from "../redux/reducers/cacheReducer";
-import info from "../redux/reducers/infoReducer";
-import message from "../redux/reducers/messageReducer";
-import search from "../redux/reducers/searchReducer";
-import user from "../redux/reducers/userReducer";
+import configureStore from 'redux-mock-store';
 
 /**
  * Class used for testing certain parts of the code that may try to connect to AWS in order to complete. Run this when
@@ -16,16 +10,33 @@ export default class TestHelper {
     static unsetTest() { TestHelper.ifTesting = false; }
 }
 
+export function store(initialState) {
+    if (initialState) {
+        return configureStore()(initialState);
+    }
+    else {
+        return configureStore()({});
+    }
+}
+
+
 /**
  * Gets the entire redux store components given for initializing a mock store. Allows you to only initialize what you
  * need to for the test.
  *
- * TODO Edit when we use more reducers.
+ * TODO Edit if we use more reducers.
  *
  * @param {[string]} storeTypes The strings for the types of the redux store to initialize.
  * @return {{ably: *, auth: *, cache: *, info: *, message: *, user: *, search: *}}
  */
 export const getInitalReduxStore = (storeTypes) => {
+    const ably = require("../redux/reducers/ablyReducer");
+    const auth = require("../redux/reducers/authReducer");
+    const cache = require("../redux/reducers/cacheReducer");
+    const info = require("../redux/reducers/infoReducer");
+    const message = require("../redux/reducers/messageReducer");
+    const search = require("../redux/reducers/searchReducer");
+    const user = require("../redux/reducers/userReducer");
     return {
         ably: !storeTypes || storeTypes.includes("ably") ? ably(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
         auth: !storeTypes || storeTypes.includes("auth") ? auth(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,

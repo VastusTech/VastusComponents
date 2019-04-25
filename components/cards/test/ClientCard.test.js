@@ -1,7 +1,7 @@
 import React from 'react';
 import ClientCard from "../ClientCard";
 import { shallow, mount } from 'enzyme';
-import TestConfig, {store} from "../../../../TestConfig";
+import TestConfig, {store} from "../../../testing/TestConfig";
 
 TestConfig();
 it('renders without crashing', () => {

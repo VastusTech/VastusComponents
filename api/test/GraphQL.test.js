@@ -1,4 +1,4 @@
-import TestConfig from "../../../TestConfig";
+import TestConfig from "../../testing/TestConfig";
 import QL from "../GraphQL";
 import { expect } from "chai";
 

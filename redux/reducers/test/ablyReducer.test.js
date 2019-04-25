@@ -1,13 +1,8 @@
-import Ably from "../../../api/Ably";
+import "../../../testing/setTesting";
 import ably, {ADD_HANDLER, CLEAR_CHANNELS, SET_HANDLER, SET_PERMANENT_HANDLER, REMOVE_CHANNEL} from "../ablyReducer";
 import {expect} from "chai";
-import TestConfig from "../../../../TestConfig";
 
 describe('ablyReducer.js', () => {
-    beforeAll(() => {
-        TestConfig();
-    });
-
     it("Ignores other actions correctly", () => {
         expect(ably(undefined, {type: "__NOT_A_REAL_ACTION__", payload: null})).to.eql({
             subscribedChannels: {},
@@ -195,10 +190,6 @@ describe('ablyReducer.js', () => {
             unsubscriptionHandlers: {},
             numPermanentHandlers: 0
         });
-    });
-
-    afterAll(() => {
-        Ably.close();
     });
 });
 

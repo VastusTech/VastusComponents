@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import PostCard from "../PostCard";
-import TestConfig, {store} from "../../../../TestConfig";
+import TestConfig, {store} from "../../../testing/TestConfig";
 
 TestConfig();
 it('renders without crashing', () => {
