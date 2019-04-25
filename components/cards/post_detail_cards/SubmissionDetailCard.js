@@ -9,6 +9,8 @@ import {Player} from "video-react";
 import { Storage } from "aws-amplify";
 import {err} from "../../../../Constants";
 
+// TODO Rewrite and refactor
+
 type Props = {
     postID: string
 };

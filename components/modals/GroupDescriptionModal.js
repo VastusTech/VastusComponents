@@ -1,4 +1,4 @@
-import connect from "react-redux/es/connect/connect";
+import {connect} from "react-redux";
 import React, { Component, Fragment } from 'react';
 import {clearGroupQuery, fetchGroup, fetchClient, forceFetchGroup} from "../../redux/convenience/cacheItemTypeActions";
 import {forceFetchUserAttributes} from "../../redux/actions/userActions";

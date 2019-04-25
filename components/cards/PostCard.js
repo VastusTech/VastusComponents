@@ -230,7 +230,7 @@ const PostCard = (props: Props) => {
         <Card color='purple' fluid raised>
             {/*this.getPostAttribute("about")*/}
             <Grid style={{marginLeft: '10px', marginTop: '2px', marginBottom: '2px'}}>
-                <Button className="u-button--flat" onClick={() => byModalOpen||setByModalOpen(true)}>
+                <Button className="u-button--flat" id="byButton" onClick={() => byModalOpen||setByModalOpen(true)}>
                     <Grid style={{marginLeft: '10px', marginTop: '10px'}}>
                         <Grid.Column width={6}>
                             {profilePicture(getByAttribute("profileImage"))}
