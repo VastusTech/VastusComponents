@@ -1,150 +1,124 @@
-import cache from "../cacheReducer";
+import "../../../testing/SetTesting";
+import cache, {CLEAR_ITEM_CACHE, CLEAR_NORMALIZED_ITEM_QUERY, PUT_ITEM_QUERY, PUT_ITEM, REMOVE_ITEM, 
+    REMOVE_ITEM_ATTRIBUTE_INDEX, REMOVE_ITEM_ATTRIBUTES, ADD_ITEM_ATTRIBUTES, SET_ITEM_ATTRIBUTE_INDEX, 
+    getObjectChannelName} from "../cacheReducer";
 import {expect} from "chai";
 
-describe("cacheReducer.js", function () {
-    it("Ignores other actions correctly", () => {
-        const state = {};
-        expect(cache(undefined, {type: "__NOT_A_REAL_ACTION__", payload: null}).to.eql({
+it("Ignores other actions correctly", () => {
+    expect(cache({}, {type: "__NOT_A_REAL_ACTION__", payload: null}).to.eql({}));
+});
 
-        }));
+describe("Cache Reducer", function () {
+    let cacheState;
+
+    beforeEach(() => {
+        cacheState = cache(undefined, {type: "__INIT__", payload: null});
     });
-    it("Sets fetched client successfully", function () {
 
+// export const PUT_ITEM =                    "PUT_ITEM";
+    describe(PUT_ITEM, function () {
+        it("Should Put item ", function () {
+
+        });
+    });
+// export const SET_ITEM_ATTRIBUTE_INDEX =    "SET_ITEM_ATTRIBUTE_INDEX";
+    describe(SET_ITEM_ATTRIBUTE_INDEX, function () {
+        it("Sets", function () {
+
+        });
+    });
+// export const ADD_ITEM_ATTRIBUTES =         "ADD_ITEM_ATTRIBUTES";
+    describe(ADD_ITEM_ATTRIBUTES, function () {
+
+    });
+// export const REMOVE_ITEM_ATTRIBUTES =      "REMOVE_ITEM_ATTRIBUTES";
+    describe(REMOVE_ITEM_ATTRIBUTES, function () {
+
+    });
+// export const REMOVE_ITEM_ATTRIBUTE_INDEX = "REMOVE_ITEM_ATTRIBUTE_INDEX";
+    describe(REMOVE_ITEM_ATTRIBUTE_INDEX, function () {
+
+    });
+// export const REMOVE_ITEM =                 "REMOVE_ITEM";
+    describe(REMOVE_ITEM, function () {
+
+    });
+// export const PUT_ITEM_QUERY =              "PUT_ITEM_QUERY";
+    describe(PUT_ITEM_QUERY, function () {
+
+    });
+// export const CLEAR_NORMALIZED_ITEM_QUERY = "CLEAR_NORMALIZED_ITEM_QUERY";
+    describe(CLEAR_NORMALIZED_ITEM_QUERY, function () {
+
+    });
+// export const CLEAR_ITEM_CACHE =            "CLEAR_ITEM_CACHE";
+    describe(CLEAR_ITEM_CACHE, function () {
+
+    });
+    describe("Channel Name Getter", function () {
+        it("Should get an object update channel name correctly", function () {
+
+        });
     });
 });
 
-// export const FETCH_CLIENT = 'FETCH_CLIENT';
-// export const FETCH_TRAINER = 'FETCH_TRAINER';
-// export const FETCH_GYM = 'FETCH_GYM';
-// export const FETCH_WORKOUT = 'FETCH_WORKOUT';
-// export const FETCH_REVIEW = 'FETCH_REVIEW';
-// export const FETCH_EVENT = 'FETCH_EVENT';
-// export const FETCH_CHALLENGE = 'FETCH_CHALLENGE';
-// export const FETCH_INVITE = 'FETCH_INVITE';
-// export const FETCH_POST = 'FETCH_POST';
-// export const FETCH_SUBMISSION = 'FETCH_SUBMISSION';
-// export const FETCH_GROUP = 'FETCH_GROUP';
-// export const FETCH_COMMENT = 'FETCH_COMMENT';
-// export const FETCH_SPONSOR = 'FETCH_SPONSOR';
-// export const FETCH_STREAK = 'FETCH_STREAK';
-//
-// export const SET_CLIENT_ATTRIBUTE_INDEX = 'SET_CLIENT_ATTRIBUTE_INDEX';
-// export const SET_TRAINER_ATTRIBUTE_INDEX = 'SET_TRAINER_ATTRIBUTE_INDEX';
-// export const SET_GYM_ATTRIBUTE_INDEX = 'SET_GYM_ATTRIBUTE_INDEX';
-// export const SET_WORKOUT_ATTRIBUTE_INDEX = 'SET_WORKOUT_ATTRIBUTE_INDEX';
-// export const SET_REVIEW_ATTRIBUTE_INDEX = 'SET_REVIEW_ATTRIBUTE_INDEX';
-// export const SET_EVENT_ATTRIBUTE_INDEX = 'SET_EVENT_ATTRIBUTE_INDEX';
-// export const SET_CHALLENGE_ATTRIBUTE_INDEX = 'SET_CHALLENGE_ATTRIBUTE_INDEX';
-// export const SET_INVITE_ATTRIBUTE_INDEX = 'SET_INVITE_ATTRIBUTE_INDEX';
-// export const SET_POST_ATTRIBUTE_INDEX = 'SET_POST_ATTRIBUTE_INDEX';
-// export const SET_SUBMISSION_ATTRIBUTE_INDEX = 'SET_SUBMISSION_ATTRIBUTE_INDEX';
-// export const SET_GROUP_ATTRIBUTE_INDEX = 'SET_GROUP_ATTRIBUTE_INDEX';
-// export const SET_COMMENT_ATTRIBUTE_INDEX = 'SET_COMMENT_ATTRIBUTE_INDEX';
-// export const SET_SPONSOR_ATTRIBUTE_INDEX = 'SET_SPONSOR_ATTRIBUTE_INDEX';
-// export const SET_STREAK_ATTRIBUTE_INDEX = 'SET_STREAK_ATTRIBUTE_INDEX';
-// export const SET_ENTERPRISE_ATTRIBUTE_INDEX = 'SET_ENTERPRISE_ATTRIBUTE_INDEX';
-//
-// export const ADD_CLIENT_ATTRIBUTES = 'ADD_CLIENT_ATTRIBUTES';
-// export const ADD_TRAINER_ATTRIBUTES = 'ADD_TRAINER_ATTRIBUTES';
-// export const ADD_GYM_ATTRIBUTES = 'ADD_GYM_ATTRIBUTES';
-// export const ADD_WORKOUT_ATTRIBUTES = 'ADD_WORKOUT_ATTRIBUTES';
-// export const ADD_REVIEW_ATTRIBUTES = 'ADD_REVIEW_ATTRIBUTES';
-// export const ADD_EVENT_ATTRIBUTES = 'ADD_EVENT_ATTRIBUTES';
-// export const ADD_CHALLENGE_ATTRIBUTES = 'ADD_CHALLENGE_ATTRIBUTES';
-// export const ADD_INVITE_ATTRIBUTES = 'ADD_INVITE_ATTRIBUTES';
-// export const ADD_POST_ATTRIBUTES = 'ADD_POST_ATTRIBUTES';
-// export const ADD_SUBMISSION_ATTRIBUTES = 'ADD_SUBMISSION_ATTRIBUTES';
-// export const ADD_GROUP_ATTRIBUTES = 'ADD_GROUP_ATTRIBUTES';
-// export const ADD_COMMENT_ATTRIBUTES = 'ADD_COMMENT_ATTRIBUTES';
-// export const ADD_SPONSOR_ATTRIBUTES = 'ADD_SPONSOR_ATTRIBUTES';
-// export const ADD_STREAK_ATTRIBUTES = 'ADD_STREAK_ATTRIBUTES';
-//
-// export const REMOVE_CLIENT_ATTRIBUTES = 'REMOVE_CLIENT_ATTRIBUTES';
-// export const REMOVE_TRAINER_ATTRIBUTES = 'REMOVE_TRAINER_ATTRIBUTES';
-// export const REMOVE_GYM_ATTRIBUTES = 'REMOVE_GYM_ATTRIBUTES';
-// export const REMOVE_WORKOUT_ATTRIBUTES = 'REMOVE_WORKOUT_ATTRIBUTES';
-// export const REMOVE_REVIEW_ATTRIBUTES = 'REMOVE_REVIEW_ATTRIBUTES';
-// export const REMOVE_EVENT_ATTRIBUTES = 'REMOVE_EVENT_ATTRIBUTES';
-// export const REMOVE_CHALLENGE_ATTRIBUTES = 'REMOVE_CHALLENGE_ATTRIBUTES';
-// export const REMOVE_INVITE_ATTRIBUTES = 'REMOVE_INVITE_ATTRIBUTES';
-// export const REMOVE_POST_ATTRIBUTES = 'REMOVE_POST_ATTRIBUTES';
-// export const REMOVE_SUBMISSION_ATTRIBUTES = 'REMOVE_SUBMISSION_ATTRIBUTES';
-// export const REMOVE_GROUP_ATTRIBUTES = 'REMOVE_GROUP_ATTRIBUTES';
-// export const REMOVE_COMMENT_ATTRIBUTES = 'REMOVE_COMMENT_ATTRIBUTES';
-// export const REMOVE_SPONSOR_ATTRIBUTES = 'REMOVE_SPONSOR_ATTRIBUTES';
-// export const REMOVE_STREAK_ATTRIBUTES = 'REMOVE_STREAK_ATTRIBUTES';
-//
-// export const REMOVE_CLIENT_ATTRIBUTE_INDEX = 'REMOVE_CLIENT_ATTRIBUTE_INDEX';
-// export const REMOVE_TRAINER_ATTRIBUTE_INDEX = 'REMOVE_TRAINER_ATTRIBUTE_INDEX';
-// export const REMOVE_GYM_ATTRIBUTE_INDEX = 'REMOVE_GYM_ATTRIBUTE_INDEX';
-// export const REMOVE_WORKOUT_ATTRIBUTE_INDEX = 'REMOVE_WORKOUT_ATTRIBUTE_INDEX';
-// export const REMOVE_REVIEW_ATTRIBUTE_INDEX = 'REMOVE_REVIEW_ATTRIBUTE_INDEX';
-// export const REMOVE_EVENT_ATTRIBUTE_INDEX = 'REMOVE_EVENT_ATTRIBUTE_INDEX';
-// export const REMOVE_CHALLENGE_ATTRIBUTE_INDEX = 'REMOVE_CHALLENGE_ATTRIBUTE_INDEX';
-// export const REMOVE_INVITE_ATTRIBUTE_INDEX = 'REMOVE_INVITE_ATTRIBUTE_INDEX';
-// export const REMOVE_POST_ATTRIBUTE_INDEX = 'REMOVE_POST_ATTRIBUTE_INDEX';
-// export const REMOVE_SUBMISSION_ATTRIBUTE_INDEX = 'REMOVE_SUBMISSION_ATTRIBUTE_INDEX';
-// export const REMOVE_GROUP_ATTRIBUTE_INDEX = 'REMOVE_GROUP_ATTRIBUTE_INDEX';
-// export const REMOVE_COMMENT_ATTRIBUTE_INDEX = 'REMOVE_COMMENT_ATTRIBUTE_INDEX';
-// export const REMOVE_SPONSOR_ATTRIBUTE_INDEX = 'REMOVE_SPONSOR_ATTRIBUTE_INDEX';
-// export const REMOVE_STREAK_ATTRIBUTE_INDEX = 'REMOVE_STREAK_ATTRIBUTE_INDEX';
-//
-// export const REMOVE_CLIENT =    'REMOVE_CLIENT';
-// export const REMOVE_TRAINER =   'REMOVE_TRAINER';
-// export const REMOVE_GYM =       'REMOVE_GYM';
-// export const REMOVE_WORKOUT =   'REMOVE_WORKOUT';
-// export const REMOVE_REVIEW =    'REMOVE_REVIEW';
-// export const REMOVE_EVENT =     'REMOVE_EVENT';
-// export const REMOVE_CHALLENGE = 'REMOVE_CHALLENGE';
-// export const REMOVE_INVITE =    'REMOVE_INVITE';
-// export const REMOVE_POST =      'REMOVE_POST';
-// export const REMOVE_SUBMISSION ='REMOVE_SUBMISSION';
-// export const REMOVE_GROUP =     'REMOVE_GROUP';
-// export const REMOVE_COMMENT =   'REMOVE_COMMENT';
-// export const REMOVE_SPONSOR =   'REMOVE_SPONSOR';
-// export const REMOVE_STREAK =    'REMOVE_STREAK';
-//
-// export const FETCH_CLIENT_QUERY = 'FETCH_CLIENT_QUERY';
-// export const FETCH_TRAINER_QUERY = 'FETCH_TRAINER_QUERY';
-// export const FETCH_GYM_QUERY = 'FETCH_GYM_QUERY';
-// export const FETCH_WORKOUT_QUERY = 'FETCH_WORKOUT_QUERY';
-// export const FETCH_REVIEW_QUERY = 'FETCH_REVIEW_QUERY';
-// export const FETCH_EVENT_QUERY = 'FETCH_EVENT_QUERY';
-// export const FETCH_CHALLENGE_QUERY = 'FETCH_CHALLENGE_QUERY';
-// export const FETCH_INVITE_QUERY = 'FETCH_INVITE_QUERY';
-// export const FETCH_POST_QUERY = 'FETCH_POST_QUERY';
-// export const FETCH_SUBMISSION_QUERY = 'FETCH_SUBMISSION_QUERY';
-// export const FETCH_GROUP_QUERY = 'FETCH_GROUP_QUERY';
-// export const FETCH_COMMENT_QUERY = 'FETCH_COMMENT_QUERY';
-// export const FETCH_SPONSOR_QUERY = 'FETCH_SPONSOR_QUERY';
-// export const FETCH_STREAK_QUERY = 'FETCH_STREAK_QUERY';
-//
-// export const CLEAR_NORMALIZED_CLIENT_QUERY =    'CLEAR_NORMALIZED_CLIENT_QUERY';
-// export const CLEAR_NORMALIZED_TRAINER_QUERY =   'CLEAR_NORMALIZED_TRAINER_QUERY';
-// export const CLEAR_NORMALIZED_GYM_QUERY =       'CLEAR_NORMALIZED_GYM_QUERY';
-// export const CLEAR_NORMALIZED_WORKOUT_QUERY =   'CLEAR_NORMALIZED_WORKOUT_QUERY';
-// export const CLEAR_NORMALIZED_REVIEW_QUERY =    'CLEAR_NORMALIZED_REVIEW_QUERY';
-// export const CLEAR_NORMALIZED_EVENT_QUERY =     'CLEAR_NORMALIZED_EVENT_QUERY';
-// export const CLEAR_NORMALIZED_CHALLENGE_QUERY = 'CLEAR_NORMALIZED_CHALLENGE_QUERY';
-// export const CLEAR_NORMALIZED_INVITE_QUERY =    'CLEAR_NORMALIZED_INVITE_QUERY';
-// export const CLEAR_NORMALIZED_POST_QUERY =      'CLEAR_NORMALIZED_POST_QUERY';
-// export const CLEAR_NORMALIZED_SUBMISSION_QUERY ='CLEAR_NORMALIZED_SUBMISSION_QUERY';
-// export const CLEAR_NORMALIZED_GROUP_QUERY =     'CLEAR_NORMALIZED_GROUP_QUERY';
-// export const CLEAR_NORMALIZED_COMMENT_QUERY =   'CLEAR_NORMALIZED_COMMENT_QUERY';
-// export const CLEAR_NORMALIZED_SPONSOR_QUERY =   'CLEAR_NORMALIZED_SPONSOR_QUERY';
-// export const CLEAR_NORMALIZED_STREAK_QUERY =    'CLEAR_NORMALIZED_STREAK_QUERY';
-//
-// export const CLEAR_CLIENT_QUERY = 'CLEAR_CLIENT_QUERY';
-// export const CLEAR_TRAINER_QUERY = 'CLEAR_TRAINER_QUERY';
-// export const CLEAR_GYM_QUERY = 'CLEAR_GYM_QUERY';
-// export const CLEAR_WORKOUT_QUERY = 'CLEAR_WORKOUT_QUERY';
-// export const CLEAR_REVIEW_QUERY = 'CLEAR_REVIEW_QUERY';
-// export const CLEAR_EVENT_QUERY = 'CLEAR_EVENT_QUERY';
-// export const CLEAR_CHALLENGE_QUERY = 'CLEAR_CHALLENGE_QUERY';
-// export const CLEAR_INVITE_QUERY = 'CLEAR_INVITE_QUERY';
-// export const CLEAR_POST_QUERY = 'CLEAR_POST_QUERY';
-// export const CLEAR_SUBMISSION_QUERY = 'CLEAR_SUBMISSION_QUERY';
-// export const CLEAR_GROUP_QUERY = 'CLEAR_GROUP_QUERY';
-// export const CLEAR_COMMENT_QUERY = 'CLEAR_COMMENT_QUERY';
-// export const CLEAR_SPONSOR_QUERY = 'CLEAR_SPONSOR_QUERY';
-// export const CLEAR_STREAK_QUERY = 'CLEAR_STREAK_QUERY';
+it("Gets the initial state properly", function () {
+    expect(cache(undefined, {type: "__INIT__", payload: null})).to.eql({
+        clients: {},
+        trainers: {},
+        gyms: {},
+        workouts: {},
+        reviews: {},
+        events: {},
+        challenges: {},
+        invites: {},
+        posts: {},
+        submissions: {},
+        groups: {},
+        comments: {},
+        sponsors: {},
+        streaks: {},
+        clientLRUHandler: [],
+        trainerLRUHandler: [],
+        gymLRUHandler: [],
+        workoutLRUHandler: [],
+        reviewLRUHandler: [],
+        eventLRUHandler: [],
+        challengeLRUHandler: [],
+        inviteLRUHandler: [],
+        postLRUHandler: [],
+        submissionLRUHandler: [],
+        groupLRUHandler: [],
+        commentLRUHandler: [],
+        sponsorLRUHandler: [],
+        streakLRUHandler: [],
+        clientQueries: {},
+        trainerQueries: {},
+        gymQueries: {},
+        workoutQueries: {},
+        reviewQueries: {},
+        eventQueries: {},
+        challengeQueries: {},
+        inviteQueries: {},
+        postQueries: {},
+        submissionQueries: {},
+        groupQueries: {},
+        commentQueries: {},
+        sponsorQueries: {},
+        streakQueries: {},
+        clientQueryLRUHandler: [],
+        trainerQueryLRUHandler: [],
+        gymQueryLRUHandler: [],
+        workoutQueryLRUHandler: [],
+        reviewQueryLRUHandler: [],
+        eventQueryLRUHandler: [],
+        challengeQueryLRUHandler: [],
+        inviteQueryLRUHandler: [],
+        postQueryLRUHandler: [],
+        submissionQueryLRUHandler: [],
+        groupQueryLRUHandler: [],
+        commentQueryLRUHandler: [],
+        sponsorQueryLRUHandler: [],
+        streakQueryLRUHandler: [],
+    });
+});

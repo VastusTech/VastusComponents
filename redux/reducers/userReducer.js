@@ -1,6 +1,6 @@
-const SET_USER = 'SET_USER';
-const FORCE_SET_USER = 'FORCE_SET_USER';
-const CLEAR_USER = 'CLEAR_USER';
+export const SET_USER = 'SET_USER';
+export const FORCE_SET_USER = 'FORCE_SET_USER';
+export const CLEAR_USER = 'CLEAR_USER';
 
 const initialState = {
     id: null,
@@ -12,9 +12,9 @@ const initialState = {
  * The reducer to essentially store the current user's information directly. Essentially updates using the cache reducer
  * and keeps the state consistent. Convenience mostly and for maintaining who the user is.
  *
- * @param {*} state The current state of the user reducer.
+ * @param {{}} state The current state of the user reducer.
  * @param {{type: string, payload: *}} action The action to specify how to update the reducer.
- * @return {*} The next state for the reducer.
+ * @return {{}} The next state for the reducer.
  */
 export default (state = initialState, action) => {
     switch (action.type) {
@@ -39,9 +39,6 @@ export default (state = initialState, action) => {
             };
             break;
         default:
-            state = {
-                ...state
-            };
             break;
     }
     // console.log("USER: Did " + action.type + " and now state is = " + JSON.stringify(state));

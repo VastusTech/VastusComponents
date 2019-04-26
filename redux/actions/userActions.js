@@ -6,6 +6,7 @@ import {
     subscribeFetchItem
 } from "./cacheActions";
 import {appUserItemType} from "../../../Constants";
+import {CLEAR_USER, FORCE_SET_USER, SET_USER} from "../reducers/userReducer";
 
 // =========================================================================================================
 // ~ High-Level User Actions
@@ -185,18 +186,18 @@ export function updateUserFromCache() {
 
 export function setUser(user) {
     return {
-        type: "SET_USER",
+        type: SET_USER,
         payload: user
     };
 }
 export function forceSetUser(user) {
     return {
-        type: "FORCE_SET_USER",
+        type: FORCE_SET_USER,
         payload: user
     };
 }
 export function clearUser() {
     return {
-        type: 'CLEAR_USER'
+        type: CLEAR_USER
     }
 }

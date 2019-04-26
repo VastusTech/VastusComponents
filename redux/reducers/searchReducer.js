@@ -96,11 +96,7 @@ const initialClientState = {
             }
         }]
     },
-    filterParameters: {},
-    nextToken: null,
-    ifFirst: true,
     limit: queryLimit,
-    results: [],
 };
 
 /**
@@ -155,11 +151,7 @@ const initialGymState = {
             }
         }]
     },
-    filterParameters: {},
-    nextToken: null,
-    ifFirst: true,
     limit: queryLimit,
-    results: [],
 };
 
 /**
@@ -211,10 +203,7 @@ const initialEventState = {
     filterParameters: {
         access: "public",
     },
-    nextToken: null,
-    ifFirst: true,
     limit: queryLimit,
-    results: [],
 };
 
 /**
@@ -246,10 +235,7 @@ const initialChallengeState = {
     filterParameters: {
         access: "public",
     },
-    nextToken: null,
-    ifFirst: true,
     limit: queryLimit,
-    results: [],
 };
 
 /**
@@ -462,9 +448,6 @@ export default (state: SearchReducer = initialState, action) => {
             };
             break;
         default:
-            state = {
-                ...state
-            };
             break;
     }
     // console.log("INFO: Did " + action.type + " and now state is = " + JSON.stringify(state));
