@@ -99,7 +99,6 @@ export default (state: AblyReducer = initialState, action) => {
             clearAllChannels(state, action.asyncDispatch);
             break;
         default:
-            state = copyState(state);
             break;
     }
     return state;

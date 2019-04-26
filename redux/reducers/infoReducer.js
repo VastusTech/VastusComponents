@@ -65,9 +65,6 @@ export default (state: InfoReducer = initialState, action) => {
             };
             break;
         default:
-            state = {
-                ...state
-            };
             break;
     }
     // console.log("INFO: Did " + action.type + " and now state is = " + JSON.stringify(state));

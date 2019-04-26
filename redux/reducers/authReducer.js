@@ -150,11 +150,7 @@ export default (state: AuthReducer = initialState, action) => {
             };
             break;
         default:
-            state = {
-                ...state
-            };
             break;
     }
-    // console.log("AUTH: Did " + action.type + " and now state is = " + JSON.stringify(state));
     return state;
 }

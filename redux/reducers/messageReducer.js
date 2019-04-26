@@ -93,7 +93,6 @@ export default (state: MessageReducer = initialState, action) => {
             clearAllBoards(state, action.asyncDispatch);
             break;
         default:
-            state = copyState(state);
             break;
     }
     return state;

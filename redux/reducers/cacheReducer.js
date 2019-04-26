@@ -379,9 +379,6 @@ export default (state: CacheReducer = initialState, action) => {
             clearCache(state, action.payload.itemType, action.asyncDispatch);
             break;
         default:
-            state = {
-                ...state
-            };
             break;
     }
     return state;

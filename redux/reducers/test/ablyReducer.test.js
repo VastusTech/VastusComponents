@@ -2,18 +2,12 @@ import "../../../testing/setTesting";
 import ably, {ADD_HANDLER, CLEAR_CHANNELS, SET_HANDLER, SET_PERMANENT_HANDLER, REMOVE_CHANNEL} from "../ablyReducer";
 import {expect} from "chai";
 
-describe('ablyReducer.js', () => {
-    it("Ignores other actions correctly", () => {
-        expect(ably(undefined, {type: "__NOT_A_REAL_ACTION__", payload: null})).to.eql({
-            subscribedChannels: {},
-            subscribedChannelLRUHandler: [],
-            notificationHandlers: {},
-            unsubscriptionHandlers: {},
-            numPermanentHandlers: 0
-        });
-    });
+it("Ignores other actions correctly", () => {
+    expect(ably({}, {type: "__NOT_A_REAL_ACTION__", payload: null})).to.eql({});
+});
 
 // export const ADD_HANDLER = 'ADD_HANDLER';
+describe(ADD_HANDLER, function () {
     it("Adds a first handler successfully", () => {
         expect(ably(undefined, {type: ADD_HANDLER, payload: {
                 channel: "CHANNEL",
@@ -35,7 +29,7 @@ describe('ablyReducer.js', () => {
                 handler: "HANDLER1",
                 unsubscriptionHandler: "UNSUBSCRIPTION_HANDLER1",
                 messageHandler: "MESSAGE_HANDLER1"
-        }});
+            }});
         expect(ably(state, {type: ADD_HANDLER, payload: {
                 channel: "CHANNEL",
                 handler: "HANDLER2",
@@ -50,8 +44,10 @@ describe('ablyReducer.js', () => {
             numPermanentHandlers: 0
         });
     });
+});
 
 // export const SET_HANDLER = 'SET_HANDLER';
+describe(SET_HANDLER, function () {
     it("Sets the first Handler correctly", () => {
         expect(ably(undefined, {type: SET_HANDLER, payload: {
                 channel: "CHANNEL",
@@ -89,7 +85,9 @@ describe('ablyReducer.js', () => {
         });
     });
 
+});
 // export const SET_PERMANENT_HANDLER = 'ADD_PERMANENT_CHANNEL';
+describe(SET_PERMANENT_HANDLER, function () {
     it("Sets the first permanent Handler correctly", () => {
         expect(ably(undefined, {type: SET_PERMANENT_HANDLER, payload: {
                 channel: "CHANNEL",
@@ -147,15 +145,17 @@ describe('ablyReducer.js', () => {
             numPermanentHandlers: 2
         });
     });
+});
 
 // export const REMOVE_CHANNEL = 'REMOVE_CHANNEL';
-    it("Adds a first handler successfully", () => {
+describe(REMOVE_CHANNEL, function () {
+    it("Removes a first handler successfully", () => {
         const state = ably(undefined, {type: ADD_HANDLER, payload: {
-            channel: "CHANNEL",
-            handler: "HANDLER",
-            unsubscriptionHandler: "UNSUBSCRIPTION_HANDLER",
-            messageHandler: "MESSAGE_HANDLER"
-        }});
+                channel: "CHANNEL",
+                handler: "HANDLER",
+                unsubscriptionHandler: "UNSUBSCRIPTION_HANDLER",
+                messageHandler: "MESSAGE_HANDLER"
+            }});
         expect(ably(state, {type: REMOVE_CHANNEL, payload: {
                 channel: "CHANNEL",
             }})
@@ -168,20 +168,26 @@ describe('ablyReducer.js', () => {
         });
     });
 
+});
 // export const CLEAR_CHANNELS = 'CLEAR_CHANNELS';
+describe(CLEAR_CHANNELS, function () {
     it("Clears all channels successfully", function () {
-        let state = ably(undefined, {type: ADD_HANDLER, payload: {
-            channel: "CHANNEL1",
-            handler: "HANDLER1",
-            unsubscriptionHandler: "UNSUBSCRIPTION_HANDLER1",
-            messageHandler: "MESSAGE_HANDLER1"
-        }});
-        state = ably(state, {type: ADD_HANDLER, payload: {
-            channel: "CHANNEL2",
-            handler: "HANDLER2",
-            unsubscriptionHandler: "UNSUBSCRIPTION_HANDLER2",
-            messageHandler: "MESSAGE_HANDLER2"
-        }});
+        let state = ably(undefined, {
+            type: ADD_HANDLER, payload: {
+                channel: "CHANNEL1",
+                handler: "HANDLER1",
+                unsubscriptionHandler: "UNSUBSCRIPTION_HANDLER1",
+                messageHandler: "MESSAGE_HANDLER1"
+            }
+        });
+        state = ably(state, {
+            type: ADD_HANDLER, payload: {
+                channel: "CHANNEL2",
+                handler: "HANDLER2",
+                unsubscriptionHandler: "UNSUBSCRIPTION_HANDLER2",
+                messageHandler: "MESSAGE_HANDLER2"
+            }
+        });
         expect(ably(state, {type: CLEAR_CHANNELS})
         ).to.eql({
             subscribedChannels: {},
@@ -193,3 +199,12 @@ describe('ablyReducer.js', () => {
     });
 });
 
+it("Gets the initial state properly", function () {
+    expect(ably(undefined, {type: "__INIT__", payload: null})).to.eql({
+        subscribedChannels: {},
+        subscribedChannelLRUHandler: [],
+        notificationHandlers: {},
+        unsubscriptionHandlers: {},
+        numPermanentHandlers: 0
+    });
+});
