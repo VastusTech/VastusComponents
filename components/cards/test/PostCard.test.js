@@ -1,19 +1,18 @@
 import React from 'react';
-import "../../../../testing/SetTesting";
+import "../../../testing/SetTesting";
 import { expect } from 'chai';
+import { store } from "../../../testing/TestHelper";
 import { shallow, mount, render } from 'enzyme';
 import PostCard from "../PostCard";
-import TestConfig, {store} from "../../../../TestConfig";
 import PostDetailCard from "../post_detail_cards/PostDetailCard";
-
-TestConfig();
 
 describe("PostCard Button", () => {
     const reduxState = {
         cache: {
             clients: {
                 CL0001: {
-                    id: "CL0001"
+                    id: "CL0001",
+                    profileImage: "thisIsAFakePath/Path"
                 }
             },
             challenges: {
@@ -45,13 +44,18 @@ describe("PostCard Button", () => {
         expect(clickFn).toHaveBeenCalled();
     });
 
+    describe("Profile Picture Tests", () => {
+        it("profilePicture function displays spinner when there is no profile picture", () => {
+            const component = mount(<PostCard post={null} store={store(reduxState)}/>);
 
-    it("profilePicture function displays image properly", () => {
-        const component = mount(<PostCard post={post} store={store(reduxState)}/>);
+            expect(component.find("Spinner")).to.have.lengthOf(1);
+        });
 
-        //const profilePicture;
+        it("profilePicture function displays image when there is a profile picture", () => {
+            const component = mount(<PostCard post={post} store={store(reduxState)}/>);
 
-        expect(component).toMatchSnapshot();
+            expect(component.find("StyledProfileImage")).to.have.lengthOf(1);
+        });
     });
 
     it("getByAttribute returns proper elements", () => {

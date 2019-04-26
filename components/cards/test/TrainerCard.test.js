@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from "react-redux";
 import { shallow, mount } from 'enzyme';
 import TrainerCard from "../TrainerCard";
-import TestConfig, {store} from "../../../../TestConfig";
+import TestConfig, {store} from "../../../testing/TestConfig";
 
 TestConfig();
 it('renders without crashing', () => {

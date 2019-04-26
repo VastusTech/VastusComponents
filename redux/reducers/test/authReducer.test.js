@@ -2,7 +2,7 @@ import auth, {LOG_IN, FEDERATED_LOG_IN, CLOSE_FORGOT_PASSWORD_MODAL, OPEN_FORGOT
     CLOSE_SIGN_UP_MODAL, CONFIRM_FORGOT_PASSWORD, FORGOT_PASSWORD, CONFIRM_SIGNUP, SIGN_UP, LOG_OUT
 } from "../authReducer";
 import {expect} from "chai";
-import TestConfig from "../../../../TestConfig";
+import TestConfig from "../../../testing/TestConfig";
 import Ably from "../../../api/Ably";
 
 describe("authReducer.js", function () {

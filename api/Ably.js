@@ -1,13 +1,13 @@
 // import { Realtime } from 'ably/browser/static/ably-commonjs.js';
 import { Realtime } from "ably";
 import {err, log} from "../../Constants";
-import TestHelper from "../logic/TestHelper";
+import TestHelper from "../testing/TestHelper";
 
 /**
  * Class to handle all the Ably channel management and callback handling.
  */
 class Ably {
-    static ablyRef = new Realtime('RP1cGg.cc8qow:DdzJi7vkBxuLzK03');
+    static ablyRef = TestHelper.ifTesting ? null : new Realtime('RP1cGg.cc8qow:DdzJi7vkBxuLzK03');
 
     /**
      * Subscribes to an Ably channel and sets the main handler to the passed in messageHandler.
@@ -55,7 +55,7 @@ class Ably {
      * Closes the connection to Ably.
      */
     static close() {
-        Ably.ablyRef.close();
+        TestHelper.ifTesting || Ably.ablyRef.close();
     }
 }
 

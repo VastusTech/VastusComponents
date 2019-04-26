@@ -2,7 +2,7 @@ import { API, graphqlOperation } from 'aws-amplify';
 import {ifDebug, log, err} from "../../Constants";
 import _ from 'lodash';
 import {switchReturnItemType} from "../logic/ItemType";
-import TestHelper from "../logic/TestHelper";
+import TestHelper from "../testing/TestHelper";
 
 /**
  * This class handles all of the GraphQL Query Library logic, like sending queries and fetch requests to our AWS AppSync
@@ -663,14 +663,16 @@ class GraphQL {
     static getNextTokenString(nextToken) { return nextToken ? nextToken : "null"; }
 
     /**
-     * Gets a normalized query from t
+     * Gets a normalized query (which defines the entire query for the operation, making sure the next token simply
+     * defines which part of the query to get instead of the whole query). This allows us to better organize the query
+     * operations in the cache.
      *
-     * @param query
-     * @return {{variables: {nextToken: string}}}
+     * @param {{}} query The query object for the operation.
+     * @return {{query: string, variables: {nextToken: string}}}
      */
     static getNormalizedQuery(query) {
         return {
-            ...query,
+            query: query.query,
             variables: {
                 ...query.variables,
                 nextToken: "not_defined"
@@ -679,15 +681,25 @@ class GraphQL {
     }
 
     /**
+     * Gets the normalized query string given the normalized query object.
+     *
+     * @param {{variables: {nextToken: "not_defined"}}} normalizedQuery The normalized query object.
+     * @return {string} The string which defines the key for this query.
+     */
+    static getNormalizedQueryString(normalizedQuery) {
+        return JSON.stringify(normalizedQuery);
+    }
+
+    /**
      * Gets the actual properly formatted query from the normalized query and the next token to use.
      *
-     * @param {{}} normalizedQuery The query minus the nextToken.
+     * @param {{query: string, variables: {nextToken: "not_defined"}}} normalizedQuery The query minus the nextToken.
      * @param {string} nextToken The next token that defines the query.
-     * @return {{variables: {nextToken: *}}}
+     * @return {{query: string, variables: {nextToken: string|null}}}
      */
     static getQueryFromNormalizedQuery(normalizedQuery, nextToken) {
         return {
-            ...normalizedQuery,
+            query: normalizedQuery.query,
             variables: {
                 ...normalizedQuery.variables,
                 nextToken

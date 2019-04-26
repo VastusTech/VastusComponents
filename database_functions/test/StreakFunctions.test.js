@@ -1,4 +1,4 @@
-import TestConfig from "../../../TestConfig";
+import TestConfig from "../../testing/TestConfig";
 import StreakFunctions from "../StreakFunctions";
 import {expect} from "chai";
 

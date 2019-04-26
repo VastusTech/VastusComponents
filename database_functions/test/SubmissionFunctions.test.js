@@ -1,4 +1,4 @@
-import TestConfig from "../../../TestConfig";
+import TestConfig from "../../testing/TestConfig";
 import SubmissionFunctions from "../SubmissionFunctions";
 import {expect} from "chai";
 

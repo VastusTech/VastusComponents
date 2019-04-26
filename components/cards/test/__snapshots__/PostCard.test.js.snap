@@ -1,10 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders without crashing 1`] = `
+exports[`PostCard Button renders without crashing 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <Connect(PostCard)
-    postID={null}
+    post={
+      Object {
+        "about": "CH0001",
+        "by": "CL0001",
+        "id": "PO0001",
+      }
+    }
     store={
       Object {
         "clearActions": [Function],
@@ -28,15 +34,27 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "class",
+    "nodeType": "function",
     "props": Object {
-      "cache": undefined,
-      "fetchChallenge": [Function],
-      "fetchClient": [Function],
-      "fetchPost": [Function],
-      "fetchTrainer": [Function],
-      "info": undefined,
-      "postID": null,
+      "cache": Object {
+        "challenges": Object {
+          "CH0001": Object {
+            "by": "CL0001",
+            "id": "CH001",
+          },
+        },
+        "clients": Object {
+          "CL0001": Object {
+            "id": "CL0001",
+          },
+        },
+      },
+      "dispatch": [Function],
+      "post": Object {
+        "about": "CH0001",
+        "by": "CL0001",
+        "id": "PO0001",
+      },
       "store": Object {
         "clearActions": [Function],
         "dispatch": [Function],
@@ -64,7 +82,6 @@ ShallowWrapper {
         },
         "unsubscribe": [Function],
       },
-      "user": undefined,
     },
     "ref": null,
     "rendered": null,
@@ -74,15 +91,27 @@ ShallowWrapper {
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "class",
+      "nodeType": "function",
       "props": Object {
-        "cache": undefined,
-        "fetchChallenge": [Function],
-        "fetchClient": [Function],
-        "fetchPost": [Function],
-        "fetchTrainer": [Function],
-        "info": undefined,
-        "postID": null,
+        "cache": Object {
+          "challenges": Object {
+            "CH0001": Object {
+              "by": "CL0001",
+              "id": "CH001",
+            },
+          },
+          "clients": Object {
+            "CL0001": Object {
+              "id": "CL0001",
+            },
+          },
+        },
+        "dispatch": [Function],
+        "post": Object {
+          "about": "CH0001",
+          "by": "CL0001",
+          "id": "PO0001",
+        },
         "store": Object {
           "clearActions": [Function],
           "dispatch": [Function],
@@ -110,7 +139,6 @@ ShallowWrapper {
           },
           "unsubscribe": [Function],
         },
-        "user": undefined,
       },
       "ref": null,
       "rendered": null,

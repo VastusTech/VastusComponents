@@ -1,7 +1,7 @@
 import React from 'react';
 import EventCard from "../EventCard";
 import { shallow, mount } from 'enzyme';
-import TestConfig, {store} from "../../../../TestConfig";
+import TestConfig, {store} from "../../../testing/TestConfig";
 
 TestConfig();
 it('renders without crashing', () => {

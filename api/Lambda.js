@@ -1,6 +1,6 @@
 import * as AWS from "aws-sdk";
 import {err, ifDebug, log} from "../../Constants";
-import TestHelper from "../logic/TestHelper";
+import TestHelper from "../testing/TestHelper";
 
 /// Configure AWS SDK for JavaScript
 AWS.config.update({region: 'us-east-1'});

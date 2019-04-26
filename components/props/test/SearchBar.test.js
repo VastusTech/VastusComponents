@@ -1,6 +1,8 @@
+import "../../../testing/SetTesting";
 import React from 'react';
 import { shallow } from 'enzyme';
-import TestConfig, {store} from "../../../../TestConfig";
+import TestConfig from "../../../testing/TestConfig";
+import {store} from "../../../testing/TestHelper";
 import SearchBar from "../SearchBar";
 
 TestConfig();

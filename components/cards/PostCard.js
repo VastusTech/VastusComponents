@@ -16,6 +16,7 @@ import {GroupDetailCardInfo} from "./post_detail_cards/GroupDetailCard";
 import {EventDetailCardInfo} from "./post_detail_cards/EventDetailCard";
 import Spinner from "../props/Spinner";
 import {getAttributeFromObject, getObjectAttribute, getObjectFromCache} from "../../logic/CacheRetrievalHelper";
+import StyledProfileImage from "../props/StyledProfileImage";
 
 export const PostCardInfo = {
     fetchList: ["id", "time_created", "by", "item_type", "postType", "about", "access", "description", "videoPaths", "picturePaths"],
@@ -72,13 +73,14 @@ type Props = {
 const profilePicture = (profileImage) => {
     if (profileImage) {
         return(
-            <div align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profileImage})`, width: '50px', height: '50px'}}/>
+            <StyledProfileImage profileImage={profileImage} type="Small"/>
+            //<div align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profileImage})`, width: '50px', height: '50px'}}/>
         );
     }
     else {
         return(
             <Dimmer inverted>
-                <Spinner />
+                <Spinner className="spinner1"/>
             </Dimmer>
         );
     }
