@@ -26,7 +26,7 @@ class ClientFunctions extends UserFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createClient(fromID, name, email, username, successHandler, failureHandler) {
-        return this.create(fromID, name, null, null, email, username, null, null, null, successHandler, failureHandler);
+        return ClientFunctions.create(fromID, name, null, null, email, username, null, null, null, successHandler, failureHandler);
     }
 
     /**
