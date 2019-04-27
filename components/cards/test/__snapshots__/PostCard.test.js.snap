@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PostCard Button renders without crashing 1`] = `
+exports[`PostCard renders without crashing 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <Connect(PostCard)
@@ -9,6 +9,7 @@ ShallowWrapper {
         "about": "CH0001",
         "by": "CL0001",
         "id": "PO0001",
+        "postType": "Client",
       }
     }
     store={
@@ -46,6 +47,8 @@ ShallowWrapper {
         "clients": Object {
           "CL0001": Object {
             "id": "CL0001",
+            "name": "Sleeny",
+            "profileImage": "thisIsAFakePath/Path",
           },
         },
       },
@@ -54,6 +57,7 @@ ShallowWrapper {
         "about": "CH0001",
         "by": "CL0001",
         "id": "PO0001",
+        "postType": "Client",
       },
       "store": Object {
         "clearActions": [Function],
@@ -103,6 +107,8 @@ ShallowWrapper {
           "clients": Object {
             "CL0001": Object {
               "id": "CL0001",
+              "name": "Sleeny",
+              "profileImage": "thisIsAFakePath/Path",
             },
           },
         },
@@ -111,6 +117,7 @@ ShallowWrapper {
           "about": "CH0001",
           "by": "CL0001",
           "id": "PO0001",
+          "postType": "Client",
         },
         "store": Object {
           "clearActions": [Function],
@@ -157,7 +164,10 @@ ShallowWrapper {
           "getChildContext": Object {
             "calledByRenderer": false,
           },
-          "getDerivedStateFromProps": true,
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
           "getSnapshotBeforeUpdate": true,
           "setState": Object {
             "skipsComponentDidUpdateOnNullish": true,
@@ -165,6 +175,9 @@ ShallowWrapper {
         },
       },
     },
+  },
+  Symbol(enzyme.__childContext__): Object {
+    "storeSubscription": undefined,
   },
 }
 `;

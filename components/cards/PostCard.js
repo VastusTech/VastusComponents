@@ -11,7 +11,6 @@ import TrainerDetailCard from "./post_detail_cards/TrainerDetailCard";
 import {convertFromISO} from "../../logic/TimeHelper";
 import ClientModal from "../modals/ClientModal";
 import TrainerModal from "../modals/TrainerModal";
-// import {err, log} from "../../../Constants";
 import {GroupDetailCardInfo} from "./post_detail_cards/GroupDetailCard";
 import {EventDetailCardInfo} from "./post_detail_cards/EventDetailCard";
 import Spinner from "../props/Spinner";
@@ -70,15 +69,15 @@ type Props = {
  * @param {string} profileImage The url string for the profile image.
  * @returns {*} Displays the JSX of the profile image given.
  */
-const profilePicture = (profileImage) => {
+export const profilePicture = (profileImage) => {
     if (profileImage) {
-        return(
+        return (
             <StyledProfileImage profileImage={profileImage} type="Small"/>
             //<div align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profileImage})`, width: '50px', height: '50px'}}/>
         );
     }
     else {
-        return(
+        return (
             <Dimmer inverted>
                 <Spinner className="spinner1"/>
             </Dimmer>
@@ -93,7 +92,7 @@ const profilePicture = (profileImage) => {
  * @param {[]} videos A list of all the videos in the post.
  * @returns {*} The React JSX used to display the video or image in a post.
  */
-const getPostMedia = (pictures, videos) => {
+export const getPostMedia = (pictures, videos) => {
     // TODO FIX THIS UP SO THAT IT CAN HANDLE A LOT MORE POSTS
     if (videos && videos.length > 0) {
         return (
@@ -112,7 +111,7 @@ const getPostMedia = (pictures, videos) => {
  * @param {string} about The id of the content that the post is about.
  * @returns {*}
  */
-const getCorrectDetailCard = (postType, about) => {
+export const getCorrectDetailCard = (postType, about) => {
     if (postType && postType.length) {
         //alert("Item Type: " + itemType);
         if (postType.substr(0, 3) === "new") {
@@ -177,7 +176,7 @@ const getCorrectDetailCard = (postType, about) => {
  * @param {function(boolean)} setByModalOpen Sets the by modal open attribute to true.
  * @returns {*} The React JSX user to display the proper client modal state.
  */
-const byModal = (id, itemType, byModalOpen, setByModalOpen) => {
+export const byModal = (id, itemType, byModalOpen, setByModalOpen) => {
     if (itemType === "Client") {
         return (
             <ClientModal open={byModalOpen} onClose={() => setByModalOpen(false)} clientID={id}/>
@@ -219,52 +218,54 @@ const PostCard = (props: Props) => {
         return getObjectFromCache(getPostAttribute("about"), props.cache);
     };
 
-    if (!props.post || !getByAttribute("name")) {
+    if(!props.post || !getByAttribute("name")) {
         return (
             <Card color='purple' fluid raised>
                 <Spinner loading={true}/>
             </Card>
         );
     }
-    //alert(JSON.stringify(this.props.cache.clients));
-    return (
-        // This is displays a few important pieces of information about the challenge for the feed view.
-        <Card color='purple' fluid raised>
-            {/*this.getPostAttribute("about")*/}
-            <Grid style={{marginLeft: '10px', marginTop: '2px', marginBottom: '2px'}}>
-                <Button className="u-button--flat" id="byButton" onClick={() => byModalOpen||setByModalOpen(true)}>
-                    <Grid style={{marginLeft: '10px', marginTop: '10px'}}>
-                        <Grid.Column width={6}>
-                            {profilePicture(getByAttribute("profileImage"))}
-                        </Grid.Column>
-                        <Grid.Column width={18} style={{marginLeft: '-15px', marginTop: '15px'}}>
-                            {getByAttribute("name") + " "} {/*this.state.postMessage*/}
-                        </Grid.Column>
-                        {byModal(getByAttribute("id"), getByAttribute("item_type"), byModalOpen, setByModalOpen)}
-                    </Grid>
-                </Button>
-            </Grid>
-            {/*{openOnce()}*/}
-            <Card.Content>
-                <div align='center'>
-                    {getCorrectDetailCard(getPostAttribute("postType"), getAbout())}
-                </div>
-                {/*this.getDisplayMedia()*/}
-            </Card.Content>
-            <Card.Content extra onClick={() => postModalOpen||setPostModalOpen(true)}>
-                {/*<Card.Meta textAlign = 'center'>{this.getPostAttribute("description")}</Card.Meta>*/}
-                <div align="center">
-                    {convertFromISO(getPostAttribute("time_created")).substr(5, 12)}
-                </div>
-                <PostDescriptionModal open={postModalOpen} onClose={() => setPostModalOpen(false)} postID={props.post.id}/>
-            </Card.Content>
-            <Card.Content extra>
-                <Card.Meta textAlign = 'center'>
-                    {getPostAttribute("access")}
-                </Card.Meta>
-            </Card.Content>
-        </Card>
-    );
+    else {
+        return(
+            <Card color='purple' fluid raised>
+                {/*this.getPostAttribute("about")*/}
+                <Grid style={{marginLeft: '10px', marginTop: '2px', marginBottom: '2px'}}>
+                    <Button className="u-button--flat" id="byButton"
+                            onClick={() => byModalOpen || setByModalOpen(true)}>
+                        <Grid style={{marginLeft: '10px', marginTop: '10px'}}>
+                            <Grid.Column width={6}>
+                                {profilePicture(getByAttribute("profileImage"))}
+                            </Grid.Column>
+                            <Grid.Column width={16} style={{marginLeft: '-15px', marginTop: '15px'}}>
+                                {getByAttribute("name") + " "} {/*this.state.postMessage*/}
+                            </Grid.Column>
+                            {byModal(getByAttribute("id"), getByAttribute("item_type"), byModalOpen, setByModalOpen)}
+                        </Grid>
+                    </Button>
+                </Grid>
+                {/*{openOnce()}*/}
+                <Card.Content>
+                    <div align='center'>
+                        {getCorrectDetailCard(getPostAttribute("postType"), getAbout())}
+                    </div>
+                    {/*this.getDisplayMedia()*/}
+                </Card.Content>
+                <Card.Content extra onClick={() => postModalOpen || setPostModalOpen(true)}>
+                    {/*<Card.Meta textAlign = 'center'>{this.getPostAttribute("description")}</Card.Meta>*/}
+                    <div align="center">
+                        {convertFromISO(getPostAttribute("time_created")).substr(5, 12)}
+                    </div>
+                    <PostDescriptionModal open={postModalOpen} onClose={() => setPostModalOpen(false)}
+                                          postID={props.post.id}/>
+                </Card.Content>
+                <Card.Content extra>
+                    <Card.Meta textAlign='center'>
+                        {getPostAttribute("access")}
+                    </Card.Meta>
+                </Card.Content>
+            </Card>
+        );
+    }
 };
 
 const mapStateToProps = state => ({

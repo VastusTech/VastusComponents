@@ -19,6 +19,8 @@ export function store(initialState) {
     }
 }
 
+export const funCompWrapper = (component) => () => component;
+
 
 /**
  * Gets the entire redux store components given for initializing a mock store. Allows you to only initialize what you
