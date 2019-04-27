@@ -16,8 +16,8 @@ export function getObjectChannelName(id) {
 // This is where we will store all the retrieved database items and use a LRU cache to rid them if necessary
 export const PUT_ITEM =                    "PUT_ITEM";
 export const SET_ITEM_ATTRIBUTE_INDEX =    "SET_ITEM_ATTRIBUTE_INDEX";
-export const ADD_ITEM_ATTRIBUTES =         "ADD_ITEM_ATTRIBUTES";
-export const REMOVE_ITEM_ATTRIBUTES =      "REMOVE_ITEM_ATTRIBUTES";
+export const ADD_TO_ITEM_ATTRIBUTES =         "ADD_TO_ITEM_ATTRIBUTES";
+export const REMOVE_FROM_ITEM_ATTRIBUTES =      "REMOVE_FROM_ITEM_ATTRIBUTES";
 export const REMOVE_ITEM_ATTRIBUTE_INDEX = "REMOVE_ITEM_ATTRIBUTE_INDEX";
 export const REMOVE_ITEM =                 "REMOVE_ITEM";
 export const PUT_ITEM_QUERY =              "PUT_ITEM_QUERY";
@@ -348,11 +348,11 @@ export default (state: CacheReducer = initialState, action) => {
             setAttributeIndex(state, action.payload.id, action.payload.itemType, action.payload.attributeName,
                 action.payload.index, action.payload.attributeValue);
             break;
-        case ADD_ITEM_ATTRIBUTES:
+        case ADD_TO_ITEM_ATTRIBUTES:
             state = copyState(state);
             addToAttributes(state, action.payload.id, action.payload.itemType, action.payload.attributes);
             break;
-        case REMOVE_ITEM_ATTRIBUTES:
+        case REMOVE_FROM_ITEM_ATTRIBUTES:
             state = copyState(state);
             removeFromAttributes(state, action.payload.id, action.payload.itemType, action.payload.attributes);
             break;

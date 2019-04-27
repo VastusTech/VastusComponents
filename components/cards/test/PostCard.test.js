@@ -1,10 +1,12 @@
 import React from 'react';
 import "../../../testing/SetTesting";
+import { Card } from "semantic-ui-react";
 import { expect } from 'chai';
 import { store } from "../../../testing/TestHelper";
 import { shallow, mount, render } from 'enzyme';
 import PostCard from "../PostCard";
 import PostDetailCard from "../post_detail_cards/PostDetailCard";
+import Spinner from "../../props/Spinner";
 
 describe("PostCard Button", () => {
     const reduxState = {
@@ -46,9 +48,13 @@ describe("PostCard Button", () => {
 
     describe("Profile Picture Tests", () => {
         it("profilePicture function displays spinner when there is no profile picture", () => {
-            const component = mount(<PostCard post={null} store={store(reduxState)}/>);
+            const component = shallow(<PostCard post={null} store={store(reduxState)}/>).shallow();
 
-            expect(component.find("Spinner")).to.have.lengthOf(1);
+            for (const key in component.getElements()) {
+                console.log(component.getElements()[key].type);
+            }
+            console.log(component.find("Card"));
+            expect(component.find("Card")).to.have.lengthOf(1);
         });
 
         it("profilePicture function displays image when there is a profile picture", () => {

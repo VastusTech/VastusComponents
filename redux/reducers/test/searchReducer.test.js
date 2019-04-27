@@ -9,65 +9,81 @@ it("Ignores other actions correctly", () => {
 
 // export const ENABLE_TYPE = 'ENABLE_TYPE';
 describe(ENABLE_TYPE, function () {
-
+    it("Should enable a first type and adds to the number enabled of types");
+    it("Should enable a second type and adds to the number enabled of types");
+    it("Should enable an already enabled first type and does not add to the number of enabled types");
+    it("Should enable an already enabled second type and does not add to the number of enabled types");
 });
 
 // export const DISABLE_TYPE = 'DISABLE_TYPE';
 describe(DISABLE_TYPE, function () {
-
+    it("Should disable a first type and subtract from the number enabled of types");
+    it("Should disable a second type and subtract from the number enabled of types");
+    it("Should disable an already disabled first type and does not subtract from the number of enabled types");
+    it("Should disable an already disabled second type and does not subtract from the number of enabled types");
 });
 
 // export const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
 describe(SET_SEARCH_QUERY, function () {
-
+    it("Should set the first search query from null");
+    it("Should set the search query from existing");
 });
 
 // export const SET_TYPE_FILTER = 'SET_TYPE_FILTER';
 describe(SET_TYPE_FILTER, function () {
-
+    it("Should set a type filter that is enabled");
+    it("Should set a type filter that is disabled");
 });
 
 // export const SET_TYPE_NEXT_TOKEN = 'SET_TYPE_NEXT_TOKEN';
 describe(SET_TYPE_NEXT_TOKEN, function () {
-
+    it("Should set the next token for a null next token");
+    it("Should set the next token for a non-null next token");
 });
 
 // export const ADD_TYPE_RESULTS = 'ADD_TYPE_RESULTS';
 describe(ADD_TYPE_RESULTS, function () {
+    it("Should add type results for an empty search total and in type");
+    it("Should add type results for an empty search type, not total");
+    it("Should add type results for an non-empty search type and total");
 
 });
 
 // export const RESET_TYPE_QUERY = 'RESET_TYPE_QUERY';
 describe(RESET_TYPE_QUERY, function () {
-
+    it("Should reset type query for empty type");
+    it("Should reset type query for non-empty type");
 });
 
 // export const RESET_QUERY = 'RESET_QUERY';
 describe(RESET_QUERY, function () {
-
+    it("Should rest query for empty query");
+    it("Should reset query for non-empty");
 });
 
 // export const ENABLE_SEARCH_BAR = 'ENABLE_SEARCH_BAR';
 describe(ENABLE_SEARCH_BAR, function () {
-
+    it("Should enable a disabled search bar");
+    it("Should enable an enabled search bar");
 });
 
 // export const DISABLE_SEARCH_BAR = 'DISABLE_SEARCH_BAR';
 describe(DISABLE_SEARCH_BAR, function () {
-
+    it("Should disable an enabled search bar");
+    it("Should disable a disabled search bar");
 });
 
 it("Gets the initial state properly", function () {
     expect(search(undefined, {type: "__INIT__", payload: null})).to.eql({
-        searchQuery: "",
+        searchQuery: '',
         results: [],
-        limit: 100, // This should be computed dynamically, based on how many types we're querying to maintain a certain number
+        limit: 100,
         numTypesEnabled: 3,
         ifFinished: false,
         searchBarEnabled: true,
         typeQueries: {
             Client: {
-                enabled: false,
+                enabled: true,
                 variableList: ["id", "item_type", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", /*"profilePicture"*/ "friendRequests"],
                 filterJSON: {
                     or: [{
@@ -88,12 +104,11 @@ it("Gets the initial state properly", function () {
                 nextToken: null,
                 ifFirst: true,
                 limit: 100,
-                results: [],
+                results: []
             },
             Trainer: {
-                enabled: false,
-                variableList: ["id", "name", "username", "item_type", "gender", "birthday", "profileImagePath", /*"profilePicture", */"profileImagePaths", "subscribers", "friendlinessRating", "" +
-                "effectivenessRating", "posts"],
+                enabled: true,
+                variableList: ["id", "name", "username", "item_type", "gender", "birthday", "profileImagePath", "profileImagePaths", "subscribers", "friendlinessRating", "effectivenessRating", "posts"],
                 filterJSON: {
                     or: [{
                         username: {
@@ -113,7 +128,7 @@ it("Gets the initial state properly", function () {
                 nextToken: null,
                 ifFirst: true,
                 limit: 100,
-                results: [],
+                results: []
             },
             Gym: {
                 enabled: false,
@@ -123,11 +138,11 @@ it("Gets the initial state properly", function () {
                         username: {
                             contains: "$searchQuery"
                         }
-                    },{
+                    }, {
                         name: {
                             contains: "$searchQuery"
                         }
-                    },{
+                    }, {
                         email: {
                             contains: "$searchQuery"
                         }
@@ -137,7 +152,7 @@ it("Gets the initial state properly", function () {
                 nextToken: null,
                 ifFirst: true,
                 limit: 100,
-                results: [],
+                results: []
             },
             Workout: {
                 enabled: false,
@@ -147,7 +162,7 @@ it("Gets the initial state properly", function () {
                 nextToken: null,
                 ifFirst: true,
                 limit: 100,
-                results: [],
+                results: []
             },
             Review: {
                 enabled: false,
@@ -155,11 +170,10 @@ it("Gets the initial state properly", function () {
                 filterJSON: {},
                 filterParameters: {},
                 nextToken: null,
-                ifFirst: true,
+                    ifFirst: true,
                 limit: 100,
-                results: [],
-            },
-            Event: {
+                results: []
+            }, Event: {
                 enabled: false,
                 variableList: [],
                 filterJSON: {
@@ -185,10 +199,10 @@ it("Gets the initial state properly", function () {
                 nextToken: null,
                 ifFirst: true,
                 limit: 100,
-                results: [],
+                results: []
             },
             Challenge: {
-                enabled: false,
+                enabled: true,
                 variableList: ["id", "item_type", "title", "endTime", "time_created", "owner", "ifCompleted", "members", "capacity", "goal", "access", "description", "restriction", "tags", "prize", "submissions"],
                 filterJSON: {
                     and: [{
@@ -213,7 +227,7 @@ it("Gets the initial state properly", function () {
                 nextToken: null,
                 ifFirst: true,
                 limit: 100,
-                results: [],
+                results: []
             },
             Invite: {
                 enabled: false,
@@ -223,7 +237,7 @@ it("Gets the initial state properly", function () {
                 nextToken: null,
                 ifFirst: true,
                 limit: 100,
-                results: [],
+                results: []
             },
             Post: {
                 enabled: false,
@@ -233,7 +247,7 @@ it("Gets the initial state properly", function () {
                 nextToken: null,
                 ifFirst: true,
                 limit: 100,
-                results: [],
+                results: []
             }
         }
     });

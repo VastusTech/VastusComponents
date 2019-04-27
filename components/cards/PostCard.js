@@ -219,50 +219,57 @@ const PostCard = (props: Props) => {
         return getObjectFromCache(getPostAttribute("about"), props.cache);
     };
 
-    if (!props.post || !getByAttribute("name")) {
-        return (
-            <Card color='purple' fluid raised>
-                <Spinner loading={true}/>
-            </Card>
-        );
-    }
-    //alert(JSON.stringify(this.props.cache.clients));
+    // if (!props.post || !getByAttribute("name")) {
+    //     // return (
+    //     //     <Card color='purple' fluid raised>
+    //     //         <Spinner loading={true}/>
+    //     //     </Card>
+    //     // );
+    //     //alert(JSON.stringify(this.props.cache.clients));
+    //     return (
+    //         // This is displays a few important pieces of information about the challenge for the feed view.
+    //         <Card color='purple' fluid raised>
+    //             {/*this.getPostAttribute("about")*/}
+    //             <Grid style={{marginLeft: '10px', marginTop: '2px', marginBottom: '2px'}}>
+    //                 <Button className="u-button--flat" id="byButton"
+    //                         onClick={() => byModalOpen || setByModalOpen(true)}>
+    //                     <Grid style={{marginLeft: '10px', marginTop: '10px'}}>
+    //                         <Grid.Column width={6}>
+    //                             {profilePicture(getByAttribute("profileImage"))}
+    //                         </Grid.Column>
+    //                         <Grid.Column width={18} style={{marginLeft: '-15px', marginTop: '15px'}}>
+    //                             {getByAttribute("name") + " "} {/*this.state.postMessage*/}
+    //                         </Grid.Column>
+    //                         {byModal(getByAttribute("id"), getByAttribute("item_type"), byModalOpen, setByModalOpen)}
+    //                     </Grid>
+    //                 </Button>
+    //             </Grid>
+    //             {/*{openOnce()}*/}
+    //             <Card.Content>
+    //                 <div align='center'>
+    //                     {getCorrectDetailCard(getPostAttribute("postType"), getAbout())}
+    //                 </div>
+    //                 {/*this.getDisplayMedia()*/}
+    //             </Card.Content>
+    //             <Card.Content extra onClick={() => postModalOpen || setPostModalOpen(true)}>
+    //                 {/*<Card.Meta textAlign = 'center'>{this.getPostAttribute("description")}</Card.Meta>*/}
+    //                 <div align="center">
+    //                     {convertFromISO(getPostAttribute("time_created")).substr(5, 12)}
+    //                 </div>
+    //                 <PostDescriptionModal open={postModalOpen} onClose={() => setPostModalOpen(false)}
+    //                                       postID={props.post.id}/>
+    //             </Card.Content>
+    //             <Card.Content extra>
+    //                 <Card.Meta textAlign='center'>
+    //                     {getPostAttribute("access")}
+    //                 </Card.Meta>
+    //             </Card.Content>
+    //         </Card>
+    //     );
+    // }
     return (
-        // This is displays a few important pieces of information about the challenge for the feed view.
         <Card color='purple' fluid raised>
-            {/*this.getPostAttribute("about")*/}
-            <Grid style={{marginLeft: '10px', marginTop: '2px', marginBottom: '2px'}}>
-                <Button className="u-button--flat" id="byButton" onClick={() => byModalOpen||setByModalOpen(true)}>
-                    <Grid style={{marginLeft: '10px', marginTop: '10px'}}>
-                        <Grid.Column width={6}>
-                            {profilePicture(getByAttribute("profileImage"))}
-                        </Grid.Column>
-                        <Grid.Column width={18} style={{marginLeft: '-15px', marginTop: '15px'}}>
-                            {getByAttribute("name") + " "} {/*this.state.postMessage*/}
-                        </Grid.Column>
-                        {byModal(getByAttribute("id"), getByAttribute("item_type"), byModalOpen, setByModalOpen)}
-                    </Grid>
-                </Button>
-            </Grid>
-            {/*{openOnce()}*/}
-            <Card.Content>
-                <div align='center'>
-                    {getCorrectDetailCard(getPostAttribute("postType"), getAbout())}
-                </div>
-                {/*this.getDisplayMedia()*/}
-            </Card.Content>
-            <Card.Content extra onClick={() => postModalOpen||setPostModalOpen(true)}>
-                {/*<Card.Meta textAlign = 'center'>{this.getPostAttribute("description")}</Card.Meta>*/}
-                <div align="center">
-                    {convertFromISO(getPostAttribute("time_created")).substr(5, 12)}
-                </div>
-                <PostDescriptionModal open={postModalOpen} onClose={() => setPostModalOpen(false)} postID={props.post.id}/>
-            </Card.Content>
-            <Card.Content extra>
-                <Card.Meta textAlign = 'center'>
-                    {getPostAttribute("access")}
-                </Card.Meta>
-            </Card.Content>
+            <Spinner loading={true}/>
         </Card>
     );
 };

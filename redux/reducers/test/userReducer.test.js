@@ -70,7 +70,14 @@ describe(FORCE_SET_USER, function () {
 // const CLEAR_USER = 'CLEAR_USER';
 describe(CLEAR_USER, function () {
     it("Should reset the user to the inital state", function () {
-
+        expect(user({
+            id: "CL0001",
+            name: "User's Name"
+        }, {
+            type: CLEAR_USER
+        })).to.eql({
+            id: null
+        });
     });
 });
 

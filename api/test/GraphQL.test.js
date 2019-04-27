@@ -10,18 +10,19 @@ describe("GraphQL.js", function () {
 
     // GenerateFilter
     it("Generates a filter correctly", function () {
-        const filter = QL.generateFilter({
+        expect(QL.generateFilter({
             or: [{
                 access: "$var1"
             }, {
                 restriction: "$var2"
             }]
         }, {
+            var1: "public",
+            var2: "invite"
+        })).to.eql({
+            parameterString: "",
 
-        });
-        filter.par
-        string = string.replace(/\s\s+/g, ' ');
-        expect
+        })
     });
 
     // Generate ID List
