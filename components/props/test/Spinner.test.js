@@ -8,7 +8,7 @@ import Spinner from "../Spinner";
 
 TestConfig();
 it('renders without crashing', () => {
-    const component = shallow(<Spinner loading={true} store={store()}/>);
+    const component = shallow(<Spinner loading={true}/>);
     global.expect(component).toMatchSnapshot();
     const message = component.find("Message");
     const icon = message.find("Icon");
@@ -19,7 +19,7 @@ it('renders without crashing', () => {
     console.log(header.text());
     const renderedHeader = header.render();
     console.log(renderedHeader.text());
-    const elements = header.getElements();
+    const elements = component.getElements();
     for (let i = 0; i < elements.length; i++) {
         const element = elements[i];
         console.log(element);

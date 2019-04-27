@@ -2,7 +2,7 @@ import TestConfig from "../../testing/TestConfig";
 import Ably from "../Ably";
 import {expect} from "chai";
 
-describe("Ably.js", function () {
+describe("Ably API", function () {
     // Set up the testing framework so we don't actually send payloads to AWS.
     beforeAll(() => {
         TestConfig();

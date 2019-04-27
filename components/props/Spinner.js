@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Message, Icon} from "semantic-ui-react";
 
 type Props = {

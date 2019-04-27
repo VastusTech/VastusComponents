@@ -8,7 +8,7 @@ import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
 import {
     getObjectChannelName,
     PUT_ITEM, PUT_ITEM_QUERY, CLEAR_ITEM_CACHE, CLEAR_NORMALIZED_ITEM_QUERY, REMOVE_ITEM_ATTRIBUTE_INDEX,
-    REMOVE_ITEM_ATTRIBUTES, ADD_ITEM_ATTRIBUTES, SET_ITEM_ATTRIBUTE_INDEX, REMOVE_ITEM
+    REMOVE_FROM_ITEM_ATTRIBUTES, ADD_TO_ITEM_ATTRIBUTES, SET_ITEM_ATTRIBUTE_INDEX, REMOVE_ITEM
 } from "../reducers/cacheReducer";
 import {err, log} from "../../../Constants";
 import {addMessageFromNotification} from "./messageActions";
@@ -857,7 +857,7 @@ function setItemAttributeAtIndex(itemType, id, attributeName, index, attributeVa
 }
 function addItemAttributes(itemType, id, attributes) {
     return {
-        type: ADD_ITEM_ATTRIBUTES,
+        type: ADD_TO_ITEM_ATTRIBUTES,
         payload: {
             id,
             itemType,
@@ -867,7 +867,7 @@ function addItemAttributes(itemType, id, attributes) {
 }
 function removeItemAttributes(itemType, id, attributes) {
     return {
-        type: REMOVE_ITEM_ATTRIBUTES,
+        type: REMOVE_FROM_ITEM_ATTRIBUTES,
         payload: {
             id,
             itemType,

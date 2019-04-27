@@ -508,7 +508,7 @@ class GraphQL {
      *          and: [
      *              {
      *                  ifCompleted: {
-     *                      eq: $ifCompleted
+     *                      eq: "$ifCompleted"
      *                  }
      *              },
      *              {
@@ -527,8 +527,8 @@ class GraphQL {
      *              }
      *          ]
      *      },{
-     *          ifCompleted: false,
-     *          access: public,
+     *          ifCompleted: "false",
+     *          access: "public",
      *          id: GraphQL.props.user.id
      *      });
      */
