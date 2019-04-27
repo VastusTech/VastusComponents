@@ -212,7 +212,7 @@ const ClientModal = (props: Props) => {
     // shareClient() {
     //     this.setState({shareLoading: true});
     //     //console.log(this.props.user.id + " and " + this.getClientAttribute("description") + " and " + this.getClientAttribute("access"));
-    //     PostFunctions.createShareItemPost(this.props.user.id, this.props.user.id, "", "public", "Client", this.getClientAttribute("id"), null, null, (returnValue) => {
+    //     PostFunctions.createShareItemPostOptional(this.props.user.id, this.props.user.id, "", "public", "Client", this.getClientAttribute("id"), null, null, (returnValue) => {
     //         console.log("Successfully Created Post!");
     //         console.log(JSON.stringify(returnValue));
     //         this.setState({shareLoading: false});

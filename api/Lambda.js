@@ -188,11 +188,14 @@ class Lambda {
      * @return {*} Debugging info about the Lambda operation.
      */
     static invokeLambda(functionName, payload, successHandler, failureHandler) {
-        log&&console.log("Sending lambda payload: " + JSON.stringify(payload));
+        // log&&console.log("Sending lambda payload: " + JSON.stringify(payload));
         if (ifDebug) {
             console.log("Sending lambda payload: " + JSON.stringify(payload));
         }
         const request = {FunctionName: functionName, Payload: JSON.stringify(payload)};
+        if (TestHelper.ifTesting && successHandler) {
+            successHandler(null);
+        }
         TestHelper.ifTesting || lambda.invoke(request, (error, data) => {
             if (error) {
                 err&&console.error(error);

@@ -1,6 +1,7 @@
 import Lambda from "../api/Lambda";
 import UserFunctions from "./UserFunctions";
 import S3 from "../api/S3Storage";
+import TestHelper from "../testing/TestHelper";
 
 const itemType = "Group";
 
@@ -268,13 +269,16 @@ class GroupFunctions {
             restriction,
             groupImagePath: (groupImage) ? "groupImage" : null,
         }, (data) => {
-            if (groupImage) {}
-            const id = data.data;
-            // Put in the group image
-            S3.putImage(id + "/groupImage", groupImage, successHandler, (error) => {
-                // Best effort to delete!
-                GroupFunctions.delete(fromID, id);
-            });
+            if (!TestHelper.ifTesting) {
+                if (groupImage) {
+                }
+                const id = data.data;
+                // Put in the group image
+                S3.putImage(id + "/groupImage", groupImage, successHandler, (error) => {
+                    // Best effort to delete!
+                    GroupFunctions.delete(fromID, id);
+                });
+            }
         }, failureHandler);
     }
 

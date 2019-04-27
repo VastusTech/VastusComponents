@@ -1,12 +1,9 @@
-import TestConfig from "../../testing/TestConfig";
+import "../../testing/SetTesting";
 import QL from "../GraphQL";
 import { expect } from "chai";
 
 describe("GraphQL.js", function () {
     // Set up the testing framework so we don't actually send payloads to AWS.
-    beforeAll(() => {
-        TestConfig();
-    });
 
     // GenerateFilter
     it("Generates a filter correctly", function () {

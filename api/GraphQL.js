@@ -776,6 +776,9 @@ class GraphQL {
             if (ifDebug) {
                 alert("Sending ql = " + query.query + "\nWith variables = " + JSON.stringify(query.variables));
             }
+            if (TestHelper.ifTesting && successHandler) {
+                successHandler(null)
+            }
             TestHelper.ifTesting || API.graphql(graphqlOperation(query.query, query.variables)).then((data) => {
                 log&&console.log("GraphQL operation succeeded!");
                 if (!data.data || !data.data[queryFunctionName]) {

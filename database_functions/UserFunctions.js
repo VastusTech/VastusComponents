@@ -1,6 +1,7 @@
 import Lambda from "../api/Lambda";
 import S3 from "../api/S3Storage";
 import { getItemTypeFromID } from "../logic/ItemType";
+import TestHelper from "../testing/TestHelper";
 
 /**
  * Holds all the potential properly formatted Lambda functions for Users.
@@ -27,12 +28,17 @@ class UserFunctions {
      */
     static addProfileImage(fromID, userID, image, profileImagePath, successHandler, failureHandler) {
         S3.putImage(profileImagePath, image, () => {
-            return this.updateAdd(fromID, userID, "profileImagePaths", profileImagePath, successHandler, (error) => {
+            this.updateAdd(fromID, userID, "profileImagePaths", profileImagePath, successHandler, (error) => {
                 // Try your best to fix S3, then give up...
                 S3.delete(profileImagePath);
-                failureHandler(error);
+                if (failureHandler) {
+                    failureHandler(error);
+                }
             });
         });
+        if (TestHelper.ifTesting) {
+            return this.updateAdd(fromID, userID, "profileImagePaths", profileImagePath);
+        }
     }
 
     /**
@@ -49,7 +55,9 @@ class UserFunctions {
     static removeProfileImage(fromID, userID, profileImagePath, successHandler, failureHandler) {
         return this.updateRemove(fromID, userID, "profileImagePaths", profileImagePath, (data) => {
             S3.delete(profileImagePath, () => {
-                successHandler(data);
+                if (successHandler) {
+                    successHandler(data);
+                }
             }, failureHandler);
         }, failureHandler);
     }
@@ -294,11 +302,16 @@ class UserFunctions {
     static updateProfileImage(fromID, userID, profileImage, profileImagePath, successHandler, failureHandler) {
         if (profileImage && profileImagePath) {
             S3.putImage(profileImagePath, profileImage, () => {
-                return this.updateSet(fromID, userID, "profileImagePath", profileImagePath, successHandler, (error) => {
+                this.updateSet(fromID, userID, "profileImagePath", profileImagePath, successHandler, (error) => {
                     S3.delete(profileImagePath);
-                    failureHandler(error);
+                    if (failureHandler) {
+                        failureHandler(error);
+                    }
                 });
             }, failureHandler);
+            if (TestHelper.ifTesting) {
+                return this.updateSet(fromID, userID, "profileImagePath", profileImagePath);
+            }
         }
         else {
             // Delete it

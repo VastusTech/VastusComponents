@@ -1,5 +1,6 @@
 import Lambda from "../api/Lambda";
 import S3 from "../api/S3Storage";
+import TestHelper from "../testing/TestHelper";
 
 /**
  * Holds all the potential properly formatted Lambda functions for Posts.
@@ -23,8 +24,8 @@ class PostFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static createBarePost(fromID, by, description, access, successHandler, failureHandler) {
-        return this.createNormalPost(fromID, by, description, access, null, null, successHandler, failureHandler);
+    static createPost(fromID, by, description, access, successHandler, failureHandler) {
+        return this.createPostOptional(fromID, by, description, access, null, null, successHandler, failureHandler);
     }
 
     /**
@@ -41,7 +42,7 @@ class PostFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static createNormalPost(fromID, by, description, access, pictures, videos, successHandler, failureHandler) {
+    static createPostOptional(fromID, by, description, access, pictures, videos, successHandler, failureHandler) {
         return this.create(fromID, by, description, access, null, null, pictures, videos, successHandler, failureHandler);
     }
 
@@ -60,8 +61,8 @@ class PostFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static createBareBonesShareItemPost(fromID, by, description, access, itemType, itemID, successHandler, failureHandler) {
-        return this.createShareItemPost(fromID, by, description, access, itemType, itemID, null, null, successHandler, failureHandler);
+    static createShareItemPost(fromID, by, description, access, itemType, itemID, successHandler, failureHandler) {
+        return this.createShareItemPostOptional(fromID, by, description, access, itemType, itemID, null, null, successHandler, failureHandler);
     }
 
     /**
@@ -81,7 +82,7 @@ class PostFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static createShareItemPost(fromID, by, description, access, itemType, itemID, pictures, videos, successHandler, failureHandler) {
+    static createShareItemPostOptional(fromID, by, description, access, itemType, itemID, pictures, videos, successHandler, failureHandler) {
         return this.create(fromID, by, description, access, itemType, itemID, pictures, videos, successHandler, failureHandler);
     }
 
@@ -130,12 +131,15 @@ class PostFunctions {
      */
     static addPicture(fromID, postID, picture, picturePath, successHandler, failureHandler) {
         S3.putImage(picturePath, picture, () => {
-            return this.updateAdd(fromID, postID, "picturePaths", picturePath, successHandler, (error) => {
+            this.updateAdd(fromID, postID, "picturePaths", picturePath, successHandler, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(picturePath);
                 failureHandler(error);
             });
         }, failureHandler);
+        if (TestHelper.ifTesting) {
+            return this.updateAdd(fromID, postID, "picturePaths", picturePath);
+        }
     }
 
     /**
@@ -151,12 +155,15 @@ class PostFunctions {
      */
     static addVideo(fromID, postID, video, videoPath, successHandler, failureHandler) {
         S3.putVideo(videoPath, video, successHandler, failureHandler, () => {
-            return this.updateAdd(fromID, postID, "videoPaths", videoPath, successHandler, (error) => {
+            this.updateAdd(fromID, postID, "videoPaths", videoPath, successHandler, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(videoPath);
                 failureHandler(error);
             });
         }, failureHandler);
+        if (TestHelper.ifTesting) {
+            return this.updateAdd(fromID, postID, "videoPaths", videoPath);
+        }
     }
 
     /**
@@ -173,7 +180,9 @@ class PostFunctions {
     static removePicture(fromID, postID, picturePath, successHandler, failureHandler) {
         return this.updateRemove(fromID, postID, "picturePaths", picturePath, (data) => {
             S3.delete(picturePath, () => {
-                successHandler(data);
+                if (successHandler) {
+                    successHandler(data);
+                }
             }, failureHandler);
         }, failureHandler);
     }
@@ -192,7 +201,9 @@ class PostFunctions {
     static removeVideo(fromID, postID, videoPath, successHandler, failureHandler) {
         return this.updateRemove(fromID, postID, "videoPaths", videoPath, (data) => {
             S3.delete(videoPath, () => {
-                successHandler(data);
+                if (successHandler) {
+                    successHandler(data);
+                }
             }, failureHandler);
         }, failureHandler);
     }
@@ -220,10 +231,10 @@ class PostFunctions {
     static create(fromID, by, description, access, postType, about, pictures, videos, successHandler, failureHandler) {
         let picturePaths = null;
         let videoPaths = null;
-        if(pictures) {
+        if (pictures) {
             picturePaths = Object.keys(pictures);
         }
-        if(videos) {
+        if (videos) {
             videoPaths = Object.keys(videos);
         }
         let numPictures = 0;
@@ -239,33 +250,37 @@ class PostFunctions {
             picturePaths,
             videoPaths,
         }, (data) => {
-            const id = data.data;
-            const numVideosAndPictures = numPictures + numVideos;
-            let numFinished = 0;
-            function finish() {
-                numFinished++;
-                if (numFinished >= numVideosAndPictures) { successHandler(data); }
-            }
-            function error(error) {
-                // TODO Delete the object and abort!
-                PostFunctions.delete(fromID, id);
-                failureHandler(error);
-            }
-            if (numVideosAndPictures === 0) {
-                successHandler(data);
-            }
-            else {
-                if (pictures) {
-                    for (const key in pictures) {
-                        if (pictures.hasOwnProperty(key) && pictures[key]) {
-                            S3.putImage(id + "/" + key, pictures[key], finish, error);
+            if (data) {
+                const id = data.data;
+                const numVideosAndPictures = numPictures + numVideos;
+                let numFinished = 0;
+                const finish = () => {
+                    numFinished++;
+                    if (numFinished >= numVideosAndPictures) {
+                        successHandler(data);
+                    }
+                };
+                const error = (error) => {
+                    // TODO Delete the object and abort!
+                    PostFunctions.delete(fromID, id);
+                    failureHandler(error);
+                };
+                if (numVideosAndPictures === 0) {
+                    successHandler(data);
+                }
+                else {
+                    if (pictures) {
+                        for (const key in pictures) {
+                            if (pictures.hasOwnProperty(key) && pictures[key]) {
+                                S3.putImage(id + "/" + key, pictures[key], finish, error);
+                            }
                         }
                     }
-                }
-                if (videos) {
-                    for (const key in videos) {
-                        if (videos.hasOwnProperty(key) && videos[key]) {
-                            S3.putVideo(id + "/" + key, videos[key], finish, error);
+                    if (videos) {
+                        for (const key in videos) {
+                            if (videos.hasOwnProperty(key) && videos[key]) {
+                                S3.putVideo(id + "/" + key, videos[key], finish, error);
+                            }
                         }
                     }
                 }

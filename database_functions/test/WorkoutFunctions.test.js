@@ -1,16 +1,12 @@
-import TestConfig from "../../testing/TestConfig";
+import "../../testing/SetTesting";
 import WorkoutFunctions from "../WorkoutFunctions";
 import {expect} from "chai";
 
-describe("WorkoutFunctions.js", function () {
-    // Set up the testing framework so we don't actually send payloads to AWS.
-    beforeAll(() => {
-        TestConfig();
-    });
+// TODO ONCE REVISITED
 
-    it("", () => {
-        expect(true);
-    });
+describe("high level functions", () => {
 
-    // TODO
+});
+describe("low level functions", () => {
+
 });

@@ -1,6 +1,7 @@
 import * as AWS from "aws-sdk";
 import { Storage } from "aws-amplify";
 import {err, log} from "../../Constants";
+import TestHelper from "../testing/TestHelper";
 
 /**
  * Class for handling all the interactions with our S3 Bucket files.
@@ -65,24 +66,37 @@ class S3Storage {
      * @return {*} Debugging info about the S3 operation.
      */
     static ifExists(path, successHandler, failureHandler) {
-        let bucket = new AWS.S3({params: {Bucket: S3Storage.bucketName}});
-        bucket.headObject({
-            Bucket: S3Storage.bucketName,
-            Key: path
-        }, (err) => {
-            if (err) {
-                if (err.code === "NotFound") {
-                    successHandler(false);
-                }
-                else {
-                    failureHandler(err);
-                }
-            }
-            else {
+        if (TestHelper.ifTesting) {
+            if (successHandler) {
                 successHandler(true);
             }
-        });
-        return null;
+        }
+        else {
+            let bucket = new AWS.S3({params: {Bucket: S3Storage.bucketName}});
+            bucket.headObject({
+                Bucket: S3Storage.bucketName,
+                Key: path
+            }, (err) => {
+                if (err) {
+                    if (err.code === "NotFound") {
+                        if (successHandler) {
+                            successHandler(false);
+                        }
+                    }
+                    else {
+                        if (failureHandler) {
+                            failureHandler(err);
+                        }
+                    }
+                }
+                else {
+                    if (successHandler) {
+                        successHandler(true);
+                    }
+                }
+            });
+        }
+        return path;
     }
 
     // ======================================================================================================
@@ -99,14 +113,17 @@ class S3Storage {
      */
     static get(path, successHandler, failureHandler) {
         // returns URL
-        Storage.get(path).then((url) => {
+        if (TestHelper.ifTesting && successHandler ) {
+            successHandler(null);
+        }
+        TestHelper.ifTesting || Storage.get(path).then((url) => {
             log&&console.log("Storage successfully retrieved file! URL = " + url);
             if (successHandler) { successHandler(url); }
         }).catch((error) => {
             err&&console.error("Storage failed to retrieve file with path = " + path + "... Error: " + error);
             if (failureHandler) { failureHandler(error); }
         });
-        return null;
+        return path;
     }
 
     /**
@@ -121,7 +138,10 @@ class S3Storage {
      * @return {*} Debugging info about the S3 operation.
      */
     static put(path, file, contentType, progressHandler, successHandler, failureHandler) {
-        Storage.put(path, file, { contentType, progressCallback: progressHandler}).then((result) => {
+        if (TestHelper.ifTesting && successHandler ) {
+            successHandler(null);
+        }
+        TestHelper.ifTesting || Storage.put(path, file, { contentType, progressCallback: progressHandler}).then((result) => {
             log&&console.log("Storage successfully put file in! Result: " + JSON.stringify(result));
             if (successHandler) { successHandler(result); }
         }).catch((error) => {
@@ -144,20 +164,31 @@ class S3Storage {
      * @return {*} Debugging info about the S3 operation.
      */
     static multipartPut(path, file, contentType, progressHandler, successHandler, failureHandler) {
-        let bucket = new AWS.S3({params: {Bucket: S3Storage.bucketName}});
-        let params = {Key: "public/" + path, ContentType: contentType, Body: file};
-        let options = {partSize: S3Storage.multipartSize, queueSize: S3Storage.multipartQueueSize};
-        bucket.upload(params, options).on('httpUploadProgress', progressHandler).send((error, data) => {
-            if (error) {
-                err&&console.error(error);
-                failureHandler(err);
+        if (TestHelper.ifTesting) {
+            if (successHandler) {
+                successHandler(null);
             }
-            else {
-                successHandler(data);
-                log&&console.log("Video uploaded successfully.");
-            }
-        });
-        return null;
+        }
+        else {
+            let bucket = new AWS.S3({params: {Bucket: S3Storage.bucketName}});
+            let params = {Key: "public/" + path, ContentType: contentType, Body: file};
+            let options = {partSize: S3Storage.multipartSize, queueSize: S3Storage.multipartQueueSize};
+            bucket.upload(params, options).on('httpUploadProgress', progressHandler).send((error, data) => {
+                if (error) {
+                    err && console.error(error);
+                    if (failureHandler) {
+                        failureHandler(err);
+                    }
+                }
+                else {
+                    if (successHandler) {
+                        successHandler(data);
+                    }
+                    log && console.log("Video uploaded successfully.");
+                }
+            });
+        }
+        return path;
     }
 
     /**
@@ -169,14 +200,17 @@ class S3Storage {
      * @return {*} Debugging info about the S3 operation.
      */
     static delete(path, successHandler, failureHandler) {
-        Storage.remove(path).then((result) => {
+        if (TestHelper.ifTesting && successHandler) {
+            successHandler(null);
+        }
+        TestHelper.ifTesting || Storage.remove(path).then((result) => {
             log&&console.log("Storage successfully removed file! Result: " + JSON.stringify(result));
             if (successHandler) { successHandler(result); }
         }).catch((error) => {
             err&&console.error("Storage failed remove function... Error: " + error);
             if (failureHandler) { failureHandler(error); }
         });
-        return null;
+        return path;
     }
 }
 

@@ -123,13 +123,16 @@ class TrainerFunctions extends UserFunctions {
     }
 
     static updateAdd(fromID, trainerID, attributeName, attributeValue, successHandler, failureHandler) {
-        return super.updateAdd(fromID, itemType, trainerID, attributeName, attributeValue, successHandler, failureHandler);
+        return Lambda.updateAddToAttribute(fromID, trainerID, itemType, attributeName, attributeValue, successHandler,
+            failureHandler);
     }
     static updateRemove(fromID, trainerID, attributeName, attributeValue, successHandler, failureHandler) {
-        return super.updateRemove(fromID, itemType, trainerID, attributeName, attributeValue, successHandler, failureHandler);
+        return Lambda.updateRemoveFromAttribute(fromID, trainerID, itemType, attributeName, attributeValue,
+            successHandler, failureHandler);
     }
     static updateSet(fromID, trainerID, attributeName, attributeValue, successHandler, failureHandler) {
-        return super.updateSet(fromID, itemType, trainerID, attributeName, attributeValue, successHandler, failureHandler);
+        return Lambda.updateSetAttribute(fromID, trainerID, itemType, attributeName, attributeValue, successHandler,
+            failureHandler);
     }
 
     /**
@@ -143,7 +146,7 @@ class TrainerFunctions extends UserFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static delete(fromID, trainerID, successHandler, failureHandler) {
-        return super.delete(fromID, itemType, trainerID, successHandler, failureHandler);
+        return Lambda.delete(fromID, trainerID, itemType, successHandler, failureHandler);
     }
 }
 

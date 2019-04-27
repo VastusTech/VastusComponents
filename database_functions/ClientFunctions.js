@@ -121,6 +121,33 @@ class ClientFunctions extends UserFunctions {
             federatedID,
         }, successHandler, failureHandler);
     }
+
+    static updateAdd(fromID, clientID, attributeName, attributeValue, successHandler, failureHandler) {
+        return Lambda.updateAddToAttribute(fromID, clientID, itemType, attributeName, attributeValue, successHandler,
+            failureHandler);
+    }
+    static updateRemove(fromID, clientID, attributeName, attributeValue, successHandler, failureHandler) {
+        return Lambda.updateRemoveFromAttribute(fromID, clientID, itemType, attributeName, attributeValue,
+            successHandler, failureHandler);
+    }
+    static updateSet(fromID, clientID, attributeName, attributeValue, successHandler, failureHandler) {
+        return Lambda.updateSetAttribute(fromID, clientID, itemType, attributeName, attributeValue, successHandler,
+            failureHandler);
+    }
+
+    /**
+     * Deletes a Client in the database and its dependencies.
+     *
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} clientID The ID of the Trainer to delete.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
+     */
+    static delete(fromID, clientID, successHandler, failureHandler) {
+        return Lambda.delete(fromID, clientID, itemType, successHandler, failureHandler);
+    }
 }
 
 export default ClientFunctions;
