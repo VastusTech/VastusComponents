@@ -170,12 +170,12 @@ class Lambda {
     static invokeDatabaseLambda(payload, successHandler, failureHandler) {
         return this.invokeLambda("VastusDatabaseLambdaFunction", payload, successHandler, failureHandler);
     }
-    static invokePaymentLambda(payload, successHandler, failureHandler) {
-        return this.invokeLambda("VastusPaymentLambdaFunction", payload, successHandler, failureHandler);
-    }
-    static invokeFirebaseLambda(payload, successHandler, failureHandler) {
-        return this.invokeLambda("VastusFirebaseTokenFunction", payload, successHandler, failureHandler);
-    }
+    // static invokePaymentLambda(payload, successHandler, failureHandler) {
+    //     return this.invokeLambda("VastusPaymentLambdaFunction", payload, successHandler, failureHandler);
+    // }
+    // static invokeFirebaseLambda(payload, successHandler, failureHandler) {
+    //     return this.invokeLambda("VastusFirebaseTokenFunction", payload, successHandler, failureHandler);
+    // }
 
     /**
      * Invokes an AWS Lambda function from the Lambda console using a specific payload.

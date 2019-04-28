@@ -148,7 +148,7 @@ class S3Storage {
             err&&console.error("Storage failed put function... Error: " + error);
             if (failureHandler) { failureHandler(error); }
         });
-        return null;
+        return path;
     }
 
     /**
