@@ -234,7 +234,9 @@ class Lambda {
                 }
             }
         });
-        return JSON.stringify(payload);
+        if (TestHelper.ifTesting) {
+            return payload;
+        }
     }
 }
 
