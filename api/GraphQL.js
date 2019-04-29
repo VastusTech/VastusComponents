@@ -27,11 +27,18 @@ class GraphQL {
      * @return {*} Debugging information from the GraphQL query.
      */
     static getItem(itemType, id, variableList, successHandler, failureHandler) {
+        if (!itemType) throw Error("Item type cannot be null");
+        if (!id) throw Error("ID cannot be null");
+        if (!variableList || !(variableList.length > 0)) throw Error("Variable list must have at least one variable");
+        for (let i = 0; i < variableList.length; i++) {
+            if (!variableList[i]) throw Error("No variables can be null");
+        }
         const func = switchReturnItemType(itemType, GraphQL.getClient, GraphQL.getTrainer, GraphQL.getGym, GraphQL.getWorkout, GraphQL.getReview,
             GraphQL.getEvent, GraphQL.getChallenge, GraphQL.getInvite, GraphQL.getPost, GraphQL.getSubmission,
             GraphQL.getGroup, GraphQL.getComment, GraphQL.getSponsor, GraphQL.getMessage, GraphQL.getStreak,
             "GraphQL get Fetch function function not implemented");
         if (func) { return func(id, variableList, successHandler, failureHandler); }
+        else { throw Error("Unrecognized item type"); }
     }
 
     /**
@@ -45,9 +52,16 @@ class GraphQL {
      * @return {*} Debugging information from the GraphQL query.
      */
     static getItemByUsername(itemType, username, variableList, successHandler, failureHandler) {
+        if (!itemType) throw Error("Item type cannot be null");
+        if (!username) throw Error("Username cannot be null");
+        if (!variableList || !(variableList.length > 0)) throw Error("Variable list must have at least one variable");
+        for (let i = 0; i < variableList.length; i++) {
+            if (!variableList[i]) throw Error("No variables can be null");
+        }
         const func = switchReturnItemType(itemType, GraphQL.getClientByUsername, GraphQL.getTrainerByUsername, GraphQL.getGymByUsername,
             null, null, null, null, null, null, null, null, GraphQL.getSponsorByUsername, "GraphQL get Fetch Username function function not implemented");
         if (func) { return func(username, variableList, successHandler, failureHandler); }
+        else { throw Error("Unrecognized item type"); }
     }
 
     /**
@@ -62,9 +76,16 @@ class GraphQL {
      * @return {*} Debugging information from the GraphQL query.
      */
     static getItemByFederatedID(itemType, federatedID, variableList, successHandler, failureHandler) {
+        if (!itemType) throw Error("Item type cannot be null");
+        if (!federatedID) throw Error("Federated ID cannot be null");
+        if (!variableList || !(variableList.length > 0)) throw Error("Variable list must have at least one variable");
+        for (let i = 0; i < variableList.length; i++) {
+            if (!variableList[i]) throw Error("No variables can be null");
+        }
         const func = switchReturnItemType(itemType, GraphQL.getClientByFederatedID, GraphQL.getTrainerByFederatedID, GraphQL.getGymByFederatedID,
             null, null, null, null, null, null, null, null, GraphQL.getSponsorByFederatedID, "GraphQL get Fetch Username function function not implemented");
         if (func) { return func(federatedID, variableList, successHandler, failureHandler); }
+        else { throw Error("Unrecognized item type"); }
     }
 
     /**
@@ -79,11 +100,21 @@ class GraphQL {
      * @return {*} Debugging information from the GraphQL query.
      */
     static getItems(itemType, ids, variableList, successHandler, failureHandler) {
+        if (!itemType) throw Error("Item type cannot be null");
+        if (!ids || !(ids.length > 0)) throw Error("ID list must have at least one ID");
+        for (let i = 0; i < ids.length; i++) {
+            if (!ids[i]) throw Error("No IDs can be null");
+        }
+        if (!variableList || !(variableList.length > 0)) throw Error("Variable list must have at least one variable");
+        for (let i = 0; i < variableList.length; i++) {
+            if (!variableList[i]) throw Error("No variables can be null");
+        }
         const func = switchReturnItemType(itemType, GraphQL.getClients, GraphQL.getTrainers, GraphQL.getGyms, GraphQL.getWorkouts,
             GraphQL.getReviews, GraphQL.getEvents, GraphQL.getChallenges, GraphQL.getInvites, GraphQL.getPosts,
             GraphQL.getSubmissions, GraphQL.getGroups, GraphQL.getComments, GraphQL.getSponsors, GraphQL.getMessages, GraphQL.getStreaks,
             "GraphQL get Batch Fetch function function not implemented");
         if (func) { return func(ids, variableList, successHandler, failureHandler); }
+        else { throw Error("Unrecognized item type"); }
     }
 
     /**
@@ -97,12 +128,18 @@ class GraphQL {
      * @return {{query: string, variables: {}}} The item query to use in the {@link queryItems} method.
      */
     static constructItemQuery(itemType, variableList, filter, limit, nextToken) {
+        if (!itemType) throw Error("Item type cannot be null");
+        if (!variableList || !(variableList.length > 0)) throw Error("Variable list must have at least one variable");
+        for (let i = 0; i < variableList.length; i++) {
+            if (!variableList[i]) throw Error("No variables can be null");
+        }
         const func = switchReturnItemType(itemType, GraphQL.constructClientQuery, GraphQL.constructTrainerQuery, GraphQL.constructGymQuery,
             GraphQL.constructWorkoutQuery, GraphQL.constructReviewQuery, GraphQL.constructEventQuery, GraphQL.constructChallengeQuery,
             GraphQL.constructInviteQuery, GraphQL.constructPostQuery, GraphQL.constructSubmissionQuery, GraphQL.constructGroupQuery,
             GraphQL.constructCommentQuery, GraphQL.constructSponsorQuery, GraphQL.constructMessageQuery, GraphQL.constructStreakQuery,
             "GraphQL get construct Query function not implemented");
         if (func) { return func(variableList, filter, limit, nextToken); }
+        else { throw Error("Unrecognized item type"); }
     }
 
     /**
@@ -116,11 +153,13 @@ class GraphQL {
      * @return {*} Debugging information from the GraphQL query.
      */
     static queryItems(itemType, query, successHandler, failureHandler) {
+        if (!itemType) throw Error("Item type cannot be null");
         const func = switchReturnItemType(itemType, GraphQL.queryClients, GraphQL.queryTrainers, GraphQL.queryGyms, GraphQL.queryWorkouts,
             GraphQL.queryReviews, GraphQL.queryEvents, GraphQL.queryChallenges, GraphQL.queryInvites, GraphQL.queryPosts,
             GraphQL.querySubmissions, GraphQL.queryGroups, GraphQL.queryComments, GraphQL.querySponsors, GraphQL.queryMessages,
             GraphQL.queryStreaks, "GraphQL get Query function function not implemented for type");
         if (func) { return func(query, successHandler, failureHandler); }
+        else { throw Error("Unrecognized item type"); }
     }
 
     // =================================================================================================================
@@ -451,50 +490,50 @@ class GraphQL {
     }
 
     // ~ Query Fetch Functions
-    static queryClients(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "queryClients", successHandler, failureHandler);
+    static queryClients(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryClients", successHandler, failureHandler);
     }
-    static queryTrainers(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "queryTrainers", successHandler, failureHandler);
+    static queryTrainers(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryTrainers", successHandler, failureHandler);
     }
-    static queryGyms(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "queryGyms", successHandler, failureHandler);
+    static queryGyms(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryGyms", successHandler, failureHandler);
     }
-    static queryWorkouts(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "queryWorkouts", successHandler, failureHandler);
+    static queryWorkouts(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryWorkouts", successHandler, failureHandler);
     }
-    static queryReviews(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "queryReviews", successHandler, failureHandler);
+    static queryReviews(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryReviews", successHandler, failureHandler);
     }
-    static queryEvents(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "queryEvents", successHandler, failureHandler);
+    static queryEvents(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryEvents", successHandler, failureHandler);
     }
-    static queryChallenges(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "queryChallenges", successHandler, failureHandler);
+    static queryChallenges(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryChallenges", successHandler, failureHandler);
     }
-    static queryInvites(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "queryInvites", successHandler, failureHandler);
+    static queryInvites(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryInvites", successHandler, failureHandler);
     }
-    static queryPosts(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "queryPosts", successHandler, failureHandler);
+    static queryPosts(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryPosts", successHandler, failureHandler);
     }
-    static querySubmissions(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "querySubmissions", successHandler, failureHandler);
+    static querySubmissions(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "querySubmissions", successHandler, failureHandler);
     }
-    static queryGroups(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "queryGroups", successHandler, failureHandler);
+    static queryGroups(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryGroups", successHandler, failureHandler);
     }
-    static queryComments(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "queryComments", successHandler, failureHandler);
+    static queryComments(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryComments", successHandler, failureHandler);
     }
-    static querySponsors(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "querySponsors", successHandler, failureHandler);
+    static querySponsors(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "querySponsors", successHandler, failureHandler);
     }
-    static queryMessages(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "queryMessages", successHandler, failureHandler);
+    static queryMessages(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryMessages", successHandler, failureHandler);
     }
-    static queryStreaks(queryString, successHandler, failureHandler) {
-        return GraphQL.execute(queryString, "queryStreaks", successHandler, failureHandler);
+    static queryStreaks(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryStreaks", successHandler, failureHandler);
     }
 
     /**
@@ -667,7 +706,7 @@ class GraphQL {
      * defines which part of the query to get instead of the whole query). This allows us to better organize the query
      * operations in the cache.
      *
-     * @param {{}} query The query object for the operation.
+     * @param {{query: string, variables: {}}} query The query object for the operation.
      * @return {{query: string, variables: {nextToken: string}}}
      */
     static getNormalizedQuery(query) {
