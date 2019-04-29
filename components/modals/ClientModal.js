@@ -161,6 +161,7 @@ const ClientModal = (props: Props) => {
                     // Then they're already your friend
                     return (
                         <Button inverted
+                                fluid
                                 loading={isRemoveFriendLoading}
                                 type='button'
                                 onClick={handleRemoveFriendButton}>
@@ -173,7 +174,7 @@ const ClientModal = (props: Props) => {
             if (friendRequests && friendRequests.length && friendRequests.includes(props.user.id) || sentFriendRequest) {
                 // Then you already sent a friend request
                 return (
-                    <Button inverted disabled
+                    <Button inverted disabled fluid
                             type='button'>
                         Sent Request!
                     </Button>
@@ -182,6 +183,7 @@ const ClientModal = (props: Props) => {
         }
         return(
             <Button inverted
+                    fluid
                     loading={isAddFriendLoading}
                     type='button'
                     onClick={handleAddFriendButton}>
@@ -233,51 +235,34 @@ const ClientModal = (props: Props) => {
             {errorMessage(error)}
             <Modal.Header>{getAttribute("name")}</Modal.Header>
             <Modal.Content image>
-                <ProfileImage userID={props.user.id}
-                              profileImage={getAttribute("profileImage")}
-                              profileImages={getAttribute("profileImages")}
-                />
-                {/*{profilePicture()}*/}
-                <Modal.Description>
-                    {/*<Button primary floated='right' loading={this.state.shareLoading} disabled={this.state.shareLoading} onClick={() => this.shareClient()}>Share Page</Button>*/}
-                    <List relaxed>
-                        {/* Bio */}
-                        <List.Item>
-                            <List.Icon name='user' />
-                            <List.Content>
-                                {"Username: " + getAttribute("username")}
-                            </List.Content>
-                        </List.Item>
-
-                        {/* Friends */}
-                        <List.Item>
-                            <List.Icon name='users' />
-                            <List.Content>
-                                {getAttribute("friendsLength") + " friends"}
-                            </List.Content>
-                        </List.Item>
-                        {/* Event Wins */}
-                        <List.Item>
-                            <List.Icon name='trophy' />
-                            <List.Content>
-                                {getAttribute("challengesWonLength") + " challenges won"}
-                            </List.Content>
-                        </List.Item>
-                    </List>
-                </Modal.Description>
-            </Modal.Content>
-            <Modal.Content fluid>
-                {swipeGallery()}
+                <Grid columns='equal'>
+                    <Grid.Column>
+                        <ProfileImage userID={props.user.id}
+                                      profileImage={getAttribute("profileImage")}
+                                      profileImages={getAttribute("profileImages")}
+                        />
+                    </Grid.Column>
+                    <Grid.Column width={10} floated='right'>
+                        <Icon name='trophy'/>
+                        {getAttribute("challengesWonLength") + " challenges won"}
+                    </Grid.Column>
+                </Grid>
             </Modal.Content>
             <Modal.Actions>
-                <Button primary onClick={() => setInviteModalOpen(true)}>Invite to Challenge</Button>
-                <InviteToChallengeModalProp
-                    open={inviteModalOpen}
-                    onOpen={() => setInviteModalOpen(true)}
-                    onClose={() => setInviteModalOpen(false)}
-                    friendID={getAttribute("id")}
-                />
-                {getCorrectFriendActionButton()}
+                <Grid columns={2}>
+                    <Grid.Column>
+                        <Button primary fluid onClick={() => setInviteModalOpen(true)}>Invite to Challenge</Button>
+                        <InviteToChallengeModalProp
+                            open={inviteModalOpen}
+                            onOpen={() => setInviteModalOpen(true)}
+                            onClose={() => setInviteModalOpen(false)}
+                            friendID={getAttribute("id")}
+                        />
+                    </Grid.Column>
+                    <Grid.Column>
+                        {getCorrectFriendActionButton()}
+                    </Grid.Column>
+                </Grid>
             </Modal.Actions>
             {/*<Modal.Content>*/}
                 {/*{createSuccessLabel()}*/}

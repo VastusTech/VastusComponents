@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Button, Modal, Grid, Header} from "semantic-ui-react";
+import {Button, Modal, Grid, Message} from "semantic-ui-react";
 import {connect} from "react-redux";
 import {fetchItem} from "../../redux/actions/cacheActions";
 import {addToUserAttribute, fetchUserAttributes} from "../../redux/actions/userActions";
@@ -159,7 +159,7 @@ const StartChatModal = (props: Props) => {
         );
     }
     else {
-        return (<Header> No friends yet! </Header>);
+        return (<Message color='red'> Add a buddy to start a message board! </Message>);
     }
 };
 

@@ -143,8 +143,8 @@ class CreateGroupProp extends Component {
         // TODO Check to see if valid inputs!
         if (this.state.title && this.state.motto && this.state.tags) {
             alert("Title: " + this.state.title + "Motto: " + this.state.motto);
-            GroupFunctions.createGroupOptional(this.props.user.id, this.state.title, null, this.state.motto, null, this.state.access,
-                this.state.restriction, [this.props.user.id], null, this.state.tags, (data) => {
+            GroupFunctions.createGroupOptional(this.props.user.id, this.state.title, "Default Description", this.state.motto, this.state.pictures[0], [this.props.user.id], [this.props.user.id], this.state.tags, this.state.access,
+                this.state.restriction, (data) => {
                     console.log("Successfully created a group!");
                     this.setState({isSubmitLoading: false});
                     this.closeModal();

@@ -29,7 +29,7 @@ import {streakUpdateInfo} from "../../logic/StreakHelper";
  */
 const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, access, restriction, prize, challengeType,
                       streakUpdateSpanType, streakUpdateInterval, streakN, setIsLoading, setError, setShowSuccessModal) => {
-    this.setState({isSubmitLoading: true});
+    //this.setState({isSubmitLoading: true});
     const tags = [];
     for (const key in tagsPressed) {
         if (tagsPressed.hasOwnProperty(key) && tagsPressed[key]) {
