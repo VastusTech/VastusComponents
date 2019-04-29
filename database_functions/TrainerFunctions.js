@@ -26,7 +26,7 @@ class TrainerFunctions extends UserFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createTrainer(fromID, name, email, username, successHandler, failureHandler) {
-        return this.create(fromID, name, null, null, username, email, null, null, null, successHandler, failureHandler);
+        return TrainerFunctions.create(fromID, name, null, null, username, email, null, null, null, successHandler, failureHandler);
     }
 
     /**
@@ -45,7 +45,7 @@ class TrainerFunctions extends UserFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createTrainerOptional(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
-        return this.create(fromID, name, gender, birthday, email, username, null, null, bio, successHandler, failureHandler);
+        return TrainerFunctions.create(fromID, name, gender, birthday, email, username, null, null, bio, successHandler, failureHandler);
     }
 
     /**
@@ -62,7 +62,7 @@ class TrainerFunctions extends UserFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createFederatedTrainer(fromID, name, email, username, federatedID, successHandler, failureHandler) {
-        return this.create(fromID, name, null, null, email, username, null, federatedID, null, successHandler, failureHandler);
+        return TrainerFunctions.create(fromID, name, null, null, email, username, null, federatedID, null, successHandler, failureHandler);
     }
 
     /**
@@ -83,7 +83,7 @@ class TrainerFunctions extends UserFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createFederatedTrainerOptional(fromID, name, gender, birthday, email, username, federatedID, bio, successHandler, failureHandler) {
-        return this.create(fromID, name, gender, birthday, email, username, null, federatedID, bio, successHandler, failureHandler);
+        return TrainerFunctions.create(fromID, name, gender, birthday, email, username, null, federatedID, bio, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================

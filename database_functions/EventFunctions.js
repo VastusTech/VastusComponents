@@ -30,7 +30,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createEvent(fromID, owner, time, capacity, address, title, tags, access, successHandler, failureHandler) {
-        return this.create(fromID, owner, time, capacity, address, title, null, tags, null, access, null, null, null, successHandler, failureHandler);
+        return EventFunctions.create(fromID, owner, time, capacity, address, title, null, tags, null, access, null, null, null, successHandler, failureHandler);
     }
 
     /**
@@ -53,7 +53,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createEventOptional(fromID, owner, time, capacity, address, title, description, tags, memberIDs, access, restriction, successHandler, failureHandler) {
-        return this.create(fromID, owner, time, capacity, address, title, description, tags, memberIDs, access, restriction, null, null, successHandler, failureHandler);
+        return EventFunctions.create(fromID, owner, time, capacity, address, title, description, tags, memberIDs, access, restriction, null, null, successHandler, failureHandler);
     }
 
     /**
@@ -74,7 +74,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createChallengeEvent(fromID, challengeID, owner, time, capacity, address, title, tags, access, successHandler, failureHandler) {
-        return this.create(fromID, owner, time, capacity, address, title, null, tags, null, access, null, challengeID, null, successHandler, failureHandler);
+        return EventFunctions.create(fromID, owner, time, capacity, address, title, null, tags, null, access, null, challengeID, null, successHandler, failureHandler);
     }
 
     /**
@@ -98,7 +98,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createChallengeEventOptional(fromID, challengeID, owner, time, capacity, address, title, description, tags, memberIDs, access, restriction, successHandler, failureHandler) {
-        return this.create(fromID, owner, time, capacity, address, title, description, tags, memberIDs, access, restriction, challengeID, null, successHandler, failureHandler);
+        return EventFunctions.create(fromID, owner, time, capacity, address, title, description, tags, memberIDs, access, restriction, challengeID, null, successHandler, failureHandler);
     }
 
     /**
@@ -119,7 +119,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createGroupEvent(fromID, groupID, owner, time, capacity, address, title, access, tags, successHandler, failureHandler) {
-        return this.create(fromID, owner, time, capacity, address, title, null, tags, null, access, null, null, groupID, successHandler, failureHandler);
+        return EventFunctions.create(fromID, owner, time, capacity, address, title, null, tags, null, access, null, null, groupID, successHandler, failureHandler);
     }
 
     /**
@@ -143,7 +143,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createGroupEventOptional(fromID, groupID, owner, time, capacity, address, title, description, tags, memberIDs, access, restriction, successHandler, failureHandler) {
-        return this.create(fromID, owner, time, capacity, address, title, description, tags, memberIDs, access, restriction, null, groupID, successHandler, failureHandler);
+        return EventFunctions.create(fromID, owner, time, capacity, address, title, description, tags, memberIDs, access, restriction, null, groupID, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
@@ -159,7 +159,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateToPrivate(fromID, eventID, successHandler, failureHandler) {
-        return this.updateSet(fromID, eventID, "access", "private", successHandler, failureHandler);
+        return EventFunctions.updateSet(fromID, eventID, "access", "private", successHandler, failureHandler);
     }
 
     /**
@@ -173,7 +173,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateToPublic(fromID, eventID, successHandler, failureHandler) {
-        return this.updateSet(fromID, eventID, "access", "public", successHandler, failureHandler);
+        return EventFunctions.updateSet(fromID, eventID, "access", "public", successHandler, failureHandler);
     }
 
     /**
@@ -187,7 +187,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateToInviteOnly(fromID, eventID, successHandler, failureHandler) {
-        return this.updateAdd(fromID, eventID, "restriction", "invite", successHandler, failureHandler);
+        return EventFunctions.updateAdd(fromID, eventID, "restriction", "invite", successHandler, failureHandler);
     }
 
     /**
@@ -201,7 +201,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateToUnrestricted(fromID, eventID, successHandler, failureHandler) {
-        return this.updateSet(fromID, eventID, "restriction", null, successHandler, failureHandler);
+        return EventFunctions.updateSet(fromID, eventID, "restriction", null, successHandler, failureHandler);
     }
 
     /**
@@ -216,7 +216,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static addTag(fromID, eventID, tag, successHandler, failureHandler) {
-        return this.updateAdd(fromID, eventID, "tags", tag, successHandler, failureHandler);
+        return EventFunctions.updateAdd(fromID, eventID, "tags", tag, successHandler, failureHandler);
     }
 
     /**
@@ -231,7 +231,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static removeTag(fromID, eventID, tag, successHandler, failureHandler) {
-        return this.updateRemove(fromID, eventID, "tags", tag, successHandler, failureHandler);
+        return EventFunctions.updateRemove(fromID, eventID, "tags", tag, successHandler, failureHandler);
     }
 
     /**
@@ -277,7 +277,7 @@ class EventFunctions {
      */
     // TODO Use case for this?
     // static updateChallenge(fromID, eventID, challengeID, successHandler, failureHandler) {
-    //     return this.updateSet(fromID, eventID, "challenge", challengeID, successHandler, failureHandler);
+    //     return EventFunctions.updateSet(fromID, eventID, "challenge", challengeID, successHandler, failureHandler);
     // }
 
     /**
@@ -292,7 +292,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateAddress(fromID, eventID, address, successHandler, failureHandler) {
-        return this.updateSet(fromID, eventID, "address", address, successHandler, failureHandler);
+        return EventFunctions.updateSet(fromID, eventID, "address", address, successHandler, failureHandler);
     }
 
     /**
@@ -307,7 +307,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateCapacity(fromID, eventID, capacity, successHandler, failureHandler) {
-        return this.updateSet(fromID, eventID, "capacity", capacity, successHandler, failureHandler);
+        return EventFunctions.updateSet(fromID, eventID, "capacity", capacity, successHandler, failureHandler);
     }
 
     /**
@@ -322,7 +322,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateTitle(fromID, eventID, title, successHandler, failureHandler) {
-        return this.updateSet(fromID, eventID, "title", title, successHandler, failureHandler);
+        return EventFunctions.updateSet(fromID, eventID, "title", title, successHandler, failureHandler);
     }
 
     /**
@@ -337,7 +337,7 @@ class EventFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateDescription(fromID, eventID, description, successHandler, failureHandler) {
-        return this.updateSet(fromID, eventID, "description", description, successHandler, failureHandler);
+        return EventFunctions.updateSet(fromID, eventID, "description", description, successHandler, failureHandler);
     }
 
     // ======================================================================================================

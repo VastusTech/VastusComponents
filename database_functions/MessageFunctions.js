@@ -28,7 +28,7 @@ class MessageFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createTextMessage(fromID, from, name, profileImagePath, board, message, successHandler, failureHandler) {
-        return this.create(fromID, board, from, name, profileImagePath, null, message, null, successHandler, failureHandler);
+        return MessageFunctions.create(fromID, board, from, name, profileImagePath, null, message, null, successHandler, failureHandler);
     }
 
     /**
@@ -47,7 +47,7 @@ class MessageFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createPictureMessage(fromID, from, name, profileImagePath, board, picture, picturePath, successHandler, failureHandler) {
-        return this.create(fromID, board, from, name, profileImagePath, "picture", picturePath, picture, successHandler, failureHandler);
+        return MessageFunctions.create(fromID, board, from, name, profileImagePath, "picture", picturePath, picture, successHandler, failureHandler);
     }
 
     /**
@@ -66,7 +66,7 @@ class MessageFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createVideoMessage(fromID, from, name, profileImagePath, board, video, videoPath, successHandler, failureHandler) {
-        return this.create(fromID, board, from, name, profileImagePath, "video", videoPath, video, successHandler, failureHandler);
+        return MessageFunctions.create(fromID, board, from, name, profileImagePath, "video", videoPath, video, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
@@ -84,7 +84,7 @@ class MessageFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static addLastSeen(fromID, board, messageID, userID, successHandler, failureHandler) {
-        return this.updateAdd(fromID, board, messageID, "lastSeenFor", userID, successHandler, failureHandler);
+        return MessageFunctions.updateAdd(fromID, board, messageID, "lastSeenFor", userID, successHandler, failureHandler);
     }
 
     // ======================================================================================================

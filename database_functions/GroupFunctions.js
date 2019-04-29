@@ -28,7 +28,7 @@ class GroupFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createGroup(fromID, title, description, access, successHandler, failureHandler) {
-        return this.create(fromID, title, description, null, null, null, null, null, access, null, successHandler, failureHandler);
+        return GroupFunctions.create(fromID, title, description, null, null, null, null, null, access, null, successHandler, failureHandler);
     }
 
     /**
@@ -50,7 +50,7 @@ class GroupFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createGroupOptional(fromID, title, description, motto, groupImage, owners, members, tags, access, restriction, successHandler, failureHandler) {
-        return this.create(fromID, title, description, motto, groupImage, owners, members, tags, access, restriction, successHandler, failureHandler);
+        return GroupFunctions.create(fromID, title, description, motto, groupImage, owners, members, tags, access, restriction, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
@@ -66,7 +66,7 @@ class GroupFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateToPrivate(fromID, groupID, successHandler, failureHandler) {
-        return this.updateSet(fromID, groupID, "access", "private", successHandler, failureHandler);
+        return GroupFunctions.updateSet(fromID, groupID, "access", "private", successHandler, failureHandler);
     }
 
     /**
@@ -80,7 +80,7 @@ class GroupFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateToPublic(fromID, groupID, successHandler, failureHandler) {
-        return this.updateSet(fromID, groupID, "access", "public", successHandler, failureHandler);
+        return GroupFunctions.updateSet(fromID, groupID, "access", "public", successHandler, failureHandler);
     }
 
     /**
@@ -94,7 +94,7 @@ class GroupFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateToInviteOnly(fromID, groupID, successHandler, failureHandler) {
-        return this.updateAdd(fromID, groupID, "restriction", "invite", successHandler, failureHandler);
+        return GroupFunctions.updateAdd(fromID, groupID, "restriction", "invite", successHandler, failureHandler);
     }
 
     /**
@@ -108,7 +108,7 @@ class GroupFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateToUnrestricted(fromID, groupID, successHandler, failureHandler) {
-        return this.updateSet(fromID, groupID, "restriction", null, successHandler, failureHandler);
+        return GroupFunctions.updateSet(fromID, groupID, "restriction", null, successHandler, failureHandler);
     }
 
     /**
@@ -123,7 +123,7 @@ class GroupFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static addTag(fromID, groupID, tag, successHandler, failureHandler) {
-        return this.updateAdd(fromID, groupID, "tags", tag, successHandler, failureHandler);
+        return GroupFunctions.updateAdd(fromID, groupID, "tags", tag, successHandler, failureHandler);
     }
 
     /**
@@ -138,7 +138,7 @@ class GroupFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static removeTag(fromID, groupID, tag, successHandler, failureHandler) {
-        return this.updateRemove(fromID, groupID, "tags", tag, successHandler, failureHandler);
+        return GroupFunctions.updateRemove(fromID, groupID, "tags", tag, successHandler, failureHandler);
     }
 
     /**
@@ -183,7 +183,7 @@ class GroupFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateTitle(fromID, groupID, title, successHandler, failureHandler) {
-        return this.updateSet(fromID, groupID, "title", title, successHandler, failureHandler);
+        return GroupFunctions.updateSet(fromID, groupID, "title", title, successHandler, failureHandler);
     }
 
     /**
@@ -198,7 +198,7 @@ class GroupFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateMotto(fromID, groupID, motto, successHandler, failureHandler) {
-        return this.updateSet(fromID, groupID, "motto", motto, successHandler, failureHandler);
+        return GroupFunctions.updateSet(fromID, groupID, "motto", motto, successHandler, failureHandler);
     }
 
     /**
@@ -213,7 +213,7 @@ class GroupFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateDescription(fromID, groupID, description, successHandler, failureHandler) {
-        return this.updateSet(fromID, groupID, "description", description, successHandler, failureHandler);
+        return GroupFunctions.updateSet(fromID, groupID, "description", description, successHandler, failureHandler);
     }
 
     /**
@@ -228,7 +228,7 @@ class GroupFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateGroupImage(fromID, groupID, groupImage, successHandler, failureHandler) {
-        return this.updateSet(fromID, groupID, "groupImagePath", groupImage ? "groupImage" : null, (data) => {
+        return GroupFunctions.updateSet(fromID, groupID, "groupImagePath", groupImage ? "groupImage" : null, (data) => {
             if (groupImage) {
                 S3.putImage("groupImage", groupImage, successHandler, failureHandler);
             }

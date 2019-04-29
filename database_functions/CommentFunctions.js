@@ -26,7 +26,7 @@ class CommentFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createComment(fromID, byID, onID, comment, successHandler, failureHandler) {
-        return this.create(fromID, byID, onID, comment, successHandler, failureHandler);
+        return CommentFunctions.create(fromID, byID, onID, comment, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
@@ -43,7 +43,7 @@ class CommentFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateComment(fromID, commentID, comment, successHandler, failureHandler) {
-        return this.updateSet(fromID, commentID, "comment", comment, successHandler, failureHandler);
+        return CommentFunctions.updateSet(fromID, commentID, "comment", comment, successHandler, failureHandler);
     }
 
     // ======================================================================================================

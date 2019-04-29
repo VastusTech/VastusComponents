@@ -1,6 +1,5 @@
-import { Auth } from "aws-amplify";
+import Auth from "../../api/Auth";
 import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
-import jwt_decode from "jwt-decode";
 import {setUser, forceSetUser} from "./userActions";
 import {removeAllHandlers} from "./ablyActions";
 import QL from "../../api/GraphQL";
@@ -21,12 +20,13 @@ import TrainerFunctions from "../../database_functions/TrainerFunctions";
 export function updateAuth() {
     return (dispatch) => {
         // TODO This could totally be overkill lol
-        Auth.currentCredentials();
+        // Auth.currentCredentials();
         // Auth.currentSession();
         // Auth.currentUserCredentials();
         // Auth.currentUserInfo();
         // Auth.currentUserPoolUser();
-        Auth.currentAuthenticatedUser().then((user) => {
+        // Auth.currentAuthenticatedUser().then((user) => {
+        Auth.getCurrentUser(user => {
             log&&console.log("UPDATING AUTH WITH USER:");
             log&&console.log(JSON.stringify(user));
             if (user.username) {
@@ -49,21 +49,27 @@ export function updateAuth() {
                 // Federated Identities sign in
                 QL.getItemByFederatedID(appUserItemType, user.sub, ["id", "username", "federatedID"], (user) => {
                     log&&console.log("REDUX: Successfully updated the authentication credentials for federated identity");
-                    dispatch(setUser(user));
-                    // dispatch(addHandlerToNotifications((message) => {
-                    //     console.log("Received ABLY notification!!!!!\n" + JSON.stringify(message));
-                    // }));
-                    dispatch(authLogIn());
-                    dispatch(setIsNotLoading());
+                    if (user) {
+                        dispatch(setUser(user));
+                        // dispatch(addHandlerToNotifications((message) => {
+                        //     console.log("Received ABLY notification!!!!!\n" + JSON.stringify(message));
+                        // }));
+                        dispatch(authLogIn());
+                        dispatch(setIsNotLoading());
+                    }
+                    else {
+                        console.error("REDUX: Could not find the federated identity user");
+                        dispatch(setError(Error("Could not find the federated identity user")));
+                        dispatch(setIsNotLoading());
+                    }
                 }, (error) => {
-                    console.error("REDUX: Could not fetch the federated identity client");
+                    console.error("REDUX: Could not fetch the federated identity user");
                     dispatch(setError(error));
                     dispatch(setIsNotLoading());
                 });
             }
-        }).catch((error) => {
-            log&&console.log("REDUX: Not currently logged in. Not a problem, no worries.");
-            log&&console.log(JSON.stringify(error));
+        }, (error) => {
+            dispatch(setError(error));
             dispatch(setIsNotLoading());
         });
     }
@@ -79,7 +85,8 @@ export function updateAuth() {
 export function logIn(username, password) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        Auth.signIn(username, password).then(() => {
+        // Auth.signIn(username, password).then(() => {
+        Auth.signIn(username, password, () => {
             QL.getItemByUsername(appUserItemType, username, ["id", "username"], (user) => {
                 console.log("REDUX: Successfully logged in!");
                 dispatch(authLogIn());
@@ -98,7 +105,7 @@ export function logIn(username, password) {
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
             });
-        }).catch((error) => {
+        }, (error) => {
             // console.log(JSON.stringify(error));
             // console.log(error.code);
             if (error.code === "UserNotConfirmedException") {
@@ -130,15 +137,16 @@ export function logIn(username, password) {
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function logOut() {
-    return (dispatch, getStore) => {
+    return (dispatch) => {
         dispatch(setIsLoading());
-        const userID = getStore().user.id;
-        Auth.signOut({global: true}).then((data) => {
+        // const userID = getStore().user.id;
+        // Auth.signOut({global: true}).then((data) => {
+        Auth.signOut((data) => {
             log&&console.log("REDUX: Successfully logged out!");
             dispatch(authLogOut());
             dispatch(removeAllHandlers());
             dispatch(setIsNotLoading());
-        }).catch((error) => {
+        }, (error) => {
             err&&console.error("REDUX: Failed log out...");
             dispatch(setError(error));
             dispatch(setIsNotLoading());
@@ -156,19 +164,23 @@ export function logOut() {
 export function googleSignIn(googleUser) {
     return (dispatch, getStore) => {
         // Useful data for your client-side scripts:
-        const { id_token, expires_at } = googleUser.getAuthResponse();
-        const sub = jwt_decode(id_token).sub;
-        const profile = googleUser.getBasicProfile();
-        const email = profile.getEmail(), name = profile.getName(), birthdate = "undefined", gender = "unspecified";
-        const user = { email, name, birthdate, gender, sub };
-        Auth.federatedSignIn(
-            'google',
-            { token: id_token, expires_at },
-            user
-        ).then(() => {
+        // const { id_token, expires_at } = googleUser.getAuthResponse();
+        // const sub = jwt_decode(id_token).sub;
+        // const profile = googleUser.getBasicProfile();
+        // const email = profile.getEmail(), name = profile.getName(), birthdate = "undefined", gender = "unspecified";
+        // const user = { email, name, birthdate, gender, sub };
+        // Auth.federatedSignIn(
+        //     'google',
+        //     { token: id_token, expires_at },
+        //     user
+        // ).then(() => {
+        Auth.googleSignIn(googleUser, (credentials, user) => {
             // The ID token you need to pass to your backend and the expires_at token:
+            const sub = user.sub;
+            const name = user.name;
+            const email = user.email;
             log&&console.log("Successfully federated sign in!");
-            QL.getItemByFederatedID(sub, ["id", "username", "federatedID"], (user) => {
+            QL.getItemByFederatedID(appUserItemType, sub, ["id", "username", "federatedID"], (user) => {
                 if (user) {
                     // Then this user has already signed up
                     log&&console.log("REDUX: Successfully logged in!");
@@ -239,7 +251,7 @@ export function googleSignIn(googleUser) {
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
             });
-        }).catch((error) => {
+        }, (error) => {
             console.error("Error while federation sign in!");
             console.error(error);
             dispatch(setError(error));
@@ -296,16 +308,6 @@ function generateGoogleUsername(name, usernameHandler, failureHandler, depth=0) 
 export function signUp(username, password, name, email, enterpriseID) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        const params = {
-            username: username,
-            password: password,
-            attributes: {
-                name: name,
-                gender: "~",
-                birthdate: "05/10/1998",
-                email: email
-            }
-        };
         // TODO Check the enterprise ID and then use it in the Creation!
         let createFunction;
         if (appUserItemType === "Client") {
@@ -318,12 +320,11 @@ export function signUp(username, password, name, email, enterpriseID) {
             throw new Error("Cannot generate correct app user without valid app user item type");
         }
         createFunction("admin", name, email, username, (userID) => {
-            Auth.signUp(params).then((data) => {
-                log&&console.log("REDUX: Successfully signed up!");
+            // Auth.signUp(params).then((data) => {
+            Auth.signUp(username, password, name, email, (data) => {
                 dispatch(authSignUp());
                 dispatch(setIsNotLoading());
-            }).catch((error) => {
-                console.error("REDUX: Failed sign up...");
+            }, (error) => {
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
                 let deleteFunction;
@@ -356,13 +357,12 @@ export function signUp(username, password, name, email, enterpriseID) {
 export function confirmSignUp(username, confirmationCode) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        Auth.confirmSignUp(username, confirmationCode).then((authUser) => {
-            log&&console.log("REDUX: Successfully confirmed the sign up!");
+        // Auth.confirmSignUp(username, confirmationCode).then((authUser) => {
+        Auth.confirmSignUp(username, confirmationCode, (authUser) => {
             dispatch(closeSignUpModal());
             dispatch(authConfirmSignUp());
             dispatch(setIsNotLoading());
-        }).catch((error) => {
-            console.error("REDUX: Failed confirming sign up...");
+        }, (error) => {
             dispatch(setError(error));
             dispatch(setIsNotLoading());
         });
@@ -378,12 +378,11 @@ export function confirmSignUp(username, confirmationCode) {
 export function forgotPassword(username) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        Auth.forgotPassword(username).then(() => {
-            log&&console.log("REDUX: Successfully forgot password!");
+        // Auth.forgotPassword(username).then(() => {
+        Auth.forgotPassword(username, () => {
             dispatch(authForgotPassword());
             dispatch(setIsNotLoading());
-        }).catch((error) => {
-            console.error("REDUX: Failed forgot password...");
+        }, (error) => {
             dispatch(setError(error));
             dispatch(setIsNotLoading());
         });
@@ -401,12 +400,13 @@ export function forgotPassword(username) {
 export function confirmForgotPassword(username, confirmationCode, newPassword) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        Auth.forgotPasswordSubmit(username, confirmationCode, newPassword).then(() => {
+        // Auth.forgotPasswordSubmit(username, confirmationCode, newPassword).then(() => {
+        Auth.confirmForgotPassword(username, confirmationCode, newPassword, () => {
             log&&console.log("REDUX: Successfully submitted forgot password!");
             dispatch(authConfirmForgotPassword());
             // dispatch(closeForgotPasswordModal());
             dispatch(setIsNotLoading());
-        }).catch((error) => {
+        }, (error) => {
             console.error("REDUX: Failed submitting forgot password...");
             dispatch(setError(error));
             dispatch(setIsNotLoading());

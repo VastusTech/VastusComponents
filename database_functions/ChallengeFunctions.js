@@ -32,7 +32,7 @@ class ChallengeFunctions {
      */
     static createChallenge(fromID, owner, endTime, capacity, title, goal, access, restriction, tags, successHandler,
                            failureHandler) {
-        return this.create(fromID, owner, endTime, capacity, title, goal, null, null, null, tags, access, restriction,
+        return ChallengeFunctions.create(fromID, owner, endTime, capacity, title, goal, null, null, null, tags, access, restriction,
             null, null, null, null, null, null, successHandler, failureHandler);
     }
 
@@ -69,7 +69,7 @@ class ChallengeFunctions {
     static createChallengeOptional(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs,
                                    tags, access, restriction, prize, challengeType, streakUpdateSpanType,
                                    streakUpdateInterval, streakN, successHandler, failureHandler) {
-        return this.create(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs, tags,
+        return ChallengeFunctions.create(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs, tags,
             access, restriction, prize, null, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
             successHandler, failureHandler);
     }
@@ -94,7 +94,7 @@ class ChallengeFunctions {
      */
     static createGroupChallenge(fromID, groupID, owner, endTime, capacity, title, goal, access, restriction, tags, successHandler,
                            failureHandler) {
-        return this.create(fromID, owner, endTime, capacity, title, goal, null, null, null, tags, access, restriction,
+        return ChallengeFunctions.create(fromID, owner, endTime, capacity, title, goal, null, null, null, tags, access, restriction,
             null, groupID, null, null, null, null, successHandler, failureHandler);
     }
 
@@ -127,7 +127,7 @@ class ChallengeFunctions {
     static createGroupChallengeOptional(fromID, groupID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs,
                                    tags, access, restriction, prize, challengeType, streakUpdateSpanType,
                                    streakUpdateInterval, streakN, successHandler, failureHandler) {
-        return this.create(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs, tags,
+        return ChallengeFunctions.create(fromID, owner, endTime, capacity, title, goal, description, difficulty, memberIDs, tags,
             access, restriction, prize, groupID, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
             successHandler, failureHandler);
     }
@@ -160,7 +160,7 @@ class ChallengeFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateToPrivate(fromID, challengeID, successHandler, failureHandler) {
-        return this.updateSet(fromID, challengeID, "access", "private", successHandler, failureHandler);
+        return ChallengeFunctions.updateSet(fromID, challengeID, "access", "private", successHandler, failureHandler);
     }
 
     /**
@@ -174,7 +174,7 @@ class ChallengeFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateToPublic(fromID, challengeID, successHandler, failureHandler) {
-        return this.updateSet(fromID, challengeID, "access", "public", successHandler, failureHandler);
+        return ChallengeFunctions.updateSet(fromID, challengeID, "access", "public", successHandler, failureHandler);
     }
 
     /**
@@ -188,7 +188,7 @@ class ChallengeFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateToInviteOnly(fromID, challengeID, successHandler, failureHandler) {
-        return this.updateAdd(fromID, challengeID, "restriction", "invite", successHandler, failureHandler);
+        return ChallengeFunctions.updateAdd(fromID, challengeID, "restriction", "invite", successHandler, failureHandler);
     }
 
     /**
@@ -202,7 +202,7 @@ class ChallengeFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateToUnrestricted(fromID, challengeID, successHandler, failureHandler) {
-        return this.updateSet(fromID, challengeID, "restriction", null, successHandler, failureHandler);
+        return ChallengeFunctions.updateSet(fromID, challengeID, "restriction", null, successHandler, failureHandler);
     }
 
     /**
@@ -217,7 +217,7 @@ class ChallengeFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static addTag(fromID, challengeID, tag, successHandler, failureHandler) {
-        return this.updateAdd(fromID, challengeID, "tags", tag, successHandler, failureHandler);
+        return ChallengeFunctions.updateAdd(fromID, challengeID, "tags", tag, successHandler, failureHandler);
     }
 
     /**
@@ -232,7 +232,7 @@ class ChallengeFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static removeTag(fromID, challengeID, tag, successHandler, failureHandler) {
-        return this.updateRemove(fromID, challengeID, "tags", tag, successHandler, failureHandler);
+        return ChallengeFunctions.updateRemove(fromID, challengeID, "tags", tag, successHandler, failureHandler);
     }
 
     /**
@@ -277,7 +277,7 @@ class ChallengeFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateEndTime(fromID, challengeID, endTime, successHandler, failureHandler) {
-        return this.updateSet(fromID, challengeID, "endTime", endTime, successHandler, failureHandler);
+        return ChallengeFunctions.updateSet(fromID, challengeID, "endTime", endTime, successHandler, failureHandler);
     }
 
     /**
@@ -292,7 +292,7 @@ class ChallengeFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateCapacity(fromID, challengeID, capacity, successHandler, failureHandler) {
-        return this.updateSet(fromID, challengeID, "capacity", capacity, successHandler, failureHandler);
+        return ChallengeFunctions.updateSet(fromID, challengeID, "capacity", capacity, successHandler, failureHandler);
     }
 
     /**
@@ -307,7 +307,7 @@ class ChallengeFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateGoal(fromID, challengeID, goal, successHandler, failureHandler) {
-        return this.updateSet(fromID, challengeID, "goal", goal, successHandler, failureHandler);
+        return ChallengeFunctions.updateSet(fromID, challengeID, "goal", goal, successHandler, failureHandler);
     }
 
     /**
@@ -322,7 +322,7 @@ class ChallengeFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updatePrize(fromID, challengeID, prize, successHandler, failureHandler) {
-        return this.updateSet(fromID, challengeID, "prize", prize, successHandler, failureHandler);
+        return ChallengeFunctions.updateSet(fromID, challengeID, "prize", prize, successHandler, failureHandler);
     }
 
     /**
@@ -337,7 +337,7 @@ class ChallengeFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateTitle(fromID, challengeID, title, successHandler, failureHandler) {
-        return this.updateSet(fromID, challengeID, "title", title, successHandler, failureHandler);
+        return ChallengeFunctions.updateSet(fromID, challengeID, "title", title, successHandler, failureHandler);
     }
 
     /**
@@ -352,7 +352,7 @@ class ChallengeFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateDescription(fromID, challengeID, description, successHandler, failureHandler) {
-        return this.updateSet(fromID, challengeID, "description", description, successHandler, failureHandler);
+        return ChallengeFunctions.updateSet(fromID, challengeID, "description", description, successHandler, failureHandler);
     }
 
     /**
@@ -367,7 +367,7 @@ class ChallengeFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateDifficulty(fromID, challengeID, difficulty, successHandler, failureHandler) {
-        return this.updateSet(fromID, challengeID, "difficulty", difficulty, successHandler, failureHandler);
+        return ChallengeFunctions.updateSet(fromID, challengeID, "difficulty", difficulty, successHandler, failureHandler);
     }
 
     // ======================================================================================================
