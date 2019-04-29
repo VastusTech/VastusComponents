@@ -117,7 +117,7 @@ class MessageFunctions {
             message,
         }, (data) => {
             // TODO Soon we'll have to adjust the Java project to be able to delete messages!
-            if (type) {
+            if (data && type) {
                 const path = data.data + "/" + message;
                 if (type === "picture") {
                     S3.putImage(path, file, () => { successHandler(data); }, failureHandler);
@@ -127,10 +127,13 @@ class MessageFunctions {
                 }
             }
             else {
-                successHandler(data);
+                if (successHandler) {
+                    successHandler(data);
+                }
             }
         }, failureHandler);
     }
+
     static updateAdd(fromID, board, messageID, attributeName, attributeValue, successHandler, failureHandler) {
         return Lambda.invokeDatabaseLambda({
             fromID,
@@ -142,22 +145,49 @@ class MessageFunctions {
             attributeValues: [attributeValue],
         }, successHandler, failureHandler);
     }
+    static updateRemove(fromID, board, messageID, attributeName, attributeValue, successHandler, failureHandler) {
+        return Lambda.invokeDatabaseLambda({
+            fromID,
+            action: "UPDATEREMOVE",
+            itemType,
+            identifiers: [messageID],
+            secondaryIdentifier: board,
+            attributeName,
+            attributeValues: [attributeValue],
+        }, successHandler, failureHandler);
+    }
+    static updateSet(fromID, board, messageID, attributeName, attributeValue, successHandler, failureHandler) {
+        return Lambda.invokeDatabaseLambda({
+            fromID,
+            action: "UPDATESET",
+            itemType,
+            identifiers: [messageID],
+            secondaryIdentifier: board,
+            attributeName,
+            attributeValues: [attributeValue],
+        }, successHandler, failureHandler);
+    }
 
-    // TODO Implement this when we find use cases for this.
-
-    // static updateRemove(fromID, inviteID, attributeName, attributeValue, successHandler, failureHandler) {
-    //     Lambda.updateRemoveFromAttribute(fromID, inviteID, itemType, attributeName, attributeValue, successHandler, failureHandler);
-    // }
-    // static updateSet(fromID, inviteID, attributeName, attributeValue, successHandler, failureHandler) {
-    //     Lambda.updateSetAttribute(fromID, inviteID, itemType, attributeName, attributeValue, successHandler, failureHandler);
-    // }
-    // static delete(fromID, inviteID, successHandler, failureHandler) {
-    //     Lambda.invokeDatabaseLambda({
-    //         fromID,
-    //         itemType,
-    //
-    //     }, successHandler, failureHandler);
-    // }
+    /**
+     * Deletes a Message from the database.
+     *
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} board The board that the Message is a part of.
+     * @param {string} messageID The ID of the Message to delete.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
+     */
+    static delete(fromID, board, messageID, successHandler, failureHandler) {
+        return Lambda.invokeDatabaseLambda({
+            fromID,
+            action: "DELETE",
+            itemType,
+            identifiers: [messageID],
+            secondaryIdentifier: board,
+        }, successHandler, failureHandler);
+    }
 }
 
 export default MessageFunctions;

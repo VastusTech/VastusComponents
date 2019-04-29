@@ -194,13 +194,13 @@ class CreatePostProp extends Component {
 
         // TODO Check to see if valid inputs!
         if (this.state.description) {
-            PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getLatestPicture(), this.getVideos(), (returnValue) => {
+            PostFunctions.createPostOptional(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getLatestPicture(), this.getVideos(), (returnValue) => {
                 console.log("Successfully Created Post!");
                 console.log(JSON.stringify(returnValue));
             }, (error) => {
                 err&&console.error(error);
             });
-            //     PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {
+            //     PostFunctions.createPostOptional(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {
             //         console.log("Successfully Created Post!");
             //         console.log(JSON.stringify(returnValue));
             //         const id = returnValue.data;

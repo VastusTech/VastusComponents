@@ -170,12 +170,12 @@ class Lambda {
     static invokeDatabaseLambda(payload, successHandler, failureHandler) {
         return this.invokeLambda("VastusDatabaseLambdaFunction", payload, successHandler, failureHandler);
     }
-    static invokePaymentLambda(payload, successHandler, failureHandler) {
-        return this.invokeLambda("VastusPaymentLambdaFunction", payload, successHandler, failureHandler);
-    }
-    static invokeFirebaseLambda(payload, successHandler, failureHandler) {
-        return this.invokeLambda("VastusFirebaseTokenFunction", payload, successHandler, failureHandler);
-    }
+    // static invokePaymentLambda(payload, successHandler, failureHandler) {
+    //     return this.invokeLambda("VastusPaymentLambdaFunction", payload, successHandler, failureHandler);
+    // }
+    // static invokeFirebaseLambda(payload, successHandler, failureHandler) {
+    //     return this.invokeLambda("VastusFirebaseTokenFunction", payload, successHandler, failureHandler);
+    // }
 
     /**
      * Invokes an AWS Lambda function from the Lambda console using a specific payload.
@@ -188,11 +188,14 @@ class Lambda {
      * @return {*} Debugging info about the Lambda operation.
      */
     static invokeLambda(functionName, payload, successHandler, failureHandler) {
-        log&&console.log("Sending lambda payload: " + JSON.stringify(payload));
+        // log&&console.log("Sending lambda payload: " + JSON.stringify(payload));
         if (ifDebug) {
             console.log("Sending lambda payload: " + JSON.stringify(payload));
         }
         const request = {FunctionName: functionName, Payload: JSON.stringify(payload)};
+        if (TestHelper.ifTesting && successHandler) {
+            successHandler(null);
+        }
         TestHelper.ifTesting || lambda.invoke(request, (error, data) => {
             if (error) {
                 err&&console.error(error);
@@ -231,7 +234,9 @@ class Lambda {
                 }
             }
         });
-        return JSON.stringify(payload);
+        if (TestHelper.ifTesting) {
+            return payload;
+        }
     }
 }
 

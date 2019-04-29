@@ -27,11 +27,18 @@ class GraphQL {
      * @return {*} Debugging information from the GraphQL query.
      */
     static getItem(itemType, id, variableList, successHandler, failureHandler) {
+        if (!itemType) throw Error("Item type cannot be null");
+        if (!id) throw Error("ID cannot be null");
+        if (!variableList || !(variableList.length > 0)) throw Error("Variable list must have at least one variable");
+        for (let i = 0; i < variableList.length; i++) {
+            if (!variableList[i]) throw Error("No variables can be null");
+        }
         const func = switchReturnItemType(itemType, GraphQL.getClient, GraphQL.getTrainer, GraphQL.getGym, GraphQL.getWorkout, GraphQL.getReview,
             GraphQL.getEvent, GraphQL.getChallenge, GraphQL.getInvite, GraphQL.getPost, GraphQL.getSubmission,
             GraphQL.getGroup, GraphQL.getComment, GraphQL.getSponsor, GraphQL.getMessage, GraphQL.getStreak,
             "GraphQL get Fetch function function not implemented");
         if (func) { return func(id, variableList, successHandler, failureHandler); }
+        else { throw Error("Unrecognized item type"); }
     }
 
     /**
@@ -45,9 +52,16 @@ class GraphQL {
      * @return {*} Debugging information from the GraphQL query.
      */
     static getItemByUsername(itemType, username, variableList, successHandler, failureHandler) {
+        if (!itemType) throw Error("Item type cannot be null");
+        if (!username) throw Error("Username cannot be null");
+        if (!variableList || !(variableList.length > 0)) throw Error("Variable list must have at least one variable");
+        for (let i = 0; i < variableList.length; i++) {
+            if (!variableList[i]) throw Error("No variables can be null");
+        }
         const func = switchReturnItemType(itemType, GraphQL.getClientByUsername, GraphQL.getTrainerByUsername, GraphQL.getGymByUsername,
             null, null, null, null, null, null, null, null, GraphQL.getSponsorByUsername, "GraphQL get Fetch Username function function not implemented");
         if (func) { return func(username, variableList, successHandler, failureHandler); }
+        else { throw Error("Unrecognized item type"); }
     }
 
     /**
@@ -62,9 +76,16 @@ class GraphQL {
      * @return {*} Debugging information from the GraphQL query.
      */
     static getItemByFederatedID(itemType, federatedID, variableList, successHandler, failureHandler) {
+        if (!itemType) throw Error("Item type cannot be null");
+        if (!federatedID) throw Error("Federated ID cannot be null");
+        if (!variableList || !(variableList.length > 0)) throw Error("Variable list must have at least one variable");
+        for (let i = 0; i < variableList.length; i++) {
+            if (!variableList[i]) throw Error("No variables can be null");
+        }
         const func = switchReturnItemType(itemType, GraphQL.getClientByFederatedID, GraphQL.getTrainerByFederatedID, GraphQL.getGymByFederatedID,
             null, null, null, null, null, null, null, null, GraphQL.getSponsorByFederatedID, "GraphQL get Fetch Username function function not implemented");
         if (func) { return func(federatedID, variableList, successHandler, failureHandler); }
+        else { throw Error("Unrecognized item type"); }
     }
 
     /**
@@ -79,11 +100,21 @@ class GraphQL {
      * @return {*} Debugging information from the GraphQL query.
      */
     static getItems(itemType, ids, variableList, successHandler, failureHandler) {
+        if (!itemType) throw Error("Item type cannot be null");
+        if (!ids || !(ids.length > 0)) throw Error("ID list must have at least one ID");
+        for (let i = 0; i < ids.length; i++) {
+            if (!ids[i]) throw Error("No IDs can be null");
+        }
+        if (!variableList || !(variableList.length > 0)) throw Error("Variable list must have at least one variable");
+        for (let i = 0; i < variableList.length; i++) {
+            if (!variableList[i]) throw Error("No variables can be null");
+        }
         const func = switchReturnItemType(itemType, GraphQL.getClients, GraphQL.getTrainers, GraphQL.getGyms, GraphQL.getWorkouts,
             GraphQL.getReviews, GraphQL.getEvents, GraphQL.getChallenges, GraphQL.getInvites, GraphQL.getPosts,
             GraphQL.getSubmissions, GraphQL.getGroups, GraphQL.getComments, GraphQL.getSponsors, GraphQL.getMessages, GraphQL.getStreaks,
             "GraphQL get Batch Fetch function function not implemented");
         if (func) { return func(ids, variableList, successHandler, failureHandler); }
+        else { throw Error("Unrecognized item type"); }
     }
 
     /**
@@ -97,12 +128,18 @@ class GraphQL {
      * @return {{query: string, variables: {}}} The item query to use in the {@link queryItems} method.
      */
     static constructItemQuery(itemType, variableList, filter, limit, nextToken) {
+        if (!itemType) throw Error("Item type cannot be null");
+        if (!variableList || !(variableList.length > 0)) throw Error("Variable list must have at least one variable");
+        for (let i = 0; i < variableList.length; i++) {
+            if (!variableList[i]) throw Error("No variables can be null");
+        }
         const func = switchReturnItemType(itemType, GraphQL.constructClientQuery, GraphQL.constructTrainerQuery, GraphQL.constructGymQuery,
             GraphQL.constructWorkoutQuery, GraphQL.constructReviewQuery, GraphQL.constructEventQuery, GraphQL.constructChallengeQuery,
             GraphQL.constructInviteQuery, GraphQL.constructPostQuery, GraphQL.constructSubmissionQuery, GraphQL.constructGroupQuery,
             GraphQL.constructCommentQuery, GraphQL.constructSponsorQuery, GraphQL.constructMessageQuery, GraphQL.constructStreakQuery,
             "GraphQL get construct Query function not implemented");
         if (func) { return func(variableList, filter, limit, nextToken); }
+        else { throw Error("Unrecognized item type"); }
     }
 
     /**
@@ -116,11 +153,13 @@ class GraphQL {
      * @return {*} Debugging information from the GraphQL query.
      */
     static queryItems(itemType, query, successHandler, failureHandler) {
+        if (!itemType) throw Error("Item type cannot be null");
         const func = switchReturnItemType(itemType, GraphQL.queryClients, GraphQL.queryTrainers, GraphQL.queryGyms, GraphQL.queryWorkouts,
             GraphQL.queryReviews, GraphQL.queryEvents, GraphQL.queryChallenges, GraphQL.queryInvites, GraphQL.queryPosts,
             GraphQL.querySubmissions, GraphQL.queryGroups, GraphQL.queryComments, GraphQL.querySponsors, GraphQL.queryMessages,
             GraphQL.queryStreaks, "GraphQL get Query function function not implemented for type");
         if (func) { return func(query, successHandler, failureHandler); }
+        else { throw Error("Unrecognized item type"); }
     }
 
     // =================================================================================================================
@@ -129,95 +168,95 @@ class GraphQL {
 
     // ~ Single Fetch Functions
     static getClient(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetClient", "getClient", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetClient", "getClient", {id}, variableList),
             "getClient", successHandler, failureHandler);
     }
     static getClientByUsername(username, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetClientByUsername", "getClientByUsername", {username}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetClientByUsername", "getClientByUsername", {username}, variableList),
             "getClientByUsername", successHandler, failureHandler);
     }
     static getClientByFederatedID(federatedID, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetClientByFederatedID", "getClientByFederatedID", {federatedID}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetClientByFederatedID", "getClientByFederatedID", {federatedID}, variableList),
             "getClientByFederatedID", successHandler, failureHandler);
     }
     static getTrainer(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetTrainer", "getTrainer", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetTrainer", "getTrainer", {id}, variableList),
             "getTrainer", successHandler, failureHandler);
     }
     static getTrainerByUsername(username, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetTrainerByUsername", "getTrainerByUsername", {username}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetTrainerByUsername", "getTrainerByUsername", {username}, variableList),
             "getTrainerByUsername", successHandler, failureHandler);
     }
     static getTrainerByFederatedID(federatedID, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetTrainerByFederatedID", "getTrainerByFederatedID", {federatedID}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetTrainerByFederatedID", "getTrainerByFederatedID", {federatedID}, variableList),
             "getTrainerByFederatedID", successHandler, failureHandler);
     }
     static getGym(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetGym", "getGym", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetGym", "getGym", {id}, variableList),
             "getGym", successHandler, failureHandler);
     }
     static getGymByUsername(username, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetGymByUsername", "getGymByUsername", {username}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetGymByUsername", "getGymByUsername", {username}, variableList),
             "getGymByUsername", successHandler, failureHandler);
     }
     static getGymByFederatedID(federatedID, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetGymByFederatedID", "getGymByFederatedID", {federatedID}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetGymByFederatedID", "getGymByFederatedID", {federatedID}, variableList),
             "getGymByFederatedID", successHandler, failureHandler);
     }
     static getWorkout(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetWorkout", "getWorkout", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetWorkout", "getWorkout", {id}, variableList),
             "getWorkout", successHandler, failureHandler);
     }
     static getReview(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetReview", "getReview", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetReview", "getReview", {id}, variableList),
             "getReview", successHandler, failureHandler);
     }
     static getEvent(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetEvent", "getEvent", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetEvent", "getEvent", {id}, variableList),
             "getEvent", successHandler, failureHandler);
     }
     static getChallenge(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetChallenge", "getChallenge", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetChallenge", "getChallenge", {id}, variableList),
             "getChallenge", successHandler, failureHandler);
     }
     static getInvite(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetInvite", "getInvite", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetInvite", "getInvite", {id}, variableList),
             "getInvite", successHandler, failureHandler);
     }
     static getPost(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetPost", "getPost", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetPost", "getPost", {id}, variableList),
             "getPost", successHandler, failureHandler);
     }
     static getSubmission(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetSubmission", "getSubmission", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetSubmission", "getSubmission", {id}, variableList),
             "getSubmission", successHandler, failureHandler);
     }
     static getGroup(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetGroup", "getGroup", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetGroup", "getGroup", {id}, variableList),
             "getGroup", successHandler, failureHandler);
     }
     static getComment(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetComment", "getComment", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetComment", "getComment", {id}, variableList),
             "getComment", successHandler, failureHandler);
     }
     static getSponsor(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetSponsor", "getSponsor", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetSponsor", "getSponsor", {id}, variableList),
             "getSponsor", successHandler, failureHandler);
     }
     static getSponsorByUsername(username, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetSponsorByUsername", "getSponsorByUsername", {username}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetSponsorByUsername", "getSponsorByUsername", {username}, variableList),
             "getSponsorByUsername", successHandler, failureHandler);
     }
     static getSponsorByFederatedID(federatedID, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetSponsorByFederatedID", "getSponsorByFederatedID", {federatedID}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetSponsorByFederatedID", "getSponsorByFederatedID", {federatedID}, variableList),
             "getSponsorByFederatedID", successHandler, failureHandler);
     }
     static getMessage(board, id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetMessage", "getMessage", {board, id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetMessage", "getMessage", {board, id}, variableList),
             "getMessage", successHandler, failureHandler);
     }
     static getStreak(id, variableList, successHandler, failureHandler) {
-        GraphQL.execute(GraphQL.constructQuery("GetStreak", "getStreak", {id}, variableList),
+        return GraphQL.execute(GraphQL.constructQuery("GetStreak", "getStreak", {id}, variableList),
             "getStreak", successHandler, failureHandler);
     }
 
@@ -228,7 +267,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrieved Items list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetClients", "getClients", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetClients", "getClients", null, variableList, idList, true),
             "getClients", successHandler, failureHandler);
     }
     static getTrainers(ids, variableList, successHandler, failureHandler) {
@@ -237,7 +276,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrieved Items list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetTrainers", "getTrainers", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetTrainers", "getTrainers", null, variableList, idList, true),
             "getTrainers", successHandler, failureHandler);
     }
     static getGyms(ids, variableList, successHandler, failureHandler) {
@@ -246,7 +285,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrieved Items list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetGyms", "getGyms", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetGyms", "getGyms", null, variableList, idList, true),
             "getGyms", successHandler, failureHandler);
     }
     static getWorkouts(ids, variableList, successHandler, failureHandler) {
@@ -255,7 +294,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrieved Items list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetWorkouts", "getWorkouts", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetWorkouts", "getWorkouts", null, variableList, idList, true),
             "getWorkouts", successHandler, failureHandler);
     }
     static getReviews(ids, variableList, successHandler, failureHandler) {
@@ -264,7 +303,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetReviews", "getReviews", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetReviews", "getReviews", null, variableList, idList, true),
             "getReviews", successHandler, failureHandler);
     }
     static getEvents(ids, variableList, successHandler, failureHandler) {
@@ -273,7 +312,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetEvents", "getEvents", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetEvents", "getEvents", null, variableList, idList, true),
             "getEvents", successHandler, failureHandler);
     }
     static getChallenges(ids, variableList, successHandler, failureHandler) {
@@ -282,7 +321,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetChallenges", "getChallenges", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetChallenges", "getChallenges", null, variableList, idList, true),
             "getChallenges", successHandler, failureHandler);
     }
     static getInvites(ids, variableList, successHandler, failureHandler) {
@@ -291,7 +330,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetInvites", "getInvites", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetInvites", "getInvites", null, variableList, idList, true),
             "getInvites", successHandler, failureHandler);
     }
     static getPosts(ids, variableList, successHandler, failureHandler) {
@@ -300,7 +339,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetPosts", "getPosts", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetPosts", "getPosts", null, variableList, idList, true),
             "getPosts", successHandler, failureHandler);
     }
     static getSubmissions(ids, variableList, successHandler, failureHandler) {
@@ -309,7 +348,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetSubmissions", "getSubmissions", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetSubmissions", "getSubmissions", null, variableList, idList, true),
             "getSubmissions", successHandler, failureHandler);
     }
     static getGroups(ids, variableList, successHandler, failureHandler) {
@@ -318,7 +357,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetGroups", "getGroups", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetGroups", "getGroups", null, variableList, idList, true),
             "getGroups", successHandler, failureHandler);
     }
     static getComments(ids, variableList, successHandler, failureHandler) {
@@ -327,7 +366,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetComments", "getComments", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetComments", "getComments", null, variableList, idList, true),
             "getComments", successHandler, failureHandler);
     }
     static getSponsors(ids, variableList, successHandler, failureHandler) {
@@ -336,7 +375,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetSponsors", "getSponsors", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetSponsors", "getSponsors", null, variableList, idList, true),
             "getSponsors", successHandler, failureHandler);
     }
     static getMessages(board, ids, variableList, successHandler, failureHandler) {
@@ -345,7 +384,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetMessages", "getMessages", {board}, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetMessages", "getMessages", {board}, variableList, idList, true),
             "getMessages", successHandler, failureHandler);
     }
     static getStreaks(ids, variableList, successHandler, failureHandler) {
@@ -354,7 +393,7 @@ class GraphQL {
             log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
         }
         const idList = GraphQL.generateIDList(ids);
-        GraphQL.execute(GraphQL.constructQuery("GetStreaks", "getStreaks", null, variableList, idList, true),
+        return GraphQL.execute(GraphQL.constructQuery("GetStreaks", "getStreaks", null, variableList, idList, true),
             "getStreaks", successHandler, failureHandler);
     }
 
@@ -451,50 +490,50 @@ class GraphQL {
     }
 
     // ~ Query Fetch Functions
-    static queryClients(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "queryClients", successHandler, failureHandler);
+    static queryClients(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryClients", successHandler, failureHandler);
     }
-    static queryTrainers(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "queryTrainers", successHandler, failureHandler);
+    static queryTrainers(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryTrainers", successHandler, failureHandler);
     }
-    static queryGyms(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "queryGyms", successHandler, failureHandler);
+    static queryGyms(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryGyms", successHandler, failureHandler);
     }
-    static queryWorkouts(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "queryWorkouts", successHandler, failureHandler);
+    static queryWorkouts(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryWorkouts", successHandler, failureHandler);
     }
-    static queryReviews(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "queryReviews", successHandler, failureHandler);
+    static queryReviews(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryReviews", successHandler, failureHandler);
     }
-    static queryEvents(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "queryEvents", successHandler, failureHandler);
+    static queryEvents(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryEvents", successHandler, failureHandler);
     }
-    static queryChallenges(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "queryChallenges", successHandler, failureHandler);
+    static queryChallenges(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryChallenges", successHandler, failureHandler);
     }
-    static queryInvites(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "queryInvites", successHandler, failureHandler);
+    static queryInvites(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryInvites", successHandler, failureHandler);
     }
-    static queryPosts(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "queryPosts", successHandler, failureHandler);
+    static queryPosts(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryPosts", successHandler, failureHandler);
     }
-    static querySubmissions(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "querySubmissions", successHandler, failureHandler);
+    static querySubmissions(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "querySubmissions", successHandler, failureHandler);
     }
-    static queryGroups(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "queryGroups", successHandler, failureHandler);
+    static queryGroups(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryGroups", successHandler, failureHandler);
     }
-    static queryComments(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "queryComments", successHandler, failureHandler);
+    static queryComments(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryComments", successHandler, failureHandler);
     }
-    static querySponsors(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "querySponsors", successHandler, failureHandler);
+    static querySponsors(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "querySponsors", successHandler, failureHandler);
     }
-    static queryMessages(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "queryMessages", successHandler, failureHandler);
+    static queryMessages(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryMessages", successHandler, failureHandler);
     }
-    static queryStreaks(queryString, successHandler, failureHandler) {
-        GraphQL.execute(queryString, "queryStreaks", successHandler, failureHandler);
+    static queryStreaks(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryStreaks", successHandler, failureHandler);
     }
 
     /**
@@ -667,7 +706,7 @@ class GraphQL {
      * defines which part of the query to get instead of the whole query). This allows us to better organize the query
      * operations in the cache.
      *
-     * @param {{}} query The query object for the operation.
+     * @param {{query: string, variables: {}}} query The query object for the operation.
      * @return {{query: string, variables: {nextToken: string}}}
      */
     static getNormalizedQuery(query) {
@@ -776,6 +815,9 @@ class GraphQL {
             if (ifDebug) {
                 alert("Sending ql = " + query.query + "\nWith variables = " + JSON.stringify(query.variables));
             }
+            if (TestHelper.ifTesting && successHandler) {
+                successHandler(null)
+            }
             TestHelper.ifTesting || API.graphql(graphqlOperation(query.query, query.variables)).then((data) => {
                 log&&console.log("GraphQL operation succeeded!");
                 if (!data.data || !data.data[queryFunctionName]) {
@@ -804,7 +846,9 @@ class GraphQL {
                 if (failureHandler) { failureHandler(error); }
             });
         }
-        return query;
+        if (TestHelper.ifTesting) {
+            return query;
+        }
     }
 }
 

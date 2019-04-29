@@ -1,5 +1,6 @@
 import Lambda from "../api/Lambda";
 import S3 from "../api/S3Storage";
+import TestHelper from "../testing/TestHelper";
 
 /**
  * Holds all the potential properly formatted Lambda functions for Submissions.
@@ -18,8 +19,10 @@ class SubmissionFunctions {
      * @param {string} by The ID of the User who created the Submission.
      * @param {string} challengeID The ID of the Challenge to complete the submission for.
      * @param {string} description The string description for the Submission.
-     * @param {{}} pictures The picture map with key/value = S3Path : file, dictating the pictures to add with what key.
-     * @param {{}} videos The video map with key/value = S3Path : file, dictating the videos to add with what key.
+     * @param {Object<string, *>} pictures The picture map with key/value = S3Path : file, dictating the pictures
+     * to add with what key.
+     * @param {Object<string, *>} videos The video map with key/value = S3Path : file, dictating the videos to add
+     * with what key.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -59,12 +62,15 @@ class SubmissionFunctions {
      */
     static addPicture(fromID, submissionID, picture, picturePath, successHandler, failureHandler) {
         S3.putImage(picturePath, picture, () => {
-            return this.updateAdd(fromID, submissionID, "picturePaths", picturePath, successHandler, (error) => {
+            this.updateAdd(fromID, submissionID, "picturePaths", picturePath, successHandler, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(picturePath);
                 failureHandler(error);
             });
         }, failureHandler);
+        if (TestHelper.ifTesting) {
+            return this.updateAdd(fromID, submissionID, "picturePaths", picturePath);
+        }
     }
 
     /**
@@ -80,12 +86,15 @@ class SubmissionFunctions {
      */
     static addVideo(fromID, submissionID, video, videoPath, successHandler, failureHandler) {
         S3.putVideo(videoPath, video, successHandler, failureHandler, () => {
-            return this.updateAdd(fromID, submissionID, "videoPaths", videoPath, successHandler, (error) => {
+            this.updateAdd(fromID, submissionID, "videoPaths", videoPath, successHandler, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(videoPath);
                 failureHandler(error);
             });
         }, failureHandler);
+        if (TestHelper.ifTesting) {
+            return this.updateAdd(fromID, submissionID, "videoPaths", videoPath);
+        }
     }
 
     /**
@@ -102,7 +111,9 @@ class SubmissionFunctions {
     static removePicture(fromID, submissionID, picturePath, successHandler, failureHandler) {
         return this.updateRemove(fromID, submissionID, "picturePaths", picturePath, (data) => {
             S3.delete(picturePath, () => {
-                successHandler(data);
+                if (successHandler) {
+                    successHandler(data);
+                }
             }, failureHandler);
         }, failureHandler);
     }
@@ -121,7 +132,9 @@ class SubmissionFunctions {
     static removeVideo(fromID, submissionID, videoPath, successHandler, failureHandler) {
         return this.updateRemove(fromID, submissionID, "videoPaths", videoPath, (data) => {
             S3.delete(videoPath, () => {
-                successHandler(data);
+                if (successHandler) {
+                    successHandler(data);
+                }
             }, failureHandler);
         }, failureHandler);
     }
@@ -137,8 +150,10 @@ class SubmissionFunctions {
      * @param {string} by The ID of the User who created the Submission.
      * @param {string} about The ID of the object to complete the submission for.
      * @param {string} description The string description for the Submission.
-     * @param {{}} pictures The picture map with key/value = S3Path : file, dictating the pictures to add with what key.
-     * @param {{}} videos The video map with key/value = S3Path : file, dictating the videos to add with what key.
+     * @param {Object<string, *>} pictures The picture map with key/value = S3Path : file, dictating the pictures
+     * to add with what key.
+     * @param {Object<string, *>} videos The video map with key/value = S3Path : file, dictating the videos to add
+     * with what key.
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -164,33 +179,38 @@ class SubmissionFunctions {
             picturePaths,
             videoPaths,
         }, (data) => {
-            const id = data.data;
-            const numVideosAndPictures = numPictures + numVideos;
-            let numFinished = 0;
-            function finish() {
-                numFinished++;
-                if (numFinished >= numVideosAndPictures) { successHandler(data); }
-            }
-            function error(error) {
-                // TODO Delete the object and abort!
-                SubmissionFunctions.delete(fromID, id);
-                failureHandler(error);
-            }
-            if (numVideosAndPictures === 0) {
-                successHandler(data);
-            }
-            else {
-                if (pictures) {
-                    for (const key in pictures) {
-                        if (pictures.hasOwnProperty(key) && pictures[key]) {
-                            S3.putImage(id + "/" + key, pictures[key], finish, error);
+            if (data) {
+                const id = data.data;
+                const numVideosAndPictures = numPictures + numVideos;
+                let numFinished = 0;
+                const finish = () => {
+                    numFinished++;
+                    if (numFinished >= numVideosAndPictures) {
+                        successHandler(data);
+                    }
+                };
+                const error = (error) => {
+                    // TODO Delete the object and abort!
+                    SubmissionFunctions.delete(fromID, id);
+                    failureHandler(error);
+                };
+
+                if (numVideosAndPictures === 0) {
+                    successHandler(data);
+                }
+                else {
+                    if (pictures) {
+                        for (const key in pictures) {
+                            if (pictures.hasOwnProperty(key) && pictures[key]) {
+                                S3.putImage(id + "/" + key, pictures[key], finish, error);
+                            }
                         }
                     }
-                }
-                if (videos) {
-                    for (const key in videos) {
-                        if (videos.hasOwnProperty(key) && videos[key]) {
-                            S3.putVideo(id + "/" + key, videos[key], finish, error);
+                    if (videos) {
+                        for (const key in videos) {
+                            if (videos.hasOwnProperty(key) && videos[key]) {
+                                S3.putVideo(id + "/" + key, videos[key], finish, error);
+                            }
                         }
                     }
                 }
