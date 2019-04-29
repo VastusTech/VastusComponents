@@ -217,9 +217,14 @@ describe("high level methods", () => {
             expect(normalizeQuery(QL.constructItemQuery(
                 "Post", ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryPosts($limit:Int,$nextToken:String!,$var1:String!,$var2:String!){\n' +
+                    'queryPosts(filter:{and:[{eq:{restriction:$var1}},{eq:{access:$var2}}]},limit:$limit,' +
+                    'nextToken:$nextToken){\nitems{\nid\nitem_type\ntime_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: 'invite',
+                    var2: 'public'
                 }
             });
         });
@@ -227,9 +232,10 @@ describe("high level methods", () => {
             expect(normalizeQuery(QL.constructItemQuery(
                 "Post", ["id", "item_type", "time_created"], null, 10, null
             ))).to.eql({
-                query: "",
+                query: 'queryQueryPosts($limit:Int){\nqueryPosts(limit:$limit){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10
                 }
             });
         });
@@ -237,9 +243,13 @@ describe("high level methods", () => {
             expect(normalizeQuery(QL.constructItemQuery(
                 "Post", ["id", "item_type", "time_created"], filter, 10, null
             ))).to.eql({
-                query: "",
+                query: 'queryQueryPosts($limit:Int,$var1:String!,$var2:String!){\nqueryPosts(filter:' +
+                    '{and:[{eq:{restriction:$var1}},{eq:{access:$var2}}]},limit:$limit){\nitems{\nid\n' +
+                    'item_type\ntime_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    var1: 'invite',
+                    var2: 'public'
                 }
             });
         });
@@ -247,19 +257,25 @@ describe("high level methods", () => {
             expect(normalizeQuery(QL.constructItemQuery(
                 "Post", ["id", "item_type", "time_created"], filter, 10, null
             ))).to.eql({
-                query: "",
+                query: 'queryQueryPosts($limit:Int,$var1:String!,$var2:String!){\nqueryPosts(filter:{and:[{eq:' +
+                    '{restriction:$var1}},{eq:{access:$var2}}]},limit:$limit){\nitems{\nid\nitem_type\ntime_created' +
+                    '\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    var1: 'invite',
+                    var2: 'public'
                 }
             });
         });
         it("Should construct a query with a non-null next token", () => {
-            expect(QL.constructItemQuery(
+            expect(normalizeQuery(QL.constructItemQuery(
                 "Post", ["id", "item_type", "time_created"], null, 10, "NEXTTOKEN"
-            )).to.eql({
-                query: "",
+            ))).to.eql({
+                query: 'queryQueryPosts($limit:Int,$nextToken:String!){\nqueryPosts(limit:$limit,nextToken:' +
+                    '$nextToken){\nitems{\nid\nitem_type\ntime_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN'
                 }
             });
         });
@@ -267,17 +283,12 @@ describe("high level methods", () => {
         it("Should throw an error if a zero limit is passed in", () => {
             assert.throws(() => QL.constructItemQuery(
                 "Post", ["id", "item_type", "time_created"], filter, 0, "NEXTTOKEN"
-            ), Error, "No zero limit");
+            ), Error, "Limit must be greater than 0");
         });
         it("Should throw an error if a non-positive limit is passed in", () => {
-            expect(QL.constructItemQuery(
+            assert.throws(() => QL.constructItemQuery(
                 "Post", ["id", "item_type", "time_created"], filter, -10, "NEXTTOKEN"
-            )).to.eql({
-                query: "",
-                variables: {
-
-                }
-            });
+            ), Error, "Limit must be greater than 0");
         });
         it("Should throw an error if a bad item type is passed in", () => {
             assert.throws(() => QL.getItems(
@@ -322,9 +333,13 @@ describe("high level methods", () => {
             expect(normalizeQuery(QL.queryItems(
                 "Challenge", query
             ))).to.eql({
-                query: "",
-                variables: {}
-            })
+                query: 'queryQueryChallenges($limit:Int,$var1:String!){\nqueryChallenges(filter:{or:[{eq:{access:' +
+                    '$var1}}]},limit:$limit){\nitems{\nid\nitem_type\nowner\n}\nnextToken\n}\n}',
+                variables: {
+                    limit: 100,
+                    var1: 'public'
+                }
+            });
         });
         it("Should throw an error if a bad item type is passed in", () => {
             assert.throws(() => QL.queryItems("Not-a-Client"), Error, "Unrecognized item type");
@@ -385,13 +400,77 @@ describe("query construction methods", () => {
     // Construct Query
     // TODO
     describe("construct query", () => {
-        it("Constructs Query correctly", () => {
-            QL.constructQuery()
+        it("Should construct a query for a single fetch", () => {
+            expect(normalizeQuery(QL.constructQuery(
+                "QUERYNAME", "QUERYFUNCTION", {
+                    id: "ID"
+                }, ["id", "item_type", "time_created"]
+            ))).to.eql({
+                query: 'queryQUERYNAME($id:String!){\nQUERYFUNCTION(id:$id){\nid\nitem_type\ntime_created\n}\n}',
+                variables: {
+                    id: 'ID'
+                }
+            });
         });
-        it("Should construct a query for a single fetch");
-        it("Should construct a query for a batch fetch");
-        it("Should construct a query for a query fetch with null filter");
-        it("Should construct a query for a query fetch with a filter");
+        it("Should construct a query for a batch fetch", () => {
+            expect(normalizeQuery(QL.constructQuery(
+                "QUERYNAME", "QUERYFUNCTION", {
+                    ids: ["ID1", "ID2", "ID3"]
+                }, ["id", "item_type", "time_created"], null, true
+            ))).to.eql({
+                query: 'queryQUERYNAME($ids:[String]!){\nQUERYFUNCTION(ids:$ids){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: {
+                    ids: [ 'ID1', 'ID2', 'ID3' ]
+                }
+            });
+        });
+        it("Should construct a query for a query fetch with null filter", () => {
+            expect(normalizeQuery(QL.constructQuery(
+                "QUERYNAME", "QUERYFUNCTION", {
+                    nextToken: "NEXTTOKEN",
+                    limit: "LIMIT"
+                }, ["id", "item_type", "time_created"], null, false, true
+            ))).to.eql({
+                query: 'queryQUERYNAME($nextToken:String!,$limit:Int){\nQUERYFUNCTION(nextToken:$nextToken,' +
+                    'limit:$limit){\nitems{\nid\nitem_type\ntime_created\n}\nnextToken\n}\n}',
+                variables: {
+                    nextToken: 'NEXTTOKEN',
+                    limit: 'LIMIT'
+                }
+            });
+        });
+        it("Should construct a query for a query fetch with a filter", () => {
+            expect(normalizeQuery(QL.constructQuery(
+                "QUERYNAME", "QUERYFUNCTION", {
+                    nextToken: "NEXTTOKEN",
+                    limit: "LIMIT"
+                }, ["id", "item_type", "time_created"], QL.generateFilter({
+                    or: [{
+                        eq: {
+                            access: "$var1"
+                        }
+                    }, {
+                        eq: {
+                            restriction: "$var2"
+                        }
+                    }]
+                }, {
+                    var1: "public",
+                    var2: "invite"
+                }), false, true
+            ))).to.eql({
+                query: 'queryQUERYNAME($nextToken:String!,$limit:Int,$var1:String!,$var2:String!){\n' +
+                    'QUERYFUNCTION(filter:{or:[{eq:{access:$var1}},{eq:{restriction:$var2}}]},nextToken:' +
+                    '$nextToken,limit:$limit){\nitems{\nid\nitem_type\ntime_created\n}\nnextToken\n}\n}',
+                variables: {
+                    nextToken: 'NEXTTOKEN',
+                    limit: 'LIMIT',
+                    var1: 'public',
+                    var2: 'invite'
+                }
+            });
+        });
     });
 });
 
@@ -438,16 +517,45 @@ describe("query compression and normalization methods", () => {
 
     // get compressed from query result
     it("Gets compressed result from query result", function () {
-        // TODO
-        QL.getCompressedFromQueryResult()
+        expect(QL.getCompressedFromQueryResult({
+            items: [{
+                id: "ID1",
+                name: "Leo"
+            }, {
+                id: "ID2",
+                name: "Not Leo"
+            }],
+            nextToken: "NEXTTOKEN"
+        })).to.eql({
+            ids: ["ID1", "ID2"],
+            nextToken: "NEXTTOKEN"
+        });
     });
 
     // get query result from compressed
     it("Gets query result from compressed result", function () {
-        // TODO
-        QL.getQueryResultFromCompressed({
-
-        })
+        expect(QL.getQueryResultFromCompressed({
+            ids: ["ID1", "ID2"],
+            nextToken: "NEXTTOKEN"
+        }, {
+            ID1: {
+                id: "ID1",
+                name: "Leo"
+            },
+            ID2: {
+                id: "ID2",
+                name: "Not Leo"
+            }
+        })).to.eql({
+            items: [{
+                id: "ID1",
+                name: "Leo"
+            }, {
+                id: "ID2",
+                name: "Not Leo"
+            }],
+            nextToken: "NEXTTOKEN"
+        });
     });
 
 });
@@ -460,105 +568,152 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.getClient(
                 "CL0001", ["id", "item_type", "username"]
             ))).to.eql({
-
+                query: 'queryGetClient($id:String!){\ngetClient(id:$id){\nid\nitem_type\nusername\n}\n}',
+                variables: {
+                    id: 'CL0001'
+                }
             });
         });
         it("Should get a Trainer by ID", () => {
             expect(normalizeQuery(QL.getTrainer(
                 "TR0001", ["id", "item_type", "username"]
             ))).to.eql({
-
+                query: 'queryGetTrainer($id:String!){\ngetTrainer(id:$id){\nid\nitem_type\nusername\n}\n}',
+                variables: {
+                    id: 'TR0001'
+                }
             });
         });
         it("Should get a Gym by ID", () => {
             expect(normalizeQuery(QL.getGym(
                 "GY0001", ["id", "item_type", "username"]
             ))).to.eql({
-
+                query: 'queryGetGym($id:String!){\ngetGym(id:$id){\nid\nitem_type\nusername\n}\n}',
+                variables: {
+                    id: 'GY0001'
+                }
             });
         });
         it("Should get a Workout by ID", () => {
             expect(normalizeQuery(QL.getWorkout(
                 "WO0001", ["id", "item_type", "time"]
             ))).to.eql({
-
+                query: 'queryGetWorkout($id:String!){\ngetWorkout(id:$id){\nid\nitem_type\ntime\n}\n}',
+                variables: {
+                    id: 'WO0001'
+                }
             });
         });
         it("Should get a Review by ID", () => {
             expect(normalizeQuery(QL.getReview(
                 "RE0001", ["id", "item_type", "by"]
             ))).to.eql({
-
+                query: 'queryGetReview($id:String!){\ngetReview(id:$id){\nid\nitem_type\nby\n}\n}',
+                variables: {
+                    id: 'RE0001'
+                }
             });
         });
         it("Should get a Event by ID", () => {
             expect(normalizeQuery(QL.getEvent(
                 "EV0001", ["id", "item_type", "time"]
             ))).to.eql({
-
+                query: 'queryGetEvent($id:String!){\ngetEvent(id:$id){\nid\nitem_type\ntime\n}\n}',
+                variables: {
+                    id: 'EV0001'
+                }
             });
         });
         it("Should get a Challenge by ID", () => {
             expect(normalizeQuery(QL.getChallenge(
                 "CH0001", ["id", "item_type", "endtime"]
             ))).to.eql({
-
+                query: 'queryGetChallenge($id:String!){\ngetChallenge(id:$id){\nid\nitem_type\nendtime\n}\n}',
+                variables: {
+                    id: 'CH0001'
+                }
             });
         });
         it("Should get a Invite by ID", () => {
             expect(normalizeQuery(QL.getInvite(
                 "IN0001", ["id", "item_type", "from"]
             ))).to.eql({
-
+                query: 'queryGetInvite($id:String!){\ngetInvite(id:$id){\nid\nitem_type\nfrom\n}\n}',
+                variables: {
+                    id: 'IN0001'
+                }
             });
         });
         it("Should get a Post by ID", () => {
             expect(normalizeQuery(QL.getPost(
                 "PO0001", ["id", "item_type", "by"]
             ))).to.eql({
-
+                query: 'queryGetPost($id:String!){\ngetPost(id:$id){\nid\nitem_type\nby\n}\n}',
+                variables: {
+                    id: 'PO0001'
+                }
             });
         });
         it("Should get a Submission by ID", () => {
             expect(normalizeQuery(QL.getSubmission(
                 "SU0001", ["id", "item_type", "by"]
             ))).to.eql({
-
+                query: 'queryGetSubmission($id:String!){\ngetSubmission(id:$id){\nid\nitem_type\nby\n}\n}',
+                variables: {
+                    id: 'SU0001'
+                }
             });
         });
         it("Should get a Group by ID", () => {
             expect(normalizeQuery(QL.getGroup(
                 "GR0001", ["id", "item_type", "owners"]
             ))).to.eql({
-
+                query: 'queryGetGroup($id:String!){\ngetGroup(id:$id){\nid\nitem_type\nowners\n}\n}',
+                variables: {
+                    id: 'GR0001'
+                }
             });
         });
         it("Should get a Comment by ID", () => {
             expect(normalizeQuery(QL.getComment(
                 "CO0001", ["id", "item_type", "by"]
             ))).to.eql({
-
+                query: 'queryGetComment($id:String!){\ngetComment(id:$id){\nid\nitem_type\nby\n}\n}',
+                variables: {
+                    id: 'CO0001'
+                }
             });
         });
         it("Should get a Sponsor by ID", () => {
             expect(normalizeQuery(QL.getSponsor(
                 "SP0001", ["id", "item_type", "username"]
             ))).to.eql({
-
+                query: 'queryGetSponsor($id:String!){\ngetSponsor(id:$id){\nid\nitem_type\nusername\n}\n}',
+                variables: {
+                    id: 'SP0001'
+                }
             });
         });
         it("Should get a Message by ID", () => {
             expect(normalizeQuery(QL.getMessage(
-                "ME0001", ["id", "item_type", "by"]
+                "CH0001", "ME0001", ["id", "item_type", "by"]
             ))).to.eql({
-
+                query: 'queryGetMessage($board:String!,$id:String!){\ngetMessage(board:$board,id:$id){\nid\n' +
+                    'item_type\nby\n}\n}',
+                variables: {
+                    board: 'CH0001',
+                    id: 'ME0001'
+                }
             });
         });
         it("Should get a Streak by ID", () => {
             expect(normalizeQuery(QL.getStreak(
                 "ST0001", ["id", "item_type", "streakType"]
             ))).to.eql({
-
+                query: 'queryGetStreak($id:String!){\ngetStreak(id:$id){\nid\nitem_type\nstreakType\n}\n}',
+                variables: {
+                    id: 'ST0001'
+                }
             });
         });
     });
@@ -569,28 +724,44 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.getClientByUsername(
                 "LB", ["id", "item_type", "username"]
             ))).to.eql({
-
+                query: 'queryGetClientByUsername($username:String!){\ngetClientByUsername(username:$username)' +
+                    '{\nid\nitem_type\nusername\n}\n}',
+                variables: {
+                    username: 'LB'
+                }
             });
         });
         it("Should get a Trainer by username", () => {
             expect(normalizeQuery(QL.getTrainerByUsername(
                 "LB", ["id", "item_type", "username"]
             ))).to.eql({
-
+                query: 'queryGetTrainerByUsername($username:String!){\ngetTrainerByUsername(username:$username)' +
+                    '{\nid\nitem_type\nusername\n}\n}',
+                variables: {
+                    username: 'LB'
+                }
             });
         });
         it("Should get a Gym by username", () => {
             expect(normalizeQuery(QL.getGymByUsername(
                 "LB", ["id", "item_type", "username"]
             ))).to.eql({
-
+                query: 'queryGetGymByUsername($username:String!){\ngetGymByUsername(username:$username){' +
+                    '\nid\nitem_type\nusername\n}\n}',
+                variables: {
+                    username: 'LB'
+                }
             });
         });
         it("Should get a Sponsor by username", () => {
             expect(normalizeQuery(QL.getSponsorByUsername(
                 "LB", ["id", "item_type", "username"]
             ))).to.eql({
-
+                query: 'queryGetSponsorByUsername($username:String!){\ngetSponsorByUsername(username:' +
+                    '$username){\nid\nitem_type\nusername\n}\n}',
+                variables: {
+                    username: 'LB'
+                }
             });
         });
     });
@@ -601,28 +772,44 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.getClientByFederatedID(
                 "FEDERATEDID", ["id", "item_type", "username"]
             ))).to.eql({
-
+                query: 'queryGetClientByFederatedID($federatedID:String!){\ngetClientByFederatedID(' +
+                    'federatedID:$federatedID){\nid\nitem_type\nusername\n}\n}',
+                variables: {
+                    federatedID: 'FEDERATEDID'
+                }
             });
         });
         it("Should get a Trainer by federated ID", () => {
             expect(normalizeQuery(QL.getTrainerByFederatedID(
                 "FEDERATEDID", ["id", "item_type", "username"]
             ))).to.eql({
-
+                query: 'queryGetTrainerByFederatedID($federatedID:String!){\ngetTrainerByFederatedID(' +
+                    'federatedID:$federatedID){\nid\nitem_type\nusername\n}\n}',
+                variables: {
+                    federatedID: 'FEDERATEDID'
+                }
             });
         });
         it("Should get a Gym by federated ID", () => {
             expect(normalizeQuery(QL.getGymByFederatedID(
                 "FEDERATEDID", ["id", "item_type", "username"]
             ))).to.eql({
-
+                query: 'queryGetGymByFederatedID($federatedID:String!){\ngetGymByFederatedID(federatedID:' +
+                    '$federatedID){\nid\nitem_type\nusername\n}\n}',
+                variables: {
+                    federatedID: 'FEDERATEDID'
+                }
             });
         });
         it("Should get a Sponsor by federated ID", () => {
             expect(normalizeQuery(QL.getSponsorByFederatedID(
                 "FEDERATEDID", ["id", "item_type", "username"]
             ))).to.eql({
-
+                query: 'queryGetSponsorByFederatedID($federatedID:String!){\ngetSponsorByFederatedID(' +
+                    'federatedID:$federatedID){\nid\nitem_type\nusername\n}\n}',
+                variables: {
+                    federatedID: 'FEDERATEDID'
+                }
             });
         });
     });
@@ -633,106 +820,121 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.getClients(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "username"]
             ))).to.eql({
-
-            });
+                query: 'queryGetClients($id0:String!,$id1:String!,$id2:String!){\ngetClients(ids:[$id0,$id1,$id2,])' +
+                    '{\nitems{\nid\nitem_type\nusername\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Trainers by IDs", () => {
             expect(normalizeQuery(QL.getTrainers(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "username"]
             ))).to.eql({
-
-            });
+                query: 'queryGetTrainers($id0:String!,$id1:String!,$id2:String!){\ngetTrainers(ids:[$id0,$id1,$id2,])' +
+                    '{\nitems{\nid\nitem_type\nusername\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Gyms by IDs", () => {
             expect(normalizeQuery(QL.getGyms(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "username"]
             ))).to.eql({
-
-            });
+                query: 'queryGetGyms($id0:String!,$id1:String!,$id2:String!){\ngetGyms(ids:[$id0,$id1,$id2,])' +
+                    '{\nitems{\nid\nitem_type\nusername\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Workouts by IDs", () => {
             expect(normalizeQuery(QL.getWorkouts(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "time"]
             ))).to.eql({
-
-            });
+                query: 'queryGetWorkouts($id0:String!,$id1:String!,$id2:String!){\ngetWorkouts(ids:[$id0,$id1,$id2,' +
+                    ']){\nitems{\nid\nitem_type\ntime\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Reviews by IDs", () => {
             expect(normalizeQuery(QL.getReviews(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "by"]
             ))).to.eql({
-
-            });
+                query: 'queryGetReviews($id0:String!,$id1:String!,$id2:String!){\ngetReviews(ids:[$id0,$id1,$id2,' +
+                    ']){\nitems{\nid\nitem_type\nby\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Events by IDs", () => {
             expect(normalizeQuery(QL.getEvents(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "time"]
             ))).to.eql({
-
-            });
+                query: 'queryGetEvents($id0:String!,$id1:String!,$id2:String!){\ngetEvents(ids:[$id0,$id1,$id2,' +
+                    ']){\nitems{\nid\nitem_type\ntime\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Challenges by IDs", () => {
             expect(normalizeQuery(QL.getChallenges(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "endtime"]
             ))).to.eql({
-
-            });
+                query: 'queryGetChallenges($id0:String!,$id1:String!,$id2:String!){\ngetChallenges(ids:[$id0,$id1,' +
+                    '$id2,]){\nitems{\nid\nitem_type\nendtime\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Invites by IDs", () => {
             expect(normalizeQuery(QL.getInvites(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "by"]
             ))).to.eql({
-
-            });
+                query: 'queryGetInvites($id0:String!,$id1:String!,$id2:String!){\ngetInvites(ids:[$id0,$id1,' +
+                    '$id2,]){\nitems{\nid\nitem_type\nby\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Posts by IDs", () => {
             expect(normalizeQuery(QL.getPosts(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "by"]
             ))).to.eql({
-
-            });
+                query: 'queryGetPosts($id0:String!,$id1:String!,$id2:String!){\ngetPosts(ids:[$id0,$id1,$id2,' +
+                    ']){\nitems{\nid\nitem_type\nby\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Submissions by IDs", () => {
             expect(normalizeQuery(QL.getSubmissions(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "by"]
             ))).to.eql({
-
-            });
+                query: 'queryGetSubmissions($id0:String!,$id1:String!,$id2:String!){\ngetSubmissions(ids:' +
+                    '[$id0,$id1,$id2,]){\nitems{\nid\nitem_type\nby\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Groups by IDs", () => {
             expect(normalizeQuery(QL.getGroups(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "owners"]
             ))).to.eql({
-
-            });
+                query: 'queryGetGroups($id0:String!,$id1:String!,$id2:String!){\ngetGroups(ids:[$id0,$id1,$id2,' +
+                    ']){\nitems{\nid\nitem_type\nowners\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Comments by IDs", () => {
             expect(normalizeQuery(QL.getComments(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "by"]
             ))).to.eql({
-
-            });
+                query: 'queryGetComments($id0:String!,$id1:String!,$id2:String!){\ngetComments(ids:[$id0,$id1,$id2,' +
+                    ']){\nitems{\nid\nitem_type\nby\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Sponsors by IDs", () => {
             expect(normalizeQuery(QL.getSponsors(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "username"]
             ))).to.eql({
-
-            });
+                query: 'queryGetSponsors($id0:String!,$id1:String!,$id2:String!){\ngetSponsors(ids:[$id0,$id1,$id2,' +
+                    ']){\nitems{\nid\nitem_type\nusername\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Messages by IDs", () => {
             expect(normalizeQuery(QL.getMessages(
-                ["ID1", "ID2", "ID3"], ["id", "item_type", "by"]
+                "CH0001", ["ID1", "ID2", "ID3"], ["id", "item_type", "by"]
             ))).to.eql({
-
-            });
+                query: 'queryGetMessages($board:String!,$id0:String!,$id1:String!,$id2:String!){\ngetMessages(ids:' +
+                    '[$id0,$id1,$id2,],board:$board){\nitems{\nid\nitem_type\nby\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { board: 'CH0001', id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
         it("Should batch fetch Streaks by IDs", () => {
             expect(normalizeQuery(QL.getStreaks(
                 ["ID1", "ID2", "ID3"], ["id", "item_type", "streakType"]
             ))).to.eql({
-
-            });
+                query: 'queryGetStreaks($id0:String!,$id1:String!,$id2:String!){\ngetStreaks(ids:[$id0,$id1,$id2,' +
+                    ']){\nitems{\nid\nitem_type\nstreakType\n}\nunretrievedItems{\nid\n}\n}\n}',
+                variables: { id0: 'ID1', id1: 'ID2', id2: 'ID3' } });
         });
     });
 
@@ -749,9 +951,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructClientQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryClients($limit:Int,$nextToken:String!,$var1:String!){\nqueryClients(' +
+                    'filter:{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\n' +
+                    'item_type\ntime_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -759,9 +965,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructTrainerQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryTrainers($limit:Int,$nextToken:String!,$var1:String!){\nqueryTrainers(' +
+                    'filter:{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\n' +
+                    'item_type\ntime_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -769,9 +979,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructGymQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryGyms($limit:Int,$nextToken:String!,$var1:String!){\nqueryGyms(filter:' +
+                    '{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type' +
+                    '\ntime_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -779,9 +993,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructWorkoutQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryWorkouts($limit:Int,$nextToken:String!,$var1:String!){\nqueryWorkouts(filter:' +
+                    '{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -789,9 +1007,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructReviewQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryReviews($limit:Int,$nextToken:String!,$var1:String!){\nqueryReviews(filter:' +
+                    '{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -799,9 +1021,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructEventQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryEvents($limit:Int,$nextToken:String!,$var1:String!){\nqueryEvents(filter:{' +
+                    'gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -809,9 +1035,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructChallengeQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryChallenges($limit:Int,$nextToken:String!,$var1:String!){\nqueryChallenges(filter:' +
+                    '{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -819,9 +1049,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructInviteQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryInvites($limit:Int,$nextToken:String!,$var1:String!){\nqueryInvites(filter:{gt:' +
+                    '{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -829,9 +1063,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructPostQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryPosts($limit:Int,$nextToken:String!,$var1:String!){\nqueryPosts(filter:{gt:' +
+                    '{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -839,9 +1077,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructSubmissionQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQuerySubmissions($limit:Int,$nextToken:String!,$var1:String!){\nquerySubmissions(filter' +
+                    ':{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -849,9 +1091,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructGroupQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryGroups($limit:Int,$nextToken:String!,$var1:String!){\nqueryGroups(filter:{' +
+                    'gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\n' +
+                    'item_type\ntime_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -859,9 +1105,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructCommentQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryComments($limit:Int,$nextToken:String!,$var1:String!){\nqueryComments(filter:' +
+                    '{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -869,19 +1119,28 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructSponsorQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQuerySponsors($limit:Int,$nextToken:String!,$var1:String!){\nquerySponsors(filter:' +
+                    '{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
         it("Should construct a query for Messages", () => {
             expect(normalizeQuery(QL.constructMessageQuery(
-                ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
+                "CH0001", ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryMessages($board:String!,$limit:Int,$nextToken:String!,$var1:String!){\n' +
+                    'queryMessages(filter:{gt:{time_created:$var1}},board:$board,limit:$limit,nextToken:' +
+                    '$nextToken){\nitems{\nid\nitem_type\ntime_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    board: 'CH0001',
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -889,9 +1148,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.constructStreakQuery(
                 ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN"
             ))).to.eql({
-                query: "",
+                query: 'queryQueryStreaks($limit:Int,$nextToken:String!,$var1:String!){\nqueryStreaks(filter:{gt:' +
+                    '{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -911,9 +1174,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.queryClients(
                 QL.constructClientQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQueryClients($limit:Int,$nextToken:String!,$var1:String!){\nqueryClients(filter:{' +
+                    'gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -921,9 +1188,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.queryTrainers(
                 QL.constructTrainerQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQueryTrainers($limit:Int,$nextToken:String!,$var1:String!){\nqueryTrainers(filter:' +
+                    '{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -931,9 +1202,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.queryGyms(
                 QL.constructGymQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQueryGyms($limit:Int,$nextToken:String!,$var1:String!){\nqueryGyms(filter:{gt:{' +
+                    'time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -941,9 +1216,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.queryWorkouts(
                 QL.constructWorkoutQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQueryWorkouts($limit:Int,$nextToken:String!,$var1:String!){\nqueryWorkouts(filter:' +
+                    '{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -951,9 +1230,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.queryReviews(
                 QL.constructReviewQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQueryReviews($limit:Int,$nextToken:String!,$var1:String!){\nqueryReviews(filter:' +
+                    '{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -961,9 +1244,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.queryEvents(
                 QL.constructEventQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQueryEvents($limit:Int,$nextToken:String!,$var1:String!){\nqueryEvents(filter:{gt:' +
+                    '{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -971,9 +1258,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.queryChallenges(
                 QL.constructChallengeQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQueryChallenges($limit:Int,$nextToken:String!,$var1:String!){\nqueryChallenges(' +
+                    'filter:{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\n' +
+                    'item_type\ntime_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -981,9 +1272,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.queryInvites(
                 QL.constructInviteQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQueryInvites($limit:Int,$nextToken:String!,$var1:String!){\nqueryInvites(filter:' +
+                    '{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -991,9 +1286,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.queryPosts(
                 QL.constructPostQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQueryPosts($limit:Int,$nextToken:String!,$var1:String!){\nqueryPosts(filter:{gt:' +
+                    '{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -1001,9 +1300,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.querySubmissions(
                 QL.constructSubmissionQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQuerySubmissions($limit:Int,$nextToken:String!,$var1:String!){\nquerySubmissions(' +
+                    'filter:{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\n' +
+                    'item_type\ntime_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -1011,9 +1314,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.queryGroups(
                 QL.constructGroupQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQueryGroups($limit:Int,$nextToken:String!,$var1:String!){\nqueryGroups(filter:{' +
+                    'gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -1021,9 +1328,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.queryComments(
                 QL.constructCommentQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQueryComments($limit:Int,$nextToken:String!,$var1:String!){\nqueryComments(filter:' +
+                    '{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -1031,19 +1342,28 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.querySponsors(
                 QL.constructSponsorQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQuerySponsors($limit:Int,$nextToken:String!,$var1:String!){\nquerySponsors(filter:' +
+                    '{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
         it("Should query Messages", () => {
             expect(normalizeQuery(QL.queryMessages(
-                QL.constructMessageQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
+                QL.constructMessageQuery("CH0001", ["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQueryMessages($board:String!,$limit:Int,$nextToken:String!,$var1:String!){\n' +
+                    'queryMessages(filter:{gt:{time_created:$var1}},board:$board,limit:$limit,nextToken:' +
+                    '$nextToken){\nitems{\nid\nitem_type\ntime_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    board: 'CH0001',
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });
@@ -1051,9 +1371,13 @@ describe("item type methods", () => {
             expect(normalizeQuery(QL.queryStreaks(
                 QL.constructStreakQuery(["id", "item_type", "time_created"], filter, 10, "NEXTTOKEN")
             ))).to.eql({
-                query: "",
+                query: 'queryQueryStreaks($limit:Int,$nextToken:String!,$var1:String!){\nqueryStreaks(filter:' +
+                    '{gt:{time_created:$var1}},limit:$limit,nextToken:$nextToken){\nitems{\nid\nitem_type\n' +
+                    'time_created\n}\nnextToken\n}\n}',
                 variables: {
-
+                    limit: 10,
+                    nextToken: 'NEXTTOKEN',
+                    var1: '1998-10-05'
                 }
             });
         });

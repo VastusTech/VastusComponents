@@ -133,6 +133,7 @@ class GraphQL {
         for (let i = 0; i < variableList.length; i++) {
             if (!variableList[i]) throw Error("No variables can be null");
         }
+        if (limit <= 0) throw Error("Limit must be greater than 0");
         const func = switchReturnItemType(itemType, GraphQL.constructClientQuery, GraphQL.constructTrainerQuery, GraphQL.constructGymQuery,
             GraphQL.constructWorkoutQuery, GraphQL.constructReviewQuery, GraphQL.constructEventQuery, GraphQL.constructChallengeQuery,
             GraphQL.constructInviteQuery, GraphQL.constructPostQuery, GraphQL.constructSubmissionQuery, GraphQL.constructGroupQuery,
@@ -610,7 +611,7 @@ class GraphQL {
      *
      * @param {string} queryName The name of this specific query to send.
      * @param {string} queryFunction The name of the query function to use in the GraphQL endpoint.
-     * @param {{}} inputVariables The names and values of all the input variables for the query.
+     * @param {Object<string, string>} inputVariables The names and values of all the input variables for the query.
      * @param {[string]} outputVariables The variables to receive from the GraphQL query.
      * @param {{parameterString: string, parameters: {}}} filter The defined filter to receive only wanted elements.
      * @param {boolean} ifBatch If this query is a batch fetch operation as opposed to a regular fetch.

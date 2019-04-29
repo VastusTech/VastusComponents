@@ -36,6 +36,11 @@ class ChallengeFunctions {
             null, null, null, null, null, null, successHandler, failureHandler);
     }
 
+    static createStreakChallenge(fromID, owner, endTime, capacity, title, goal, access, restriction, tags,
+                                 successHandler, failureHandler) {
+
+    }
+
     /**
      * Creates a Challenge with optional information in the database with the given information.
      *
