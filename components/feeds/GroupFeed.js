@@ -42,7 +42,8 @@ const queryGroups = (filter, nextToken, isFinished, friends, fetchGroupQuery, se
                 for (let i = 0; i < data.items.length; i++) {
                     const group = data.items[i];
                     // Filter the results based on if we are able to see it
-                    if (group.access === "public" || (friends && arraysIntersect(friends, group.owners))) {
+                    //TODO: Switch this back to public when the styling is done!!!!!!!!!!!!!!!
+                    if (group.access === "private" || (friends && arraysIntersect(friends, group.owners))) {
                         // TODO Fetch any information about the groups!!!
                         setGroups(p => [...p, group]);
                     }
@@ -103,10 +104,10 @@ const GroupFeed = (props: Props) => {
     //This displays the rows in a grid format, with visibility enabled so that we know when the bottom of the page
     //is hit by the user.
     return (
-        <Visibility onUpdate={_.debounce(handleUpdate, 250)}>
+        <Visibility onUpdate={_.debounce(handleUpdate, 250)} style={{minWidth: '300px'}}>
             {_.times(groups.length, i => (
                 <Fragment key={i + 1}>
-                    <GroupCard group={groups[i]}/>
+                    <GroupCard group={groups[i]} />
                 </Fragment>
             ))}
             {!isFinished&&<Spinner/>}

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Button, Card, Modal, Divider, List, Icon } from 'semantic-ui-react'
+import {Button, Card, Modal, Divider, Icon, Grid} from 'semantic-ui-react'
 import ChallengeList from "../lists/ChallengeList";
 import { connect } from "react-redux";
 import EventList from "../lists/EventList";
@@ -71,40 +71,51 @@ const TrainerModal = (props: Props) => {
     return(
         <Modal open={props.open} onClose={props.onClose}>
             <Icon className='close' onClick={props.onClose}/>
-            <Card color='purple' fluid raised className="u-margin-top--2">
-                <Card.Header as="h2" style={{"margin": "12px 0 0"}}>{ getAttribute("name")}</Card.Header>
-                <Divider/>
-                <Card.Content textAlign="center">
-                    <ProfileImage userID={props.trainerID}
-                                  profileImage={getAttribute("profileImage")}
-                                  profileImages={getAttribute("profileImages")}
-                                  editable={false}/>
-
-                    <List id = "profile buttons">
-                        <List.Item>
-                            <Button primary circular size="large" onClick={() => setOwnedModalOpen(true)}><Icon name="trophy" /> Current Challenges</Button>
+            <Modal.Header style={{marginTop: '20px', marginBottom: '20px'}}>
+                <Grid centered>{getAttribute("name")}</Grid></Modal.Header>
+            <Modal.Content>
+                <ProfileImage userID={props.trainerID}
+                              profileImage={getAttribute("profileImage")}
+                              profileImages={getAttribute("profileImages")}
+                              editable={false}
+                              style={{marginTop: '20px'}}/>
+                <Grid centered columns={2}>
+                    <Grid.Column>
+                        <Grid centered>
+                            <Grid.Row>
+                                <Button floated='left' primary circular icon size="massive" onClick={() => setOwnedModalOpen(true)}><Icon name="trophy"/></Button>
+                            </Grid.Row>
+                            <Grid.Row style={{marginTop: '-20px', marginBottom: '20px'}}>
+                                <Button floated='left' className="u-button--flat u-padding-left--1">Current Challenges</Button>
+                            </Grid.Row>
                             <Modal basic size='mini' open={ownedModalOpen} onClose={() => setOwnedModalOpen(false)} closeIcon>
                                 <Modal.Content>
                                     <ChallengeList challengeIDs={getAttribute("ownedChallenges")} noChallengesMessage="No owned challenges yet!"/>
                                 </Modal.Content>
                             </Modal>
-                        </List.Item>
-                        <List.Item>
-                            <Button primary circular size="large" onClick={() => setScheduledModalOpen(true)}><Icon name="checked calendar" /> Scheduled Events</Button>
+                        </Grid>
+                    </Grid.Column>
+                    <Grid.Column>
+                        <Grid centered>
+                            <Grid.Row>
+                                <Button primary circular icon size="massive" onClick={() => setScheduledModalOpen(true)}><Icon name="checked calendar"/></Button>
+                            </Grid.Row>
+                            <Grid.Row style={{marginTop: '-20px', marginBottom: '20px'}}>
+                                <Button className="u-button--flat u-padding-left--1">Scheduled Events</Button>
+                            </Grid.Row>
                             <Modal basic size='mini' open={scheduledModalOpen} onClose={() => setScheduledModalOpen(false)} closeIcon>
                                 <Modal.Content>
                                     <EventList eventIDs={getAttribute("scheduledEvents")} noEventsMessage="No scheduled events yet!"/>
                                 </Modal.Content>
                             </Modal>
-                        </List.Item>
-                        <List.Item>
-                            <Modal trigger={<Button primary circular><Icon name="wechat" /> Trainer Chat</Button>}>
-                                <MessageBoard board={getMessageBoardName([getAttribute("id"), props.user.id])}/>
-                            </Modal>
-                        </List.Item>
-                    </List>
-                </Card.Content>
-            </Card>
+                        </Grid>
+                    </Grid.Column>
+                </Grid>
+
+                <Modal trigger={<Button primary fluid><Icon name="wechat"/> Trainer Chat</Button>}>
+                    <MessageBoard board={getMessageBoardName([getAttribute("id"), props.user.id])}/>
+                </Modal>
+            </Modal.Content>
         </Modal>
     );
 };

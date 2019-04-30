@@ -2,7 +2,7 @@ import {connect} from "react-redux";
 import React, { Component, Fragment } from 'react';
 import {fetchGroup, fetchClient, forceFetchGroup} from "../../redux/convenience/cacheItemTypeActions";
 import {forceFetchUserAttributes} from "../../redux/actions/userActions";
-import {Button, Divider, Icon, Modal, Card, Grid, Image, Message} from "semantic-ui-react";
+import {Button, Divider, Icon, Modal, Card, Grid, Image, Message, Tab, Popup} from "semantic-ui-react";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import CommentScreen from "../messaging/MessageBoard";
 import GroupFunctions from "../../database_functions/GroupFunctions";
@@ -10,6 +10,8 @@ import UserFunctions from "../../database_functions/UserFunctions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 import Logo from "../../img/vt_new.svg";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
+import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
+import CreatePostProp from "../manager/CreatePost";
 
 // TODO Rewrite for the new design
 // TODO Refactor
@@ -44,7 +46,8 @@ class GroupDescriptionModal extends Component<Props> {
         joinRequestSent: false,
         canCallChecks: true,
         deleted: false,
-        fetchedTrainer: false
+        fetchedTrainer: false,
+        isEditing: false
     };
 
     resetState(groupID) {
@@ -197,7 +200,72 @@ class GroupDescriptionModal extends Component<Props> {
         this.setState({ifCompleted: this.getGroupAttribute("ifCompleted") === "true"});
     }
 
-    createCorrectButton() {
+    /**
+     * This function controls the state of the edit button depending on whether the page is currently being edited or not.
+     *
+     * @param {boolean} isEditing If the profile is being edited or not.
+     * @param {function(boolean)} setIsEditing {boolean} Function for setting the edit boolean.
+     * @returns {*} The React JSX used to display the component.
+     */
+    editButton(isEditing) {
+        if(!isEditing) {
+            return (
+                <Button onClick = { () => {this.setState({isEditing: true})}} floated='left' circular icon color={'purple'}>
+                    <Icon name='edit outline'/>
+                </Button>
+            );
+        }
+        else {
+            return (
+                <div>
+                    <Button onClick = { () => {this.setState({isEditing: false})}} floated='left' circular icon color={'purple'}>
+                        <Icon name='save'/>
+                    </Button>
+                    <Button onClick = { () => {this.setState({isEditing: false})}} floated='left' circular icon>
+                        <Icon name='cancel'/>
+                    </Button>
+                </div>
+            );
+        }
+    }
+
+    /**
+     * This function controls the state of the settings button depending on whether the user owns or is joined to the
+     * challenge.
+     *
+     * @param {boolean} isOwned If the user owns the challenge or not.
+     * @param {boolean} isJoined If the user has joined the challenge or not.
+     * @returns {*} The React JSX used to display the component.
+     */
+    createCorrectSettingsButton(isOwned, isJoined, isLoading) {
+        if(isOwned) {
+            return (<Popup
+                trigger={<Button floated='right' circular icon color={'purple'}>
+                    <Icon name='cog'/>
+                </Button>}
+                content={<Button loading={isLoading} fluid negative size="large" disabled={isLoading}
+                                 onClick={() => this.handleDeleteGroupButton()}>
+                    Delete</Button>}
+                on='click'
+                position='bottom right'
+            />);
+        }
+        else if(isJoined) {
+            return (<Popup
+                trigger={<Button floated='right' circular icon color={'purple'}>
+                    <Icon name='cog'/>
+                </Button>}
+                content={<Button loading={isLoading} fluid inverted size="large" disabled={isLoading}
+                                 onClick={() => this.handleLeaveGroupButton()}>
+                    Leave
+                </Button>}
+                on='click'
+                position='bottom right'
+            />);
+        }
+    }
+
+    createCorrectButton(panes) {
         if (this.state.isCompleted) {
             return(
                 <Button disabled fluid inverted size="large">This Event is completed</Button>
@@ -206,10 +274,9 @@ class GroupDescriptionModal extends Component<Props> {
         else if (this.state.isOwned) {
             return (
                 <Fragment>
-                    <Button loading={this.state.isDeleteLoading} fluid negative size="large" disabled={this.state.isDeleteLoading} onClick={this.handleDeleteGroupButton}>Delete</Button>
                     <Divider className='u-margin-top--4' />
                     <Card fluid>
-                        <CommentScreen board={this.getGroupAttribute("id")}/>
+                        <Tab menu={{ widths: 2, inverted: true }} panes={panes} className='u-challenge u-margin-top--2' />
                     </Card>
                 </Fragment>
             )
@@ -217,11 +284,10 @@ class GroupDescriptionModal extends Component<Props> {
         else if (this.state.isJoined) {
             return (
                 <Fragment>
-                    <Button loading={this.state.isLeaveLoading} fluid inverted size="large" disabled={this.state.isLeaveLoading} onClick={this.handleLeaveGroupButton}>Leave</Button>
                     <Divider className='u-margin-top--4' />
                     <Card fluid>
                         {/*{alert(this.state.groupID)}*/}
-                        <CommentScreen board={this.getGroupAttribute("id")}/>
+                        <Tab menu={{ widths: 2, inverted: true }} panes={panes} className='u-challenge u-margin-top--2' />
                     </Card>
                 </Fragment>
             )
@@ -260,9 +326,6 @@ class GroupDescriptionModal extends Component<Props> {
                         return 0;
                     }
                 }
-                /*if(attribute === "tags") {
-                    console.log(Group[attribute]);
-                }*/
                 return group[attribute];
             }
         }
@@ -270,6 +333,28 @@ class GroupDescriptionModal extends Component<Props> {
     }
 
     render() {
+
+        const panes = [
+            { menuItem: 'Group Posts', render: () => (
+                    <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
+                        <Modal trigger={<Button fluid primary>Create Post</Button>} closeIcon>
+                            <CreatePostProp/>
+                        </Modal>
+                        <DatabaseObjectList ids={this.state.posts}
+                                            noObjectsMessage="No posts yet!"
+                                            acceptedItemTypes={["Post"]}
+                            // TODO Check the sort...
+                                            sortFunction={(a, b) => a.time_created.localeCompare(b.time_created)}
+                        />
+                    </Tab.Pane>
+                )},
+            { menuItem: 'Group Chat', render: () => (
+                    <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
+                        <CommentScreen board={this.state.groupID}/>
+                    </Tab.Pane>
+                )},
+        ];
+
         if (!this.getGroupAttribute("id")) {
             return(
                 <Modal open={this.props.open} onClose={this.props.onClose.bind(this)}>
@@ -299,24 +384,32 @@ class GroupDescriptionModal extends Component<Props> {
                 <Icon className='close' onClick={() => this.props.onClose()}/>
                 <Modal.Header align='center'>{this.getGroupAttribute("title")}</Modal.Header>
                 <Modal.Content>
+                    {this.editButton(this.state.isEditing)}
+                    {this.createCorrectSettingsButton(this.state.isOwned, this.state.isJoined, this.state.groupID, this.state.isLoading)}
                     <Grid centered rows='equal'>
                         <Grid.Row>
                             <Image src={Logo} size="small" centered />
                         </Grid.Row>
                         <Grid.Row>
-                            {this.getGroupAttribute("description")}
+                            {"\""}{this.getGroupAttribute("motto")}{"\""}
                         </Grid.Row>
                     </Grid>
-                    <Grid columns='equal' centered>
-                        <Modal trigger={
-                            <Button primary floated='right'>Members</Button>}>
-                            <Modal.Content>
-                                <DatabaseObjectList ids={this.getGroupAttribute("members")} noObjectsMessage={"No members yet!"}/>
-                            </Modal.Content>
-                        </Modal>
-                    </Grid>
+                    <Modal trigger={
+                        <Button floated='left' primary className="u-button--flat u-padding-left--1">
+                            <Icon name='users' /> Owners</Button>}>
+                        <Modal.Content>
+                            <DatabaseObjectList ids={this.getGroupAttribute("owners")} noObjectsMessage={"No owners yet!"}/>
+                        </Modal.Content>
+                    </Modal>
+                    <Modal trigger={
+                        <Button floated='right' primary className="u-button--flat u-padding-left--1">
+                            <Icon name='users' /> Members</Button>}>
+                        <Modal.Content>
+                            <DatabaseObjectList ids={this.getGroupAttribute("members")} noObjectsMessage={"No members yet!"}/>
+                        </Modal.Content>
+                    </Modal>
                 </Modal.Content>
-                {this.createCorrectButton()}
+                {this.createCorrectButton(panes)}
             </Modal>
         );
     }

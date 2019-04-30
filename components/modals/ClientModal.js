@@ -242,10 +242,10 @@ const ClientModal = (props: Props) => {
                                       profileImages={getAttribute("profileImages")}
                         />
                     </Grid.Column>
-                    <Grid.Column width={10} floated='right'>
+                    <div>
                         <Icon name='trophy'/>
                         {getAttribute("challengesWonLength") + " challenges won"}
-                    </Grid.Column>
+                    </div>
                 </Grid>
             </Modal.Content>
             <Modal.Actions>
@@ -264,9 +264,6 @@ const ClientModal = (props: Props) => {
                     </Grid.Column>
                 </Grid>
             </Modal.Actions>
-            {/*<Modal.Content>*/}
-                {/*{createSuccessLabel()}*/}
-            {/*</Modal.Content>*/}
             <Modal trigger={<Button primary fluid><Icon name="wechat" /> Chat </Button>}>
                 <MessageBoard board={getMessageBoardName([getAttribute("id"), props.user.id])}/>
             </Modal>

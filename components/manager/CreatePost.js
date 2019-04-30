@@ -11,6 +11,8 @@ import {
 import PostFunctions from "../../database_functions/PostFunctions";
 import {Player} from "video-react";
 import {err, log} from "../../../Constants";
+import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
 
 // TODO Rewrite based on new Design and refactor
 
@@ -41,10 +43,6 @@ function arrayRemove(arr, value) {
 
 }
 
-/*type Props = {
-    queryChallenges: any
-}*/
-
 /*
 * Create Event Prop
 *
@@ -73,14 +71,19 @@ class CreatePostProp extends Component {
 
     };
 
+    constructor(props) {
+        super(props);
+        this.changeStateText = this.changeStateText.bind(this);
+    }
+
     toggle = () => this.setState({ checked: !this.state.checked });
     toggleRest = () => this.setState({ checkedRest: !this.state.checkedRest });
 
-    changeStateText(key, value) {
+    changeStateText(value) {
         // TODO Sanitize this input
         // TODO Check to see if this will, in fact, work.!
-        this.state[key] = value.target.value;
-        log&&console.log("New " + key + " is equal to " + value.target.value);
+        this.setState({ description: value });
+        log&&console.log(value);
     }
 
     handleAccessSwitch = () => {
@@ -293,14 +296,15 @@ class CreatePostProp extends Component {
 
         return (
             <div align='center'>
-                <Header align='center'>Write New Post</Header>
+                <Header align='center' style={{marginTop: '20px'}}>Write New Post</Header>
                 <div align='center'>
                     <Container align='center'>
                         <Grid centered>
                             <Grid.Row>
                                 <Grid.Column width={12} className="segment centered" align='center'>
-                                    <Form align='center' onSubmit={this.handleSubmit}>
-                                        <TextArea fluid label="Description" type="text" name="description" placeholder="Write post description here..." onChange={value => this.changeStateText("description", value)}/>
+                                    <Form onSubmit={this.handleSubmit}>
+                                        <ReactQuill value={this.state.description}
+                                                    onChange={this.changeStateText} />
                                         <div>{this.displayError()}{this.createSuccessLabel()}</div>
                                     </Form>
                                 </Grid.Column>
@@ -314,20 +318,20 @@ class CreatePostProp extends Component {
                             {this.displayCurrentImage()}
                             <Fragment align='center'>
                                 <div className="uploadImage u-flex u-flex-align--center u-margin-top--2" align='center'>
-                                    <div floated="center">
-                                        <Button primary fluid as="label" htmlFor="picUpload" className="u-bg--primaryGradient">
-                                            <Icon name="camera" className='u-margin-right--0' inverted />
-                                            Upload Photo
-                                        </Button>
-                                        <input type="file" accept="image/*;capture=camcorder" id="picUpload" hidden={true} onChange={this.setPicture}/>
-                                    </div>
+                                    <Button primary fluid as="label" htmlFor="picUpload" className="u-bg--primaryGradient" style={{marginRight: '-5px'}}>
+                                        <Icon name="camera" className='u-margin-right--0' inverted />
+                                        Upload Photo/Video
+                                    </Button>
+                                    <input type="file" accept="image/*;capture=camcorder" id="picUpload" hidden={true} onChange={this.setPicture}/>
                                 </div>
                             </Fragment>
                         </div>
                         <div>{this.displaySubmission()}</div>
                     </Card>
                 </div>
-                <Button loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} primary size="big" type='button' onClick={() => { this.handleSubmit()}}>Submit</Button>
+                <Button loading={this.state.isSubmitLoading} style={{marginTop: '10px'}}
+                        disabled={this.state.isSubmitLoading} primary size="big" type='button'
+                        onClick={() => { this.handleSubmit()}}>Submit</Button>
                 {this.createSuccessLabel()}
             </div>
         );
@@ -355,3 +359,33 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreatePostProp);
+
+/*
+ * Quill modules to attach to editor
+ * See https://quilljs.com/docs/modules/ for complete options
+ */
+CreatePostProp.modules = {
+    toolbar: [
+        [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+        [{size: []}],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{'list': 'ordered'}, {'list': 'bullet'},
+            {'indent': '-1'}, {'indent': '+1'}],
+        ['link', 'image', 'video'],
+        ['clean']
+    ],
+    clipboard: {
+        // toggle to add extra line breaks when pasting HTML:
+        matchVisual: false,
+    }
+}
+/*
+ * Quill editor formats
+ * See https://quilljs.com/docs/formats/
+ */
+CreatePostProp.formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image', 'video'
+]

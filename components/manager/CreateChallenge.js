@@ -137,7 +137,7 @@ const CreateChallengeProp = (props) => {
 
     return (
         <div align='center'>
-            <Header align='center'>Challenge Builder</Header>
+            <Header align='center' style={{marginTop: '15px'}}>Challenge Builder</Header>
             <div align='center'>
                 <Grid align='center'>
                     <Grid.Row>

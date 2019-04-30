@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Header } from 'semantic-ui-react';
+import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Header, Popup} from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 import { connect } from 'react-redux';
 import {
@@ -24,6 +24,8 @@ import Spinner from "../props/Spinner";
 import {ifStreakExpired} from "../../logic/StreakHelper";
 import {arrayIntersection} from "../../logic/ArrayHelper";
 import {err} from "../../../Constants";
+import LogOutButton from "../manager/LogOutButton";
+import {Card} from "semantic-ui-react/dist/commonjs/views/Card/Card";
 
 export const ChallengeDescriptionModalInfo = {
     // TODO Contains everything that is referenced here
@@ -201,6 +203,14 @@ const createCorrectModal = (ownerID, ownerModalOpen, setOwnerModalOpen) => {
     return null;
 };
 
+const selectWinner = (isOwned, openCompleteModal) => {
+    if(isOwned) {
+        return (
+            <Button primary fluid onClick={openCompleteModal}>Select Winner</Button>
+        );
+    }
+}
+
 /**
  * TODO
  *
@@ -220,10 +230,19 @@ const createCorrectModal = (ownerID, ownerModalOpen, setOwnerModalOpen) => {
  * @return {*}
  */
 const createCorrectButton = (userID, challengeID, submissions, isLoading, isCompleted, isOwned, isJoined, isRestricted,
-                             isRequesting, setIsLoading, setSubmitModalOpen, setCompleteModalOpen, onClose) => {
+                             isRequesting, setIsLoading, setSubmitModalOpen, openCompleteModal) => {
     const panes = [
         { menuItem: 'Submissions', render: () => (
                 <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
+                    <Grid columns={2}>
+                        <Grid.Column>
+                            {selectWinner(isOwned, openCompleteModal)}
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Button primary fluid onClick={() => setSubmitModalOpen(true)}>
+                                Submit Your Entry</Button>
+                        </Grid.Column>
+                    </Grid>
                     <DatabaseObjectList ids={submissions}
                                         noObjectsMessage="No submissions yet!"
                                         acceptedItemTypes={["Submission"]}
@@ -250,9 +269,6 @@ const createCorrectButton = (userID, challengeID, submissions, isLoading, isComp
         // TODO This should also link the choose winner button
         return (
             <Fragment>
-                <Button primary fluid className='u-margin-bottom--1' onClick={() => setSubmitModalOpen(true)}>Submit Your Entry</Button>
-                <Button primary fluid size="large" onClick={() => setCompleteModalOpen(true)}>Select Winner</Button>
-                <Button loading={isLoading} fluid negative size="large" disabled={isLoading} onClick={() => handleDeleteChallengeButton(userID, challengeID, setIsLoading, onClose)}>Delete</Button>
                 <Divider className='u-margin-top--4' />
                 <Tab menu={{ widths: 2, inverted: true }} panes={panes} className='u-challenge u-margin-top--2' />
             </Fragment>
@@ -261,8 +277,6 @@ const createCorrectButton = (userID, challengeID, submissions, isLoading, isComp
     else if (isJoined) {
         return (
             <Fragment>
-                <Button primary fluid className='u-margin-bottom--1' onClick={() => setSubmitModalOpen(true)}>Submit Your Entry</Button>
-                <Button loading={isLoading} fluid inverted size="large" disabled={isLoading} onClick={() => handleLeaveChallengeButton(userID, challengeID, setIsLoading)}>Leave</Button>
                 <Divider className='u-margin-top--4' />
                 <Tab menu={{ widths: 2, inverted: true }} panes={panes} className='u-challenge u-margin-top--2' />
             </Fragment>
@@ -353,6 +367,74 @@ const challengeDeleted = (isDeleted) => {
 };
 
 /**
+ * This function controls the state of the edit button depending on whether the page is currently being edited or not.
+ *
+ * @param {boolean} isEditing If the profile is being edited or not.
+ * @param {function(boolean)} setIsEditing {boolean} Function for setting the edit boolean.
+ * @returns {*} The React JSX used to display the component.
+ */
+function editButton(isEditing, setIsEditing) {
+    if(!isEditing) {
+        return (
+            <Button onClick = { () => setIsEditing(p => !p)} floated='left' circular icon color={'purple'}>
+                <Icon name='edit outline'/>
+            </Button>
+        );
+    }
+    else {
+        return (
+            <div>
+                <Button onClick = { () => setIsEditing(p => !p)} floated='left' circular icon color={'purple'}>
+                    <Icon name='save'/>
+                </Button>
+                <Button onClick = { () => setIsEditing(p => !p)} floated='left' circular icon>
+                    <Icon name='cancel'/>
+                </Button>
+            </div>
+        );
+    }
+}
+
+/**
+ * This function controls the state of the settings button depending on whether the user owns or is joined to the
+ * challenge.
+ *
+ * @param {boolean} isOwned If the user owns the challenge or not.
+ * @param {boolean} isJoined If the user has joined the challenge or not.
+ * @returns {*} The React JSX used to display the component.
+ */
+function createCorrectSettingsButton(isOwned, isJoined, challengeID, setIsLoading, isLoading, userID, setCompleteModalOpen, onClose) {
+    if(isOwned) {
+        return (<Popup
+            trigger={<Button floated='right' circular icon color={'purple'}>
+                <Icon name='cog'/>
+            </Button>}
+            content={<Button loading={isLoading} fluid negative size="large" disabled={isLoading}
+                             onClick={() => handleDeleteChallengeButton(userID, challengeID, setIsLoading, onClose)}>
+                Delete</Button>}
+            on='click'
+            position='bottom right'
+        />);
+    }
+    else if(isJoined) {
+        return (<Popup
+            trigger={<Button floated='right' circular icon color={'purple'}>
+                <Icon name='cog'/>
+            </Button>}
+            content={<Button loading={isLoading} fluid inverted size="large" disabled={isLoading}
+                             onClick={() => handleLeaveChallengeButton(userID, challengeID, setIsLoading)}>
+                Leave
+            </Button>}
+            on='click'
+            position='bottom right'
+        />);
+    }
+    else {
+        return null;
+    }
+}
+
+/**
  * TODO
  *
  * @param props
@@ -372,6 +454,7 @@ const ChallengeDescriptionModal = (props: Props) => {
     const [completeModalOpen, setCompleteModalOpen] = useState(false);
     const [submitModalOpen, setSubmitModalOpen] = useState(false);
     const [deleted, setDeleted] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
 
     const getChallengeAttribute = attribute => getObjectAttribute(props.challengeID, attribute, props.cache);
     const getOwnerAttribute = attribute => getObjectAttribute(getChallengeAttribute("owner"), attribute, props.cache);
@@ -450,18 +533,21 @@ const ChallengeDescriptionModal = (props: Props) => {
     }
     return (
         <div>
-            <Modal open={props.open} onClose={() => props.onClose()}>
+            <Modal open={props.open} onClose={() => props.onClose()} closeIcon>
                 <Icon className='close' onClick={() => props.onClose()}/>
-                <Modal.Header align='center'><div>
+                <Modal.Header align='center' style={{marginTop: '10px'}}><div>
                 {getChallengeAttribute("title")}</div>
+                    {editButton(isEditing, setIsEditing)}
+                    {createCorrectSettingsButton(isOwned, isJoined, props.challengeID, setIsLoading, isLoading,
+                        props.user.id, setCompleteModalOpen, props.onClose)}
                     <div>{displayTagIcons(getChallengeAttribute("tags"))}</div>
                     <div>
                         {daysLeft(parseISOString(getChallengeAttribute("endTime")))} days left
                     </div>
                     </Modal.Header>
                 <Modal.Content align='center'>
-                    <Grid>
-                        <Grid.Row centered>
+                    <Grid centered columns='equal'>
+                        <Grid.Row >
                             <Icon.Group size='large'>
                                 <Icon name='bullseye' />
                             </Icon.Group> {getChallengeAttribute("goal")}
@@ -473,33 +559,33 @@ const ChallengeDescriptionModal = (props: Props) => {
                                 </Icon.Group> {getChallengeAttribute("prize")}
                             </div>
                         </Grid.Row>
-                        <Grid.Column floated='left' width={6}>
-                            <Grid.Row>
-                                <Icon name='user'/><Button className="u-button--flat" onClick={() => setOwnerModalOpen(true)}>{getOwnerAttribute("name")}</Button>
-                            </Grid.Row>
-                        </Grid.Column>
-                        <Grid.Column floated='right' width={6}>
-                            <Grid.Row>
-                                <Icon name='users' /><Modal trigger={<Button primary className="u-button--flat u-padding-left--1">Members</Button>} closeIcon>
-                                    <Modal.Content>
-                                        <DatabaseObjectList ids={getChallengeAttribute("members")}
-                                                            noObjectsMessage={"No members yet!"}
-                                                            acceptedItemTypes={["Client", "Trainer"]}
-                                        />
-                                    </Modal.Content>
-                                </Modal>
-                            </Grid.Row>
+                        <Grid.Column>
+                                <Button floated='left' className="u-button--flat" onClick={() => setOwnerModalOpen(true)}>
+                                    <Icon name='user'/> {getOwnerAttribute("name")}
+                                </Button>
+
+                            <Modal trigger={
+                            <Button floated='right' primary className="u-button--flat u-padding-left--1">
+                                <Icon name='users' /> Members</Button>} closeIcon>
+                            <Modal.Content>
+                                <DatabaseObjectList ids={getChallengeAttribute("members")}
+                                                    noObjectsMessage={"No members yet!"}
+                                                    acceptedItemTypes={["Client", "Trainer"]}
+                                />
+                            </Modal.Content>
+                        </Modal>
                         </Grid.Column>
                     </Grid>
                     {displayStreakInfo(challengeType === "streak", streak)}
                     <Divider/>
+                    Current Streak: <Icon name='fire' size='large' color='purple'/> {streak}
                     <Modal.Description>
                         {createCorrectModal(getChallengeAttribute("owner"), ownerModalOpen, setOwnerModalOpen)}
                         <CompleteChallengeModal open={completeModalOpen} onClose={() => setCompleteModalOpen(false)} challengeID={props.challengeID}/>
                         <CreateSubmissionModal open={submitModalOpen} onClose={() => setSubmitModalOpen(false)} challengeID={props.challengeID}/>
                         {createCorrectButton(props.user.id, props.challengeID, getChallengeAttribute("submissions"),
                             isLoading, isCompleted, isOwned, isJoined, isRestricted, isRequesting, setIsLoading,
-                            setSubmitModalOpen, setCompleteModalOpen, props.onClose)}
+                            setSubmitModalOpen, setCompleteModalOpen)}
                     </Modal.Description>
                     <div>{displayError(props.info.error)}{challengeDeleted(deleted)}</div>
                 </Modal.Content>

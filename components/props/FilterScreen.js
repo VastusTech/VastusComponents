@@ -1,6 +1,6 @@
 import React, {useState, useEffect, Fragment} from 'react';
 import {connect} from 'react-redux';
-import {Grid, Checkbox, Header} from "semantic-ui-react";
+import {Grid, Checkbox, Header, Modal} from "semantic-ui-react";
 import {disableType, enableType} from "../../redux/actions/searchActions";
 
 /**
@@ -17,13 +17,11 @@ const getCheckBoxes = (filterTypes, setFilterTypes, enableType, disableType) => 
     for (const type in filterTypes) {
         if (filterTypes.hasOwnProperty(type)) {
             checkBoxes.push(
-                <div key={type}>
-                    <Grid.Column>
-                        <Checkbox label={type} toggle
-                                  checked={filterTypes[type]}
-                                  onChange={() => toggleTypeCheckbox(type, setFilterTypes, enableType, disableType)}/>
-                    </Grid.Column>
-                </div>
+                <Grid.Column>
+                    <Checkbox label={type}
+                              checked={filterTypes[type]}
+                              onChange={() => toggleTypeCheckbox(type, setFilterTypes, enableType, disableType)}/>
+                </Grid.Column>
             )
         }
     }
@@ -83,23 +81,20 @@ const FilterScreen = (props) => {
     }, [props.search]);
 
     return (
-        <div>
-            <Grid rows={3}>
-                <Grid.Row>
-                    <Header> Filter </Header>
-                </Grid.Row>
+        <Modal.Content>
+            <Grid rows={2}>
                 <Grid.Row>
                     Choose which item types show up in the search!
                 </Grid.Row>
                 <Grid.Row>
                     <Fragment>
-                        <Grid stackable stretched columns={9}>
+                        <Grid centered stackable columns={4}>
                             {getCheckBoxes(filterTypes, setFilterTypes, props.enableType, props.disableType)}
                         </Grid>
                     </Fragment>
                 </Grid.Row>
             </Grid>
-        </div>
+        </Modal.Content>
     );
 };
 
