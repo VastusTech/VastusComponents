@@ -316,14 +316,15 @@ const displayStreakInfo = (ifStreak, streak) => {
             if (ifExpired) {
                 return [
                     <Divider/>,
-                    <Header color="red">Your Streak Has Expired!</Header>
+                    <Header color="gray"><Icon name='fire extinguisher' size='large' color='grey'/>
+                        Your Streak Has Expired!</Header>
                 ];
             }
             else {
                 const currentNumber = streak.N;
                 return [
                     <Divider/>,
-                    <Header color="green">Your current streak is = {currentNumber}</Header>
+                    <Header color="purple">Streak: <Icon name='fire' size='large' color='purple'/> {currentNumber}</Header>
                 ];
             }
         }
@@ -576,9 +577,8 @@ const ChallengeDescriptionModal = (props: Props) => {
                         </Modal>
                         </Grid.Column>
                     </Grid>
-                    {displayStreakInfo(challengeType === "streak", streak)}
                     <Divider/>
-                    Current Streak: <Icon name='fire' size='large' color='purple'/> {streak}
+                    {displayStreakInfo(challengeType === "streak", streak)}
                     <Modal.Description>
                         {createCorrectModal(getChallengeAttribute("owner"), ownerModalOpen, setOwnerModalOpen)}
                         <CompleteChallengeModal open={completeModalOpen} onClose={() => setCompleteModalOpen(false)} challengeID={props.challengeID}/>
