@@ -29,7 +29,7 @@ class SubmissionFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createSubmission(fromID, by, challengeID, description, pictures, videos, successHandler, failureHandler) {
-        return this.create(fromID, by, description, challengeID, pictures, videos, successHandler, failureHandler);
+        return SubmissionFunctions.create(fromID, by, description, challengeID, pictures, videos, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
@@ -46,7 +46,7 @@ class SubmissionFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateDescription(fromID, submissionID, description, successHandler, failureHandler) {
-        return this.updateSet(fromID, submissionID, "description", description, successHandler, failureHandler);
+        return SubmissionFunctions.updateSet(fromID, submissionID, "description", description, successHandler, failureHandler);
     }
 
     /**
@@ -62,14 +62,14 @@ class SubmissionFunctions {
      */
     static addPicture(fromID, submissionID, picture, picturePath, successHandler, failureHandler) {
         S3.putImage(picturePath, picture, () => {
-            this.updateAdd(fromID, submissionID, "picturePaths", picturePath, successHandler, (error) => {
+            SubmissionFunctions.updateAdd(fromID, submissionID, "picturePaths", picturePath, successHandler, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(picturePath);
                 failureHandler(error);
             });
         }, failureHandler);
         if (TestHelper.ifTesting) {
-            return this.updateAdd(fromID, submissionID, "picturePaths", picturePath);
+            return SubmissionFunctions.updateAdd(fromID, submissionID, "picturePaths", picturePath);
         }
     }
 
@@ -86,14 +86,14 @@ class SubmissionFunctions {
      */
     static addVideo(fromID, submissionID, video, videoPath, successHandler, failureHandler) {
         S3.putVideo(videoPath, video, successHandler, failureHandler, () => {
-            this.updateAdd(fromID, submissionID, "videoPaths", videoPath, successHandler, (error) => {
+            SubmissionFunctions.updateAdd(fromID, submissionID, "videoPaths", videoPath, successHandler, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(videoPath);
                 failureHandler(error);
             });
         }, failureHandler);
         if (TestHelper.ifTesting) {
-            return this.updateAdd(fromID, submissionID, "videoPaths", videoPath);
+            return SubmissionFunctions.updateAdd(fromID, submissionID, "videoPaths", videoPath);
         }
     }
 
@@ -109,7 +109,7 @@ class SubmissionFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static removePicture(fromID, submissionID, picturePath, successHandler, failureHandler) {
-        return this.updateRemove(fromID, submissionID, "picturePaths", picturePath, (data) => {
+        return SubmissionFunctions.updateRemove(fromID, submissionID, "picturePaths", picturePath, (data) => {
             S3.delete(picturePath, () => {
                 if (successHandler) {
                     successHandler(data);
@@ -130,7 +130,7 @@ class SubmissionFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static removeVideo(fromID, submissionID, videoPath, successHandler, failureHandler) {
-        return this.updateRemove(fromID, submissionID, "videoPaths", videoPath, (data) => {
+        return SubmissionFunctions.updateRemove(fromID, submissionID, "videoPaths", videoPath, (data) => {
             S3.delete(videoPath, () => {
                 if (successHandler) {
                     successHandler(data);

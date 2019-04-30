@@ -45,7 +45,7 @@ class ClientFunctions extends UserFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createClientOptional(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
-        return this.create(fromID, name, gender, birthday, email, username, bio, null, null, successHandler, failureHandler);
+        return ClientFunctions.create(fromID, name, gender, birthday, email, username, bio, null, null, successHandler, failureHandler);
     }
 
     /**
@@ -62,7 +62,7 @@ class ClientFunctions extends UserFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createFederatedClient(fromID, name, email, username, federatedID, successHandler, failureHandler) {
-        return this.create(fromID, name, null, null, email, username, null, federatedID, null, successHandler, failureHandler);
+        return ClientFunctions.create(fromID, name, null, null, email, username, null, federatedID, null, successHandler, failureHandler);
     }
 
     /**
@@ -83,7 +83,7 @@ class ClientFunctions extends UserFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createFederatedClientOptional(fromID, name, gender, birthday, email, username, federatedID, bio, successHandler, failureHandler) {
-        return this.create(fromID, name, gender, birthday, email, username, null, federatedID, bio, successHandler, failureHandler);
+        return ClientFunctions.create(fromID, name, gender, birthday, email, username, null, federatedID, bio, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================

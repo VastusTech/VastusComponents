@@ -25,7 +25,7 @@ class PostFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createPost(fromID, by, description, access, successHandler, failureHandler) {
-        return this.createPostOptional(fromID, by, description, access, null, null, successHandler, failureHandler);
+        return PostFunctions.createPostOptional(fromID, by, description, access, null, null, successHandler, failureHandler);
     }
 
     /**
@@ -43,7 +43,7 @@ class PostFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createPostOptional(fromID, by, description, access, pictures, videos, successHandler, failureHandler) {
-        return this.create(fromID, by, description, access, null, null, pictures, videos, successHandler, failureHandler);
+        return PostFunctions.create(fromID, by, description, access, null, null, pictures, videos, successHandler, failureHandler);
     }
 
     /**
@@ -62,7 +62,7 @@ class PostFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createShareItemPost(fromID, by, description, access, itemType, itemID, successHandler, failureHandler) {
-        return this.createShareItemPostOptional(fromID, by, description, access, itemType, itemID, null, null, successHandler, failureHandler);
+        return PostFunctions.createShareItemPostOptional(fromID, by, description, access, itemType, itemID, null, null, successHandler, failureHandler);
     }
 
     /**
@@ -83,7 +83,7 @@ class PostFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createShareItemPostOptional(fromID, by, description, access, itemType, itemID, pictures, videos, successHandler, failureHandler) {
-        return this.create(fromID, by, description, access, itemType, itemID, pictures, videos, successHandler, failureHandler);
+        return PostFunctions.create(fromID, by, description, access, itemType, itemID, pictures, videos, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
@@ -100,7 +100,7 @@ class PostFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateDescription(fromID, postID, description, successHandler, failureHandler) {
-        return this.updateSet(fromID, postID, "description", description, successHandler, failureHandler);
+        return PostFunctions.updateSet(fromID, postID, "description", description, successHandler, failureHandler);
     }
 
     /**
@@ -115,7 +115,7 @@ class PostFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateAccess(fromID, postID, access, successHandler, failureHandler) {
-        return this.updateSet(fromID, postID, "access", access, successHandler, failureHandler);
+        return PostFunctions.updateSet(fromID, postID, "access", access, successHandler, failureHandler);
     }
 
     /**
@@ -131,14 +131,14 @@ class PostFunctions {
      */
     static addPicture(fromID, postID, picture, picturePath, successHandler, failureHandler) {
         S3.putImage(picturePath, picture, () => {
-            this.updateAdd(fromID, postID, "picturePaths", picturePath, successHandler, (error) => {
+            PostFunctions.updateAdd(fromID, postID, "picturePaths", picturePath, successHandler, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(picturePath);
                 failureHandler(error);
             });
         }, failureHandler);
         if (TestHelper.ifTesting) {
-            return this.updateAdd(fromID, postID, "picturePaths", picturePath);
+            return PostFunctions.updateAdd(fromID, postID, "picturePaths", picturePath);
         }
     }
 
@@ -155,14 +155,14 @@ class PostFunctions {
      */
     static addVideo(fromID, postID, video, videoPath, successHandler, failureHandler) {
         S3.putVideo(videoPath, video, successHandler, failureHandler, () => {
-            this.updateAdd(fromID, postID, "videoPaths", videoPath, successHandler, (error) => {
+            PostFunctions.updateAdd(fromID, postID, "videoPaths", videoPath, successHandler, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(videoPath);
                 failureHandler(error);
             });
         }, failureHandler);
         if (TestHelper.ifTesting) {
-            return this.updateAdd(fromID, postID, "videoPaths", videoPath);
+            return PostFunctions.updateAdd(fromID, postID, "videoPaths", videoPath);
         }
     }
 
@@ -178,7 +178,7 @@ class PostFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static removePicture(fromID, postID, picturePath, successHandler, failureHandler) {
-        return this.updateRemove(fromID, postID, "picturePaths", picturePath, (data) => {
+        return PostFunctions.updateRemove(fromID, postID, "picturePaths", picturePath, (data) => {
             S3.delete(picturePath, () => {
                 if (successHandler) {
                     successHandler(data);
@@ -199,7 +199,7 @@ class PostFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static removeVideo(fromID, postID, videoPath, successHandler, failureHandler) {
-        return this.updateRemove(fromID, postID, "videoPaths", videoPath, (data) => {
+        return PostFunctions.updateRemove(fromID, postID, "videoPaths", videoPath, (data) => {
             S3.delete(videoPath, () => {
                 if (successHandler) {
                     successHandler(data);
