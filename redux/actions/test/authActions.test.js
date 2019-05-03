@@ -11,13 +11,35 @@ describe("Auth Actions", function () {
     });
 
     describe("Update Auth", () => {
-        it("Updates auth while logged in");
-        it("Updates auth while not logged in");
+        it("Updates auth", (done) => {
+            reduxStore.dispatch(updateAuth()).then(() => {
+                expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
+
+                ]);
+                done();
+            });
+        });
     });
     describe("Sign In", () => {
-        it("Signs in while ")
+        it("Signs into the app", (done) => {
+            reduxStore.dispatch(logIn("USERNAME", "PASSWORD")).then(() => {
+                expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
+
+                ]);
+                done();
+            });
+        });
     });
-    describe("Google Sign in");
+    describe("Google Sign in", (done) => {
+        it("Signs into the app with google", (done) => {
+            reduxStore.dispatch(googleSignIn("USERNAME", "PASSWORD")).then(() => {
+                expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
+
+                ]);
+                done();
+            });
+        });
+    });
     describe("Sign Up");
     describe("Confirm Sign Up");
     describe("Forgot Password");
@@ -27,8 +49,4 @@ describe("Auth Actions", function () {
     describe("Close Sign Up Modal");
     describe("Open Forgot Password Modal");
     describe("Close Forgot Password Modal");
-
-    it("", () => {
-        expect(true);
-    })
 });
