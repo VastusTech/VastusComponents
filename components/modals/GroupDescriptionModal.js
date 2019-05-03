@@ -94,12 +94,12 @@ class GroupDescriptionModal extends Component<Props> {
             for (let i = 0; i < members.length; i++) {
                 const itemType = getItemTypeFromID(members[i]);
                 if (itemType === "Client") {
-                    this.props.fetchClient(members[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"], () => {
+                    this.props.fetchClient(members[i], ["id", "name", "gender", "birthday", "profileImagePath"], () => {
                         this.setState({});
                     });
                 }
                 else if (itemType === "Trainer") {
-                    this.props.fetchTrainer(members[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"], () => {
+                    this.props.fetchTrainer(members[i], ["id", "name", "gender", "birthday", "profileImagePath"], () => {
                         this.setState({});
                     });
                 }
@@ -107,7 +107,7 @@ class GroupDescriptionModal extends Component<Props> {
                     if (owners[i]) {
                         if (owners[i].substr(0, 2) === "TR") {
                             if (!this.state.fetchedTrainer) {
-                                this.props.fetchTrainer(owners[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
+                                this.props.fetchTrainer(owners[i], ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
                                 this.setState({fetchedTrainer: true});
                             }
                         }

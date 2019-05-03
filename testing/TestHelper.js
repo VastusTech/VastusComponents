@@ -1,4 +1,7 @@
 import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import asyncDispatch from '../redux/middleware/AsyncDispatchMiddleware';
+import promisify from "../redux/middleware/PromisifyMiddleware";
 
 /**
  * Class used for testing certain parts of the code that may try to connect to AWS in order to complete. Run this when
@@ -10,12 +13,17 @@ export default class TestHelper {
     static unsetTest() { TestHelper.ifTesting = false; }
 }
 
+/**
+ *
+ * @param initialState
+ * @return {{dispatch: Function, getActions: Function}} The store object for the mock redux store.
+ */
 export function store(initialState) {
     if (initialState) {
-        return configureStore()(initialState);
+        return configureStore([promisify, thunk, asyncDispatch])(initialState);
     }
     else {
-        return configureStore()({});
+        return configureStore([promisify, thunk, asyncDispatch])({});
     }
 }
 

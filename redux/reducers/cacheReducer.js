@@ -496,6 +496,7 @@ function setAttributeIndex(state, id, itemType, attributeName, index, attributeV
     }
     if (!Array.isArray(attribute)) {
         err&&console.error("TRYING TO SET ATTRIBUTE OF A NOT ARRAY!!!! PROBLEM. AttributeName: " + attributeName);
+        return;
     }
     attribute[index] = attributeValue;
 }
@@ -554,6 +555,7 @@ function removeAttributeIndex(state, id, itemType, attributeName, index) {
     }
     if (!Array.isArray(attribute)) {
         err&&console.error("TRYING TO REMOVE ATTRIBUTES TO A NOT ARRAY!!!! PROBLEM. AttributeName: " + attributeName);
+        return;
     }
     attribute.splice(index, 1);
 }
