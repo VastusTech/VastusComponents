@@ -241,7 +241,7 @@ const createCorrectButton = (userID, challengeID, submissions, isLoading, isComp
                         </Grid.Column>
                         <Grid.Column>
                             <Button primary fluid onClick={() => setSubmitModalOpen(true)}>
-                                Submit Your Entry</Button>
+                                Task Completion Post</Button>
                         </Grid.Column>
                     </Grid>
                     <DatabaseObjectList ids={submissions}
@@ -316,7 +316,6 @@ const displayStreakInfo = (ifStreak, streak) => {
             const ifExpired = ifStreakExpired(streak);
             if (ifExpired) {
                 return [
-                    <Divider/>,
                     <Header color="gray"><Icon name='fire extinguisher' size='large' color='grey'/>
                         Your Streak Has Expired!</Header>
                 ];
@@ -324,7 +323,6 @@ const displayStreakInfo = (ifStreak, streak) => {
             else {
                 const currentNumber = streak.N;
                 return [
-                    <Divider/>,
                     <Header color="purple">Streak: <Icon name='fire' size='large' color='purple'/> {currentNumber}</Header>
                 ];
             }
