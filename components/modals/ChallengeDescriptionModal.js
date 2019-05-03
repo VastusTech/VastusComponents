@@ -31,8 +31,7 @@ export const ChallengeDescriptionModalInfo = {
     // TODO Contains everything that is referenced here
     fetchList: ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "time_created", "capacity", "members",
         "memberRequests", "prize", "goal", "owner", "access", "restriction", "submissions", "streaks", "challengeType",
-        "streakN", "streakUpdateSpanType", "streakUpdateInterval"
-    ],
+        "streakN", "streakUpdateSpanType", "streakUpdateInterval"],
     ifSubscribe: true,
 };
 
