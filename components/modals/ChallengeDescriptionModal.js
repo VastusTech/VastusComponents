@@ -30,7 +30,8 @@ import {Card} from "semantic-ui-react/dist/commonjs/views/Card/Card";
 export const ChallengeDescriptionModalInfo = {
     // TODO Contains everything that is referenced here
     fetchList: ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "time_created", "capacity", "members",
-        "memberRequests", "prize", "goal", "owner", "access", "restriction", "submissions", "streaks"],
+        "memberRequests", "prize", "goal", "owner", "access", "restriction", "submissions", "streaks", "challengeType",
+        "streakN", "streakUpdateSpanType", "streakUpdateInterval"],
     ifSubscribe: true,
 };
 
@@ -577,7 +578,6 @@ const ChallengeDescriptionModal = (props: Props) => {
                         </Modal>
                         </Grid.Column>
                     </Grid>
-                    <Divider/>
                     {displayStreakInfo(challengeType === "streak", streak)}
                     <Modal.Description>
                         {createCorrectModal(getChallengeAttribute("owner"), ownerModalOpen, setOwnerModalOpen)}

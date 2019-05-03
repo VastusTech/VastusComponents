@@ -104,6 +104,72 @@ const displayError = (error) => {
     }
 };
 
+const tasksPlural = (value) => {
+    if(value > 1) {
+        return "tasks";
+    }
+    else {
+        return "task";
+    }
+}
+
+const intervalsPlural = (value, setStreakUpdateSpanType, streakUpdateSpanType) => {
+    if(value > 1) {
+        return (<Dropdown fluid value={streakUpdateSpanType} selection
+                          options={[{
+                              key: "hours",
+                              text: "Hours",
+                              value: "hours",
+                          }, {
+                              key: "days",
+                              text: "Days",
+                              value: "days"
+                          }, {
+                              key: "weeks",
+                              text: "Weeks",
+                              value: "weeks"
+                          }, {
+                              key: "months",
+                              text: "Months",
+                              value: "months"
+                          }, {
+                              key: "years",
+                              text: "Years",
+                              value: "years"
+                          }]}
+                          onChange={(e, data) => {
+                              setStreakUpdateSpanType(data.value)
+                          }}/>);
+    }
+    else {
+        return (<Dropdown fluid value={streakUpdateSpanType} selection
+                          options={[{
+                              key: "hour",
+                              text: "Hour",
+                              value: "hour",
+                          }, {
+                              key: "day",
+                              text: "Day",
+                              value: "day"
+                          }, {
+                              key: "week",
+                              text: "Week",
+                              value: "week"
+                          }, {
+                              key: "month",
+                              text: "Month",
+                              value: "month"
+                          }, {
+                              key: "year",
+                              text: "Year",
+                              value: "year"
+                          }]}
+                          onChange={(e, data) => {
+                              setStreakUpdateSpanType(data.value)
+                          }}/>);
+    }
+}
+
 /**
  * This is the modal for creating Challenges. Every input is in the form of a normal text input.
  * Inputting the time and date utilizes the Semantic-ui Calendar React library which isn't vanilla Semantic.
@@ -130,10 +196,10 @@ const CreateChallengeProp = (props) => {
     const [restriction, setRestriction] = useState(null);
     const [access, setAccess] = useState("public");
     const [showSuccessLabel, setShowSuccessLabel] = useState(false);
-    const [challengeType, setChallengeType] = useState(null);
-    const [streakUpdateSpanType, setStreakUpdateSpanType] = useState(null);
-    const [streakUpdateInterval, setStreakUpdateInterval] = useState(null);
-    const [streakN, setStreakN] = useState(null);
+    const [challengeType, setChallengeType] = useState("streak");
+    const [streakUpdateSpanType, setStreakUpdateSpanType] = useState(1);
+    const [streakUpdateInterval, setStreakUpdateInterval] = useState(1);
+    const [streakN, setStreakN] = useState("day");
 
     return (
         <div align='center'>
@@ -183,47 +249,38 @@ const CreateChallengeProp = (props) => {
                                     </div>
                                     <Form.Input fluid label="Capacity" type="text" name="capacity" placeholder="Number of allowed attendees... " onChange={value => setCapacity(value.target.value)}/>
                                     <Form.Input fluid label="Goal" type="text" name="goal" placeholder="Criteria the victor is decided on..." onChange={value => setGoal(value.target.value)}/>
-                                    <Form.Input fluid label="Prize" type="text" name="prize" placeholder="Prize for winning the event..." onChange={value => setPrize(value.target.value)}/>
+                                    <Header as='h5'>Streak</Header>
                                     {
                                         challengeType === "streak" ? [
                                             <div className="field" align="center">
-                                                <Header as="h1">{streakUpdateInfo(streakN, streakUpdateInterval, streakUpdateSpanType)}</Header>
+                                                {/*<Header as="h1">{streakUpdateInfo(streakN, streakUpdateInterval, streakUpdateSpanType)}</Header>*/}
+                                                <Header as='h3'>
+                                                    <Grid columns={5}>
+                                                        <Grid.Column style={{marginTop: '15px'}} width={3}>
+                                                            Complete
+                                                        </Grid.Column>
+                                                        <Grid.Column>
+                                                    <Form.Input fluid type="number" name="streakUpdateInterval" value={streakUpdateInterval}
+                                                                onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
+                                                                    ? setStreakUpdateInterval(1) : setStreakUpdateInterval(value.target.value)}/>
+                                                        </Grid.Column>
+                                                        <Grid.Column style={{marginTop: '15px'}} width={3}>
+                                                            {tasksPlural(streakUpdateInterval)} every
+                                                        </Grid.Column>
+                                                        <Grid.Column>
+                                                            <Form.Input fluid type="number" name="streakN" value={streakN}
+                                                                onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
+                                                                    ? setStreakN(1) : setStreakN(value.target.value)}/>
+                                                        </Grid.Column>
+                                                        <Grid.Column>
+                                                            {intervalsPlural(streakN, setStreakUpdateSpanType, streakUpdateSpanType)}
+                                                        </Grid.Column>
+                                                    </Grid>
+                                                </Header>
                                             </div>,
                                             <div className="field">
                                                 <label>Update Span</label>
-                                                <Dropdown value={streakUpdateSpanType} selection placeholder="Choose the Span of the Streak Update"
-                                                          options={[{
-                                                              key: "hourly",
-                                                              text: "Hourly",
-                                                              value: "hourly",
-                                                          }, {
-                                                              key: "daily",
-                                                              text: "Daily",
-                                                              value: "daily"
-                                                          }, {
-                                                              key: "weekly",
-                                                              text: "Weekly",
-                                                              value: "weekly"
-                                                          }, {
-                                                              key: "monthly",
-                                                              text: "Monthly",
-                                                              value: "monthly"
-                                                          }, {
-                                                              key: "yearly",
-                                                              text: "Yearly",
-                                                              value: "yearly"
-                                                          }]}
-                                                          onChange={(e, data) => {
-                                                              setStreakUpdateSpanType(data.value)}}/>
                                             </div>,
-                                            <Form.Input fluid label="Span Interval" type="number" name="streakUpdateInterval"
-                                                        placeholder="Spans until streaks update... " value={streakUpdateInterval}
-                                                        onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
-                                                            ? setStreakUpdateInterval(1) : setStreakUpdateInterval(value.target.value)}/>,
-                                            <Form.Input fluid label="Streak Number" type="number" name="streakN"
-                                                        placeholder="Number of submissions until streak counts..." value={streakN}
-                                                        onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
-                                                            ? setStreakN(1) : setStreakN(value.target.value)}/>,
                                         ] : null
                                     }
                                     {/*<Form.Field>
@@ -237,7 +294,7 @@ const CreateChallengeProp = (props) => {
                                                   onClick={() => {setChallengeType(p => p ? null : "streak");
                                                   setStreakN(1); setStreakUpdateInterval(1); setStreakUpdateSpanType("daily")}}
                                                   checked={challengeType === "streak"}
-                                                  label={challengeType ? challengeType : "normal"} />
+                                                  label={challengeType ? challengeType : "streak off"} />
                                     </Form.Field>
                                     <Form.Field width={12}>
                                         <Checkbox toggle
