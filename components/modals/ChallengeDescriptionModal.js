@@ -26,6 +26,7 @@ import {arrayIntersection} from "../../logic/ArrayHelper";
 import {err} from "../../../Constants";
 import LogOutButton from "../manager/LogOutButton";
 import {Card} from "semantic-ui-react/dist/commonjs/views/Card/Card";
+import SubmissionList from "../lists/SubmissionList";
 
 export const ChallengeDescriptionModalInfo = {
     // TODO Contains everything that is referenced here
@@ -244,12 +245,16 @@ const createCorrectButton = (userID, challengeID, submissions, isLoading, isComp
                                 Submit Your Entry</Button>
                         </Grid.Column>
                     </Grid>
-                    <DatabaseObjectList ids={submissions}
-                                        noObjectsMessage="No submissions yet!"
-                                        acceptedItemTypes={["Submission"]}
-                                        // TODO Check the sort...
-                                        sortFunction={(a, b) => a.time_created.localeCompare(b.time_created)}
+                    <SubmissionList ids={submissions}
+                                    noSubmissionsMessage="No submissions yet!"
+                                    sortFunction={(a, b) => a.time_created.localeCompare(b.time_created)}
                     />
+                    {/*<DatabaseObjectList ids={submissions}*/}
+                                        {/*noObjectsMessage="No submissions yet!"*/}
+                                        {/*acceptedItemTypes={["Submission"]}*/}
+                                        {/*// TODO Check the sort...*/}
+                                        {/*sortFunction={(a, b) => a.time_created.localeCompare(b.time_created)}*/}
+                    {/*/>*/}
                 </Tab.Pane>
             )},
         { menuItem: 'Challenge Chat', render: () => (

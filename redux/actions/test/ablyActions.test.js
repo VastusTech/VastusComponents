@@ -1,5 +1,5 @@
 import "../../../testing/SetTesting";
-import { expect, assert } from "chai";
+import { expect } from "chai";
 import ably from "../../reducers/ablyReducer";
 import {removeChannelSubscription, addHandlerAndUnsubscription, setHandlerAndUnsubscription,
     removeAllHandlers, setPermanentHandlerAndUnsubscription
@@ -185,14 +185,48 @@ describe("Ably Actions", () => {
         });
     });
     describe("Remove all handlers", () => {
-        it("Removes all handlers with 0 channels");
-        it("Removes all handlers with 1 channel");
-        it("Removes all handlers with 2 channels", () => {
+        it("Removes all handlers with 0 channels", (done) => {
+            reduxStore.dispatch(removeAllHandlers()).then(() => {
+                expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
+                    { type: 'SET_IS_LOADING' },
+                    { type: 'CLEAR_CHANNELS' },
+                    { type: 'SET_IS_NOT_LOADING' }
+                ]);
+                done();
+            });
+        });
+        it("Removes all handlers with 1 channel", (done) => {
             const initialStore = getInitialReduxStore(['ably']);
             initialStore.ably = ably(initialStore.ably, {type: ADD_HANDLER, asyncDispatch: () => {}, payload: {
-                    channel: "CHANNEL", handler: () => {}, messageHandler: () => {}, unsubscriptionHandler: () => {}
-                }});
+                channel: "CHANNEL", handler: () => {}, messageHandler: () => {}, unsubscriptionHandler: () => {}
+            }});
             reduxStore = store(initialStore);
+            reduxStore.dispatch(removeAllHandlers()).then(() => {
+                expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
+                    { type: 'SET_IS_LOADING' },
+                    { type: 'CLEAR_CHANNELS' },
+                    { type: 'SET_IS_NOT_LOADING' }
+                ]);
+                done();
+            });
+        });
+        it("Removes all handlers with 2 channels", (done) => {
+            const initialStore = getInitialReduxStore(['ably']);
+            initialStore.ably = ably(initialStore.ably, {type: ADD_HANDLER, asyncDispatch: () => {}, payload: {
+                channel: "CHANNEL1", handler: () => {}, messageHandler: () => {}, unsubscriptionHandler: () => {}
+            }});
+            initialStore.ably = ably(initialStore.ably, {type: ADD_HANDLER, asyncDispatch: () => {}, payload: {
+                channel: "CHANNEL2", handler: () => {}, messageHandler: () => {}, unsubscriptionHandler: () => {}
+            }});
+            reduxStore = store(initialStore);
+            reduxStore.dispatch(removeAllHandlers()).then(() => {
+                expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
+                    { type: 'SET_IS_LOADING' },
+                    { type: 'CLEAR_CHANNELS' },
+                    { type: 'SET_IS_NOT_LOADING' }
+                ]);
+                done();
+            });
         });
     });
 });
