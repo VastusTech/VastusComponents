@@ -1,5 +1,6 @@
 import "../../../testing/SetTesting";
 import { expect, assert } from "chai";
+import ably from "../../reducers/ablyReducer";
 import {removeChannelSubscription, addHandlerAndUnsubscription, setHandlerAndUnsubscription,
     removeAllHandlers, setPermanentHandlerAndUnsubscription
 } from "../ablyActions";
@@ -159,22 +160,39 @@ describe("Ably Actions", () => {
     });
     describe("Remove Channel Subscription", () => {
         it("Removes an already subscribed channel", (done) => {
-            reduxStore.dispatch(addHandlerAndUnsubscription('CHANNEL', () => {}, () => {}));
+            const initialStore = getInitialReduxStore(['ably']);
+            initialStore.ably = ably(initialStore.ably, {type: ADD_HANDLER, asyncDispatch: () => {}, payload: {
+                channel: "CHANNEL", handler: () => {}, messageHandler: () => {}, unsubscriptionHandler: () => {}
+            }});
+            reduxStore = store(initialStore);
             reduxStore.dispatch(removeChannelSubscription('CHANNEL')).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
-
+                    { type: 'SET_IS_LOADING' },
+                    { payload: { channel: 'CHANNEL' }, type: 'REMOVE_CHANNEL' },
+                    { type: 'SET_IS_NOT_LOADING' }
                 ]);
                 done();
             });
-
         });
         it("Removes a not subscribed channel", (done) => {
-
+            reduxStore.dispatch(removeChannelSubscription('CHANNEL')).then(() => {
+                expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
+                    { type: 'SET_IS_LOADING' },
+                    { type: 'SET_IS_NOT_LOADING' }
+                ]);
+                done();
+            });
         });
     });
     describe("Remove all handlers", () => {
         it("Removes all handlers with 0 channels");
-        it("Removes all handlers with 1 channel and calls the unsubscription");
-        it("Removes all handlers with 2 channels and calls both unsubscriptions");
+        it("Removes all handlers with 1 channel");
+        it("Removes all handlers with 2 channels", () => {
+            const initialStore = getInitialReduxStore(['ably']);
+            initialStore.ably = ably(initialStore.ably, {type: ADD_HANDLER, asyncDispatch: () => {}, payload: {
+                    channel: "CHANNEL", handler: () => {}, messageHandler: () => {}, unsubscriptionHandler: () => {}
+                }});
+            reduxStore = store(initialStore);
+        });
     });
 });

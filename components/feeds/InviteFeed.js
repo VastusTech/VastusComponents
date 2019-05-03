@@ -84,6 +84,7 @@ const InviteFeed = (props) => {
 
     useEffect(() => {
         if (props.user.id) {
+            setIsLoading(false);
             const fetchAndAddInvite = (inviteID) => {
                 props.fetchInvite(inviteID, InviteCardInfo.fetchList, (data) => {
                     setNotifications(p => [
@@ -101,41 +102,43 @@ const InviteFeed = (props) => {
                 if (itemType === "Challenge") { fetchFunction = props.fetchChallenge; }
                 if (itemType === "Group") { fetchFunction = props.fetchGroup; }
                 fetchFunction(id, ["receivedInvites"], (data) => {
-                    if (data.hasOwnProperty("receivedInvites") && data.receivedInvites) {
+                    if (data.receivedInvites && data.receivedInvites.length > 0) {
                         for (let i = 0; i < data.receivedInvites.length; i++) {
                             fetchAndAddInvite(data.receivedInvites[i]);
                         }
+                        setIsLoading(false);
+                    }
+                    else {
+                        setIsLoading(false);
                     }
                 });
             };
             props.fetchUserAttributes(["receivedInvites", "ownedEvents", "ownedChallenges", "ownedGroups"], (data) => {
                 if (data) {
-                    let loading = false;
                     if (data.hasOwnProperty("receivedInvites") && data.receivedInvites) {
                         for (let i = 0; i < data.receivedInvites.length; i++) {
+                            setIsLoading(true);
                             fetchAndAddInvite(data.receivedInvites[i]);
-                            loading = true;
                         }
                     }
                     if (data.hasOwnProperty("ownedEvents") && data.ownedEvents) {
                         for (let i = 0; i < data.ownedEvents.length; i++) {
+                            setIsLoading(true);
                             fetchAndAddReceivedInvites("Event", data.ownedEvents[i]);
-                            loading = true;
                         }
                     }
                     if (data.hasOwnProperty("ownedChallenges") && data.ownedChallenges) {
                         for (let i = 0; i < data.ownedChallenges.length; i++) {
+                            setIsLoading(true);
                             fetchAndAddReceivedInvites("Challenge", data.ownedChallenges[i]);
-                            loading = true;
                         }
                     }
                     if (data.hasOwnProperty("ownedGroups") && data.ownedGroups) {
                         for (let i = 0; i < data.ownedGroups.length; i++) {
+                            setIsLoading(true);
                             fetchAndAddReceivedInvites("Group", data.ownedGroups[i]);
-                            loading = true;
                         }
                     }
-                    loading&&setIsLoading(loading);
                 }
                 else {
                     setIsLoading(false);
