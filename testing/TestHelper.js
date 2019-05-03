@@ -39,7 +39,7 @@ export const funCompWrapper = (component) => () => component;
  * @param {[string]} storeTypes The strings for the types of the redux store to initialize.
  * @return {{ably: *, auth: *, cache: *, info: *, message: *, user: *, search: *}}
  */
-export const getInitalReduxStore = (storeTypes) => {
+export const getInitialReduxStore = (storeTypes) => {
     const ably = require("../redux/reducers/ablyReducer");
     const auth = require("../redux/reducers/authReducer");
     const cache = require("../redux/reducers/cacheReducer");
@@ -48,12 +48,12 @@ export const getInitalReduxStore = (storeTypes) => {
     const search = require("../redux/reducers/searchReducer");
     const user = require("../redux/reducers/userReducer");
     return {
-        ably: !storeTypes || storeTypes.includes("ably") ? ably(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
-        auth: !storeTypes || storeTypes.includes("auth") ? auth(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
-        cache: !storeTypes || storeTypes.includes("cache") ? cache(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
-        info: !storeTypes || storeTypes.includes("info") ? info(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
-        message: !storeTypes || storeTypes.includes("message") ? message(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
-        user: !storeTypes || storeTypes.includes("user") ? user(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
-        search: !storeTypes || storeTypes.includes("search") ? search(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+        ably: !storeTypes || storeTypes.includes("ably") ? ably.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+        auth: !storeTypes || storeTypes.includes("auth") ? auth.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+        cache: !storeTypes || storeTypes.includes("cache") ? cache.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+        info: !storeTypes || storeTypes.includes("info") ? info.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+        message: !storeTypes || storeTypes.includes("message") ? message.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+        user: !storeTypes || storeTypes.includes("user") ? user.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+        search: !storeTypes || storeTypes.includes("search") ? search.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
     }
 };

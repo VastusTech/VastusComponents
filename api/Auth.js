@@ -49,7 +49,7 @@ class AuthAPI {
         TestHelper.ifTesting || Auth.signUp({
             username,
             password,
-            attributes: { name, email, gender: "unspecified", birthdate: "undefined" }
+            attributes: { name, email, gender: "unspecified", birthdate: "~undefined" }
         }).then(data => {
             log&&console.log("AUTH: Succeeded sign up");
             successHandler && successHandler(data);
@@ -159,7 +159,7 @@ class AuthAPI {
         const { id_token, expires_at } = googleUser.getAuthResponse();
         const profile = googleUser.getBasicProfile();
         return AuthAPI.federatedSignIn("google", id_token, expires_at, profile.getEmail(), profile.getName(),
-            "undefined", "unspecified", jwt_decode(id_token).sub, successHandler, failureHandler);
+            "~undefined", "unspecified", jwt_decode(id_token).sub, successHandler, failureHandler);
     }
 
     /**

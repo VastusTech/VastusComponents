@@ -3,14 +3,14 @@ import { expect, assert } from "chai";
 import {removeChannelSubscription, addHandlerAndUnsubscription, setHandlerAndUnsubscription,
     removeAllHandlers, setPermanentHandlerAndUnsubscription
 } from "../ablyActions";
-import {store} from "../../../testing/TestHelper";
+import {getInitialReduxStore, store} from "../../../testing/TestHelper";
 import {ADD_HANDLER, SET_HANDLER, SET_PERMANENT_HANDLER} from "../../reducers/ablyReducer";
 import {SET_IS_LOADING, SET_IS_NOT_LOADING} from "../../reducers/infoReducer";
 
 describe("Ably Actions", () => {
     let reduxStore;
     beforeEach(() => {
-        reduxStore = store();
+        reduxStore = store(getInitialReduxStore(['ably']));
     });
 
     describe("Add Handler and Unsubscription", () => {
@@ -159,6 +159,13 @@ describe("Ably Actions", () => {
     });
     describe("Remove Channel Subscription", () => {
         it("Removes an already subscribed channel", (done) => {
+            reduxStore.dispatch(addHandlerAndUnsubscription('CHANNEL', () => {}, () => {}));
+            reduxStore.dispatch(removeChannelSubscription('CHANNEL')).then(() => {
+                expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
+
+                ]);
+                done();
+            });
 
         });
         it("Removes a not subscribed channel", (done) => {

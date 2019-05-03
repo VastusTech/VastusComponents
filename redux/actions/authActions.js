@@ -40,8 +40,9 @@ export function updateAuth() {
                     dispatch(authLogIn());
                     dispatch(setIsNotLoading());
                 }, (error) => {
-                    console.error("REDUX: Could not fetch the client");
-                    dispatch(setError(error));
+                    console.error("REDUX: Could not fetch the user, not logged in");
+                    err&&console.error(error);
+                    // dispatch(setError(error));
                     dispatch(setIsNotLoading());
                 });
             }
