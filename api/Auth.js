@@ -31,7 +31,10 @@ class AuthAPI {
             err&&console.error(error);
             failureHandler && failureHandler(error);
         });
-        if (TestHelper.ifTesting) return {};
+        if (TestHelper.ifTesting) {
+            successHandler && successHandler({});
+            return {};
+        }
     }
 
     /**
@@ -58,7 +61,10 @@ class AuthAPI {
             err&&console.error(error);
             failureHandler && failureHandler(error);
         });
-        if (TestHelper.ifTesting) return { username, password, name, email };
+        if (TestHelper.ifTesting) {
+            successHandler && successHandler({});
+            return { username, password, name, email };
+        }
     }
 
     /**
@@ -79,7 +85,10 @@ class AuthAPI {
             err&&console.error(error);
             failureHandler && failureHandler(error);
         });
-        if (TestHelper.ifTesting) return { username, code };
+        if (TestHelper.ifTesting) {
+            successHandler && successHandler({});
+            return { username, code };
+        }
     }
 
     /**
@@ -100,7 +109,10 @@ class AuthAPI {
             err&&console.error(error);
             failureHandler && failureHandler(error);
         });
-        if (TestHelper.ifTesting) return { username };
+        if (TestHelper.ifTesting) {
+            successHandler && successHandler({});
+            return { username };
+        }
     }
 
     /**
@@ -122,7 +134,10 @@ class AuthAPI {
             err&&console.error(error);
             failureHandler && failureHandler(error);
         });
-        if (TestHelper.ifTesting) return { username, code, newPassword };
+        if (TestHelper.ifTesting) {
+            successHandler && successHandler({});
+            return { username, code, newPassword };
+        }
     }
 
     /**
@@ -143,7 +158,10 @@ class AuthAPI {
             err&&console.error(error);
             failureHandler && failureHandler(error);
         });
-        if (TestHelper.ifTesting) return { username, password };
+        if (TestHelper.ifTesting) {
+            successHandler && successHandler({});
+            return { username, password };
+        }
     }
 
     /**
@@ -204,7 +222,10 @@ class AuthAPI {
             err&&console.error(error);
             failureHandler && failureHandler(error);
         });
-        if (TestHelper.ifTesting) return { federation, token, expires_at, email, name, birthdate, gender, sub };
+        if (TestHelper.ifTesting) {
+            successHandler && successHandler({});
+            return { federation, token, expires_at, email, name, birthdate, gender, sub };
+        }
     }
 
     /**
@@ -223,7 +244,10 @@ class AuthAPI {
             err&&console.error(error);
             failureHandler && failureHandler(error);
         });
-        if (TestHelper.ifTesting) return {};
+        if (TestHelper.ifTesting) {
+            successHandler && successHandler({});
+            return {};
+        }
     }
 }
 

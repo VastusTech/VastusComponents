@@ -159,22 +159,11 @@ export function logOut() {
  * Signs into the application using the Google Sign in Auth Flow. If the user is just first joining in, then it creates
  * a new User object for the person using the application.
  *
- * @param {{}} googleUser The Google User API object from the Authenticated response.
+ * @param {{getAuthFunction: Function(), getBasicProfile: Function()}} googleUser The Google User API object from the Authenticated response.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function googleSignIn(googleUser) {
     return (dispatch, getStore) => {
-        // Useful data for your client-side scripts:
-        // const { id_token, expires_at } = googleUser.getAuthResponse();
-        // const sub = jwt_decode(id_token).sub;
-        // const profile = googleUser.getBasicProfile();
-        // const email = profile.getEmail(), name = profile.getName(), birthdate = "undefined", gender = "unspecified";
-        // const user = { email, name, birthdate, gender, sub };
-        // Auth.federatedSignIn(
-        //     'google',
-        //     { token: id_token, expires_at },
-        //     user
-        // ).then(() => {
         Auth.googleSignIn(googleUser, (credentials, user) => {
             // The ID token you need to pass to your backend and the expires_at token:
             const sub = user.sub;

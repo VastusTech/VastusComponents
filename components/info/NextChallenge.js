@@ -42,6 +42,9 @@ const NextChallengeProp = props => {
 
             });
         }
+        else {
+            setIsLoading(false);
+        }
     }, [props.user.challenges]);
 
     if (isLoading) {

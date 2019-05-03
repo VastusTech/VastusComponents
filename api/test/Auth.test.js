@@ -71,7 +71,7 @@ describe("high level methods", () => {
             expires_at: "EXPIRATION",
             email: "EMAIL",
             name: "NAME",
-            birthdate: "undefined",
+            birthdate: "~undefined",
             gender: "unspecified",
             sub: "SUB"
         });
