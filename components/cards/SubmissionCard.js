@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {Card, Dimmer, Loader, Grid, Icon, Image, Divider, Button, Feed} from 'semantic-ui-react';
-import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
+import {getAttributeFromObject, getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import {convertFromISO} from "../../logic/TimeHelper";
 import {Player} from "video-react";
+import connect from "react-redux/es/connect/connect";
 
 export const SubmissionCardInfo = {
     fetchList: ["id", "time_created", "by", "item_type", "about", "description", "videoPaths", "picturePaths"],
@@ -35,7 +36,7 @@ type Props = {
  * @param {[]} videos A list of all the videos in the submission
  * @returns {*} The React JSX used to display the video or image in a post.
  */
-const getDisplayMedia = (pictures, videos) => {
+const getDisplayMedia = (pictures, videos, props) => {
     // TODO How to properly display videos and pictures?
     if (videos && videos.length > 0) {
         //console.log("Video URL:" + this.state.videoURL);
@@ -45,7 +46,7 @@ const getDisplayMedia = (pictures, videos) => {
             </Player>
         );
     }
-    return null;
+    return getAttributeFromObject(props.submission, "description");
 };
 
 // function createCorrectButton(isOwned, deleteHandler, isDeleteLoading) {
@@ -75,11 +76,18 @@ const getDisplayMedia = (pictures, videos) => {
  */
 const SubmissionCard = (props: Props) => (
     <Card>
-        <Card.Header>{convertFromISO(getAttributeFromObject(props.submission, "time_created"))}</Card.Header>
+        <Card.Header>{getObjectAttribute(getAttributeFromObject(props.submission, "by"), "name", props.cache)}</Card.Header>
         <Card.Content>
-            {getDisplayMedia(getAttributeFromObject(props.submission, "pictures"), getAttributeFromObject(props.submission, "videos"))}
+            {getDisplayMedia(getAttributeFromObject(props.submission, "pictures"), getAttributeFromObject(props.submission, "videos"), props)}
         </Card.Content>
+        {convertFromISO(getAttributeFromObject(props.submission, "time_created"))}
     </Card>
 );
 
-export default SubmissionCard;
+const mapStateToProps = (state) => ({
+    user: state.user,
+    cache: state.cache,
+    info: state.info
+});
+
+export default connect(mapStateToProps)(SubmissionCard);

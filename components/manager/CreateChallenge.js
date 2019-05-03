@@ -40,7 +40,7 @@ const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, acces
     if (capacity && title && goal && tags) {
         if (Number.isInteger(+capacity)) {
             ChallengeFunctions.createChallengeOptional(userID, userID, endDate, capacity, title, goal, "n/a",
-                "3", [], tags, access, restriction, prize, challengeType, streakUpdateSpanType, streakUpdateInterval,
+                "3", [], tags, access, restriction, "N/A", challengeType, streakUpdateSpanType, streakUpdateInterval,
                 streakN, (data) => {
                     console.log("Successfully created a challenge!");
                     setIsLoading(false);

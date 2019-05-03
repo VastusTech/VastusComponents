@@ -66,7 +66,7 @@ class CreateSubmissionModal extends Component<Props> {
             videos["videos/" + i] = this.state.videos[i];
         }
         console.log(JSON.stringify(pictures) + " vids: " + JSON.stringify(videos));
-        SubmissionFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Submission", pictures, videos, finishHandler, (error) => {
+        SubmissionFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Task Video", pictures, videos, finishHandler, (error) => {
             console.error(error);
         });
         // PostFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Submission", this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {
@@ -120,6 +120,12 @@ class CreateSubmissionModal extends Component<Props> {
         // }, (error) => {
         //     console.error(error);
         // });
+    }
+
+    finishTaskPost(finishHandler) {
+        SubmissionFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Completed Task", {}, {}, finishHandler, (error) => {
+            console.error(error);
+        });
     }
 
     getPicturePaths() {
@@ -216,12 +222,17 @@ class CreateSubmissionModal extends Component<Props> {
         }
         return(
             <Modal centered open={this.props.open} onClose={this.props.onClose.bind(this)} closeIcon>
-                <Modal.Header className="u-bg--bg">Create A Submission</Modal.Header>
+                <Modal.Header className="u-bg--bg">Task Post</Modal.Header>
                 <Modal.Content className="u-bg--bg">
                     {this.displayVideo()}
                     <Grid centered>
                         <div className="uploadImage u-flex u-flex-align--center u-margin-top--2">
                             <div>
+                                <Button primary onClick={() => {this.finishTaskPost(() => {
+                                    this.setState({isSubmitLoading: false, notifySubmission: true});
+                                })}} as="label" className="u-bg--primaryGradient">
+                                    Complete Task
+                                </Button>
                                 <Button primary fluid as="label" htmlFor="proPicUpload" className="u-bg--primaryGradient">
                                     <Icon name="camera" className='u-margin-right--0' inverted />
                                     Upload Video
@@ -232,7 +243,7 @@ class CreateSubmissionModal extends Component<Props> {
                     </Grid>
                 </Modal.Content>
                 <div>{this.displaySubmission()}</div>
-                <Button primary fluid loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} onClick={this.handleSubmitButton}>Submit</Button>
+                <Button primary fluid loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} onClick={this.handleSubmitButton}>Upload Video</Button>
             </Modal>
         );
     }
