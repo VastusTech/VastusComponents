@@ -578,6 +578,7 @@ const ChallengeDescriptionModal = (props: Props) => {
                         </Modal>
                         </Grid.Column>
                     </Grid>
+                    <Divider/>
                     {displayStreakInfo(challengeType === "streak", streak)}
                     <Modal.Description>
                         {createCorrectModal(getChallengeAttribute("owner"), ownerModalOpen, setOwnerModalOpen)}

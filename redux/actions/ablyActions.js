@@ -157,7 +157,7 @@ function setPermanentHandler(channel, handler, unsubscriptionHandler, messageHan
         }
     };
 }
-export function removeChannel(channel) {
+function removeChannel(channel) {
     return {
         type: REMOVE_CHANNEL,
         payload: {
@@ -165,7 +165,7 @@ export function removeChannel(channel) {
         }
     }
 }
-export function clearChannels() {
+function clearChannels() {
     return {
         type: CLEAR_CHANNELS,
     }
