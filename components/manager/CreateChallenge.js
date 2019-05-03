@@ -119,23 +119,23 @@ const intervalsPlural = (value, setStreakUpdateSpanType, streakUpdateSpanType) =
                           options={[{
                               key: "hours",
                               text: "Hours",
-                              value: "hours",
+                              value: "hourly",
                           }, {
                               key: "days",
                               text: "Days",
-                              value: "days"
+                              value: "daily"
                           }, {
                               key: "weeks",
                               text: "Weeks",
-                              value: "weeks"
+                              value: "weekly"
                           }, {
                               key: "months",
                               text: "Months",
-                              value: "months"
+                              value: "monthly"
                           }, {
                               key: "years",
                               text: "Years",
-                              value: "years"
+                              value: "yearly"
                           }]}
                           onChange={(e, data) => {
                               setStreakUpdateSpanType(data.value)
@@ -146,23 +146,23 @@ const intervalsPlural = (value, setStreakUpdateSpanType, streakUpdateSpanType) =
                           options={[{
                               key: "hour",
                               text: "Hour",
-                              value: "hour",
+                              value: "hourly",
                           }, {
                               key: "day",
                               text: "Day",
-                              value: "day"
+                              value: "daily"
                           }, {
                               key: "week",
                               text: "Week",
-                              value: "week"
+                              value: "weekly"
                           }, {
                               key: "month",
                               text: "Month",
-                              value: "month"
+                              value: "monthly"
                           }, {
                               key: "year",
                               text: "Year",
-                              value: "year"
+                              value: "yearly"
                           }]}
                           onChange={(e, data) => {
                               setStreakUpdateSpanType(data.value)
@@ -197,9 +197,9 @@ const CreateChallengeProp = (props) => {
     const [access, setAccess] = useState("public");
     const [showSuccessLabel, setShowSuccessLabel] = useState(false);
     const [challengeType, setChallengeType] = useState("streak");
-    const [streakUpdateSpanType, setStreakUpdateSpanType] = useState(1);
-    const [streakUpdateInterval, setStreakUpdateInterval] = useState(1);
-    const [streakN, setStreakN] = useState("day");
+    const [streakUpdateSpanType, setStreakUpdateSpanType] = useState(null);
+    const [streakUpdateInterval, setStreakUpdateInterval] = useState(null);
+    const [streakN, setStreakN] = useState(null);
 
     return (
         <div align='center'>
