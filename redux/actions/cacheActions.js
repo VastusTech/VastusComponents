@@ -514,7 +514,7 @@ function batchOverwriteFetch(ids, itemType, variableList, startIndex, maxFetch, 
  * @param {function(error)} failureHandler The function to handle any potential errors that may occur.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
-export function fetchQuery(itemType, variableList, filter, limit, nextToken, dataHandler, failureHandler) {
+function fetchQuery(itemType, variableList, filter, limit, nextToken, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         if (!variableList.includes("id")) {
@@ -565,7 +565,7 @@ export function fetchQuery(itemType, variableList, filter, limit, nextToken, dat
  * @param {function(error)} failureHandler The function to handle any potential errors that may occur.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
-export function forceFetchQuery(itemType, variableList, filter, limit, nextToken, dataHandler, failureHandler) {
+function forceFetchQuery(itemType, variableList, filter, limit, nextToken, dataHandler, failureHandler) {
     return (dispatch) => {
         dispatch(setIsLoading());
         if (!variableList.includes("id")) {
@@ -597,7 +597,7 @@ export function forceFetchQuery(itemType, variableList, filter, limit, nextToken
  * @param {function(error)} failureHandler The function to handle any potential errors that may occur.
  * @param dispatch
  */
-export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandler, failureHandler, dispatch) {
+function overwriteFetchQuery(itemType, queryString, nextToken, dataHandler, failureHandler, dispatch) {
     QL.queryItems(itemType, queryString, (data) => {
         if (data && data.items && data.items.length) {
             for (let i = 0; i < data.items.length; i++) {
@@ -607,8 +607,9 @@ export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandle
                 addS3MediaToData(item, (updatedData) => dispatch(putItem(id, itemType, updatedData)));
             }
         }
-        dispatch(putItemQuery(itemType, JSON.stringify(QL.getNormalizedQuery(queryString)),
+        dispatch(putItemQuery(itemType, QL.getNormalizedQueryString(QL.getNormalizedQuery(queryString)),
             QL.getNextTokenString(nextToken), QL.getCompressedFromQueryResult(data)));
+        dispatch(setIsNotLoading());
         if (dataHandler) { dataHandler(data);}
     }, (error) => {
         err&&console.error("Error in QUERY retrieval. ItemType = " + itemType + ", query string = " + JSON.stringify(queryString));
@@ -670,7 +671,7 @@ export function addToItemAttribute(id, attributeName, attributeValue) {
     return (dispatch, getStore) => {
         if (attributeValue.length) {
             dispatch(addItemAttributes(getItemTypeFromID(id), id, {
-                [attributeName]: attributeValue
+                [attributeName]: [attributeValue]
             }));
             if (id === getStore().user.id) {
                 dispatch(updateUserFromCache());
@@ -694,7 +695,7 @@ export function removeFromItemAttribute(id, attributeName, attributeValue) {
     return (dispatch, getStore) => {
         if (attributeValue.length) {
             dispatch(removeItemAttributes(getItemTypeFromID(id), id, {
-                [attributeName]: attributeValue
+                [attributeName]: [attributeValue]
             }));
             if (id === getStore().user.id) {
                 dispatch(updateUserFromCache());
@@ -886,16 +887,6 @@ function removeItemAttributeIndex(itemType, id, attributeName, index) {
         }
     }
 }
-export function removeItem(itemType, id, dispatch) {
-    return {
-        type: REMOVE_ITEM,
-        payload: {
-            id,
-            itemType,
-            dispatch
-        }
-    }
-}
 export function putItem(id, itemType, item) {
     return {
         type: PUT_ITEM,
@@ -906,7 +897,7 @@ export function putItem(id, itemType, item) {
         }
     }
 }
-export function putItemQuery(itemType, normalizedQueryString, nextToken, queryResult) {
+function putItemQuery(itemType, normalizedQueryString, nextToken, queryResult) {
     return {
         type: PUT_ITEM_QUERY,
         payload: {
@@ -916,6 +907,16 @@ export function putItemQuery(itemType, normalizedQueryString, nextToken, queryRe
             queryResult
         }
     };
+}
+function removeItem(itemType, id, dispatch) {
+    return {
+        type: REMOVE_ITEM,
+        payload: {
+            id,
+            itemType,
+            dispatch
+        }
+    }
 }
 const clearNormalizedQueryCache = (itemType, normalizedQueryString) => {
     return {

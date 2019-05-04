@@ -34,7 +34,7 @@ const initialState = {
 export default (state: InfoReducer = initialState, action) => {
     switch (action.type) {
         case SET_ERROR:
-            err&&console.error("Error inside a redux action/reducer! (Leo wrote this) Error = " + JSON.stringify(action.payload));
+            err&&console.error("Error inside a redux action/reducer! (Leo wrote this) " + action.payload);
             state = {
                 ...state,
                 error: action.payload

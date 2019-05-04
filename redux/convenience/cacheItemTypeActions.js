@@ -2,7 +2,7 @@ import {
     fetchItem, fetchItemQuery,
     fetchItems,
     forceFetchItem, forceFetchItemQuery,
-    forceFetchItems, putItem, putItemQuery,
+    forceFetchItems, putItem,
     subscribeFetchItem
 } from "../actions/cacheActions";
 

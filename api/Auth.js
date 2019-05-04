@@ -223,7 +223,7 @@ class AuthAPI {
             failureHandler && failureHandler(error);
         });
         if (TestHelper.ifTesting) {
-            successHandler && successHandler({});
+            successHandler && successHandler({}, federatedUser);
             return { federation, token, expires_at, email, name, birthdate, gender, sub };
         }
     }

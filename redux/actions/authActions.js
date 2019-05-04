@@ -164,6 +164,7 @@ export function logOut() {
  */
 export function googleSignIn(googleUser) {
     return (dispatch, getStore) => {
+        dispatch(setIsLoading());
         Auth.googleSignIn(googleUser, (credentials, user) => {
             // The ID token you need to pass to your backend and the expires_at token:
             const sub = user.sub;

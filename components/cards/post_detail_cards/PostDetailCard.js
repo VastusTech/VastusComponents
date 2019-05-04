@@ -7,7 +7,6 @@
 import React, { Component } from 'react';
 import {Card, Modal, Button, Label, Icon, Divider, Image, Message, Dimmer, Loader} from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import {removeItem} from "../../../redux/actions/cacheActions";
 import {fetchClient, fetchTrainer, forceFetchPost, fetchPost} from "../../../redux/convenience/cacheItemTypeActions";
 import { convertFromISO } from "../../../logic/TimeHelper";
 import { forceFetchUserAttributes } from "../../../redux/actions/userActions";
@@ -200,7 +199,7 @@ class PostDetailCard extends Component<Props> {
 
     forceUpdate = (postID) => {
         // console.log("FORCE UPDATE = " + postID);
-        this.props.removeItem("Post", postID);
+        // this.props.removeItem("Post", postID);
         // this.props.forceFetchPost(postID, ["time_created", "by", "description", "about", "access", "postType", "picturePaths", "videoPaths"]);
     };
 
@@ -334,9 +333,6 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchPost: (id, variablesList) => {
             dispatch(fetchPost(id, variablesList));
-        },
-        removeItem: (itemType, id) => {
-            dispatch(removeItem(itemType, id));
         },
         forceFetchPost: (id, variablesList) => {
             dispatch(forceFetchPost(id, variablesList));

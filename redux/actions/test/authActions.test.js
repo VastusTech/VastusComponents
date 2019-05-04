@@ -4,12 +4,17 @@ import {getInitialReduxStore, store} from "../../../testing/TestHelper";
 import {confirmForgotPassword, forgotPassword, openSignUpModal, googleSignIn, closeForgotPasswordModal,
     closeSignUpModal, openForgotPasswordModal, confirmSignUp, signUp, logIn, updateAuth, logOut} from "../authActions";
 import {SET_IS_LOADING} from "../../reducers/infoReducer";
-import {CLOSE_SIGN_UP_MODAL, OPEN_SIGN_UP_MODAL} from "../../reducers/authReducer";
+import {
+    CLOSE_FORGOT_PASSWORD_MODAL,
+    CLOSE_SIGN_UP_MODAL,
+    OPEN_FORGOT_PASSWORD_MODAL,
+    OPEN_SIGN_UP_MODAL
+} from "../../reducers/authReducer";
 
 describe("Auth Actions", function () {
     let reduxStore;
     beforeEach(() => {
-        reduxStore = store(getInitialReduxStore(['auth']));
+        reduxStore = store(getInitialReduxStore(['auth', 'user']));
     });
 
     describe("Update Auth", () => {
@@ -24,7 +29,10 @@ describe("Auth Actions", function () {
         it("Signs into the app", (done) => {
             reduxStore.dispatch(logIn("USERNAME", "PASSWORD")).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
-                    { type: SET_IS_LOADING }
+                    { type: 'SET_IS_LOADING' },
+                    { type: 'LOG_IN' },
+                    { payload: {}, type: 'FORCE_SET_USER' },
+                    { type: 'SET_IS_NOT_LOADING' }
                 ]);
                 done();
             });
@@ -43,7 +51,12 @@ describe("Auth Actions", function () {
                     getName: () => "NAME"
                 })
             })).then(() => {
-                expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([]);
+                expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
+                    { type: 'SET_IS_LOADING' },
+                    { type: 'FEDERATED_LOG_IN' },
+                    { payload: {}, type: 'FORCE_SET_USER' },
+                    { type: 'SET_IS_NOT_LOADING' }
+                ]);
                 done();
             });
         });
@@ -52,7 +65,9 @@ describe("Auth Actions", function () {
         it("Signs up for the app", (done) => {
             reduxStore.dispatch(signUp("USERNAME", "PASSWORD", "NAME", "EMAIL", "ENTERPRISEID")).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
-
+                    { type: 'SET_IS_LOADING' },
+                    { type: 'SIGN_UP' },
+                    { type: 'SET_IS_NOT_LOADING' }
                 ]);
                 done();
             });
@@ -61,7 +76,12 @@ describe("Auth Actions", function () {
     describe("Confirm Sign Up", () => {
         it("Confirms the sign up for the app", (done) => {
             reduxStore.dispatch(confirmSignUp("USERNAME", "CODE")).then(() => {
-                expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([]);
+                expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
+                    { type: 'SET_IS_LOADING' },
+                    { type: 'CLOSE_SIGN_UP_MODAL' },
+                    { type: 'CONFIRM_SIGN_UP' },
+                    { type: 'SET_IS_NOT_LOADING' }
+                ]);
                 done();
             });
         });
@@ -70,7 +90,9 @@ describe("Auth Actions", function () {
         it("Forgets the password for the app", (done) => {
             reduxStore.dispatch(forgotPassword("USERNAME")).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
-
+                    { type: 'SET_IS_LOADING' },
+                    { type: 'FORGOT_PASSWORD' },
+                    { type: 'SET_IS_NOT_LOADING' }
                 ]);
                 done();
             });
@@ -80,7 +102,9 @@ describe("Auth Actions", function () {
         it("Confirms the forgotten password", (done) => {
             reduxStore.dispatch(confirmForgotPassword("USERNAME", "CODE", "PASSWORD")).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
-
+                    { type: 'SET_IS_LOADING' },
+                    { type: 'CONFIRM_FORGOT_PASSWORD' },
+                    { type: 'SET_IS_NOT_LOADING' }
                 ]);
                 done();
             });
@@ -90,7 +114,12 @@ describe("Auth Actions", function () {
         it("Logs out of the app", (done) => {
             reduxStore.dispatch(logOut()).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
-
+                    { type: 'SET_IS_LOADING' },
+                    { type: 'LOG_OUT' },
+                    { type: 'SET_IS_LOADING' },
+                    { type: 'CLEAR_CHANNELS' },
+                    { type: 'SET_IS_NOT_LOADING' },
+                    { type: 'SET_IS_NOT_LOADING' }
                 ]);
                 done();
             });
