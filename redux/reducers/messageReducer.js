@@ -232,6 +232,7 @@ function clearBoard(state, board, dispatch) {
     }
     else {
         err&&console.error("Clearing board that isn't here?");
+        return;
     }
     state.numMessages -= state.boards[board].length;
     delete state.boardNextTokens[board];

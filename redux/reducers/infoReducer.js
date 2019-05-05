@@ -21,6 +21,8 @@ const initialState = {
     error: null
 };
 
+const copyState = state => ({ ...state });
+
 /**
  * Info Reducer:
  *

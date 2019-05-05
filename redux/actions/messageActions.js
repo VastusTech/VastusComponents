@@ -24,6 +24,7 @@ export function peekAtFirstMessageFromBoard(board, dataHandler, failureHandler) 
         dispatch(setIsLoading());
         if (getStore().message.boards[board] && getStore().message.boards[board].length > 0) {
             if (dataHandler) { dataHandler(getStore().message.boards[board][0]); }
+            dispatch(setIsNotLoading());
         }
         else {
             // Fetch it
@@ -48,6 +49,7 @@ export function peekAtFirstMessageFromBoard(board, dataHandler, failureHandler) 
  */
 export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHandler) {
     return (dispatch) => {
+        dispatch(setIsLoading());
         dispatch(queryNextMessagesFromBoardOptionalSubscribe(board, limit, true, dataHandler, failureHandler));
     }
 }
@@ -64,7 +66,6 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
  */
 function queryNextMessagesFromBoardOptionalSubscribe(board, limit, ifSubscribe, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
-        dispatch(setIsLoading());
         let ifFirst = getStore().message.boardIfFirsts[board];
         if (ifFirst !== false) {
             ifFirst = true;
@@ -188,7 +189,7 @@ export function addMessageFromNotification(board, message, dataHandler, failureH
         dispatch(setIsLoading());
         addURLToMessage(message, "message", "messageURL", notFoundPicture, (message) => {return message.type}, (message) => {
             addURLToMessage(message, "profileImagePath", "profilePicture", defaultProfilePicture, (message) => {return message.profileImagePath}, (message) => {
-                dispatch(addMessageToBoard(board, message, dispatch));
+                dispatch(addMessageToBoard(board, message));
                 log && console.log("Successfully received message from Ably! Message = " + JSON.stringify(message));
                 if (dataHandler) {
                     dataHandler(message);
@@ -197,7 +198,7 @@ export function addMessageFromNotification(board, message, dataHandler, failureH
             }, (error) => {
                 message.message = "";
                 err && console.error("Error getting media for message from notification! Error = " + JSON.stringify(error));
-                dispatch(addMessageToBoard(board, message, dispatch));
+                dispatch(addMessageToBoard(board, message));
                 if (failureHandler) {
                     failureHandler(error);
                 }
@@ -228,17 +229,16 @@ export function discardBoard(board) {
         dispatch(setIsNotLoading());
     };
 }
-export function addMessageToBoard(board, message, dispatch) {
+export function addMessageToBoard(board, message) {
     return {
         type: ADD_MESSAGE,
             payload: {
                 board,
                 message,
-                dispatch
         }
     };
 }
-function addQueryToBoard(board, messages, nextToken, ifSubscribed, dispatch) {
+function addQueryToBoard(board, messages, nextToken, ifSubscribed) {
     return {
         type: ADD_QUERY,
         payload: {
@@ -246,7 +246,6 @@ function addQueryToBoard(board, messages, nextToken, ifSubscribed, dispatch) {
             nextToken,
             messages,
             ifSubscribed,
-            dispatch
         }
     };
 }

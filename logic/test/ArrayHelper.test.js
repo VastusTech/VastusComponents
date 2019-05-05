@@ -77,16 +77,19 @@ describe("ArrayHelper.js", function () {
     });
 
     it("Calculates set equality correctly", () => {
-        expect(setEquals([1, 2, 3], [1, 2, 3]));
-        expect(setEquals([2, 1, 3], [1, 2, 3]));
-        expect(setEquals([2, 1, 3], [3, 2, 1]));
-        expect(setEquals([2, 1, 3, 3], [3, 2, 1]));
-        expect(setEquals([2, 1, 3], [3, 2, 3, 3, 2, 1]));
-        expect(setEquals([], []));
-        expect(!setEquals([4, 2, 1, 3], [3, 2, 3, 3, 2, 1]));
-        expect(!setEquals([4, 2, 1, 3], [3, 2, 1, 3, 3, 2, 1]));
-        expect(!setEquals([1], [3]));
-        expect(!setEquals([3], [3, 1]));
-        expect(!setEquals([3, 1], [3]));
+        expect(setEquals([1, 2, 3], [1, 2, 3])).to.be.equal(true);
+        expect(setEquals([2, 1, 3], [1, 2, 3])).to.be.equal(true);
+        expect(setEquals([2, 1, 3], [3, 2, 1])).to.be.equal(true);
+        expect(setEquals([2, 1, 3, 3], [3, 2, 1])).to.be.equal(true);
+        expect(setEquals([2, 1, 3], [3, 2, 3, 3, 2, 1])).to.be.equal(true);
+        expect(setEquals([], [])).to.be.equal(true);
+        expect(!setEquals([4, 2, 1, 3], [3, 2, 3, 3, 2, 1])).to.be.equal(true);
+        expect(!setEquals([4, 2, 1, 3], [3, 2, 1, 3, 3, 2, 1])).to.be.equal(true);
+        expect(!setEquals([1], [3])).to.be.equal(true);
+        expect(!setEquals([3], [3, 1])).to.be.equal(true);
+        expect(!setEquals([3, 1], [3])).to.be.equal(true);
+        expect(!setEquals([], ["asdf", "fdas", "asfd"])).to.be.equal(true);
+        expect(setEquals(["asdf", "fdas", "asdf"], ["asdf", "fdas", "asdf"])).to.be.equal(true);
+        expect(!setEquals(["asdf", "fdas", "asdf"], [])).to.be.equal(true);
     });
 });

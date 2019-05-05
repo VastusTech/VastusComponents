@@ -13,6 +13,7 @@ import {
 import {err, log} from "../../../Constants";
 import {addMessageFromNotification} from "./messageActions";
 import {updateUserFromCache} from "./userActions";
+import {addUniqueToArray, setEquals, subtractArray} from "../../logic/ArrayHelper";
 
 // ======================================================================================================
 // Fetching S3 Data ~
@@ -357,14 +358,22 @@ function batchFetch(ids, itemType, variableList, startIndex, maxFetch, dataHandl
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         let filteredVariablesList = [];
-        const filterFunction = (objectKeyList) => (v) => (objectKeyList.includes(v) || filteredVariablesList.includes(v));
+        // const filterFunction = (objectKeyList) => (v) => (objectKeyList.includes(v) || filteredVariablesList.includes(v));
         for (let i = startIndex; i < Math.min(ids.length, startIndex + maxFetch); i++) {
             const id = ids[i];
             const cacheSet = getCache(itemType, getStore);
             const currentObject = cacheSet[id];
             if (currentObject) {
                 // TODO TEST IF THIS works?
-                filteredVariablesList = variableList.filter(filterFunction(Object.keys(currentObject)));
+                // These are the variables that this object needs fetched
+                const missingVariableList = [...variableList];
+                subtractArray(missingVariableList, Object.keys(currentObject));
+                addUniqueToArray(filteredVariablesList, missingVariableList);
+                if (setEquals(variableList, filteredVariablesList)) {
+                    filteredVariablesList = variableList;
+                    break;
+                }
+                // filteredVariablesList = variableList.filter(filterFunction(Object.keys(currentObject)));
                 // variableList = variableList.filter((v) => { return !objectKeyList.includes(v) });
             }
             else {
@@ -372,7 +381,7 @@ function batchFetch(ids, itemType, variableList, startIndex, maxFetch, dataHandl
                 break;
             }
         }
-        batchOverwriteFetch(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler, dispatch, getStore);
+        batchOverwriteFetch(ids, itemType, filteredVariablesList, startIndex, maxFetch, dataHandler, failureHandler, dispatch, getStore);
     };
 }
 

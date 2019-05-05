@@ -20,20 +20,17 @@ import {ENABLE_TYPE, DISABLE_SEARCH_BAR, ENABLE_SEARCH_BAR, RESET_QUERY, RESET_T
  */
 export function newSearch(queryString, minResults, dataHandler) {
     return (dispatch) => {
-        dispatch(setIsLoading());
         dispatch(resetQuery());
         // Use the current store settings to actually do the search
         if (queryString && queryString.length > 0) {
             dispatch(setSearchQuery(queryString));
             dispatch(loadMoreResults(queryString, minResults, (data) => {
-                dispatch(setIsNotLoading());
-                dataHandler(data);
+                dataHandler && dataHandler(data);
             }));
         }
         else {
             log&&console.log("I refuse to search for an empty string");
-            dataHandler([]);
-            dispatch(setIsNotLoading());
+            dataHandler && dataHandler([]);
         }
     };
 }
@@ -52,12 +49,14 @@ export function loadMoreResults(searchQuery, minResults, dataHandler) {
         if (getStore().search.searchQuery === searchQuery && getStore().search.results.length < minResults &&
                 !getStore().search.ifFinished) {
             // alert("Current results = " + JSON.stringify(getStore().search.results));
+            dispatch(setIsLoading());
             performAllQueries(searchQuery, dispatch, getStore, () => {
+                dispatch(setIsNotLoading());
                 dispatch(loadMoreResults(searchQuery, minResults, dataHandler));
             });
         }
         else {
-            dataHandler(getStore().search.results);
+            dataHandler && dataHandler(getStore().search.results);
         }
     };
 }
@@ -88,13 +87,13 @@ function performAllQueries(searchQuery, dispatch, getStore, dataHandler) {
             }
             numResults++;
             if (numTypesEnabled <= numResults) {
-                dataHandler(results);
+                dataHandler && dataHandler(results);
             }
         };
         const failData = () => {
             numResults++;
             if (numTypesEnabled <= numResults) {
-                dataHandler(results);
+                dataHandler && dataHandler(results);
             }
         };
         for (const type in typeQueries) {
@@ -177,13 +176,13 @@ export function disableType(type) {
         payload: type
     };
 }
-export function setSearchQuery(searchQuery) {
+function setSearchQuery(searchQuery) {
     return {
         type: SET_SEARCH_QUERY,
         payload: searchQuery
     }
 }
-export function addTypeResults(type, results) {
+function addTypeResults(type, results) {
     return {
         type: ADD_TYPE_RESULTS,
         payload: {
@@ -202,7 +201,7 @@ export function setTypeFilter(type, filterJSON, filterParameters) {
         }
     };
 }
-export function setTypeNextToken(type, nextToken) {
+function setTypeNextToken(type, nextToken) {
     return {
         type: SET_TYPE_NEXT_TOKEN,
         payload: {
@@ -211,7 +210,7 @@ export function setTypeNextToken(type, nextToken) {
         }
     }
 }
-export function resetTypeQuery(type) {
+function resetTypeQuery(type) {
     return {
         type: RESET_TYPE_QUERY,
         payload: type

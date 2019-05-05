@@ -13,6 +13,11 @@ export function subtractArray(originalArray, minusArray) {
     return originalArray;
 }
 
+// Does the same thing but doesn't affect the array
+export function subtractArrayCopy(array, minusArray) {
+    return subtractArray([...array], minusArray);
+}
+
 /**
  * Removes all instances of a single element from the original array. Cannot be object.
  *
@@ -113,7 +118,7 @@ export const setEquals = (array1, array2) => {
  */
 export const isSubset = (array, subsetArray) => {
     for (let i = 0; i < subsetArray.length; i++) {
-        if (array.includes(subsetArray[i])) {
+        if (!array.includes(subsetArray[i])) {
             return false;
         }
     }

@@ -7,7 +7,7 @@ import {fetchItem, forceFetchItem, fetchItems, forceFetchItems, fetchItemQuery, 
 import cache, {PUT_ITEM, PUT_ITEM_QUERY} from "../../reducers/cacheReducer";
 import {getInitialReduxStore, store} from "../../../testing/TestHelper";
 
-describe("Cache actions", function () {
+describe("Cache Actions", function () {
     let reduxStore;
     beforeEach(() => {
         reduxStore = store(getInitialReduxStore(['cache', 'user']));
@@ -269,11 +269,11 @@ describe("Cache actions", function () {
                 0, 10)).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
                     { type: 'SET_IS_LOADING' },
-                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName: "TEST_VALUE", attributeName2: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0001' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName: "TEST_VALUE", attributeName2: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0002' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName: "TEST_VALUE", attributeName2: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0003' }, type: 'PUT_ITEM' },
                     { type: 'SET_IS_NOT_LOADING' }
                 ]);
@@ -293,11 +293,11 @@ describe("Cache actions", function () {
                 0, 10)).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
                     { type: 'SET_IS_LOADING' },
-                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName2: "TEST_VALUE", attributeName3: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0001' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName2: "TEST_VALUE", attributeName3: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0002' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName2: "TEST_VALUE", attributeName3: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0003' }, type: 'PUT_ITEM' },
                     { type: 'SET_IS_NOT_LOADING' }
                 ]);
@@ -320,26 +320,9 @@ describe("Cache actions", function () {
                 0, 10)).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
                     { type: 'SET_IS_LOADING' },
-                    { payload: { item: {id: "CL0001", item_type: "Client"},
-                            itemType: 'Client', id: 'CL0001' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0002", item_type: "Client"},
-                            itemType: 'Client', id: 'CL0002' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0003", item_type: "Client"},
-                            itemType: 'Client', id: 'CL0003' }, type: 'PUT_ITEM' },
-                    { type: 'SET_IS_NOT_LOADING' }
-                ]);
-                done();
-            });
-            reduxStore.dispatch(fetchItems(["CL0001", "CL0002", "CL0003"], "Client", ["id", "item_type", "attributeName"],
-                0, 10)).then(() => {
-                expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
-                    { type: 'SET_IS_LOADING' },
-                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName: "TEST_VALUE"},
-                            itemType: 'Client', id: 'CL0001' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName: "TEST_VALUE"},
-                            itemType: 'Client', id: 'CL0002' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName: "TEST_VALUE"},
-                            itemType: 'Client', id: 'CL0003' }, type: 'PUT_ITEM' },
+                    { payload: { item: {}, itemType: 'Client', id: 'CL0001' }, type: 'PUT_ITEM' },
+                    { payload: { item: {}, itemType: 'Client', id: 'CL0002' }, type: 'PUT_ITEM' },
+                    { payload: { item: {}, itemType: 'Client', id: 'CL0003' }, type: 'PUT_ITEM' },
                     { type: 'SET_IS_NOT_LOADING' }
                 ]);
                 done();
@@ -361,11 +344,11 @@ describe("Cache actions", function () {
                 0, 10)).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
                     { type: 'SET_IS_LOADING' },
-                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName2: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0001' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName2: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0002' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName2: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0003' }, type: 'PUT_ITEM' },
                     { type: 'SET_IS_NOT_LOADING' }
                 ]);
@@ -388,11 +371,11 @@ describe("Cache actions", function () {
                 0, 10)).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
                     { type: 'SET_IS_LOADING' },
-                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName2: "TEST_VALUE", attributeName3: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0001' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName2: "TEST_VALUE", attributeName3: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0002' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName2: "TEST_VALUE", attributeName3: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0003' }, type: 'PUT_ITEM' },
                     { type: 'SET_IS_NOT_LOADING' }
                 ]);
@@ -454,11 +437,11 @@ describe("Cache actions", function () {
                 0, 10)).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
                     { type: 'SET_IS_LOADING' },
-                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName: "TEST_VALUE", attributeName2: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0001' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName: "TEST_VALUE", attributeName2: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0002' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName: "TEST_VALUE", attributeName2: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0003' }, type: 'PUT_ITEM' },
                     { type: 'SET_IS_NOT_LOADING' }
                 ]);
@@ -478,11 +461,11 @@ describe("Cache actions", function () {
                 0, 10)).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
                     { type: 'SET_IS_LOADING' },
-                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName2: "TEST_VALUE", attributeName3: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0001' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName2: "TEST_VALUE", attributeName3: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0002' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName2: "TEST_VALUE", attributeName3: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0003' }, type: 'PUT_ITEM' },
                     { type: 'SET_IS_NOT_LOADING' }
                 ]);
@@ -532,11 +515,11 @@ describe("Cache actions", function () {
                 0, 10)).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
                     { type: 'SET_IS_LOADING' },
-                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName: "TEST_VALUE", attributeName2: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0001' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName: "TEST_VALUE", attributeName2: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0002' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName: "TEST_VALUE", attributeName2: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0003' }, type: 'PUT_ITEM' },
                     { type: 'SET_IS_NOT_LOADING' }
                 ]);
@@ -559,11 +542,11 @@ describe("Cache actions", function () {
                 0, 10)).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
                     { type: 'SET_IS_LOADING' },
-                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0001", item_type: "Client", attributeName2: "TEST_VALUE", attributeName3: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0001' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0002", item_type: "Client", attributeName2: "TEST_VALUE", attributeName3: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0002' }, type: 'PUT_ITEM' },
-                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName: "TEST_VALUE"},
+                    { payload: { item: {id: "CL0003", item_type: "Client", attributeName2: "TEST_VALUE", attributeName3: "TEST_VALUE"},
                             itemType: 'Client', id: 'CL0003' }, type: 'PUT_ITEM' },
                     { type: 'SET_IS_NOT_LOADING' }
                 ]);
