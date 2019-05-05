@@ -58,6 +58,49 @@ const invalidPost = {
     about: "invalid"
 };
 
+// ====================================================================================================================
+// =                                        COMPONENT LEVEL TESTS                                                     =
+// ====================================================================================================================
+
+describe("Post Card", () => {
+    // Props ~
+    describe("Props", () => {
+        // Pass in the props into the component and make sure that they show up in the component's props.
+        // Also make sure if you don't pass in the props directly that every prop has a default prop.
+        // (We haven't been paying a whole lot of attention to the default props, so we'll have to edit the components
+        // to fix that...)
+    });
+    // States ~
+    describe("States", () => {
+        // Here you check the state of the component, like the shown text and sub-components for the component.
+        // Make sure you go into all the conditions of the component so that you test every possible state of the
+        // component.
+        // EXAMPLE: it("Shows the spinner when no post is passed in");
+    });
+    // Events ~
+    describe("Events", () => {
+        // Here you use .simultate('click') to check the change in the component.
+        // Only in special circumstances should you use jest.fn() and that's if you're directly passing in a function
+        // into the component's props and you have access to it.
+    });
+});
+
+// ====================================================================================================================
+// =                                        INTERNAL FUNCTION TESTS                                                   =
+// ====================================================================================================================
+
+describe("Profile Picture", () => {
+    // Same as above
+});
+describe("By Modal", () => {
+    // Same as above
+});
+describe("Get Correct Detail Card", () => {
+    // Same as above
+});
+
+// Old stuff to refactor
+
 describe("Profile Picture", () => {
     it("profilePicture function displays spinner when there is no profile picture", () => {
         const Wrapper = funCompWrapper(profilePicture(null));
