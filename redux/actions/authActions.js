@@ -70,7 +70,8 @@ export function updateAuth() {
                 });
             }
         }, (error) => {
-            dispatch(setError(error));
+            err&&console.error(error);
+            // dispatch(setError(error));
             dispatch(setIsNotLoading());
         });
     }

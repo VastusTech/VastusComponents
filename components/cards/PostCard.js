@@ -272,5 +272,6 @@ const mapStateToProps = state => ({
     cache: state.cache
 });
 
+// const connector: Connector<Props, any> = connect(mapStateToProps);
+// export default connector(PostCard);
 export default connect(mapStateToProps)(PostCard);
-
