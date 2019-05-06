@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type Event from "../../types/Event";
 import { Card, Dimmer } from 'semantic-ui-react';
 import EventDescriptionModal from '../modals/EventDescriptionModal';
 import {convertFromISO} from "../../logic/TimeHelper";
@@ -11,18 +12,7 @@ export const EventCardInfo = {
 };
 
 type Props = {
-    event: {
-        id: string,
-        title: string,
-        time: string,
-        time_created: string,
-        owner: string,
-        members: [string],
-        capacity: string,
-        difficulty: string,
-        restriction: string,
-        access: string
-    }
+    event: Event
 }
 
 /**

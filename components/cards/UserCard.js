@@ -3,6 +3,7 @@ import { Card, Grid, Header } from 'semantic-ui-react';
 import ClientModal from '../modals/ClientModal';
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
 import StyledProfileImage from "../props/StyledProfileImage";
+import type User from "../../types/User";
 
 export const UserCardInfo = {
     fetchList: ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "friendRequests"],
@@ -11,18 +12,7 @@ export const UserCardInfo = {
 
 type Props = {
     rank?: number,
-    user: {
-        id: string,
-        username: string,
-        gender: string,
-        birthday: string,
-        name: string,
-        friends: [string],
-        challengesWon: [string],
-        scheduledEvents: [string],
-        profileImagePath: string,
-        friendRequests: [string]
-    }
+    user: User
 };
 
 /**

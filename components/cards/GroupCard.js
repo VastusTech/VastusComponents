@@ -10,6 +10,7 @@ import {
     fetchTrainer,
     fetchClient,
 } from "../../redux/convenience/cacheItemTypeActions";
+import type Group from "../../types/Group";
 
 export const GroupCardInfo = {
     fetchList: ["id", "item_type", "title", "description", "motto", "restriction", "members", "owners", "time_created", "access"],
@@ -17,16 +18,7 @@ export const GroupCardInfo = {
 };
 
 type Props = {
-    group: {
-        id: string,
-        title: string,
-        description: string,
-        restriction: string,
-        members: [string],
-        owners: [string],
-        time_created: string,
-        access: string
-    }
+    group: Group
 };
 
 /**

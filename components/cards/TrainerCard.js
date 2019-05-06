@@ -4,6 +4,7 @@ import TrainerPortalModal from '../modals/TrainerModal';
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
 import Spinner from "../props/Spinner";
 import StyledProfileImage from "../props/StyledProfileImage";
+import type Trainer from "../../types/Trainer";
 
 export const TrainerCardInfo = {
     fetchList: ["id", "name", "profileImagePath"],
@@ -13,9 +14,7 @@ export const TrainerCardInfo = {
 
 type Props = {
     rank?: number,
-    trainer: {
-        name: string,
-    }
+    trainer: Trainer
 }
 
 /**

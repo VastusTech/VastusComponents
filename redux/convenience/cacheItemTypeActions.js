@@ -5,13 +5,15 @@ import {
     forceFetchItems, putItem,
     subscribeFetchItem
 } from "../actions/cacheActions";
+import type Client from "../../types/Client";
+import type Trainer from "../../types/Trainer";
 
 /**
  * Fetches a Client from the database, making sure that it hasn't already fetched the attributes in the list before.
  *
  * @param {string} id The id of the Client to fetch.
  * @param {[string]} variableList The list of variables to fetch for the Client.
- * @param {function({})} dataHandler The function to handle the newly fetched Client with.
+ * @param {function(Client)} dataHandler The function to handle the newly fetched Client with.
  * @param {function(error)} failureHandler The function to handle any errors that occur with.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -23,7 +25,7 @@ export function fetchClient(id, variableList, dataHandler, failureHandler) {
  *
  * @param {string} id The id of the Trainer to fetch.
  * @param {[string]} variableList The list of variables to fetch for the Trainer.
- * @param {function({})} dataHandler The function to handle the newly fetched Trainer with.
+ * @param {function(Trainer)} dataHandler The function to handle the newly fetched Trainer with.
  * @param {function(error)} failureHandler The function to handle any errors that occur with.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */

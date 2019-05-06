@@ -4,6 +4,8 @@ import _ from 'lodash';
 import {switchReturnItemType} from "../logic/ItemType";
 import TestHelper from "../testing/TestHelper";
 import {debugAlert} from "../logic/DebuggingHelper";
+import type User from "../types/User";
+
 
 /**
  * This class handles all of the GraphQL Query Library logic, like sending queries and fetch requests to our AWS AppSync
@@ -48,7 +50,7 @@ class GraphQL {
      * @param {string} itemType The item type for the item to retrieve.
      * @param {string} username The username of the item to retrieve.
      * @param {[string]} variableList The list of attributes to receive as the item data.
-     * @param {function({})} successHandler The function to handle the successfully received item.
+     * @param {function(DatabaseObject)} successHandler The function to handle the successfully received item.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging information from the GraphQL query.
      */
@@ -164,7 +166,7 @@ class GraphQL {
      *
      * @param {string} itemType The item type to perform the query on.
      * @param {{query: string, variables: {}}} query The query payload to send through the query function.
-     * @param {function({nextToken: string, items: [{}]})} successHandler The function to handle the successfully
+     * @param {function({nextToken: string, items: [DatabaseObject]})} successHandler The function to handle the successfully
      * received items.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging information from the GraphQL query.
