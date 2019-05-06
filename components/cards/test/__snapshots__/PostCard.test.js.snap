@@ -10,6 +10,7 @@ ShallowWrapper {
         "by": "CL0001",
         "id": "PO0001",
         "postType": "Client",
+        "time_created": "2016-09-15T15:53:00",
       }
     }
     store={
@@ -41,7 +42,7 @@ ShallowWrapper {
         "challenges": Object {
           "CH0001": Object {
             "by": "CL0001",
-            "id": "CH001",
+            "id": "CH0001",
           },
         },
         "clients": Object {
@@ -58,6 +59,7 @@ ShallowWrapper {
         "by": "CL0001",
         "id": "PO0001",
         "postType": "Client",
+        "time_created": "2016-09-15T15:53:00",
       },
       "store": Object {
         "clearActions": [Function],
@@ -101,7 +103,7 @@ ShallowWrapper {
           "challenges": Object {
             "CH0001": Object {
               "by": "CL0001",
-              "id": "CH001",
+              "id": "CH0001",
             },
           },
           "clients": Object {
@@ -118,6 +120,7 @@ ShallowWrapper {
           "by": "CL0001",
           "id": "PO0001",
           "postType": "Client",
+          "time_created": "2016-09-15T15:53:00",
         },
         "store": Object {
           "clearActions": [Function],

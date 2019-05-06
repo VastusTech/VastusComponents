@@ -3,7 +3,7 @@ import {Card, Dimmer, Loader, Grid, Icon, Image, Divider, Button, Feed} from 'se
 import {getAttributeFromObject, getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import {convertFromISO} from "../../logic/TimeHelper";
 import {Player} from "video-react";
-import connect from "react-redux/es/connect/connect";
+import { connect } from 'react-redux';
 
 export const SubmissionCardInfo = {
     fetchList: ["id", "time_created", "by", "item_type", "about", "description", "videoPaths", "picturePaths"],

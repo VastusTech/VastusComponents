@@ -52,7 +52,7 @@ const EventCard = (props: Props) => {
         <Card fluid raised onClick={setModalOpen.bind(true)}>
             <Card.Content>
                 <Card.Header textAlign = 'center'>{getEventAttribute("title")}</Card.Header>
-                <Card.Meta textAlign = 'center' >{convertFromISO(this.getEventAttribute("time"))}</Card.Meta>
+                <Card.Meta textAlign = 'center' >{convertFromISO(getEventAttribute("time"))}</Card.Meta>
                 <EventDescriptionModal open={modalOpen} onClose={setModalOpen.bind(false)} eventID={props.event.id}/>
             </Card.Content>
             <Card.Content extra>
