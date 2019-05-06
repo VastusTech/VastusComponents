@@ -5,8 +5,6 @@ import {connect} from "react-redux";
 import {setError} from "../../redux/actions/infoActions";
 import {
     fetchPost,
-    clearPostQuery,
-    putPost,
 } from "../../redux/convenience/cacheItemTypeActions";
 import PostFunctions from "../../database_functions/PostFunctions";
 import {Player} from "video-react";
@@ -352,9 +350,6 @@ const mapDispatchToProps = (dispatch) => {
         fetchPost: (id, variablesList) => {
             dispatch(fetchPost(id, variablesList));
         },
-        putPost: (event) => {
-            dispatch(putPost(event));
-        },
     }
 };
 
@@ -378,7 +373,7 @@ CreatePostProp.modules = {
         // toggle to add extra line breaks when pasting HTML:
         matchVisual: false,
     }
-}
+};
 /*
  * Quill editor formats
  * See https://quilljs.com/docs/formats/
