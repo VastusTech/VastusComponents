@@ -22,7 +22,7 @@ import {EventDetailCardInfo} from "../cards/post_detail_cards/EventDetailCard";
 import {ChallengeDetailCardInfo} from "../cards/post_detail_cards/ChallengeDetailCard";
 import Spinner from "../props/Spinner";
 
-const postFeedLength = 50;
+const postFeedLength = 10;
 
 type Props = {
     filter: any
@@ -34,6 +34,7 @@ type Props = {
  * @param {{}} filter The GraphQL filter to dictate how the query filters the objects.
  * @param {string|null} nextToken The next token from the previous query or null if it's the first query.
  * @param {boolean} isFinished If the querying has finished and there are no more objects to fetch.
+ * @param {string} userID The ID of the User viewing this Post Feed.
  * @param {[string]} friends The friends list of the User viewing this Post Feed.
  * @param {function([string], {}, number, string, function({}), function(error))} fetchPostQuery The redux function to
  * fetch a Post query.
@@ -48,7 +49,7 @@ type Props = {
  * @param {function(string)} setNextToken Sets the next token state.
  * @param {function([{}])} setPosts Sets the posts state.
  */
-const queryPosts = (filter, nextToken, isFinished, friends, fetchPostQuery, fetchClient, fetchTrainer, fetchEvent,
+const queryPosts = (filter, nextToken, isFinished, userID, friends, fetchPostQuery, fetchClient, fetchTrainer, fetchEvent,
                     fetchChallenge, fetchPost, fetchGroup, setIsLoading, setIsFinished, setNextToken, setPosts) => {
     if (!isFinished) {
         setIsLoading(true);
@@ -61,7 +62,7 @@ const queryPosts = (filter, nextToken, isFinished, friends, fetchPostQuery, fetc
                 for (let i = 0; i < data.items.length; i++) {
                     const post = data.items[i];
                     // Filter the results based on if we are able to see it
-                    if (post.access === "public" || (friends && friends.includes(post.by))) {
+                    if (post.access === "public" || post.by === userID || (friends && friends.includes(post.by))) {
                         // Fetch the "by" information
                         const by = post.by;
                         const byItemType = getItemTypeFromID(by);
@@ -132,7 +133,7 @@ const PostFeed = (props: Props) => {
     useEffect(() => {
         if (props.user.id) {
             setPosts([]);
-            queryPosts(props.filter, nextToken, isFinished, props.user.friends, props.fetchPostQuery, props.fetchClient, props.fetchTrainer, props.fetchEvent, props.fetchChallenge,
+            queryPosts(props.filter, nextToken, isFinished, props.user.id, props.user.friends, props.fetchPostQuery, props.fetchClient, props.fetchTrainer, props.fetchEvent, props.fetchChallenge,
                 props.fetchPost, props.fetchGroup, setIsLoading, setIsFinished, setNextToken, setPosts);
         }
     }, [props.user.id]);
@@ -146,7 +147,8 @@ const PostFeed = (props: Props) => {
         log&&console.log(calculations.bottomVisible);
         if (calculations.bottomVisible && !isLoading) {
             log&&console.log("Next Token: " + nextToken);
-            queryPosts(props.filter, nextToken, isFinished, props.user.friends, props.fetchPostQuery, props.fetchClient, props.fetchTrainer, props.fetchEvent, props.fetchChallenge,
+            queryPosts(props.filter, nextToken, isFinished, props.user.id, props.user.friends, props.fetchPostQuery,
+                props.fetchClient, props.fetchTrainer, props.fetchEvent, props.fetchChallenge,
                 props.fetchPost, props.fetchGroup, setIsLoading, setIsFinished, setNextToken, setPosts);
         }
     };
