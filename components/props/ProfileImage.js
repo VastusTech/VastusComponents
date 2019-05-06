@@ -54,7 +54,7 @@ const ProfileImage = (props: Props) => {
         return (
             <div>
                 <div onClick={() => setGalleryModalOpen(true)} className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${props.profileImage})`}}/>
-                <Modal closeIcon basic size='big' open={galleryModalOpen} onClose={() => setGalleryModalOpen(false)}>
+                <Modal closeIcon basic size='large' open={galleryModalOpen} onClose={() => setGalleryModalOpen(false)}>
                     <ProfileImageGallery userID={props.userID}
                                          profileImage={props.profileImage}
                                          profileImages={props.profileImages}

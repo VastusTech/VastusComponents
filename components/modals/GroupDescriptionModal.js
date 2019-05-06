@@ -13,6 +13,7 @@ import DatabaseObjectList from "../lists/DatabaseObjectList";
 import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import CreatePostProp from "../manager/CreatePost";
 
+// TODO PLEASE REFACTOR THIS IS CRINGY
 // TODO Rewrite for the new design
 // TODO Refactor
 

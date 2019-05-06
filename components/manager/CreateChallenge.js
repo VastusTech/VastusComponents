@@ -209,7 +209,7 @@ const CreateChallengeProp = (props) => {
                     <Grid.Row>
                         <Grid.Column width={8}>
                             <Button color={tagsPressed.HIIT ? "purple" : "black"} inverted={tagsPressed.HIIT} basic={!tagsPressed.HIIT}>
-                                <Image dark size='medium' src={require('../../img/vastus-tech-icons-03.svg')} onClick={() => setTagsPressed(p => ({...p, HIIT: !p.HIIT}))}/>
+                                <Image size='medium' src={require('../../img/vastus-tech-icons-03.svg')} onClick={() => setTagsPressed(p => ({...p, HIIT: !p.HIIT}))}/>
                                 <div style={{color: 'white'}}>HIIT</div>
                             </Button>
                         </Grid.Column>
@@ -252,7 +252,7 @@ const CreateChallengeProp = (props) => {
                                     <Header as='h5'>Streak</Header>
                                     {
                                         challengeType === "streak" ? [
-                                            <div className="field" align="center">
+                                            <div key={0} className="field" align="center">
                                                 {/*<Header as="h1">{streakUpdateInfo(streakN, streakUpdateInterval, streakUpdateSpanType)}</Header>*/}
                                                 <Header as='h3'>
                                                     <Grid columns={5}>
@@ -260,7 +260,7 @@ const CreateChallengeProp = (props) => {
                                                             Complete
                                                         </Grid.Column>
                                                         <Grid.Column>
-                                                    <Form.Input fluid type="number" name="streakUpdateInterval" value={streakUpdateInterval}
+                                                    <Form.Input fluid type="number" name="streakUpdateInterval" value={streakUpdateInterval ? streakUpdateInterval : ""}
                                                                 onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
                                                                     ? setStreakUpdateInterval(1) : setStreakUpdateInterval(value.target.value)}/>
                                                         </Grid.Column>
@@ -268,7 +268,7 @@ const CreateChallengeProp = (props) => {
                                                             {tasksPlural(streakUpdateInterval)} every
                                                         </Grid.Column>
                                                         <Grid.Column>
-                                                            <Form.Input fluid type="number" name="streakN" value={streakN}
+                                                            <Form.Input fluid type="number" name="streakN" value={streakN ? streakN : ""}
                                                                 onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
                                                                     ? setStreakN(1) : setStreakN(value.target.value)}/>
                                                         </Grid.Column>
@@ -278,7 +278,7 @@ const CreateChallengeProp = (props) => {
                                                     </Grid>
                                                 </Header>
                                             </div>,
-                                            <div className="field">
+                                            <div key={1} className="field">
                                                 <label>Update Span</label>
                                             </div>,
                                         ] : null

@@ -320,7 +320,7 @@ const displayStreakInfo = (ifStreak, streak) => {
             const ifExpired = ifStreakExpired(streak);
             if (ifExpired) {
                 return [
-                    <Header color="gray"><Icon name='fire extinguisher' size='large' color='grey'/>
+                    <Header key={0} color="grey"><Icon name='fire extinguisher' size='large' color='grey'/>
                         Your Streak Has Expired!</Header>
                 ];
             }
@@ -333,8 +333,8 @@ const displayStreakInfo = (ifStreak, streak) => {
         }
         else {
             return [
-                <Divider/>,
-                <Header color="gray">Could not read streak data...</Header>
+                <Divider key={0}/>,
+                <Header key={1} color="grey">Could not read streak data...</Header>
             ];
         }
     }

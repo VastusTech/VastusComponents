@@ -17,7 +17,7 @@ const getCheckBoxes = (filterTypes, setFilterTypes, enableType, disableType) => 
     for (const type in filterTypes) {
         if (filterTypes.hasOwnProperty(type)) {
             checkBoxes.push(
-                <Grid.Column>
+                <Grid.Column key={type}>
                     <Checkbox label={type}
                               checked={filterTypes[type]}
                               onChange={() => toggleTypeCheckbox(type, setFilterTypes, enableType, disableType)}/>

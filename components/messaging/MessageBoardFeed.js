@@ -199,7 +199,7 @@ const MessageBoardFeed = (props: Props) => {
     else {
         return(
             <div>
-                <Header fluid> No Message Boards Yet! </Header>
+                <Header> No Message Boards Yet! </Header>
             </div>
         )
     }

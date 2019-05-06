@@ -1,6 +1,7 @@
 import * as AWS from "aws-sdk";
 import {err, ifDebug, log} from "../../Constants";
 import TestHelper from "../testing/TestHelper";
+import {debugAlert} from "../logic/DebuggingHelper";
 
 /// Configure AWS SDK for JavaScript
 AWS.config.update({region: 'us-east-1'});
@@ -189,9 +190,7 @@ class Lambda {
      */
     static invokeLambda(functionName, payload, successHandler, failureHandler) {
         // log&&console.log("Sending lambda payload: " + JSON.stringify(payload));
-        if (ifDebug) {
-            console.log("Sending lambda payload: " + JSON.stringify(payload));
-        }
+        log&&console.log("Sending lambda payload: " + JSON.stringify(payload));
         const request = {FunctionName: functionName, Payload: JSON.stringify(payload)};
         if (TestHelper.ifTesting && successHandler) {
             successHandler(null);
@@ -218,10 +217,8 @@ class Lambda {
                     }
                 }
                 else {
-                    log&&console.log("Successfully invoked lambda function!");
-                    if (ifDebug) {
-                        console.log("Successful Lambda, received " + JSON.stringify(payload));
-                    }
+                    log&&console.log("Successfully invoked lambda function! Received: " + JSON.stringify(payload));
+                    debugAlert("Successful Lambda, received " + JSON.stringify(payload));
                     if (successHandler) {
                         successHandler(payload);
                     }

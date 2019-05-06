@@ -84,7 +84,7 @@ const selectChatIDButtons = (friends, selectedFriends, setSelectedFriends) => {
     const cards = [];
     for (let i = 0; i < friends.length; i++) {
         cards.push(
-            <Grid fluid centered>
+            <Grid key={i} centered>
                 <Grid.Column>
                     <UserCard user={friends[i]}/>
                 </Grid.Column>

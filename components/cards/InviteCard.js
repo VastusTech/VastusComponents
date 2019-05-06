@@ -588,7 +588,7 @@ const InviteCard = (props: Props) => {
 
 const mapStateToProps = state => ({
     cache: state.cache,
-    user: state.cache
+    user: state.user
 });
 
 export default connect(mapStateToProps)(InviteCard);
