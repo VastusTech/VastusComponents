@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Icon, Modal, Button} from 'semantic-ui-react'
 import { connect } from 'react-redux';
-import {fetchPost, putPost, fetchChallenge, putChallenge, fetchClient} from "../../redux/convenience/cacheItemTypeActions";
+import {fetchPost, fetchChallenge, fetchClient} from "../../redux/convenience/cacheItemTypeActions";
 import {fetchUserAttributes} from "../../redux/actions/userActions";
 import CreateChallengeProp from "./CreateChallenge";
 
@@ -169,14 +169,8 @@ const mapDispatchToProps = (dispatch) => {
         fetchPost: (id, variablesList) => {
             dispatch(fetchPost(id, variablesList));
         },
-        putPost: (event) => {
-            dispatch(putPost(event));
-        },
         fetchChallenge: (id, variablesList) => {
             dispatch(fetchChallenge(id, variablesList));
-        },
-        putChallenge: (event) => {
-            dispatch(putChallenge(event));
         },
     }
 };

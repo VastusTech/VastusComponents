@@ -16,6 +16,7 @@ import {EventDetailCardInfo} from "./post_detail_cards/EventDetailCard";
 import Spinner from "../props/Spinner";
 import {getAttributeFromObject, getObjectAttribute, getObjectFromCache} from "../../logic/CacheRetrievalHelper";
 import StyledProfileImage from "../props/StyledProfileImage";
+import type Post from "../../types/Post";
 
 export const PostCardInfo = {
     fetchList: ["id", "time_created", "by", "item_type", "postType", "about", "access", "description", "videoPaths", "picturePaths"],
@@ -35,19 +36,7 @@ export const PostCardInfo = {
 };
 
 type Props = {
-    post: {
-        id: string,
-        time_created: string,
-        by: string,
-        postType: string,
-        about: string,
-        access: string,
-        description: string,
-        videoPaths: [string],
-        videos: [string],
-        picturePaths: [string],
-        pictures: [string],
-    },
+    post: Post
     // by: {
     //     id: string,
     //     item_type: string,

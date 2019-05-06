@@ -14,6 +14,7 @@ import {err, log} from "../../../Constants";
 import {addMessageFromNotification} from "./messageActions";
 import {updateUserFromCache} from "./userActions";
 import {addUniqueToArray, setEquals, subtractArray} from "../../logic/ArrayHelper";
+import type DatabaseObject from "../../types/DatabaseObject";
 
 // ======================================================================================================
 // Fetching S3 Data ~
@@ -147,7 +148,7 @@ function addS3MediaToData(data, callback) {
  * @param {string} id The id of the object to fetch.
  * @param {string} itemType The item type of the object to fetch.
  * @param {[string]} variableList The list of variables to fetch for the object.
- * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(DatabaseObject)} dataHandler The function to handle the newly fetched object with.
  * @param {function(error)} failureHandler The function to handle any errors that occur with.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -172,7 +173,7 @@ function fetch(id, itemType, variableList, dataHandler, failureHandler) {
  * @param {string} id The id of the object to fetch.
  * @param {string} itemType The item type of the object to fetch.
  * @param {[string]} variableList The list of variables to fetch for the object.
- * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(DatabaseObject)} dataHandler The function to handle the newly fetched object with.
  * @param {function(error)} failureHandler The function to handle any errors that occur with.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -189,7 +190,7 @@ function forceFetch(id, itemType, variableList, dataHandler, failureHandler) {
  * @param {string} id The id of the object to fetch.
  * @param {string} itemType The item type of the object to fetch.
  * @param {[string]} variableList The list of variables to fetch for the object.
- * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(DatabaseObject)} dataHandler The function to handle the newly fetched object with.
  * @param {function(error)} failureHandler The function to handle any errors that occur with.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -279,7 +280,7 @@ function subscribeCacheUpdatesToObject(id, itemType) {
  * @param {string} id The id of the object to fetch.
  * @param {string} itemType The item type of the object to fetch.
  * @param {[string]} variableList The list of variables to fetch for the object.
- * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(DatabaseObject)} dataHandler The function to handle the newly fetched object with.
  * @param {function(error)} failureHandler The function to handle any errors that occur with.
  * @param {function(*)} dispatch The dispatch handler function to call a new redux action with.
  * @param {function()} getStore The get function for redux that receives the current store.
@@ -350,7 +351,7 @@ function overwriteFetch(id, itemType, variableList, dataHandler, failureHandler,
  * @param {[string]} variableList The list of variables to fetch for the objects.
  * @param {number} startIndex The index to start with in the list of ids. (Kinda like a next token).
  * @param {number} maxFetch The max number of items to fetch from the database.
- * @param {function([{}])} dataHandler The function to handle the list of objects that are received.
+ * @param {function([DatabaseObject])} dataHandler The function to handle the list of objects that are received.
  * @param {function(error)} failureHandler The function to handle any errors that may occur.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -394,7 +395,7 @@ function batchFetch(ids, itemType, variableList, startIndex, maxFetch, dataHandl
  * @param {[string]} variableList The list of variables to fetch for the objects.
  * @param {number} startIndex The index to start with in the list of ids. (Kinda like a next token).
  * @param {number} maxFetch The max number of items to fetch from the database.
- * @param {function([{}])} dataHandler The function to handle the list of objects that are received.
+ * @param {function([DatabaseObject])} dataHandler The function to handle the list of objects that are received.
  * @param {function(error)} failureHandler The function to handle any errors that may occur.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -413,7 +414,7 @@ function batchForceFetch(ids, itemType, variableList, startIndex, maxFetch, data
  * @param {[string]} variableList The list of variables to fetch for the objects.
  * @param {number} startIndex The index to start with in the list of ids. (Kinda like a next token).
  * @param {number} maxFetch The max number of items to fetch from the database.
- * @param {function([{}])} dataHandler The function to handle the list of objects that are received.
+ * @param {function([DatabaseObject])} dataHandler The function to handle the list of objects that are received.
  * @param {function(error)} failureHandler The function to handle any errors that may occur.
  * @param {function(*)} dispatch The dispatch handler function to call a new redux action with.
  * @param {function()} getStore The get function for redux that receives the current store.
@@ -519,7 +520,7 @@ function batchOverwriteFetch(ids, itemType, variableList, startIndex, maxFetch, 
  * @param {{}} filter The {@link QL} filter to dictate how the query filters the objects.
  * @param {number} limit The limit of items for the query to SEARCH. Items length <= limit.
  * @param {string} nextToken The next token string that dictates which part of the query to fetch.
- * @param {function({nextToken: string, items: [{}]})} dataHandler The function to handle the fetched items.
+ * @param {function({nextToken: string, items: [DatabaseObject]})} dataHandler The function to handle the fetched items.
  * @param {function(error)} failureHandler The function to handle any potential errors that may occur.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -570,7 +571,7 @@ function fetchQuery(itemType, variableList, filter, limit, nextToken, dataHandle
  * @param {{}} filter The {@link QL} filter to dictate how the query filters the objects.
  * @param {number} limit The limit of items for the query to SEARCH. Items length <= limit.
  * @param {string} nextToken The next token string that dictates which part of the query to fetch.
- * @param {function({nextToken: string, items: [{}]})} dataHandler The function to handle the fetched items.
+ * @param {function({nextToken: string, items: [DatabaseObject]})} dataHandler The function to handle the fetched items.
  * @param {function(error)} failureHandler The function to handle any potential errors that may occur.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -602,7 +603,7 @@ function forceFetchQuery(itemType, variableList, filter, limit, nextToken, dataH
  * @param {string} itemType The item types of the items to receive in the query.
  * @param {string} queryString The normalized query string for this specific query.
  * @param {string} nextToken The next token string that dictates which part of the query to fetch.
- * @param {function({nextToken: string, items: [{}]})} dataHandler The function to handle the fetched items.
+ * @param {function({nextToken: string, items: [DatabaseObject]})} dataHandler The function to handle the fetched items.
  * @param {function(error)} failureHandler The function to handle any potential errors that may occur.
  * @param dispatch
  */
@@ -743,7 +744,7 @@ export function removeFromItemAttributeAtIndex(id, attributeName, index) {
  * @param {string} id The id of the object to fetch.
  * @param {string} itemType The item type of the object to fetch.
  * @param {[string]} variableList The list of variables to fetch for the object.
- * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(DatabaseObject)} dataHandler The function to handle the newly fetched object with.
  * @param {function(error)} failureHandler The function to handle any errors that occur with.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -758,7 +759,7 @@ export function fetchItem(id, itemType, variableList, dataHandler, failureHandle
  * @param {string} id The id of the object to fetch.
  * @param {string} itemType The item type of the object to fetch.
  * @param {[string]} variableList The list of variables to fetch for the object.
- * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(DatabaseObject)} dataHandler The function to handle the newly fetched object with.
  * @param {function(error)} failureHandler The function to handle any errors that occur with.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -772,7 +773,7 @@ export function forceFetchItem(id, itemType, variableList, dataHandler, failureH
  * @param {string} id The id of the object to fetch.
  * @param {string} itemType The item type of the object to fetch.
  * @param {[string]} variableList The list of variables to fetch for the object.
- * @param {function({})} dataHandler The function to handle the newly fetched object with.
+ * @param {function(DatabaseObject)} dataHandler The function to handle the newly fetched object with.
  * @param {function(error)} failureHandler The function to handle any errors that occur with.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -789,7 +790,7 @@ export function subscribeFetchItem(id, itemType, variableList, dataHandler, fail
  * @param {[string]} variableList The list of variables to fetch for the objects.
  * @param {number} startIndex The index to start with in the list of ids. (Kinda like a next token).
  * @param {number} maxFetch The max number of items to fetch from the database.
- * @param {function([{}])} dataHandler The function to handle the list of objects that are received.
+ * @param {function([DatabaseObject])} dataHandler The function to handle the list of objects that are received.
  * @param {function(error)} failureHandler The function to handle any errors that may occur.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -806,7 +807,7 @@ export function fetchItems(ids, itemType, variableList, startIndex, maxFetch, da
  * @param {[string]} variableList The list of variables to fetch for the objects.
  * @param {number} startIndex The index to start with in the list of ids. (Kinda like a next token).
  * @param {number} maxFetch The max number of items to fetch from the database.
- * @param {function([{}])} dataHandler The function to handle the list of objects that are received.
+ * @param {function([DatabaseObject])} dataHandler The function to handle the list of objects that are received.
  * @param {function(error)} failureHandler The function to handle any errors that may occur.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -823,7 +824,7 @@ export function forceFetchItems(ids, itemType, variableList, startIndex, maxFetc
  * @param {{}} filter The {@link QL} filter to dictate how the query filters the objects.
  * @param {number} limit The limit of items for the query to SEARCH. Items length <= limit.
  * @param {string} nextToken The next token string that dictates which part of the query to fetch.
- * @param {function({nextToken: string, items: [{}]})} dataHandler The function to handle the fetched items.
+ * @param {function({nextToken: string, items: [DatabaseObject]})} dataHandler The function to handle the fetched items.
  * @param {function(error)} failureHandler The function to handle any potential errors that may occur.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
@@ -841,7 +842,7 @@ export function fetchItemQuery(itemType, variableList, filter, limit, nextToken,
  * @param {{}} filter The {@link QL} filter to dictate how the query filters the objects.
  * @param {number} limit The limit of items for the query to SEARCH. Items length <= limit.
  * @param {string} nextToken The next token string that dictates which part of the query to fetch.
- * @param {function({nextToken: string, items: [{}]})} dataHandler The function to handle the fetched items.
+ * @param {function({nextToken: string, items: [DatabaseObject]})} dataHandler The function to handle the fetched items.
  * @param {function(error)} failureHandler The function to handle any potential errors that may occur.
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */

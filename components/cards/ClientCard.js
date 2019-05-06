@@ -1,4 +1,5 @@
 import React, { useState, Fragment } from 'react';
+import type Client from "../../types/Client";
 import { Card, Grid, Header } from 'semantic-ui-react';
 import ClientModal from '../modals/ClientModal';
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
@@ -12,19 +13,7 @@ export const ClientCardInfo = {
 
 type Props = {
     rank?: number,
-    client: {
-        id: string,
-        username: string,
-        gender: string,
-        birthday: string,
-        name: string,
-        friends: [string],
-        challengesWon: [string],
-        scheduledEvents: [string],
-        profileImagePath: string,
-        profileImage: any,
-        friendRequests: [string]
-    }
+    client: Client
 };
 
 /**

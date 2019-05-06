@@ -4,6 +4,7 @@ import ChallengeDescriptionModal from '../modals/ChallengeDescriptionModal';
 import {daysLeft, parseISOString} from "../../logic/TimeHelper";
 import Spinner from "../props/Spinner";
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
+import type Challenge from "../../types/Challenge";
 
 export const ChallengeCardInfo = {
     fetchList: ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "difficulty", "time_created", "capacity",
@@ -12,15 +13,7 @@ export const ChallengeCardInfo = {
 };
 
 type Props = {
-    challenge: {
-        id: string,
-        title: string,
-        endTime: string,
-        ifCompleted: boolean,
-        tags: [string],
-        difficulty: string,
-        time_created: string,
-    }
+    challenge: Challenge
 };
 
 const pictures = {

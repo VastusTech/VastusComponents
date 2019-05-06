@@ -15,6 +15,7 @@ import {getAttributeFromObject, getObjectAttribute} from "../../logic/CacheRetri
 import {err} from "../../../Constants";
 import GroupFunctions from "../../database_functions/GroupFunctions";
 import GroupDescriptionModal from "../modals/GroupDescriptionModal";
+import type Invite from "../../types/Invite";
 
 /**
  * All of the different fetchLists used for the different types of cards.
@@ -46,6 +47,10 @@ export const InviteCardInfo = {
         groupFetchList: ["id", "title"],
     },
     ifSubscribe: false
+};
+
+type Props = {
+    invite: Invite
 };
 
 /**
@@ -520,17 +525,6 @@ const getInviteDetails = (userID, getInviteAttribute, getFromAttribute, getToAtt
     }
     else {
         return null;
-    }
-};
-
-type Props = {
-    invite: {
-        time_created: string,
-        from: string,
-        to: string,
-        inviteType: string,
-        about: string,
-        description: string
     }
 };
 

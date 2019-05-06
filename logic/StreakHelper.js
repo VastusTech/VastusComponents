@@ -1,5 +1,39 @@
 import {midnightsPassed, parseISOString} from "./TimeHelper";
 import {err} from "../../Constants";
+import type Streak from "../types/Streak";
+
+/**
+ * Gets the Streak info for the given Streak object.
+ *
+ * @param {Streak} streak The streak object to get the info for.
+ * @returns {"not_started" | "completed" | "still_completing" | "not_completed" | "broken"} The string to indicate
+ * the status of the User's current Streak for the object.
+ */
+export const streakInfo = (streak: Streak) => {
+    const spans = numberOfUpdateSpansPassed(streak);
+    if (streak.currentN === "0") {
+        return "not_started";
+    }
+    else if (spans < parseInt(streak.updateInterval)) {
+        if (streak.currentN >= streak.streakN) {
+            return "completed";
+        }
+        else {
+            return "still_completing_attempt";
+        }
+    }
+    else if (spans < (2 * parseInt(streak.updateInterval))) {
+        if (streak.currentN >= streak.streakN) {
+            return "not_completed";
+        }
+        else {
+            return "broken";
+        }
+    }
+    else {
+        return "broken";
+    }
+};
 
 /**
  * Calculates the number of update spans that have passed since the "last updated" field in a Streak.
@@ -34,8 +68,6 @@ export const ifStreakExpired = (streak) => {
     }
     return true;
 };
-
-// TODO export const streakN = (streak) => {
 
 /**
  * Returns a properly formatted string for what the Streak interval information is.

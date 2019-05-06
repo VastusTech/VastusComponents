@@ -3,7 +3,8 @@ import {Card, Dimmer, Loader, Grid, Icon, Image, Divider, Button, Feed} from 'se
 import {getAttributeFromObject, getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import {convertFromISO} from "../../logic/TimeHelper";
 import {Player} from "video-react";
-import { connect } from 'react-redux';
+import connect from "react-redux/es/connect/connect";
+import type Submission from "../../types/Submission";
 
 export const SubmissionCardInfo = {
     fetchList: ["id", "time_created", "by", "item_type", "about", "description", "videoPaths", "picturePaths"],
@@ -13,18 +14,7 @@ export const SubmissionCardInfo = {
 
 type Props = {
     rank?: number,
-    submission: {
-        id: string,
-        time_created: string,
-        by: string,
-        item_type: string,
-        about: string,
-        description: string,
-        picturePaths: [string],
-        pictures: [string],
-        videoPaths: [string],
-        videos: [string]
-    }
+    submission: Submission
 }
 
 // TODO Make this look better?

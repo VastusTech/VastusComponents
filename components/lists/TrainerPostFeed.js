@@ -7,7 +7,6 @@ import {
     fetchPost,
     fetchTrainer,
     forceFetchTrainer,
-    putPost,
 } from "../../redux/convenience/cacheItemTypeActions";
 import {fetchUserAttributes} from "../../redux/actions/userActions";
 
@@ -171,9 +170,6 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchPost: (id, variablesList, dataHandler) => {
             dispatch(fetchPost(id, variablesList, dataHandler));
-        },
-        putPost: (post) => {
-            dispatch(putPost(post));
         },
     }
 };

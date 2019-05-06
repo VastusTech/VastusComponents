@@ -1,6 +1,6 @@
 import Auth from "../../api/Auth";
-import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
-import {setUser, forceSetUser} from "./userActions";
+import {setAppIsNotLoading, setError, setIsLoading, setIsNotLoading} from "./infoActions";
+import {setUser, forceSetUser, subscribeFetchUserAttributes} from "./userActions";
 import {removeAllHandlers} from "./ablyActions";
 import QL from "../../api/GraphQL";
 import ClientFunctions from "../../database_functions/ClientFunctions";
@@ -37,13 +37,20 @@ export function updateAuth() {
                     // dispatch(addHandlerToNotifications((message) => {
                     //     console.log("Received ABLY notification!!!!!\n" + JSON.stringify(message));
                     // }));
-                    dispatch(authLogIn());
-                    dispatch(setIsNotLoading());
+                    dispatch(subscribeFetchUserAttributes(["name", "username", "birthday", "profileImagePath",
+                        "profileImagePaths", "challengesWon", "friends", "scheduledEvents", "ownedEvents", "completedEvents",
+                        "challenges", "ownedChallenges", "completedChallenges", "groups", "ownedGroups", "receivedInvites",
+                        "invitedChallenges", "messageBoards", "streaks"], () => {
+                        dispatch(authLogIn());
+                        dispatch(setIsNotLoading());
+                        dispatch(setAppIsNotLoading());
+                    }));
                 }, (error) => {
                     console.error("REDUX: Could not fetch the user, not logged in");
                     err&&console.error(error);
                     // dispatch(setError(error));
                     dispatch(setIsNotLoading());
+                    dispatch(setAppIsNotLoading());
                 });
             }
             else if (user.sub) {
@@ -52,27 +59,36 @@ export function updateAuth() {
                     log&&console.log("REDUX: Successfully updated the authentication credentials for federated identity");
                     if (user) {
                         dispatch(setUser(user));
+                        dispatch(subscribeFetchUserAttributes(["name", "username", "birthday", "profileImagePath",
+                            "profileImagePaths", "challengesWon", "friends", "scheduledEvents", "ownedEvents", "completedEvents",
+                            "challenges", "ownedChallenges", "completedChallenges", "groups", "ownedGroups", "receivedInvites",
+                            "invitedChallenges", "messageBoards", "streaks"], () => {
+                            dispatch(authLogIn());
+                            dispatch(setIsNotLoading());
+                            dispatch(setAppIsNotLoading());
+                        }));
                         // dispatch(addHandlerToNotifications((message) => {
                         //     console.log("Received ABLY notification!!!!!\n" + JSON.stringify(message));
                         // }));
-                        dispatch(authLogIn());
-                        dispatch(setIsNotLoading());
                     }
                     else {
                         console.error("REDUX: Could not find the federated identity user");
                         dispatch(setError(Error("Could not find the federated identity user")));
                         dispatch(setIsNotLoading());
+                        dispatch(setAppIsNotLoading());
                     }
                 }, (error) => {
                     console.error("REDUX: Could not fetch the federated identity user");
                     dispatch(setError(error));
                     dispatch(setIsNotLoading());
+                    dispatch(setAppIsNotLoading());
                 });
             }
         }, (error) => {
             err&&console.error(error);
             // dispatch(setError(error));
             dispatch(setIsNotLoading());
+            dispatch(setAppIsNotLoading());
         });
     }
 }
@@ -91,17 +107,23 @@ export function logIn(username, password) {
         Auth.signIn(username, password, () => {
             QL.getItemByUsername(appUserItemType, username, ["id", "username"], (user) => {
                 console.log("REDUX: Successfully logged in!");
-                dispatch(authLogIn());
                 if (getStore().user.id !== user.id) {
                     dispatch(forceSetUser(user));
                 }
                 else {
                     dispatch(setUser(user));
                 }
+                dispatch(subscribeFetchUserAttributes(["name", "username", "birthday", "profileImagePath",
+                    "profileImagePaths", "challengesWon", "friends", "scheduledEvents", "ownedEvents", "completedEvents",
+                    "challenges", "ownedChallenges", "completedChallenges", "groups", "ownedGroups", "receivedInvites",
+                    "invitedChallenges", "messageBoards", "streaks"], () => {
+                    dispatch(authLogIn());
+                    dispatch(setIsNotLoading());
+                    dispatch(setAppIsNotLoading());
+                }));
                 // dispatch(addHandlerToNotifications((message) => {
                 //     console.log("Received ABLY notification!!!!!\n" + JSON.stringify(message));
                 // }));
-                dispatch(setIsNotLoading());
             }, (error) => {
                 console.log("REDUX: Could not fetch the client");
                 dispatch(setError(error));

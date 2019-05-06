@@ -1,5 +1,6 @@
 import React  from 'react';
 import ChallengeCard from "../ChallengeCard";
+import type Challenge from "../../../types/Challenge";
 
 export const ChallengeDetailCardInfo = {
     fetchList: ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "difficulty", "time_created", "capacity", "members", "prize", "goal", "owner", "access", "restriction", "submissions"],
@@ -7,15 +8,7 @@ export const ChallengeDetailCardInfo = {
 };
 
 type Props = {
-    challenge: {
-        id: string,
-        title: string,
-        endTime: string,
-        ifCompleted: boolean,
-        tags: [string],
-        difficulty: string,
-        time_created: string,
-    }
+    challenge: Challenge
 };
 
 /**

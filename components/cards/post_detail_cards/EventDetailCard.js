@@ -7,18 +7,7 @@ export const EventDetailCardInfo = {
 };
 
 type Props = {
-    event: {
-        id: string,
-        title: string,
-        time: string,
-        capacity: string,
-        difficulty: string,
-        restriction: string,
-        members: [string],
-        owner: string,
-        time_created: string,
-        access: string
-    }
+    event: Event
 };
 
 /**

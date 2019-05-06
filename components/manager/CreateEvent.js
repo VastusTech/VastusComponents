@@ -3,7 +3,7 @@ import {Checkbox, Modal, Button, Form, Segment, TextArea, Dropdown, Label, Image
 import {connect} from "react-redux";
 import {setError} from "../../redux/actions/infoActions";
 import VTLogo from "../../img/vt_new.svg";
-import {fetchEvent, putEvent} from "../../redux/convenience/cacheItemTypeActions";
+import {fetchEvent} from "../../redux/convenience/cacheItemTypeActions";
 
 // TODO Not only refactor, but rewrite altogether
 
@@ -285,9 +285,6 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchEvent: (id, variablesList) => {
             dispatch(fetchEvent(id, variablesList));
-        },
-        putEvent: (event) => {
-            dispatch(putEvent(event));
         },
     }
 };

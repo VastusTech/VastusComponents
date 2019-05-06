@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react'
 import {Grid, Button, Message, Image, Modal, Form, Container, Checkbox, Header, Card, Icon} from 'semantic-ui-react';
 import {connect} from "react-redux";
 import {setError} from "../../redux/actions/infoActions";
-import {fetchChallenge, putChallenge} from "../../redux/convenience/cacheItemTypeActions";
+import {fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
 import GroupFunctions from "../../database_functions/GroupFunctions";
 import {removeFromArray} from "../../logic/ArrayHelper";
 
@@ -354,9 +354,6 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchChallenge: (id, variablesList) => {
             dispatch(fetchChallenge(id, variablesList));
-        },
-        putChallenge: (event) => {
-            dispatch(putChallenge(event));
         },
     }
 };
