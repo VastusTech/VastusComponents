@@ -5,9 +5,11 @@ export const CLEAR_ERROR = 'CLEAR_ERROR';
 export const SET_IS_LOADING = 'SET_IS_LOADING';
 export const SET_IS_NOT_LOADING = 'SET_IS_NOT_LOADING';
 export const TOGGLE_IS_LOADING = 'TOGGLE_IS_LOADING';
+export const SET_APP_IS_NOT_LOADING = 'SET_APP_IS_NOT_LOADING';
 
 type InfoReducer = {
     isLoading: boolean,
+    appIsLoading: boolean,
     error: Error
 };
 
@@ -18,10 +20,9 @@ type InfoReducer = {
  */
 const initialState = {
     isLoading: false,
+    appIsLoading: true,
     error: null
 };
-
-const copyState = state => ({ ...state });
 
 /**
  * Info Reducer:
@@ -64,6 +65,12 @@ export default (state: InfoReducer = initialState, action) => {
             state = {
                 ...state,
                 isLoading: !state.isLoading
+            };
+            break;
+        case SET_APP_IS_NOT_LOADING:
+            state = {
+                ...state,
+                appIsLoading: false
             };
             break;
         default:
