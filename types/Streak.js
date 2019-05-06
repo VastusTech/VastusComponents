@@ -15,6 +15,7 @@ type Streak = {
     bestN: number,
     currentN: number,
     lastUpdated: string,
+    lastAttemptStarted: string,
     streakType: string,
     updateSpanType: string,
     updateInterval: string,
