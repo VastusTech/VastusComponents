@@ -156,11 +156,18 @@ function fetch(id, itemType, variableList, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         const cacheName = getCacheName(itemType);
-        const currentObject = getStore().cache[cacheName][id];
-        if (currentObject) {
-            const objectKeyList = Object.keys(currentObject);
-            variableList = variableList.filter((v) => { return !objectKeyList.includes(v) });
-            // log&&console.log("Final filtered list is = " + JSON.stringify(variableList));
+        if (getStore().cache[cacheName].hasOwnProperty(id)) {
+            const currentObject = getStore().cache[cacheName][id];
+            if (currentObject) {
+                const objectKeyList = Object.keys(currentObject);
+                variableList = variableList.filter((v) => { return !objectKeyList.includes(v) });
+                // log&&console.log("Final filtered list is = " + JSON.stringify(variableList));
+            }
+            else {
+                // Then the current object was already attempted to be fetched but did not get anything.
+                dataHandler && dataHandler(null);
+                return;
+            }
         }
         overwriteFetch(id, itemType, variableList, dataHandler, failureHandler, dispatch, getStore);
     };
@@ -310,10 +317,9 @@ function overwriteFetch(id, itemType, variableList, dataHandler, failureHandler,
                     }
                 });
             } else {
-                // TODO If it came up with nothing, put null into the cache so that we can do a === null check as well
                 // Then the fetch came up with nothing!
-                // const error = Error("Couldn't find an object in the database with ID = " + id);
-                log&&console.log("Couldn't find ID = " + id + " for item type = " + itemType);
+                dispatch(putItem(id, itemType, null));
+                err&&console.err("Couldn't find ID = " + id + " for item type = " + itemType);
                 dispatch(setIsNotLoading());
                 if (dataHandler) {
                     log&&console.log("D H " + dataHandler.toString());
