@@ -21,7 +21,7 @@ import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import {daysLeft, parseISOString} from "../../logic/TimeHelper";
 import TrainerModal from "./TrainerModal";
 import Spinner from "../props/Spinner";
-import {ifStreakExpired} from "../../logic/StreakHelper";
+import {streakInfo} from "../../logic/StreakHelper";
 import {arrayIntersection} from "../../logic/ArrayHelper";
 import {err} from "../../../Constants";
 import SubmissionList from "../lists/SubmissionList";
@@ -310,24 +310,57 @@ const createCorrectButton = (userID, challengeID, submissions, isLoading, isComp
  * TODO
  *
  * @param ifStreak
- * @param streak
+ * @param {Streak} streak
  * @return {*}
  */
-const displayStreakInfo = (ifStreak, streak) => {
-    if (ifStreak) {
+const displayStreakInfo = (ifStreak, isJoined, streak) => {
+    if (ifStreak && isJoined) {
         if (streak) {
-            const ifExpired = ifStreakExpired(streak);
-            if (ifExpired) {
-                return [
-                    <Header key={0} color="grey"><Icon name='fire extinguisher' size='large' color='grey'/>
-                        Your Streak Has Expired!</Header>
-                ];
-            }
-            else {
-                const currentNumber = streak.N;
-                return [
-                    <Header color="purple">Streak: <Icon name='fire' size='large' color='purple'/> {currentNumber}</Header>
-                ];
+            const currentNumber = streak.N;
+            const subTasks = streak.currentN;
+            const totalTasks = streak.streakN;
+            switch (streakInfo(streak)) {
+                case "not_started":
+                    // The User has yet to submit anything
+                    return [
+                        <Header color="purple"> Complete a Submission to get started! </Header>,
+                        <Header color="purple">Streak: <Icon name='fire' size='large' color='purple'/> {currentNumber}</Header>
+                    ];
+                case "still_completing":
+                    // This means that this is a multi task streak and the user has not finished all of them
+                    return [
+                        <Header color="purple"> Almost done for the Streak! Completed {subTasks} out of {totalTasks} for the time interval! </Header>,
+                        <Header color="purple">Streak: <Icon name='fire' size='large' color='purple'/> {currentNumber}</Header>
+                    ];
+                case "completed":
+                    // This means that the user has completed the Streak for the current time interval.
+                    return [
+                        <Header color="white"> Completed the Streak for the time interval! </Header>,
+                        <Header color="white">Streak: <Icon name='fire' size='large' color='purple'/> {currentNumber}</Header>
+                    ];
+                case "not_completed":
+                    // This means that the user has not completed the Streak for the current time interval yet.
+                    if (totalTasks > 1) {
+                        return [
+                            <Header color="purple"> Complete the first Submission to start completing the Streak! Completed 0 out of {totalTasks} for the current time interval</Header>,
+                            <Header color="purple">Streak: <Icon name='fire' size='large'
+                                                                 color='purple'/> {currentNumber}</Header>
+                        ];
+                    }
+                    else {
+                        return [
+                            <Header color="purple"> Complete a Submission to keep your Streak going! </Header>,
+                            <Header color="purple">Streak: <Icon name='fire' size='large'
+                                                                 color='purple'/> {currentNumber}</Header>
+                        ];
+                    }
+                case "broken":
+                    return [
+                        <Header key={0} color="grey"><Icon name='fire extinguisher' size='large' color='grey'/>
+                            Your Streak Has Expired! Streak = 0</Header>
+                    ];
+                default:
+                    break;
             }
         }
         else {
@@ -497,7 +530,7 @@ const ChallengeDescriptionModal = (props: Props) => {
                             if (challenge.streaks && props.user.streaks) {
                                 const intersection = arrayIntersection(challenge.streaks, props.user.streaks);
                                 if (intersection && intersection.length && intersection.length === 1) {
-                                    props.fetchStreak(intersection[0], ["lastUpdated", "N", "bestN", "currentN", "updateSpanType", "updateInterval"], (streak) => {
+                                    props.fetchStreak(intersection[0], ["lastUpdated", "N", "bestN", "currentN", "updateSpanType", "updateInterval", "lastAttemptStarted", "streakN"], (streak) => {
                                         setStreak(streak);
                                     });
                                 }
@@ -580,7 +613,7 @@ const ChallengeDescriptionModal = (props: Props) => {
                         </Grid.Column>
                     </Grid>
                     <Divider/>
-                    {displayStreakInfo(challengeType === "streak", streak)}
+                    {displayStreakInfo(challengeType === "streak", isJoined, streak)}
                     <Modal.Description>
                         {createCorrectModal(getChallengeAttribute("owner"), ownerModalOpen, setOwnerModalOpen)}
                         <CompleteChallengeModal open={completeModalOpen} onClose={() => setCompleteModalOpen(false)} challengeID={props.challengeID}/>

@@ -10,29 +10,27 @@ import type Streak from "../types/Streak";
  * the status of the User's current Streak for the object.
  */
 export const streakInfo = (streak: Streak) => {
-    const spans = numberOfUpdateSpansPassed(streak);
-    if (streak.currentN === "0") {
-        return "not_started";
-    }
-    else if (spans < parseInt(streak.updateInterval)) {
-        if (streak.currentN >= streak.streakN) {
-            return "completed";
-        }
-        else {
-            return "still_completing_attempt";
-        }
-    }
-    else if (spans < (2 * parseInt(streak.updateInterval))) {
-        if (streak.currentN >= streak.streakN) {
-            return "not_completed";
-        }
-        else {
+    if (streak) {
+        const spans = numberOfUpdateSpansPassed(streak.lastAttemptStarted, streak.updateSpanType);
+        if (streak.currentN === "0" || streak.currentN === 0) {
+            return "not_started";
+        } else if (spans < parseInt(streak.updateInterval)) {
+            if (streak.currentN >= streak.streakN) {
+                return "completed";
+            } else {
+                return "still_completing_attempt";
+            }
+        } else if (spans < (2 * parseInt(streak.updateInterval))) {
+            if (streak.currentN >= streak.streakN) {
+                return "not_completed";
+            } else {
+                return "broken";
+            }
+        } else {
             return "broken";
         }
     }
-    else {
-        return "broken";
-    }
+    return null;
 };
 
 /**

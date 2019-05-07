@@ -22,7 +22,7 @@ import {EventDetailCardInfo} from "../cards/post_detail_cards/EventDetailCard";
 import {ChallengeDetailCardInfo} from "../cards/post_detail_cards/ChallengeDetailCard";
 import Spinner from "../props/Spinner";
 
-const postFeedLength = 1;
+const postFeedLength = 5;
 
 type Props = {
     filter: any

@@ -5,7 +5,7 @@ import { Message, Divider } from "semantic-ui-react";
 import {fetchClient, fetchTrainer} from "../../redux/convenience/cacheItemTypeActions";
 import {
     queryNextMessagesFromBoard,
-    discardBoard
+    discardBoard, unsubscribeFromBoard
 } from "../../redux/actions/messageActions";
 import {connect} from "react-redux";
 import ScrollView from "react-inverted-scrollview";
@@ -144,9 +144,10 @@ const MessageBoard = (props: Props) => {
                 }
             }
             return () => {
+                alert("Unsubscribing from " + props.board);
+                props.unsubscribeFromBoard(props.board);
                 // Unsubscribe to the Ably messages
                 // Also potentially clear the board?
-                // alert(props.board);
                 // props.discardBoard(props.board);
             }
         }
@@ -196,6 +197,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         discardBoard: (board) => {
             dispatch(discardBoard(board));
+        },
+        unsubscribeFromBoard: (board) => {
+            dispatch(unsubscribeFromBoard(board));
         }
     };
 };

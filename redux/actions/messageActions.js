@@ -3,7 +3,14 @@ import S3 from "../../api/S3Storage";
 import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
 import {addHandlerAndUnsubscription} from "./ablyActions";
 import {err, log} from "../../../Constants";
-import {getBoardChannel, SET_BOARD_READ, CLEAR_BOARD, ADD_QUERY, ADD_MESSAGE} from "../reducers/messageReducer";
+import {
+    getBoardChannel,
+    SET_BOARD_READ,
+    CLEAR_BOARD,
+    ADD_QUERY,
+    ADD_MESSAGE,
+    UNSUBSCRIBE_FROM_BOARD
+} from "../reducers/messageReducer";
 const notFoundPicture = require('../../img/not_found.png');
 const defaultProfilePicture = require("../../img/roundProfile.png");
 
@@ -252,6 +259,14 @@ function addQueryToBoard(board, messages, nextToken, ifSubscribed) {
 function clearBoard(board) {
     return {
         type: CLEAR_BOARD,
+        payload: {
+            board
+        }
+    }
+}
+export function unsubscribeFromBoard(board) {
+    return {
+        type: UNSUBSCRIBE_FROM_BOARD,
         payload: {
             board
         }
