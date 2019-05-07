@@ -2,8 +2,6 @@ import Lambda from "../api/Lambda";
 import S3 from "../api/S3Storage";
 import { getItemTypeFromID } from "../logic/ItemType";
 import TestHelper from "../testing/TestHelper";
-import ClientFunctions from "./ClientFunctions";
-import TrainerFunctions from "./TrainerFunctions";
 
 /**
  * Holds all the potential properly formatted Lambda functions for Users.
@@ -31,9 +29,9 @@ class UserFunctions {
     static createUser(fromID, itemType, name, email, username, successHandler, failureHandler) {
         switch (itemType) {
             case "Client":
-                return ClientFunctions.createClient(fromID, name, email, username, successHandler, failureHandler);
+                return UserFunctions.create(fromID, itemType, name, email, username, null, successHandler, failureHandler);
             case "Trainer":
-                return TrainerFunctions.createTrainer(fromID, name, email, username, successHandler, failureHandler);
+                return UserFunctions.create(fromID, itemType, name, email, username, null, successHandler, failureHandler);
             default:
                 throw Error("Create User not implemented for user type = " + itemType);
         }
@@ -57,9 +55,9 @@ class UserFunctions {
     static createFederatedUser(fromID, itemType, name, email, username, federatedID, successHandler, failureHandler) {
         switch (itemType) {
             case "Client":
-                return ClientFunctions.createFederatedClient(fromID, name, email, username, federatedID, successHandler, failureHandler);
+                return UserFunctions.create(fromID, itemType, name, email, username, federatedID, successHandler, failureHandler);
             case "Trainer":
-                return TrainerFunctions.createFederatedTrainer(fromID, name, email, username, federatedID, successHandler, failureHandler);
+                return UserFunctions.create(fromID, itemType, name, email, username, federatedID, successHandler, failureHandler);
             default:
                 throw Error("Create User not implemented for user type = " + itemType);
         }
@@ -387,9 +385,9 @@ class UserFunctions {
     static deleteUser(fromID, itemType, userID, successHandler, failureHandler) {
         switch (itemType) {
             case "Client":
-                return ClientFunctions.delete(fromID, userID, successHandler, failureHandler);
+                return UserFunctions.delete(fromID, itemType, userID, successHandler, failureHandler);
             case "Trainer":
-                return TrainerFunctions.delete(fromID, userID, successHandler, failureHandler);
+                return UserFunctions.delete(fromID, itemType, userID, successHandler, failureHandler);
             default:
                 throw Error("Create User not implemented for user type = " + itemType);
         }
@@ -398,6 +396,29 @@ class UserFunctions {
     // ======================================================================================================
     // User Low-Level Functions ~
     // ======================================================================================================
+
+    /**
+     * Places a User in the database using the given information for the item type.
+     *
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} itemType The type of the User to place in the database.
+     * @param {string} name The display name of the Client to place into the database.
+     * @param {string} email The email address of the Client.
+     * @param {string} username The Cognito User Pool Username of the User.
+     * @param {string} federatedID The unique federated ID from the federated identity.
+     * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
+     */
+    static create(fromID, itemType, name, email, username, federatedID, successHandler, failureHandler) {
+        return Lambda.create(fromID, itemType, {
+            name,
+            username,
+            email,
+            federatedID
+        }, successHandler, failureHandler);
+    }
 
     static updateAdd(fromID, userID, attributeName, attributeValue, successHandler, failureHandler) {
         return Lambda.updateAddToAttribute(fromID, userID, getItemTypeFromID(userID), attributeName, attributeValue, successHandler, failureHandler);
@@ -413,15 +434,16 @@ class UserFunctions {
      * Deletes a User from the database as well as all of its dependencies.
      *
      * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} itemType The type of the User to delete.
      * @param {string} userID The ID of the User to delete.
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static delete(fromID, userID, successHandler, failureHandler) {
+    static delete(fromID, itemType, userID, successHandler, failureHandler) {
         // TODO Delete all the S3 Paths within the User?
-        return Lambda.delete(fromID, userID, getItemTypeFromID(userID), successHandler, failureHandler);
+        return Lambda.delete(fromID, userID, itemType, successHandler, failureHandler);
     }
 }
 

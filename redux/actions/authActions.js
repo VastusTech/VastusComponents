@@ -51,6 +51,7 @@ export function updateAuth() {
                         dispatch(setError(Error("User not found in the database")));
                         dispatch(setIsNotLoading());
                         dispatch(setAppIsNotLoading());
+                        Auth.signOut();
                     }
                 }, (error) => {
                     console.error("REDUX: Could not fetch the user, not logged in");
@@ -58,6 +59,7 @@ export function updateAuth() {
                     // dispatch(setError(error));
                     dispatch(setIsNotLoading());
                     dispatch(setAppIsNotLoading());
+                    Auth.signOut();
                 });
             }
             else if (user.sub) {
@@ -83,12 +85,14 @@ export function updateAuth() {
                         dispatch(setError(Error("Could not find the federated identity user")));
                         dispatch(setIsNotLoading());
                         dispatch(setAppIsNotLoading());
+                        Auth.signOut();
                     }
                 }, (error) => {
                     console.error("REDUX: Could not fetch the federated identity user");
                     dispatch(setError(error));
                     dispatch(setIsNotLoading());
                     dispatch(setAppIsNotLoading());
+                    Auth.signOut();
                 });
             }
         }, (error) => {
