@@ -24,7 +24,6 @@ import Spinner from "../props/Spinner";
 import {ifStreakExpired} from "../../logic/StreakHelper";
 import {arrayIntersection} from "../../logic/ArrayHelper";
 import {err} from "../../../Constants";
-import {Card} from "semantic-ui-react/dist/commonjs/views/Card/Card";
 import SubmissionList from "../lists/SubmissionList";
 
 export const ChallengeDescriptionModalInfo = {

@@ -7,14 +7,14 @@ import notFoundPicture from "../../img/not_found.png";
 import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
 import {
     getObjectChannelName,
-    PUT_ITEM, PUT_ITEM_QUERY, CLEAR_ITEM_CACHE, CLEAR_NORMALIZED_ITEM_QUERY, REMOVE_ITEM_ATTRIBUTE_INDEX,
+    PUT_ITEM, PUT_ITEM_QUERY, REMOVE_ITEM_ATTRIBUTE_INDEX,
     REMOVE_FROM_ITEM_ATTRIBUTES, ADD_TO_ITEM_ATTRIBUTES, SET_ITEM_ATTRIBUTE_INDEX, REMOVE_ITEM
 } from "../reducers/cacheReducer";
 import {err, log} from "../../../Constants";
 import {addMessageFromNotification} from "./messageActions";
 import {updateUserFromCache} from "./userActions";
 import {addUniqueToArray, setEquals, subtractArray} from "../../logic/ArrayHelper";
-import type DatabaseObject from "../../types/DatabaseObject";
+// import type DatabaseObject from "../../types/DatabaseObject";
 
 // ======================================================================================================
 // Fetching S3 Data ~
@@ -928,23 +928,23 @@ function removeItem(itemType, id, dispatch) {
         }
     }
 }
-const clearNormalizedQueryCache = (itemType, normalizedQueryString) => {
-    return {
-        type: CLEAR_NORMALIZED_ITEM_QUERY,
-        payload: {
-            itemType,
-            normalizedQueryString
-        }
-    };
-};
-const clearItemCache = (itemType) => {
-    return {
-        type: CLEAR_ITEM_CACHE,
-        payload: {
-            itemType
-        }
-    };
-};
+// const clearNormalizedQueryCache = (itemType, normalizedQueryString) => {
+//     return {
+//         type: CLEAR_NORMALIZED_ITEM_QUERY,
+//         payload: {
+//             itemType,
+//             normalizedQueryString
+//         }
+//     };
+// };
+// const clearItemCache = (itemType) => {
+//     return {
+//         type: CLEAR_ITEM_CACHE,
+//         payload: {
+//             itemType
+//         }
+//     };
+// };
 // ======================================================================================================
 // Cache Reducer Getter Functions ~
 // ======================================================================================================

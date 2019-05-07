@@ -154,7 +154,7 @@ export function timeLeft(dateTime) {
  * @param time
  * @return {string}
  */
-function convertTime(time) {
+export function convertTime(time) {
     if (parseInt(time, 10) > 12) {
         return "0" + (parseInt(time, 10) - 12) + time.substr(2, 3) + "pm";
     }
@@ -175,7 +175,7 @@ function convertTime(time) {
  * @param date
  * @return {string}
  */
-function convertDate(date) {
+export function convertDate(date) {
     let dateString = String(date);
     let year = dateString.substr(0, 4);
     let month = dateString.substr(5, 2);

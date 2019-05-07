@@ -21,10 +21,6 @@ class EventList extends Component<Props> {
         sentRequest: false,
     };
 
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         this.componentWillReceiveProps(this.props);
     }

@@ -2,7 +2,7 @@ import {setIsLoading, setIsNotLoading} from "./infoActions";
 import QL from "../../api/GraphQL";
 import {fetchItemQuery, putItem} from "./cacheActions";
 import {err, log} from "../../../Constants";
-import {ENABLE_TYPE, DISABLE_SEARCH_BAR, ENABLE_SEARCH_BAR, RESET_QUERY, RESET_TYPE_QUERY, SET_TYPE_NEXT_TOKEN,
+import {ENABLE_TYPE, DISABLE_SEARCH_BAR, ENABLE_SEARCH_BAR, RESET_QUERY, SET_TYPE_NEXT_TOKEN,
     SET_SEARCH_QUERY, ADD_TYPE_RESULTS, DISABLE_TYPE, SET_TYPE_FILTER} from "../reducers/searchReducer";
 
 // =========================================================================================================
@@ -210,12 +210,12 @@ function setTypeNextToken(type, nextToken) {
         }
     }
 }
-function resetTypeQuery(type) {
-    return {
-        type: RESET_TYPE_QUERY,
-        payload: type
-    };
-}
+// function resetTypeQuery(type) {
+//     return {
+//         type: RESET_TYPE_QUERY,
+//         payload: type
+//     };
+// }
 export function resetQuery() {
     return {
         type: RESET_QUERY

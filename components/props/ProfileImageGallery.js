@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Grid, Icon, Button, Image, Header, Modal} from 'semantic-ui-react';
+import {Grid, Icon, Button, Image, Header, Modal, Loader, Dimmer} from 'semantic-ui-react';
 import ReactSwipe from 'react-swipe';
 import _ from "lodash";
 import {connect} from 'react-redux';
@@ -248,6 +248,8 @@ const ProfileImageGallery = (props: Props) => {
                              onClick={() => reactSwipeElement&&reactSwipeElement.next()}>
                     <Icon size='large' name="caret right" style={{marginTop: "150px"}}/>
                 </Grid.Column>
+                <Dimmer active={isLoading}/>
+                <Loader disabled={!isLoading}/>
             </Grid>
         </div>
     );

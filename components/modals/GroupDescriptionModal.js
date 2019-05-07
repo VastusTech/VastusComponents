@@ -10,7 +10,7 @@ import UserFunctions from "../../database_functions/UserFunctions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 import Logo from "../../img/vt_new.svg";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
-import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
+// import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import CreatePostProp from "../manager/CreatePost";
 
 // TODO PLEASE REFACTOR THIS IS CRINGY

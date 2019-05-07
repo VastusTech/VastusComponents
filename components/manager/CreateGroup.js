@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react'
+import React, {Component} from 'react'
 import {Grid, Button, Message, Image, Modal, Form, Container, Checkbox, Header, Card, Icon} from 'semantic-ui-react';
 import {connect} from "react-redux";
 import {setError} from "../../redux/actions/infoActions";
@@ -236,9 +236,9 @@ class CreateGroupProp extends Component {
     }
 
     setPicture = (event) => {
-        const index = this.state.pictures.length;
+        // const index = this.state.pictures.length;
         this.state.pictures.push(event.target.files[0]);
-        const path = "/" + this.props.user.id + "/temp/pictures/" + index;
+        // const path = "/" + this.props.user.id + "/temp/pictures/" + index;
         this.state.tempPictureURLs.push(URL.createObjectURL(event.target.files[0]));
         this.setState({});
     };

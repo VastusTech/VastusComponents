@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Button, Card, Modal, Divider, Icon, Grid} from 'semantic-ui-react'
+import {Button, Modal, Icon, Grid} from 'semantic-ui-react'
 import ChallengeList from "../lists/ChallengeList";
 import { connect } from "react-redux";
 import EventList from "../lists/EventList";
@@ -12,9 +12,9 @@ import {getMessageBoardName} from "../../logic/MessageHelper";
 
 // TODO Rewrite for the new design
 
-const TrainerModalInfo = {
-    fetchList: [],
-};
+// const TrainerModalInfo = {
+//     fetchList: [],
+// };
 
 type Props = {
     trainerID: string,
