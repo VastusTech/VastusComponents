@@ -52,7 +52,12 @@ class AuthAPI {
         TestHelper.ifTesting || Auth.signUp({
             username,
             password,
-            attributes: { name, email, gender: "unspecified", birthdate: "~undefined" }
+            attributes: {
+                name,
+                email,
+                gender: "unspecified",
+                birthdate: "~undefined"
+            }
         }).then(data => {
             log&&console.log("AUTH: Succeeded sign up");
             successHandler && successHandler(data);

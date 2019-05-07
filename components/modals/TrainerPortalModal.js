@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, Card, Modal, Dimmer, Loader, List, Icon, Label, Divider } from 'semantic-ui-react'
+import {Button, Card, Modal, Dimmer, Loader, List, Icon, Label } from 'semantic-ui-react'
 import { Storage } from 'aws-amplify';
 import ChallengeList from "../lists/ChallengeList";
 import {fetchUserAttributes, forceFetchUserAttributes} from "../../redux/actions/userActions";
@@ -93,7 +93,7 @@ class TrainerPortalModal extends React.PureComponent<Props> {
         }
 
         if (!this.props.info.isLoading && !this.state.sentRequest && !(user.id && user.name && user.username && user.birthday && user.profilePicture)) {
-            this.state.sentRequest = true;
+            this.setState({sentRequest: true});
             this.props.fetchUserAttributes(["name", "username", "birthday", "profileImagePath", "challengesWon", "profilePicture", "friends", "challenges", "ownedChallenges", "completedChallenges"]);
         }
         else {

@@ -39,7 +39,7 @@ class Lambda {
      */
     static create(fromID, itemType, createRequest, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
-            fromID: fromID,
+            fromID: fromID ? fromID : "unauthenticated",
             action: "CREATE",
             itemType: itemType,
             [("create" + itemType + "Request")]: createRequest,
@@ -61,7 +61,7 @@ class Lambda {
      */
     static updateSetAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
-            fromID: fromID,
+            fromID: fromID ? fromID : "unauthenticated",
             action: "UPDATESET",
             itemType: objectItemType,
             identifiers: [
@@ -89,7 +89,7 @@ class Lambda {
      */
     static updateAddToAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
-            fromID,
+            fromID: fromID ? fromID : "unauthenticated",
             action: "UPDATEADD",
             itemType: objectItemType,
             identifiers: [
@@ -117,7 +117,7 @@ class Lambda {
      */
     static updateRemoveFromAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
-            fromID,
+            fromID: fromID ? fromID : "unauthenticated",
             action: "UPDATEREMOVE",
             itemType: objectItemType,
             identifiers: [
@@ -143,7 +143,7 @@ class Lambda {
      */
     static delete(fromID, objectID, objectItemType, successHandler, failureHandler) {
         return this.invokeDatabaseLambda({
-            fromID,
+            fromID: fromID ? fromID : "unauthenticated",
             action: "DELETE",
             itemType: objectItemType,
             identifiers: [
