@@ -26,7 +26,7 @@ class TrainerFunctions extends UserFunctions {
      * @return {*} Debugging info about the Lambda operation.
      */
     static createTrainer(fromID, name, email, username, successHandler, failureHandler) {
-        return TrainerFunctions.create(fromID, name, null, null, username, email, null, null, null, successHandler, failureHandler);
+        return TrainerFunctions.create(fromID, name, null, null, email, username, null, null, null, successHandler, failureHandler);
     }
 
     /**

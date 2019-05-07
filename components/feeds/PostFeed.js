@@ -58,7 +58,7 @@ const queryPosts = (filter, nextToken, isFinished, userID, friends, fetchPostQue
             if (!data.nextToken) {
                 setIsFinished(true);
             }
-            if (data.items) {
+            if (data.items && data.items.length > 0) {
                 for (let i = 0; i < data.items.length; i++) {
                     const post = data.items[i];
                     // Filter the results based on if we are able to see it
@@ -102,11 +102,12 @@ const queryPosts = (filter, nextToken, isFinished, userID, friends, fetchPostQue
                         debugAlert("NOT SHOWING: " + JSON.stringify(post));
                     }
                 }
-                setNextToken(data.nextToken);
             }
-            else {
-                // TODO Came up with no events
-            }
+            setNextToken(data.nextToken);
+            // else {
+            //     // TODO Came up with no posts
+            //
+            // }
             setIsLoading(false);
         }, (error) => {
             err&&console.error("Querying Posts failed!");

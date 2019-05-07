@@ -4,7 +4,7 @@ import ClientCard, {ClientCardInfo} from "../cards/ClientCard";
 import { connect } from "react-redux";
 import {fetchItem} from "../../redux/actions/cacheActions";
 import Spinner from "../props/Spinner";
-import {getItemTypeFromID, switchHandleItemType, switchReturnItemType} from "../../logic/ItemType";
+import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
 import TrainerCard, {TrainerCardInfo} from "../cards/TrainerCard";
 import EventCard, {EventCardInfo} from "../cards/EventCard";
 import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
@@ -44,7 +44,7 @@ class DatabaseObjectList extends Component<Props> {
     componentWillReceiveProps(newProps) {
         // We can use json stringify to check this because it's an array of strings
         if (newProps.ids && JSON.stringify(this.state.ids) !== JSON.stringify(newProps.ids)) {
-            this.state.ids = newProps.ids;
+            this.setState({ids: newProps.ids});
             // alert("received ids = " + JSON.stringify(newProps.ids));
             this.setState({isLoading: true, ids: newProps.ids, objects: []}, () => {
                 const addObject = (object) => {
