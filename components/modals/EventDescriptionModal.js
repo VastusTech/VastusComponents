@@ -62,7 +62,7 @@ class EventDescriptionModal extends Component<Props> {
 
     componentWillReceiveProps(newProps) {
         if (newProps.eventID && !this.state.eventID) {
-            this.state.eventID = newProps.eventID;
+            this.setState({eventID: newProps.eventID})
         }
         const members = this.getEventAttribute("members");
         if (!this.props.open && newProps.open && newProps.eventID && members && members.length > 0) {

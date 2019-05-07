@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react'
-import {Grid, Button, Message, Image, Modal, Card, Icon, Form, Container, TextArea, Checkbox, Header} from 'semantic-ui-react';
+import {Grid, Button, Message, Image, Card, Icon, Form, Container, Header} from 'semantic-ui-react';
 import { Storage } from 'aws-amplify';
 import {connect} from "react-redux";
 import {setError} from "../../redux/actions/infoActions";
@@ -12,34 +12,9 @@ import {err, log} from "../../../Constants";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
 
+// TODO UHHH THIS SHOULD BE HOOKS FOR SURE
+// TODO Also documentation is clearly stolen...
 // TODO Rewrite based on new Design and refactor
-
-// Take from StackOverflow, nice snippit!
-// https://stackoverflow.com/a/17415677
-Date.prototype.toIsoString = function() {
-    var tzo = -this.getTimezoneOffset(),
-        dif = tzo >= 0 ? '+' : '-',
-        pad = function(num) {
-            var norm = Math.floor(Math.abs(num));
-            return (norm < 10 ? '0' : '') + norm;
-        };
-    return this.getFullYear() +
-        '-' + pad(this.getMonth() + 1) +
-        '-' + pad(this.getDate()) +
-        'T' + pad(this.getHours()) +
-        ':' + pad(this.getMinutes()) +
-        ':' + pad(this.getSeconds()) +
-        dif + pad(tzo / 60) +
-        ':' + pad(tzo % 60);
-};
-
-function arrayRemove(arr, value) {
-
-    return arr.filter(function(ele){
-        return ele !== value;
-    });
-
-}
 
 /*
 * Create Event Prop

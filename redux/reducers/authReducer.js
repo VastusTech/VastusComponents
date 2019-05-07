@@ -34,16 +34,6 @@ const initialState = {
 };
 
 /**
- * Deeply copies the Auth Reducer.
- *
- * @param {AuthReducer} state The current state of the Auth reducer.
- * @return {AuthReducer} The copied state of the Auth reducer.
- */
-const copyState = (state) => {
-    return { ...state };
-};
-
-/**
  * Auth Reducer:
  *
  * Used to maintain the authentication flow of the application. Keeps track of which modals are open and if they are

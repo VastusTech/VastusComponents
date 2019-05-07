@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react';
-import {Button, Input, Icon, Grid} from "semantic-ui-react";
+import {Button, Input, Icon} from "semantic-ui-react";
 import {connect} from "react-redux";
 import MessageFunctions from "../../database_functions/MessageFunctions";
 import {err, log} from "../../../Constants";

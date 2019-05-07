@@ -3,7 +3,7 @@ import S3 from "../../api/S3Storage";
 import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
 import {addHandlerAndUnsubscription} from "./ablyActions";
 import {err, log} from "../../../Constants";
-import {getBoardChannel, CLEAR_ALL_BOARDS, SET_BOARD_READ, CLEAR_BOARD, ADD_QUERY, ADD_MESSAGE} from "../reducers/messageReducer";
+import {getBoardChannel, SET_BOARD_READ, CLEAR_BOARD, ADD_QUERY, ADD_MESSAGE} from "../reducers/messageReducer";
 const notFoundPicture = require('../../img/not_found.png');
 const defaultProfilePicture = require("../../img/roundProfile.png");
 

@@ -2,11 +2,11 @@ import {
     fetchItem, fetchItemQuery,
     fetchItems,
     forceFetchItem, forceFetchItemQuery,
-    forceFetchItems, putItem,
+    forceFetchItems,
     subscribeFetchItem
 } from "../actions/cacheActions";
-import type Client from "../../types/Client";
-import type Trainer from "../../types/Trainer";
+// import type Client from "../../types/Client";
+// import type Trainer from "../../types/Trainer";
 
 /**
  * Fetches a Client from the database, making sure that it hasn't already fetched the attributes in the list before.

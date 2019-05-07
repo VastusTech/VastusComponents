@@ -5,10 +5,9 @@
 // TODO This will be for a post that is sharing an existing Post with your friends!
 
 import React, { Component } from 'react';
-import {Card, Modal, Button, Label, Icon, Divider, Image, Message, Dimmer, Loader} from 'semantic-ui-react';
+import {Card, Button, Icon, Image, Message, Dimmer, Loader} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import {fetchClient, fetchTrainer, forceFetchPost, fetchPost} from "../../../redux/convenience/cacheItemTypeActions";
-import { convertFromISO } from "../../../logic/TimeHelper";
 import { forceFetchUserAttributes } from "../../../redux/actions/userActions";
 import PostFunctions from "../../../database_functions/PostFunctions";
 import {Player} from "video-react";
@@ -64,7 +63,7 @@ class PostDetailCard extends Component<Props> {
 
     componentWillReceiveProps(newProps) {
         if (newProps.postID && !this.state.postID) {
-            this.state.postID = newProps.postID;
+            this.setState({postID: newProps.postID});
         }
         // const by = this.getPostAttribute("by");
         // if (!this.props.open && newProps.open && newProps.postID && by) {
