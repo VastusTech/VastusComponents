@@ -5,6 +5,7 @@ import {setError} from "../../redux/actions/infoActions";
 import {fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
 import GroupFunctions from "../../database_functions/GroupFunctions";
 import {removeFromArray} from "../../logic/ArrayHelper";
+import {appUserItemType} from "../../../Constants";
 
 // TODO Refactor
 
@@ -35,7 +36,7 @@ class CreateGroupProp extends Component {
         hiitPressed: false,
         strengthPressed: false,
         restriction: null,
-        access: 'private',
+        access: appUserItemType === "Client" ? 'private' : 'public',
         pictures: [],
         videos: [],
         tempPictureURLs: [],
