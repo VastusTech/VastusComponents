@@ -1,10 +1,14 @@
 // Helpful and optimized functions for dealing with ISO time and time intervals.
 
+// =====================================================================================================================
+// ==                                           ISO TIME CONVERSION                                                   ==
+// =====================================================================================================================
+
 /**
- * TODO
+ * Returns a human-readable string from an ISO string.
  *
- * @param dateTime
- * @return {string}
+ * @param {string} dateTime The ISO string to translate.
+ * @return {string} The readable date from the ISO time.
  */
 export function convertFromISO(dateTime) {
     let dateTimeString = String(dateTime);
@@ -19,7 +23,7 @@ export function convertFromISO(dateTime) {
 }
 
 /**
- * TODO
+ *
  *
  * @param dateTime
  * @return {string}
@@ -83,11 +87,177 @@ export function convertToISOString(date) {
 /**
  * TODO
  *
+ * @param fromDate
+ * @param toDate
+ * @return {string}
+ */
+export function convertToISOIntervalString(fromDate, toDate) {
+    return convertToISOString(fromDate) + "_" + convertToISOString(toDate);
+}
+
+/**
+ * TODO
+ *
  * @return {string}
  */
 export function getNowISO() {
     return convertToISOString(new Date());
 }
+// =====================================================================================================================
+// ==                                             DATE OBJECT FUNCTIONS                                               ==
+// =====================================================================================================================
+
+/**
+ * Copies a Date object.
+ *
+ * @param {Date} date The date object to copy.
+ * @returns {Date} The copied date object.
+ */
+export const copyDate = (date) => {
+    return new Date(date.getTime());
+};
+
+/**
+ * @return
+ */
+export const nowDate = () => {
+    return new Date();
+};
+
+/**
+ * Gets a date object hours after the given date.
+ *
+ * @param {Date} date The original date to add hours to.
+ * @param {number} hours The number of hours to add to the date.
+ * @returns {Date} The later date object.
+ */
+export const hoursAfter = (date, hours) => {
+    const d = copyDate(date);
+    d.setHours(d.getHours() + hours, d.getMinutes(), d.getSeconds(), d.getMilliseconds());
+    return d;
+};
+
+// =====================================================================================================================
+// ==                                  FULL INTERVAL BETWEEN AND PASSED FUNCTIONS                                     ==
+// =====================================================================================================================
+
+/**
+ * TODO
+ *
+ * @param from
+ * @param to
+ * @return
+ */
+export const hourStartsBetween = (from, to) => {
+    const fromCopy = copyDate(from);
+    const toCopy = copyDate(to);
+    fromCopy.setMinutes(0, 0, 0);
+    toCopy.setMinutes(0, 0, 0);
+    return Math.round((toCopy.getTime() - fromCopy.getTime()) / (1000*60*60));
+};
+
+/**
+ * TODO
+ *
+ * @param since
+ * @return
+ */
+export const hourStartsPassed = (since) => {
+    return hourStartsBetween(since, nowDate());
+};
+
+/**
+ * Returns the number of midnights that have passed between the two dates.
+ *
+ * @param {Date} from The from {@link Date} object.
+ * @param {Date} to The from {@link Date} object.
+ * @return {number} The number of midnights that have passed between the two dates.
+ */
+export const midnightsBetween = (from, to) => {
+    const fromCopy = copyDate(from);
+    const toCopy = copyDate(to);
+    fromCopy.setHours(0, 0, 0, 0);
+    toCopy.setHours(0, 0, 0, 0);
+    return Math.round((toCopy.getTime() - fromCopy.getTime()) / (1000*60*60*24));
+};
+
+/**
+ * Calculates the number of midnights that have passed between today and the day of the date that is passed in.
+ *
+ * @param {Date} since The date object to reference from today.
+ * @return {number} The number of midnights between now and the given date.
+ */
+export const midnightsPassed = (since) => {
+    return midnightsBetween(since, nowDate());
+};
+
+/**
+ * TODO
+ *
+ * @param {Date} from
+ * @param {Date} to
+ * @return
+ */
+export const mondaysBetween = (from, to) => {
+    // Calculated mathematically using some logical stuff. getDay is indexed by Sunday, so we convert to index by Monday
+    return (midnightsBetween(from, to) + ((from.getDay() + 6) % 7) - ((to.getDay() + 6) % 7)) / 7;
+};
+
+/**
+ * TODO
+ *
+ * @param since
+ * @return
+ */
+export const mondaysPassed = (since) => {
+    return mondaysBetween(since, nowDate());
+};
+
+/**
+ * TODO
+ *
+ * @param {Date} from
+ * @param {Date} to
+ * @return
+ */
+export const startsOfMonthBetween = (from, to) => {
+    return ((to.getFullYear() * 12) + to.getMonth() + 1) - ((from.getFullYear() * 12) + from.getMonth() + 1);
+};
+
+/**
+ * TODO
+ *
+ * @param since
+ * @return
+ */
+export const startsOfMonthPassed = (since) => {
+    return startsOfMonthBetween(since, nowDate());
+};
+
+/**
+ * TODO
+ *
+ * @param {Date} from
+ * @param {Date} to
+ * @return
+ */
+export const startsOfYearBetween = (from, to) => {
+    return to.getFullYear() - from.getFullYear();
+};
+
+/**
+ * TODO
+ *
+ * @param since
+ * @return
+ */
+export const startsOfYearPassed = (since) => {
+    return startsOfYearBetween(since, nowDate());
+};
+
+// =====================================================================================================================
+// ==                                          MISCELLANEOUS FUNCTIONS                                                ==
+// =====================================================================================================================
 
 /**
  * TODO
@@ -107,17 +277,6 @@ export function calculateAge(birthday) {
         return Math.round(difference_ms / one_year);
     }
     return null;
-}
-
-/**
- * TODO
- *
- * @param fromDate
- * @param toDate
- * @return {string}
- */
-export function convertToISOIntervalString(fromDate, toDate) {
-    return convertToISOString(fromDate) + "_" + convertToISOString(toDate);
 }
 
 /**
@@ -184,34 +343,6 @@ export function convertDate(date) {
     return month + "/" + day + "/" + year;
 }
 
-/**
- * Returns the number of midnights that have passed between the two dates.
- *
- * @param from The from {@link Date} object.
- * @param to The from {@link Date} object.
- * @return {number} The number of midnights that have passed between the two dates.
- */
-export const midnightsBetween = (from, to) => {
-    from.setHours(0, 0, 0, 0);
-    to.setHours(0, 0, 0, 0);
-    let one_day=1000*60*60*24;                       // Convert both dates to milliseconds
-    let date1_ms = to.getTime();
-    let date2_ms = from.getTime();                   // Calculate the difference in milliseconds
-    // console.log("1: " + date1_ms + ", 2: " + date2_ms);
-    let difference_ms = date1_ms - date2_ms;        // Convert back to days and return
-    // console.log("difference = " + difference_ms);
-    return Math.round(difference_ms/one_day);
-};
-
-/**
- * Calculates the number of midnights that have passed between today and the day of the date that is passed in.
- *
- * @param dateTime The {@link Date} object to reference from today.
- * @return {number} The number of midnights between now and the given date.
- */
-export const midnightsPassed = (dateTime) => {
-    return midnightsBetween(dateTime, new Date())
-};
 
 /**
  * Gets the now date-time string, rounded up to the nearest five minutes interval.
@@ -245,3 +376,4 @@ export const getTodayDateString = () => {
 export const getNowTimeString = () => {
     return getTodayDateTimeString().substr(11, 5);
 };
+
