@@ -1,13 +1,10 @@
-import * as AWS from "aws-sdk";
 import {err, ifDebug, log} from "../../Constants";
 import TestHelper from "../testing/TestHelper";
 import {debugAlert} from "../logic/DebuggingHelper";
-
-/// Configure AWS SDK for JavaScript
-AWS.config.update({region: 'us-east-1'});
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: 'us-east-1:d9a16b98-4393-4ff6-9e4b-5e738fef1222'});
+import {getAWS} from "../../AppConfig";
 
 // Prepare to call Lambda function
+let AWS = getAWS();
 let lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
 
 /**
@@ -38,11 +35,12 @@ class Lambda {
      * @return {*} Debugging info about the Lambda operation.
      */
     static create(fromID, itemType, createRequest, successHandler, failureHandler) {
-        return this.invokeDatabaseLambda({
+        return Lambda.invokeDatabaseLambda({
             fromID: fromID ? fromID : "unauthenticated",
             action: "CREATE",
             itemType: itemType,
-            [("create" + itemType + "Request")]: createRequest,
+            environmentType: process.env.NODE_ENV,
+            [Lambda.getCreateRequestName(itemType)]: createRequest,
         }, successHandler, failureHandler);
     }
 
@@ -60,7 +58,7 @@ class Lambda {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateSetAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
-        return this.invokeDatabaseLambda({
+        return Lambda.invokeDatabaseLambda({
             fromID: fromID ? fromID : "unauthenticated",
             action: "UPDATESET",
             itemType: objectItemType,
@@ -70,7 +68,8 @@ class Lambda {
             attributeName: attributeName,
             attributeValues: [
                 attributeValue
-            ]
+            ],
+            environmentType: process.env.NODE_ENV
         }, successHandler, failureHandler);
     }
 
@@ -88,7 +87,7 @@ class Lambda {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateAddToAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
-        return this.invokeDatabaseLambda({
+        return Lambda.invokeDatabaseLambda({
             fromID: fromID ? fromID : "unauthenticated",
             action: "UPDATEADD",
             itemType: objectItemType,
@@ -99,6 +98,7 @@ class Lambda {
             attributeValues: [
                 attributeValue
             ],
+            environmentType: process.env.NODE_ENV
         }, successHandler, failureHandler);
     }
 
@@ -116,7 +116,7 @@ class Lambda {
      * @return {*} Debugging info about the Lambda operation.
      */
     static updateRemoveFromAttribute(fromID, objectID, objectItemType, attributeName, attributeValue, successHandler, failureHandler) {
-        return this.invokeDatabaseLambda({
+        return Lambda.invokeDatabaseLambda({
             fromID: fromID ? fromID : "unauthenticated",
             action: "UPDATEREMOVE",
             itemType: objectItemType,
@@ -127,6 +127,7 @@ class Lambda {
             attributeValues: [
                 attributeValue
             ],
+            environmentType: process.env.NODE_ENV
         }, successHandler, failureHandler);
     }
 
@@ -142,13 +143,14 @@ class Lambda {
      * @return {*} Debugging info about the Lambda operation.
      */
     static delete(fromID, objectID, objectItemType, successHandler, failureHandler) {
-        return this.invokeDatabaseLambda({
+        return Lambda.invokeDatabaseLambda({
             fromID: fromID ? fromID : "unauthenticated",
             action: "DELETE",
             itemType: objectItemType,
             identifiers: [
                 objectID
             ],
+            environmentType: process.env.NODE_ENV
         }, successHandler, failureHandler)
     }
 
@@ -161,7 +163,7 @@ class Lambda {
      * @return {*} Debugging info about the Lambda operation.
      */
     static ping(successHandler, failureHandler) {
-        return this.invokeDatabaseLambda({
+        return Lambda.invokeDatabaseLambda({
             action: "PING"
         }, successHandler, failureHandler);
     }
@@ -169,7 +171,7 @@ class Lambda {
     // Specific Lambda Function Calls
 
     static invokeDatabaseLambda(payload, successHandler, failureHandler) {
-        return this.invokeLambda("VastusDatabaseLambdaFunction", payload, successHandler, failureHandler);
+        return Lambda.invokeLambda("VastusDatabaseLambdaFunction", payload, successHandler, failureHandler);
     }
     // static invokePaymentLambda(payload, successHandler, failureHandler) {
     //     return this.invokeLambda("VastusPaymentLambdaFunction", payload, successHandler, failureHandler);
