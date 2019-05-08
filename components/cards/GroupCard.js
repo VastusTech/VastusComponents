@@ -5,9 +5,7 @@ import GroupDescriptionModal from '../modals/GroupDescriptionModal';
 import Logo from "../../img/vt_new.svg";
 import Spinner from "../props/Spinner";
 import {getAttributeFromObject, getObjectAttribute} from "../../logic/CacheRetrievalHelper";
-import {getItemTypeFromID} from "../../logic/ItemType";
 import {
-    fetchTrainer,
     fetchClient,
 } from "../../redux/convenience/cacheItemTypeActions";
 import type Group from "../../types/Group";

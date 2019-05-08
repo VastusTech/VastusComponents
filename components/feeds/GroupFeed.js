@@ -1,6 +1,6 @@
 import React, {useState, useEffect, Fragment} from 'react'
 import _ from 'lodash'
-import {Visibility, Header, Grid} from 'semantic-ui-react'
+import {Visibility} from 'semantic-ui-react'
 import { connect } from 'react-redux';
 import { fetchGroupQuery } from "../../redux/convenience/cacheItemTypeActions";
 import {log, err} from "../../../Constants";
@@ -21,6 +21,7 @@ type Props = {
  * @param {{}} filter The GraphQL filter to dictate how the query filters the objects.
  * @param {string|null} nextToken The next token from the previous query or null if it's the first query.
  * @param {boolean} isFinished If the querying has finished and there are no more objects to fetch.
+ * @param {string} userID The ID of the User viewing the Group Feed.
  * @param {[string]} friends The friends list of the User viewing this Group Feed.
  * @param {function([string], {}, number, string, function({}), function(error))} fetchGroupQuery The redux function to
  * fetch a Group query.
@@ -29,7 +30,7 @@ type Props = {
  * @param {function(string)} setNextToken Sets the next token state.
  * @param {function([{}])} setGroups Sets the groups state.
  */
-const queryGroups = (filter, nextToken, isFinished, friends, fetchGroupQuery, setIsLoading, setIsFinished, setNextToken,
+const queryGroups = (filter, nextToken, isFinished, userID,friends, fetchGroupQuery, setIsLoading, setIsFinished, setNextToken,
                     setGroups) => {
     if (!isFinished) {
         setIsLoading(true);
@@ -42,9 +43,8 @@ const queryGroups = (filter, nextToken, isFinished, friends, fetchGroupQuery, se
                 for (let i = 0; i < data.items.length; i++) {
                     const group = data.items[i];
                     // Filter the results based on if we are able to see it
-                    //TODO: Switch this back to public when the styling is done!!!!!!!!!!!!!!!
-                    if (group.access === "private" || (friends && arraysIntersect(friends, group.owners))) {
-                        // TODO Fetch any information about the groups!!!
+                    if (group.access === "public" || (group.owner && group.owners.includes(userID)) || (friends && arraysIntersect(friends, group.owners))) {
+                        // TODO Fetch any extra information about the groups (like owners and whatnot)!!!
                         setGroups(p => [...p, group]);
                     }
                     else {
@@ -82,7 +82,7 @@ const GroupFeed = (props: Props) => {
     useEffect(() => {
         if (props.user.id) {
             setGroups([]);
-            queryGroups(props.filter, nextToken, isFinished, props.user.friends, props.fetchGroupQuery,
+            queryGroups(props.filter, nextToken, isFinished, props.user.id, props.user.friends, props.fetchGroupQuery,
                 setIsLoading, setIsFinished, setNextToken, setGroups);
         }
     }, [props.user.id]);
@@ -96,7 +96,7 @@ const GroupFeed = (props: Props) => {
         log&&console.log(calculations.bottomVisible);
         if (calculations.bottomVisible && !isLoading) {
             log&&console.log("Next Token: " + nextToken);
-            queryGroups(props.filter, nextToken, isFinished, props.user.friends, props.fetchGroupQuery,
+            queryGroups(props.filter, nextToken, isFinished, props.user.id, props.user.friends, props.fetchGroupQuery,
                 setIsLoading, setIsFinished, setNextToken, setGroups);
         }
     };

@@ -4,7 +4,6 @@ import _ from 'lodash';
 import {switchReturnItemType} from "../logic/ItemType";
 import TestHelper from "../testing/TestHelper";
 import {debugAlert} from "../logic/DebuggingHelper";
-import type User from "../types/User";
 
 
 /**

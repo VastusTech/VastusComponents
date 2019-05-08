@@ -6,6 +6,7 @@ export const ADD_QUERY = 'ADD_QUERY';
 export const SET_BOARD_READ = 'SET_BOARD_READ';
 export const CLEAR_BOARD = 'CLEAR_BOARD';
 export const CLEAR_ALL_BOARDS = 'CLEAR_ALL_BOARDS';
+export const UNSUBSCRIBE_FROM_BOARD = 'UNSUBSCRIBE_FROM_BOARD';
 
 /**
  * Gets the Ably Channel name for the given board.
@@ -91,6 +92,10 @@ export default (state: MessageReducer = initialState, action) => {
         case CLEAR_ALL_BOARDS:
             state = copyState(state);
             clearAllBoards(state, action.asyncDispatch);
+            break;
+        case UNSUBSCRIBE_FROM_BOARD:
+            state = copyState(state);
+            unsubscribeFromBoard(state, action.payload.board, action.asyncDispatch);
             break;
         default:
             break;
@@ -252,4 +257,16 @@ function clearAllBoards(state, dispatch) {
     while (state.boardLRUHandler.length > 0) {
         removeLastBoard(state, dispatch);
     }
+}
+
+/**
+ * Unsubscribes from a board without clearing it, and handles the unsubscription handlers.
+ *
+ * @param {MessageReducer} state The current state of the message reducer.
+ * @param {string} board The name of the board to unsubscribe from.
+ * @param {function({})} dispatch The asynchronous dispatch function for redux.
+ */
+function unsubscribeFromBoard(state, board, dispatch) {
+    state.boardIfSubscribed[board] = false;
+    dispatch(removeChannelSubscription(getBoardChannel(board)));
 }

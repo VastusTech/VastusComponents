@@ -1,6 +1,6 @@
 import React, {useState, useEffect, Fragment} from 'react';
 import {connect} from 'react-redux';
-import {Grid, Checkbox, Header, Modal} from "semantic-ui-react";
+import {Grid, Checkbox, Modal} from "semantic-ui-react";
 import {disableType, enableType} from "../../redux/actions/searchActions";
 
 /**

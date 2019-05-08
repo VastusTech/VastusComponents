@@ -1,4 +1,11 @@
-import {midnightsPassed, parseISOString} from "./TimeHelper";
+import {
+    hourStartsPassed,
+    midnightsPassed,
+    mondaysPassed,
+    parseISOString,
+    startsOfMonthPassed,
+    startsOfYearPassed
+} from "./TimeHelper";
 import {err} from "../../Constants";
 import type Streak from "../types/Streak";
 
@@ -10,44 +17,53 @@ import type Streak from "../types/Streak";
  * the status of the User's current Streak for the object.
  */
 export const streakInfo = (streak: Streak) => {
-    const spans = numberOfUpdateSpansPassed(streak);
-    if (streak.currentN === "0") {
-        return "not_started";
-    }
-    else if (spans < parseInt(streak.updateInterval)) {
-        if (streak.currentN >= streak.streakN) {
-            return "completed";
-        }
-        else {
-            return "still_completing_attempt";
-        }
-    }
-    else if (spans < (2 * parseInt(streak.updateInterval))) {
-        if (streak.currentN >= streak.streakN) {
-            return "not_completed";
-        }
-        else {
+    if (streak) {
+        const spans = numberOfUpdateSpansPassed(streak.lastAttemptStarted, streak.updateSpanType);
+        if (streak.currentN === "0" || streak.currentN === 0) {
+            return "not_started";
+        } else if (spans < parseInt(streak.updateInterval)) {
+            if (streak.currentN >= streak.streakN) {
+                return "completed";
+            } else {
+                return "still_completing";
+            }
+        } else if (spans < (2 * parseInt(streak.updateInterval))) {
+            if (streak.currentN >= streak.streakN) {
+                return "not_completed";
+            } else {
+                return "broken";
+            }
+        } else {
             return "broken";
         }
     }
-    else {
-        return "broken";
-    }
+    return null;
 };
 
 /**
  * Calculates the number of update spans that have passed since the "last updated" field in a Streak.
  *
- * @param {string} lastUpdated The ISO string for when the Streak was last updated.
+ * @param {string} lastAttemptStarted The ISO string for when the Streak attempt was last started.
  * @param {string} updateSpanType At what interval the Streak updates.
  * @return {number} The number of update spans that have passed thus far.
  */
-export const numberOfUpdateSpansPassed = (lastUpdated, updateSpanType) => {
-    const lastUpdatedDate = parseISOString(lastUpdated);
-    if (updateSpanType === "daily") {
-        return midnightsPassed(lastUpdatedDate);
+export const numberOfUpdateSpansPassed = (lastAttemptStarted, updateSpanType) => {
+    const lastAttemptStartedDate = parseISOString(lastAttemptStarted);
+    switch (updateSpanType) {
+        case "hourly":
+            return hourStartsPassed(lastAttemptStartedDate);
+        case "daily":
+            return midnightsPassed(lastAttemptStartedDate);
+        case "weekly":
+            return mondaysPassed(lastAttemptStartedDate);
+        case "monthly":
+            return startsOfMonthPassed(lastAttemptStartedDate);
+        case "yearly":
+            return startsOfYearPassed(lastAttemptStartedDate);
+        default:
+            err&&console.error("Unrecognized update span type = " + updateSpanType);
+            return -1;
     }
-    return -1;
 };
 
 /**

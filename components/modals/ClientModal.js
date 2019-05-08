@@ -1,9 +1,7 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import ReactSwipe from 'react-swipe';
-import {Modal, Button, List, Dimmer, Loader, Message, Icon, Image, Label, Grid} from 'semantic-ui-react';
+import React, { useState, useEffect } from 'react';
+import {Modal, Button, Dimmer, Message, Icon, Grid} from 'semantic-ui-react';
 import { connect } from "react-redux";
 import InviteToChallengeModalProp from "../manager/InviteToChallengeModal";
-import _ from "lodash";
 import {fetchClient} from "../../redux/convenience/cacheItemTypeActions";
 import {forceFetchUserAttributes} from "../../redux/actions/userActions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
@@ -34,7 +32,7 @@ type Props = {
  */
 const ClientModal = (props: Props) => {
     const [clientID, setClientID] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isAddFriendLoading, setIsAddFriendLoading] = useState(false);
     const [isRemoveFriendLoading, setIsRemoveFriendLoading] = useState(false);
@@ -71,6 +69,7 @@ const ClientModal = (props: Props) => {
             setIsAddFriendLoading(true);
             InviteFunctions.createFriendRequest(userID, userID, friendID, (data) => {
                 setIsAddFriendLoading(false);
+                setSentFriendRequest(true);
                 props.forceFetchUserAttributes(["friends"]);
             }, (error) => {
                 setIsAddFriendLoading(false);
@@ -97,62 +96,6 @@ const ClientModal = (props: Props) => {
         }
     };
 
-    const imageGallery = () => {
-        if (getAttribute("profileImages")) {
-            return _.times(getAttribute("profileImages").length, i => (
-                <div>
-                    <Image src={getAttribute("profileImages")[i]} align='center' style={{height: '300px',
-                        width: '300px', display: 'block',
-                        margin: 'auto'}}/>
-                </div>
-            ));
-        }
-        else {
-            return( <div align="center">
-                No Images in Gallery
-            </div> );
-        }
-    };
-
-    const profilePicture = () => {
-        if (getAttribute("profileImage")) {
-            return(
-                <div className="u-avatar u-avatar--small u-margin-bottom--1" style={{backgroundImage: `url(${getAttribute("profileImage")})`}}/>
-            );
-        }
-        else {
-            return(
-                <Dimmer inverted>
-                    <Spinner />
-                </Dimmer>
-            );
-        }
-    };
-
-    const swipeGallery = () => {
-        let reactSwipeEl;
-        return (
-            <div>
-                <Grid centered>
-                    <Grid.Column width={1} style={{marginRight: "10px"}} onClick={() => reactSwipeEl.prev()}>
-                        <Icon size='large' name="caret left" style={{marginTop: "150px"}}/>
-                    </Grid.Column>
-                    <Grid.Column width={12}>
-                        <ReactSwipe
-                            className="carousel"
-                            swipeOptions={{ continuous: false }}
-                            ref={el => (reactSwipeEl = el)}
-                        >
-                            {imageGallery()}
-                        </ReactSwipe>
-                    </Grid.Column>
-                    <Grid.Column width={1} style={{marginRight: "10px", marginLeft: "-10px"}} onClick={() => reactSwipeEl.next()}>
-                        <Icon size='large' name="caret right" style={{marginTop: "150px"}}/>
-                    </Grid.Column>
-                </Grid>
-            </div>
-        );
-    };
     const getCorrectFriendActionButton = () => {
         const friendID = getAttribute("id");
         if (friendID) {
@@ -171,7 +114,7 @@ const ClientModal = (props: Props) => {
                 }
             }
             const friendRequests = getAttribute("friendRequests");
-            if (friendRequests && friendRequests.length && friendRequests.includes(props.user.id) || sentFriendRequest) {
+            if (friendRequests && friendRequests.length && (friendRequests.includes(props.user.id) || sentFriendRequest)) {
                 // Then you already sent a friend request
                 return (
                     <Button inverted disabled fluid

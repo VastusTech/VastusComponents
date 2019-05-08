@@ -5,7 +5,7 @@ import { Message, Divider } from "semantic-ui-react";
 import {fetchClient, fetchTrainer} from "../../redux/convenience/cacheItemTypeActions";
 import {
     queryNextMessagesFromBoard,
-    discardBoard
+    discardBoard, unsubscribeFromBoard
 } from "../../redux/actions/messageActions";
 import {connect} from "react-redux";
 import ScrollView from "react-inverted-scrollview";
@@ -26,14 +26,13 @@ type Props = {
  * @param {number} fetchLimit The number of messages to fetch at most.
  * @param {boolean} canFetch If the board can continue fetching.
  * @param {function(boolean)} setCanFetch Sets the can fetch state.
- * @param {function(boolean)} setIsLoading Sets the loading state.
  * @param {function(string, number, function([{}]), function(error))} queryNextMessagesFromBoard Message function to
  * retrieve the next batch of Messages from the database.
  */
-const queryMessages = (board, fetchLimit, canFetch, setCanFetch, setIsLoading, queryNextMessagesFromBoard) => {
+const queryMessages = (board, fetchLimit, canFetch, setCanFetch, queryNextMessagesFromBoard) => {
     if (canFetch) {
         // alert("Querying next messages from the board!");
-        setIsLoading(true);
+        // setIsLoading(true);
         queryNextMessagesFromBoard(board, fetchLimit, (items) => {
             // TODO Fetch all the rest of the information for the User when I switch it back to that ~ Leo
             if (!items) {
@@ -42,7 +41,7 @@ const queryMessages = (board, fetchLimit, canFetch, setCanFetch, setIsLoading, q
             else {
                 // That means we're done getting messages
             }
-            setIsLoading(false);
+            // setIsLoading(false);
         });
     }
 };
@@ -62,10 +61,10 @@ const scrollToBottom = (scrollViewRef) => {
  *
  * @param {{}} scrollViewRef The reference to the scroll view object, allowing it to perform functions.
  */
-const scrollToTop = (scrollViewRef) => {
-    if (!scrollViewRef) return;
-    scrollViewRef.scrollToTop();
-};
+// const scrollToTop = (scrollViewRef) => {
+//     if (!scrollViewRef) return;
+//     scrollViewRef.scrollToTop();
+// };
 
 /**
  * Handles the scroll for the message board and loads the next set of messages if applicable.
@@ -74,14 +73,12 @@ const scrollToTop = (scrollViewRef) => {
  * @param {string} board The name of the board to handle the scroll for.
  * @param {number} fetchLimit The number of messages to fetch at most.
  * @param {boolean} canFetch If the board can continue fetching.
- * @param {function(boolean)} setCanScroll Sets the can scroll state.
  * @param {function(boolean)} setCanFetch Sets the can fetch state.
- * @param {function(boolean)} setIsLoading Sets the loading state.
  * @param {function(string, number, function([{}]), function(error))} queryNextMessagesFromBoard Message function to
  * retrieve the next batch of Messages from the database.
  */
-const handleScroll = (ref, board, fetchLimit, canFetch, setCanScroll, setCanFetch, setIsLoading, queryNextMessagesFromBoard) => {
-    setCanScroll(true);
+const handleScroll = (ref, board, fetchLimit, canFetch, setCanFetch, queryNextMessagesFromBoard) => {
+    // setCanScroll(true);
     const scrollTop = ref.scrollTop;
     const scrollBottom = ref.scrollBottom;
     console.log('scrollTop', scrollTop);
@@ -89,7 +86,7 @@ const handleScroll = (ref, board, fetchLimit, canFetch, setCanScroll, setCanFetc
     if (scrollTop < 1) {
         // Then we fetch new stuff
         setCanFetch(true);
-        queryMessages(board, fetchLimit, canFetch, setCanFetch, setIsLoading, queryNextMessagesFromBoard);
+        queryMessages(board, fetchLimit, canFetch, setCanFetch, queryNextMessagesFromBoard);
     }
 };
 
@@ -124,9 +121,9 @@ export const getOtherReadStatus = (otherID, firstMessage) => {
  */
 const MessageBoard = (props: Props) => {
     const [otherID, setOtherID] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
     const [canFetch, setCanFetch] = useState(true);
-    const [canScroll, setCanScroll] = useState(false);
+    // const [canScroll, setCanScroll] = useState(false);
     const [scrollViewRef, setScrollViewRef] = useState(null);
 
     useEffect(() => {
@@ -135,7 +132,7 @@ const MessageBoard = (props: Props) => {
             if (props.board && (!props.message.boards[props.board]
                 || props.message.boards[props.board].length < messageMinimum)) {
                 // alert("Not enough messages!");
-                queryMessages(props.board, fetchLimit, canFetch, setCanFetch, setIsLoading,
+                queryMessages(props.board, fetchLimit, canFetch, setCanFetch,
                     props.queryNextMessagesFromBoard);
             }
             const ids = getIDsFromMessageBoard(props.board);
@@ -147,9 +144,10 @@ const MessageBoard = (props: Props) => {
                 }
             }
             return () => {
+                alert("Unsubscribing from " + props.board);
+                props.unsubscribeFromBoard(props.board);
                 // Unsubscribe to the Ably messages
                 // Also potentially clear the board?
-                // alert(props.board);
                 // props.discardBoard(props.board);
             }
         }
@@ -163,8 +161,8 @@ const MessageBoard = (props: Props) => {
                 width='100%'
                 height='300px'
                 ref={ref => setScrollViewRef(ref)}
-                onScroll={ref => handleScroll(ref, props.board, fetchLimit, canFetch, setCanScroll, setCanFetch,
-                    setIsLoading, props.queryNextMessagesFromBoard)}
+                onScroll={ref => handleScroll(ref, props.board, fetchLimit, canFetch, setCanFetch,
+                    props.queryNextMessagesFromBoard)}
             >
                 <Spinner loading={(props.message.boardIfFirsts[props.board] || props.message.boardNextTokens[props.board])}/>
                 <Messages board={props.board}
@@ -199,6 +197,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         discardBoard: (board) => {
             dispatch(discardBoard(board));
+        },
+        unsubscribeFromBoard: (board) => {
+            dispatch(unsubscribeFromBoard(board));
         }
     };
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Modal, Button, List, Message, Dimmer} from 'semantic-ui-react';
+import {Modal, Button, List, Dimmer} from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 import { connect } from 'react-redux';
 import { fetchClient, forceFetchPost, fetchPost } from "../../redux/convenience/cacheItemTypeActions";

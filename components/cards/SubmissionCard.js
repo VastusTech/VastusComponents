@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {Card, Dimmer, Loader, Grid, Icon, Image, Divider, Button, Feed} from 'semantic-ui-react';
+import React from 'react';
+import {Card} from 'semantic-ui-react';
 import {getAttributeFromObject, getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import {convertFromISO} from "../../logic/TimeHelper";
 import {Player} from "video-react";

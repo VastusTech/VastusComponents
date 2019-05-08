@@ -1,10 +1,11 @@
-import React, {Component, Fragment} from 'react'
+import React, {Component} from 'react'
 import {Grid, Button, Message, Image, Modal, Form, Container, Checkbox, Header, Card, Icon} from 'semantic-ui-react';
 import {connect} from "react-redux";
 import {setError} from "../../redux/actions/infoActions";
 import {fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
 import GroupFunctions from "../../database_functions/GroupFunctions";
 import {removeFromArray} from "../../logic/ArrayHelper";
+import {appUserItemType} from "../../../Constants";
 
 // TODO Refactor
 
@@ -35,7 +36,7 @@ class CreateGroupProp extends Component {
         hiitPressed: false,
         strengthPressed: false,
         restriction: null,
-        access: 'private',
+        access: appUserItemType === "Client" ? 'private' : 'public',
         pictures: [],
         videos: [],
         tempPictureURLs: [],
@@ -236,9 +237,9 @@ class CreateGroupProp extends Component {
     }
 
     setPicture = (event) => {
-        const index = this.state.pictures.length;
+        // const index = this.state.pictures.length;
         this.state.pictures.push(event.target.files[0]);
-        const path = "/" + this.props.user.id + "/temp/pictures/" + index;
+        // const path = "/" + this.props.user.id + "/temp/pictures/" + index;
         this.state.tempPictureURLs.push(URL.createObjectURL(event.target.files[0]));
         this.setState({});
     };

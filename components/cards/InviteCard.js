@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Image, Button, Card, Feed, Divider, Dimmer} from 'semantic-ui-react'
+import {Button, Card, Feed, Divider, Dimmer} from 'semantic-ui-react'
 import ClientModal from "../modals/ClientModal";
 import TrainerModal from "../modals/TrainerModal";
 import EventDescriptionModal from "../modals/EventDescriptionModal";

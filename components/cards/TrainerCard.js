@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Card, Dimmer, Loader, Grid, Icon, Image, Divider, Button, Feed} from 'semantic-ui-react';
+import {Card, Dimmer, Icon, Button} from 'semantic-ui-react';
 import TrainerPortalModal from '../modals/TrainerModal';
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
 import Spinner from "../props/Spinner";

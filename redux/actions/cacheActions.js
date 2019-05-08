@@ -7,14 +7,14 @@ import notFoundPicture from "../../img/not_found.png";
 import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
 import {
     getObjectChannelName,
-    PUT_ITEM, PUT_ITEM_QUERY, CLEAR_ITEM_CACHE, CLEAR_NORMALIZED_ITEM_QUERY, REMOVE_ITEM_ATTRIBUTE_INDEX,
+    PUT_ITEM, PUT_ITEM_QUERY, REMOVE_ITEM_ATTRIBUTE_INDEX,
     REMOVE_FROM_ITEM_ATTRIBUTES, ADD_TO_ITEM_ATTRIBUTES, SET_ITEM_ATTRIBUTE_INDEX, REMOVE_ITEM
 } from "../reducers/cacheReducer";
 import {err, log} from "../../../Constants";
 import {addMessageFromNotification} from "./messageActions";
 import {updateUserFromCache} from "./userActions";
 import {addUniqueToArray, setEquals, subtractArray} from "../../logic/ArrayHelper";
-import type DatabaseObject from "../../types/DatabaseObject";
+// import type DatabaseObject from "../../types/DatabaseObject";
 
 // ======================================================================================================
 // Fetching S3 Data ~
@@ -156,11 +156,18 @@ function fetch(id, itemType, variableList, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         const cacheName = getCacheName(itemType);
-        const currentObject = getStore().cache[cacheName][id];
-        if (currentObject) {
-            const objectKeyList = Object.keys(currentObject);
-            variableList = variableList.filter((v) => { return !objectKeyList.includes(v) });
-            // log&&console.log("Final filtered list is = " + JSON.stringify(variableList));
+        if (getStore().cache[cacheName].hasOwnProperty(id)) {
+            const currentObject = getStore().cache[cacheName][id];
+            if (currentObject) {
+                const objectKeyList = Object.keys(currentObject);
+                variableList = variableList.filter((v) => { return !objectKeyList.includes(v) });
+                // log&&console.log("Final filtered list is = " + JSON.stringify(variableList));
+            }
+            else {
+                // Then the current object was already attempted to be fetched but did not get anything.
+                dataHandler && dataHandler(null);
+                return;
+            }
         }
         overwriteFetch(id, itemType, variableList, dataHandler, failureHandler, dispatch, getStore);
     };
@@ -310,10 +317,9 @@ function overwriteFetch(id, itemType, variableList, dataHandler, failureHandler,
                     }
                 });
             } else {
-                // TODO If it came up with nothing, put null into the cache so that we can do a === null check as well
                 // Then the fetch came up with nothing!
-                // const error = Error("Couldn't find an object in the database with ID = " + id);
-                log&&console.log("Couldn't find ID = " + id + " for item type = " + itemType);
+                dispatch(putItem(id, itemType, null));
+                err&&console.err("Couldn't find ID = " + id + " for item type = " + itemType);
                 dispatch(setIsNotLoading());
                 if (dataHandler) {
                     log&&console.log("D H " + dataHandler.toString());
@@ -928,23 +934,23 @@ function removeItem(itemType, id, dispatch) {
         }
     }
 }
-const clearNormalizedQueryCache = (itemType, normalizedQueryString) => {
-    return {
-        type: CLEAR_NORMALIZED_ITEM_QUERY,
-        payload: {
-            itemType,
-            normalizedQueryString
-        }
-    };
-};
-const clearItemCache = (itemType) => {
-    return {
-        type: CLEAR_ITEM_CACHE,
-        payload: {
-            itemType
-        }
-    };
-};
+// const clearNormalizedQueryCache = (itemType, normalizedQueryString) => {
+//     return {
+//         type: CLEAR_NORMALIZED_ITEM_QUERY,
+//         payload: {
+//             itemType,
+//             normalizedQueryString
+//         }
+//     };
+// };
+// const clearItemCache = (itemType) => {
+//     return {
+//         type: CLEAR_ITEM_CACHE,
+//         payload: {
+//             itemType
+//         }
+//     };
+// };
 // ======================================================================================================
 // Cache Reducer Getter Functions ~
 // ======================================================================================================

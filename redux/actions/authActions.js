@@ -3,9 +3,8 @@ import {setAppIsNotLoading, setError, setIsLoading, setIsNotLoading} from "./inf
 import {setUser, forceSetUser, subscribeFetchUserAttributes} from "./userActions";
 import {removeAllHandlers} from "./ablyActions";
 import QL from "../../api/GraphQL";
-import ClientFunctions from "../../database_functions/ClientFunctions";
 import {appUserItemType, err, log} from "../../../Constants";
-import TrainerFunctions from "../../database_functions/TrainerFunctions";
+import UserFunctions from "../../database_functions/UserFunctions";
 
 // =========================================================================================================
 // ~ High-Level Auth Actions
@@ -32,25 +31,35 @@ export function updateAuth() {
             if (user.username) {
                 // Regular sign in
                 QL.getItemByUsername(appUserItemType, user.username, ["id", "username"], (user) => {
-                    log&&console.log("REDUX: Successfully updated the authentication credentials");
-                    dispatch(setUser(user));
-                    // dispatch(addHandlerToNotifications((message) => {
-                    //     console.log("Received ABLY notification!!!!!\n" + JSON.stringify(message));
-                    // }));
-                    dispatch(subscribeFetchUserAttributes(["name", "username", "birthday", "profileImagePath",
-                        "profileImagePaths", "challengesWon", "friends", "scheduledEvents", "ownedEvents", "completedEvents",
-                        "challenges", "ownedChallenges", "completedChallenges", "groups", "ownedGroups", "receivedInvites",
-                        "invitedChallenges", "messageBoards", "streaks"], () => {
-                        dispatch(authLogIn());
+                    if (user) {
+                        log && console.log("REDUX: Successfully updated the authentication credentials");
+                        dispatch(setUser(user));
+                        // dispatch(addHandlerToNotifications((message) => {
+                        //     console.log("Received ABLY notification!!!!!\n" + JSON.stringify(message));
+                        // }));
+                        dispatch(subscribeFetchUserAttributes(["name", "username", "birthday", "profileImagePath",
+                            "profileImagePaths", "challengesWon", "friends", "scheduledEvents", "ownedEvents", "completedEvents",
+                            "challenges", "ownedChallenges", "completedChallenges", "groups", "ownedGroups", "receivedInvites",
+                            "invitedChallenges", "messageBoards", "streaks"], () => {
+                            dispatch(authLogIn());
+                            dispatch(setIsNotLoading());
+                            dispatch(setAppIsNotLoading());
+                        }));
+                    }
+                    else {
+                        console.log("REDUX: Could not fetch the client");
+                        dispatch(setError(Error("User not found in the database")));
                         dispatch(setIsNotLoading());
                         dispatch(setAppIsNotLoading());
-                    }));
+                        Auth.signOut();
+                    }
                 }, (error) => {
                     console.error("REDUX: Could not fetch the user, not logged in");
                     err&&console.error(error);
                     // dispatch(setError(error));
                     dispatch(setIsNotLoading());
                     dispatch(setAppIsNotLoading());
+                    Auth.signOut();
                 });
             }
             else if (user.sub) {
@@ -76,12 +85,14 @@ export function updateAuth() {
                         dispatch(setError(Error("Could not find the federated identity user")));
                         dispatch(setIsNotLoading());
                         dispatch(setAppIsNotLoading());
+                        Auth.signOut();
                     }
                 }, (error) => {
                     console.error("REDUX: Could not fetch the federated identity user");
                     dispatch(setError(error));
                     dispatch(setIsNotLoading());
                     dispatch(setAppIsNotLoading());
+                    Auth.signOut();
                 });
             }
         }, (error) => {
@@ -106,30 +117,33 @@ export function logIn(username, password) {
         // Auth.signIn(username, password).then(() => {
         Auth.signIn(username, password, () => {
             QL.getItemByUsername(appUserItemType, username, ["id", "username"], (user) => {
-                console.log("REDUX: Successfully logged in!");
-                if (getStore().user.id !== user.id) {
-                    dispatch(forceSetUser(user));
+                if (user) {
+                    console.log("REDUX: Successfully logged in!");
+                    if (getStore().user.id !== user.id) {
+                        dispatch(forceSetUser(user));
+                    } else {
+                        dispatch(setUser(user));
+                    }
+                    dispatch(subscribeFetchUserAttributes(["name", "username", "birthday", "profileImagePath",
+                        "profileImagePaths", "challengesWon", "friends", "scheduledEvents", "ownedEvents", "completedEvents",
+                        "challenges", "ownedChallenges", "completedChallenges", "groups", "ownedGroups", "receivedInvites",
+                        "invitedChallenges", "messageBoards", "streaks"], () => {
+                        dispatch(authLogIn());
+                        dispatch(setIsNotLoading());
+                        dispatch(setAppIsNotLoading());
+                    }));
                 }
                 else {
-                    dispatch(setUser(user));
-                }
-                dispatch(subscribeFetchUserAttributes(["name", "username", "birthday", "profileImagePath",
-                    "profileImagePaths", "challengesWon", "friends", "scheduledEvents", "ownedEvents", "completedEvents",
-                    "challenges", "ownedChallenges", "completedChallenges", "groups", "ownedGroups", "receivedInvites",
-                    "invitedChallenges", "messageBoards", "streaks"], () => {
-                    dispatch(authLogIn());
+                    console.log("REDUX: Could not fetch the client");
+                    dispatch(setError(Error("User not found in the database")));
                     dispatch(setIsNotLoading());
-                    dispatch(setAppIsNotLoading());
-                }));
-                // dispatch(addHandlerToNotifications((message) => {
-                //     console.log("Received ABLY notification!!!!!\n" + JSON.stringify(message));
-                // }));
+                }
             }, (error) => {
                 console.log("REDUX: Could not fetch the client");
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
             });
-        }, (error) => {
+        }, (error: {code: string}) => {
             // console.log(JSON.stringify(error));
             // console.log(error.code);
             if (error.code === "UserNotConfirmedException") {
@@ -165,7 +179,7 @@ export function logOut() {
         dispatch(setIsLoading());
         // const userID = getStore().user.id;
         // Auth.signOut({global: true}).then((data) => {
-        Auth.signOut((data) => {
+        Auth.signOut(() => {
             log&&console.log("REDUX: Successfully logged out!");
             dispatch(authLogOut());
             dispatch(removeAllHandlers());
@@ -215,17 +229,7 @@ export function googleSignIn(googleUser) {
                     log&&console.log("User hasn't signed up yet! Generating a new account!");
                     // Generate a google username using their name without any spaces
                     generateGoogleUsername(name.replace(/\s+/g, ''), (username) => {
-                        let createFunction;
-                        if (appUserItemType === "Client") {
-                            createFunction = ClientFunctions.createFederatedClient;
-                        }
-                        else if (appUserItemType === "Trainer") {
-                            createFunction = TrainerFunctions.createFederatedTrainer;
-                        }
-                        else {
-                            throw new Error("Cannot generate correct app user without valid app user item type");
-                        }
-                        createFunction("admin", name, email, username, sub, (data) => {
+                        UserFunctions.createFederatedUser(null, appUserItemType, name, email, username, sub, (data) => {
                             // Then this user has already signed up
                             const id = data.data;
                             user = {
@@ -251,12 +255,14 @@ export function googleSignIn(googleUser) {
                             console.error(error);
                             dispatch(setError(error));
                             dispatch(setIsNotLoading());
+                            Auth.signOut();
                         });
                     }, (error) => {
                         console.error("REDUX: Could not generate the client username!");
                         console.error(error);
                         dispatch(setError(error));
                         dispatch(setIsNotLoading());
+                        Auth.signOut();
                     });
                 }
             }, (error) => {
@@ -264,6 +270,7 @@ export function googleSignIn(googleUser) {
                 console.error(error);
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
+                Auth.signOut();
             });
         }, (error) => {
             console.error("Error while federation sign in!");
@@ -320,38 +327,18 @@ function generateGoogleUsername(name, usernameHandler, failureHandler, depth=0) 
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function signUp(username, password, name, email, enterpriseID) {
-    return (dispatch, getStore) => {
+    return (dispatch) => {
         dispatch(setIsLoading());
         // TODO Check the enterprise ID and then use it in the Creation!
-        let createFunction;
-        if (appUserItemType === "Client") {
-            createFunction = ClientFunctions.createClient;
-        }
-        else if (appUserItemType === "Trainer") {
-            createFunction = TrainerFunctions.createTrainer;
-        }
-        else {
-            throw new Error("Cannot generate correct app user without valid app user item type");
-        }
-        createFunction("admin", name, email, username, (userID) => {
-            // Auth.signUp(params).then((data) => {
-            Auth.signUp(username, password, name, email, (data) => {
+        UserFunctions.createUser(null, appUserItemType, name, email, username, (data) => {
+            Auth.signUp(username, password, name, email, () => {
                 dispatch(authSignUp());
                 dispatch(setIsNotLoading());
             }, (error) => {
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
-                let deleteFunction;
-                if (appUserItemType === "Client") {
-                    deleteFunction = ClientFunctions.delete;
-                }
-                else if (appUserItemType === "Trainer") {
-                    deleteFunction = TrainerFunctions.delete;
-                }
-                else {
-                    throw new Error("Cannot generate correct app user without valid app user item type");
-                }
-                deleteFunction("admin", userID);
+                // Delete the User after operation fails...
+                UserFunctions.deleteUser(data.data, appUserItemType, data.data);
             });
         }, (error) => {
             console.error("REDUX: Creating new client failed...");
@@ -369,10 +356,10 @@ export function signUp(username, password, name, email, enterpriseID) {
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function confirmSignUp(username, confirmationCode) {
-    return (dispatch, getStore) => {
+    return (dispatch) => {
         dispatch(setIsLoading());
         // Auth.confirmSignUp(username, confirmationCode).then((authUser) => {
-        Auth.confirmSignUp(username, confirmationCode, (authUser) => {
+        Auth.confirmSignUp(username, confirmationCode, () => {
             dispatch(closeSignUpModal());
             dispatch(authConfirmSignUp());
             dispatch(setIsNotLoading());
@@ -390,7 +377,7 @@ export function confirmSignUp(username, confirmationCode) {
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function forgotPassword(username) {
-    return (dispatch, getStore) => {
+    return (dispatch) => {
         dispatch(setIsLoading());
         // Auth.forgotPassword(username).then(() => {
         Auth.forgotPassword(username, () => {
@@ -412,7 +399,7 @@ export function forgotPassword(username) {
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function confirmForgotPassword(username, confirmationCode, newPassword) {
-    return (dispatch, getStore) => {
+    return (dispatch) => {
         dispatch(setIsLoading());
         // Auth.forgotPasswordSubmit(username, confirmationCode, newPassword).then(() => {
         Auth.confirmForgotPassword(username, confirmationCode, newPassword, () => {

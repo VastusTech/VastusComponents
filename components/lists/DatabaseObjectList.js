@@ -14,7 +14,7 @@ import {shuffleArray} from "../../logic/ArrayHelper";
 // TODO Test the new "visibility" fetch system!
 // TODO USING VISIBILITY WITH A MODAL DOESN'T WORK?
 
-const numFetch = 10000000;
+const numFetch = 2;
 
 type Props = {
     ids: [string],
@@ -98,12 +98,22 @@ export const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, so
                 PostCard.fetchVariableList,
                 null, null, null, null, null,
                 "Get variable list from item type not implemented!");
-            fetchItems(ids, itemType, variableList, hiddenIndex, numFetch, (items) => {
-                for (let i = 0; i < items.length; i++) {
-                    addObject(items[i], randomized, sortFunction, setVisibleObjects, setIsLoading);
-                }
+            // alert(ids.length + " vs " + hiddenIndex);
+            if (ids.length > hiddenIndex) {
+                fetchItems(ids, itemType, variableList, hiddenIndex, numFetch, (items) => {
+                    for (let i = 0; i < items.length; i++) {
+                        addObject(items[i], randomized, sortFunction, setVisibleObjects, setIsLoading);
+                    }
+                    setTypeHiddenIDIndex(p => ({
+                        ...p,
+                        [itemType]: p[itemType] + items.length
+                    }));
+                    setIsLoading(false);
+                });
+            }
+            else {
                 setIsLoading(false);
-            });
+            }
         }
     }
 };
@@ -139,51 +149,57 @@ export const addObject = (object, randomized, sortFunction, setVisibleObjects, s
 const DatabaseObjectList = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [ids, setIDs] = useState(null);
-    // const [typeIDs, setTypeIDs] = useState({});
-    // const [typeHiddenIDIndex, setTypeHiddenIDIndex] = useState({});
+    const [typeIDs, setTypeIDs] = useState({});
+    const [typeHiddenIDIndex, setTypeHiddenIDIndex] = useState({});
     const [visibleObjects, setVisibleObjects] = useState([]);
     // const [visibleComponents, setVisibleComponents] = useState({});
-    const [hiddenIDIndex, setHiddenIDIndex] = useState(0);
+    // const [hiddenIDIndex, setHiddenIDIndex] = useState(0);
 
     // Component will receive new props
     useEffect(() => {
         if (props.ids && JSON.stringify(props.ids) !== JSON.stringify(ids)) {
-            const ids = [...props.ids];
+            setIsLoading(true);
+            const idsTemp = [...props.ids];
             // TODO Randomizing doesn't work
             if (props.randomized === true) {
-                shuffleArray(ids)
+                shuffleArray(idsTemp)
             }
-            setIDs(ids);
-            setHiddenIDIndex(0);
+            setIDs(idsTemp);
+            // setHiddenIDIndex(0);
             setVisibleObjects([]);
-            const typeIDs = {};
-            const typeHiddenIndex = {};
-            for (let i = 0; i < ids.length; i++) {
-                const id = ids[i];
+            const typeIDsTemp = {};
+            const typeHiddenIDIndexTemp = {};
+            for (let i = 0; i < idsTemp.length; i++) {
+                const id = idsTemp[i];
                 const itemType = getItemTypeFromID(id);
                 if (!props.acceptedItemTypes || props.acceptedItemTypes.includes(itemType)) {
-                    if (typeIDs[itemType]) {
-                        typeIDs[itemType].push(id);
+                    if (typeIDsTemp[itemType]) {
+                        typeIDsTemp[itemType].push(id);
                     }
                     else {
-                        typeIDs[itemType] = [id];
-                        typeHiddenIndex[itemType] = 0;
+                        typeIDsTemp[itemType] = [id];
+                        typeHiddenIDIndexTemp[itemType] = 0;
                     }
                 }
             }
-            batchFetchMoreObjects(typeIDs, typeHiddenIndex, props.randomized === true, props.sortFunction,
-                setVisibleObjects, setIsLoading, props.fetchItems);
+            setTypeIDs(typeIDsTemp);
+            setTypeHiddenIDIndex(typeHiddenIDIndexTemp);
+            batchFetchMoreObjects(typeIDsTemp, typeHiddenIDIndexTemp, props.randomized === true, props.sortFunction,
+                setVisibleObjects, setTypeHiddenIDIndex, setIsLoading, props.fetchItems);
         }
     }, [props.ids]);
 
-    // const handleVisibilityUpdate = (e, {calculations}) => {
-    //     // alert("hey");
-    //     // alert(JSON.stringify(calculations));
-    //     console.log(calculations);
-    //     if (calculations.bottomVisible) {
-    //         fetchMoreObjects();
-    //     }
-    // };
+    const handleVisibilityUpdate = (e, {calculations}) => {
+        // alert("hey");
+        // alert(JSON.stringify(calculations));
+        console.log(calculations);
+        if (calculations.bottomVisible) {
+            // alert("Bottom visible");
+            // alert(JSON.stringify(typeHiddenIDIndex));
+            batchFetchMoreObjects(typeIDs, typeHiddenIDIndex, props.randomized === true, props.sortFunction,
+                setVisibleObjects, setTypeHiddenIDIndex, setIsLoading, props.fetchItems);
+        }
+    };
 
     if (isLoading) {
         return(
@@ -193,9 +209,25 @@ const DatabaseObjectList = (props: Props) => {
     if (ids && ids.length > 0) {
         return(
             <div>
-                <List relaxed verticalAlign="middle">
-                    {objectComponents(visibleObjects)}
-                </List>
+                <Visibility onUpdate={_.debounce(handleVisibilityUpdate, 250)}>
+                    <List relaxed verticalAlign="middle">
+                        {objectComponents(visibleObjects)}
+                        <Spinner loading={
+                            (() => {
+                                for (const itemType in typeIDs) {
+                                    if (typeIDs.hasOwnProperty(itemType)) {
+                                        if (typeIDs[itemType].length !== typeHiddenIDIndex[itemType]) {
+                                            alert(JSON.stringify(typeIDs) + " and " + JSON.stringify(typeHiddenIDIndex));
+                                            return true
+                                        }
+                                    }
+                                }
+                                alert("false");
+                                return false;
+                            })()
+                        }/>
+                    </List>
+                </Visibility>
             </div>
         );
     }

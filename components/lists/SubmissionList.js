@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { List, Message, Visibility } from 'semantic-ui-react';
+import { List, Message } from 'semantic-ui-react';
 import { connect } from "react-redux";
 import {fetchSubmission} from "../../redux/convenience/cacheItemTypeActions";
 import Spinner from "../props/Spinner";

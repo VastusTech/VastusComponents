@@ -52,7 +52,12 @@ class AuthAPI {
         TestHelper.ifTesting || Auth.signUp({
             username,
             password,
-            attributes: { name, email, gender: "unspecified", birthdate: "~undefined" }
+            attributes: {
+                name,
+                email,
+                gender: "unspecified",
+                birthdate: "~undefined"
+            }
         }).then(data => {
             log&&console.log("AUTH: Succeeded sign up");
             successHandler && successHandler(data);
@@ -237,10 +242,10 @@ class AuthAPI {
      */
     static signOut(successHandler, failureHandler) {
         TestHelper.ifTesting || Auth.signOut({global: true}).then(data => {
-            log&&console.log("AUTH: Succeeded sign in");
+            log&&console.log("AUTH: Succeeded sign out");
             successHandler && successHandler(data);
         }).catch(error => {
-            err&&console.error("!!!AUTH: Failed sign in!!!");
+            err&&console.error("!!!AUTH: Failed sign out!!!");
             err&&console.error(error);
             failureHandler && failureHandler(error);
         });

@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
-import {Grid, Button, Message, Image, Modal, Form, Container, Checkbox, Header, Dropdown, Label} from 'semantic-ui-react';
+import {Grid, Button, Message, Image, Modal, Form, Container, Checkbox, Header, Dropdown} from 'semantic-ui-react';
 import {connect} from "react-redux";
 import {setError} from "../../redux/actions/infoActions";
 import {fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
 import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
 import {getNowTimeString} from "../../logic/TimeHelper";
-import {streakUpdateInfo} from "../../logic/StreakHelper";
 
 /**
  * Handles the actual creation of the Challenge given the inputted info from the User.
@@ -39,8 +38,8 @@ const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, acces
     // TODO Check to see if valid inputs!
     if (capacity && title && goal && tags) {
         if (Number.isInteger(+capacity)) {
-            ChallengeFunctions.createChallengeOptional(userID, userID, endDate, capacity, title, goal, "n/a",
-                "3", [], tags, access, restriction, "N/A", challengeType, streakUpdateSpanType, streakUpdateInterval,
+            ChallengeFunctions.createChallengeOptional(userID, userID, endDate, capacity, title, goal, null,
+                null, null, tags, access, restriction, null, challengeType, streakUpdateSpanType, streakUpdateInterval,
                 streakN, (data) => {
                     console.log("Successfully created a challenge!");
                     setIsLoading(false);
@@ -191,8 +190,7 @@ const CreateChallengeProp = (props) => {
     const [endTime, setEndTime] = useState(getNowTimeString());
     const [capacity, setCapacity] = useState(25);
     const [goal, setGoal] = useState("");
-    const [prize, setPrize] = useState("");
-    const [description, setDescription] = useState("");
+    const [prize] = useState("");
     const [restriction, setRestriction] = useState(null);
     const [access, setAccess] = useState("public");
     const [showSuccessLabel, setShowSuccessLabel] = useState(false);
