@@ -16,7 +16,6 @@ import InviteFunctions from "../../database_functions/InviteFunctions";
 import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
 import CreateSubmissionModal from "../manager/CreateSubmissionModal";
 import {getItemTypeFromID} from "../../logic/ItemType";
-import DatabaseObjectList from "../lists/DatabaseObjectList";
 import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import {daysLeft, parseISOString} from "../../logic/TimeHelper";
 import TrainerModal from "./TrainerModal";
@@ -25,6 +24,7 @@ import {streakInfo} from "../../logic/StreakHelper";
 import {arrayIntersection} from "../../logic/ArrayHelper";
 import {err} from "../../../Constants";
 import SubmissionList from "../lists/SubmissionList";
+import UserList from "../lists/UserList";
 
 export const ChallengeDescriptionModalInfo = {
     // TODO Contains everything that is referenced here
@@ -604,9 +604,9 @@ const ChallengeDescriptionModal = (props: Props) => {
                             <Button floated='right' primary className="u-button--flat u-padding-left--1">
                                 <Icon name='users' /> Members</Button>} closeIcon>
                             <Modal.Content>
-                                <DatabaseObjectList ids={getChallengeAttribute("members")}
-                                                    noObjectsMessage={"No members yet!"}
-                                                    acceptedItemTypes={["Client", "Trainer"]}
+                                <UserList userIDs={getChallengeAttribute("members")}
+                                          noUsersMessage={"No members yet!"}
+                                          randomized
                                 />
                             </Modal.Content>
                         </Modal>

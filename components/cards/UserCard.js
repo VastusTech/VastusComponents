@@ -6,7 +6,7 @@ import StyledProfileImage from "../props/StyledProfileImage";
 import type User from "../../types/User";
 
 export const UserCardInfo = {
-    fetchList: ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "friendRequests"],
+    fetchList: ["id", "item_type", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "friendRequests"],
     ifSubscribe: false
 };
 
@@ -66,9 +66,11 @@ const UserCard = (props: Props) => {
                                     <StyledProfileImage profileImage={getUserAttribute("profileImage")} type="Small"/>
                                 </div>
                             </Grid.Column>
-                            <Grid.Column textAlign = 'center'>
-                                {getUserAttribute("name")}
+                            <Grid.Column textAlign = 'center' width={2}>
+                                {getUserAttribute("name") + "   "}
                             </Grid.Column>
+                            {getUserAttribute("item_type") === "Trainer" &&
+                            (<Grid.Column textAlign="center" width={1}><Header as="h5" color="purple">Trainer</Header></Grid.Column>)}
                         </Grid.Row>
                     </Grid>
                 )}
