@@ -1,4 +1,11 @@
-import {midnightsPassed, parseISOString} from "./TimeHelper";
+import {
+    hourStartsPassed,
+    midnightsPassed,
+    mondaysPassed,
+    parseISOString,
+    startsOfMonthPassed,
+    startsOfYearPassed
+} from "./TimeHelper";
 import {err} from "../../Constants";
 import type Streak from "../types/Streak";
 
@@ -36,16 +43,27 @@ export const streakInfo = (streak: Streak) => {
 /**
  * Calculates the number of update spans that have passed since the "last updated" field in a Streak.
  *
- * @param {string} lastUpdated The ISO string for when the Streak was last updated.
+ * @param {string} lastAttemptStarted The ISO string for when the Streak attempt was last started.
  * @param {string} updateSpanType At what interval the Streak updates.
  * @return {number} The number of update spans that have passed thus far.
  */
-export const numberOfUpdateSpansPassed = (lastUpdated, updateSpanType) => {
-    const lastUpdatedDate = parseISOString(lastUpdated);
-    if (updateSpanType === "daily") {
-        return midnightsPassed(lastUpdatedDate);
+export const numberOfUpdateSpansPassed = (lastAttemptStarted, updateSpanType) => {
+    const lastAttemptStartedDate = parseISOString(lastAttemptStarted);
+    switch (updateSpanType) {
+        case "hourly":
+            return hourStartsPassed(lastAttemptStartedDate);
+        case "daily":
+            return midnightsPassed(lastAttemptStartedDate);
+        case "weekly":
+            return mondaysPassed(lastAttemptStartedDate);
+        case "monthly":
+            return startsOfMonthPassed(lastAttemptStartedDate);
+        case "yearly":
+            return startsOfYearPassed(lastAttemptStartedDate);
+        default:
+            err&&console.error("Unrecognized update span type = " + updateSpanType);
+            return -1;
     }
-    return -1;
 };
 
 /**

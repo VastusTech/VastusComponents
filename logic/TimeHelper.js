@@ -137,6 +137,19 @@ export const hoursAfter = (date, hours) => {
     return d;
 };
 
+/**
+ * Gets a Date object hours before the given date.
+ *
+ * @param {Date} date The original date to subtract hours from.
+ * @param {number} hours The number of hours to subtract from the date.
+ * @returns {Date} The earlier date object.
+ */
+export const hoursBefore = (date, hours) => {
+    const d = copyDate(date);
+    d.setHours(d.getHours() - hours, d.getMinutes(), d.getSeconds(), d.getMilliseconds());
+    return d;
+};
+
 // =====================================================================================================================
 // ==                                  FULL INTERVAL BETWEEN AND PASSED FUNCTIONS                                     ==
 // =====================================================================================================================
@@ -258,6 +271,8 @@ export const startsOfYearPassed = (since) => {
 // =====================================================================================================================
 // ==                                          MISCELLANEOUS FUNCTIONS                                                ==
 // =====================================================================================================================
+
+// TODO SOMEBODY PLEASE GIVE ME THE STRENGTH TO KNOW WHERE TO PUT THESE FUNCTIONS OR SMITE THEM FROM THE APP...
 
 /**
  * TODO

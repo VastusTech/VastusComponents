@@ -1,9 +1,11 @@
 import { expect } from 'chai';
 import { streakInfo, streakUpdateInfo, numberOfUpdateSpansPassed, ifStreakExpired } from "../StreakHelper";
 import type Streak from "../../types/Streak";
+import {hoursAfter, nowDate} from "../TimeHelper";
 
 let streak1: Streak = {
-    id: "ST0001", item_type: "Streak", N: 0, currentN: 0, streakN: 1, bestN: 0, lastAttemptStarted:
+    id: "ST0001", item_type: "Streak", N: 0, currentN: 0, streakN: 1, bestN: 0,
+    updateSpanType: "daily", lastAttemptStarted: hoursAfter(nowDate(), 24)
 };
 let streak2: Streak = {
 
