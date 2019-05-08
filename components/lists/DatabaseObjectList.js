@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import _ from "lodash";
 import { List, Message, Visibility } from 'semantic-ui-react';
 import ClientCard, {ClientCardInfo} from "../cards/ClientCard";
 import { connect } from "react-redux";
@@ -78,11 +79,12 @@ export const getObjectComponent = (key, object) => (
  * @param {boolean} randomized If the list should be randomized.
  * @param {function(*, *)} sortFunction Function to sort the list by, if applicable.
  * @param {function([{}])} setVisibleObjects Sets the visible objects state.
+ * @param {function({})} setTypeHiddenIDIndex Sets the hidden id indexes for each type.
  * @param {function(boolean)} setIsLoading Sets the loading state.
  * @param {function(string, string, [string], number, number, function([{}]), function(error))} fetchItems Cache redux
  * function to perform a batch fetch operation.
  */
-export const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, sortFunction, setVisibleObjects, setIsLoading, fetchItems) => {
+export const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, sortFunction, setVisibleObjects, setTypeHiddenIDIndex, setIsLoading, fetchItems) => {
     setIsLoading(true);
     for (const itemType in typeIDs) {
         if (typeIDs.hasOwnProperty(itemType)) {
