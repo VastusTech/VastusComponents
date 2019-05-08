@@ -3,7 +3,7 @@ import {Card} from 'semantic-ui-react';
 import {getAttributeFromObject, getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import {convertFromISO} from "../../logic/TimeHelper";
 import {Player} from "video-react";
-import connect from "react-redux/es/connect/connect";
+import { connect } from "react-redux";
 import type Submission from "../../types/Submission";
 
 export const SubmissionCardInfo = {

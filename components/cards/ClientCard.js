@@ -1,10 +1,11 @@
 import React, { useState, Fragment } from 'react';
 import type Client from "../../types/Client";
-import { Card, Grid, Header } from 'semantic-ui-react';
+import {Card, Dimmer, Grid, Header} from 'semantic-ui-react';
 import ClientModal from '../modals/ClientModal';
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
 import StyledProfileImage from "../props/StyledProfileImage";
 import ProfileImage from "../props/ProfileImage";
+import Spinner from "../props/Spinner";
 
 export const ClientCardInfo = {
     fetchList: ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "friendRequests"],
@@ -33,9 +34,9 @@ const ClientCard = (props: Props) => {
 
     if (!props.client) {
         return(
-            <Card fluid raised>
-                <h1>Loading...</h1>
-            </Card>
+            <Dimmer>
+                <Spinner/>
+            </Dimmer>
         );
     }
     return(
