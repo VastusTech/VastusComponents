@@ -25,7 +25,7 @@ export const streakInfo = (streak: Streak) => {
             if (streak.currentN >= streak.streakN) {
                 return "completed";
             } else {
-                return "still_completing_attempt";
+                return "still_completing";
             }
         } else if (spans < (2 * parseInt(streak.updateInterval))) {
             if (streak.currentN >= streak.streakN) {
