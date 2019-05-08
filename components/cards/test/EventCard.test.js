@@ -19,7 +19,7 @@ it('renders without crashing', () => {
     expect(component).toMatchSnapshot();
 });
 
-describe("Post Card", () => {
+describe("Event Card", () => {
     // States ~
     describe("States", () => {
         // Here you check the state of the component, like the shown text and sub-components for the component.

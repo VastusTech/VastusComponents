@@ -100,7 +100,7 @@ const handleScroll = (ref, board, fetchLimit, canFetch, setCanScroll, setCanFetc
  * @param {{from: string, lastSeenFor: [string]}} firstMessage The first message in the board, indicating read status.
  * @return {*} React JSX to display. Returns "seen" if the other user has read the message that you sent. Otherwise "".
  */
-const getOtherReadStatus = (otherID, firstMessage) => {
+export const getOtherReadStatus = (otherID, firstMessage) => {
     if (otherID && firstMessage) {
         if (firstMessage.from !== otherID) {
             if (!ifMessageUnreadFor(otherID, firstMessage)) {

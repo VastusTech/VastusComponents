@@ -3,9 +3,12 @@
 exports[`renders without crashing 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Connect(DatabaseObjectList)
-    ids={Array []}
-    noObjectsMessage="no objects"
+  Symbol(enzyme.__unrendered__): <Connect(InviteCard)
+    invite={
+      Object {
+        "id": "IV0001",
+      }
+    }
     store={
       Object {
         "clearActions": [Function],
@@ -31,11 +34,11 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "function",
     "props": Object {
-      "fetchItem": [Function],
-      "fetchItems": [Function],
-      "ids": Array [],
-      "noObjectsMessage": "no objects",
-      "randomized": false,
+      "cache": undefined,
+      "dispatch": [Function],
+      "invite": Object {
+        "id": "IV0001",
+      },
       "store": Object {
         "clearActions": [Function],
         "dispatch": [Function],
@@ -63,6 +66,7 @@ ShallowWrapper {
         },
         "unsubscribe": [Function],
       },
+      "user": undefined,
     },
     "ref": null,
     "rendered": null,
@@ -74,11 +78,11 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "function",
       "props": Object {
-        "fetchItem": [Function],
-        "fetchItems": [Function],
-        "ids": Array [],
-        "noObjectsMessage": "no objects",
-        "randomized": false,
+        "cache": undefined,
+        "dispatch": [Function],
+        "invite": Object {
+          "id": "IV0001",
+        },
         "store": Object {
           "clearActions": [Function],
           "dispatch": [Function],
@@ -106,6 +110,7 @@ ShallowWrapper {
           },
           "unsubscribe": [Function],
         },
+        "user": undefined,
       },
       "ref": null,
       "rendered": null,

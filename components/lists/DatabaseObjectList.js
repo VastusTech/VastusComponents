@@ -30,7 +30,7 @@ type Props = {
  * @param {[{id: string, item_type: string}]} objects The database objects to display in the list.
  * @return {[*]} The list of React JSX components to display in the list.
  */
-const objectComponents = (objects) => {
+export const objectComponents = (objects) => {
     const components = [];
     for (const key in objects) {
         if (objects.hasOwnProperty(key)) {
@@ -51,7 +51,7 @@ const objectComponents = (objects) => {
  * @param {{id: string, item_type: string}} object The object to display as the component.
  * @return {*} The React JSX to display the object component.
  */
-const getObjectComponent = (key, object) => (
+export const getObjectComponent = (key, object) => (
     switchReturnItemType(object.item_type,
         <ClientCard rank={key} client={object}/>,
         <TrainerCard rank={key} trainer={object}/>,
@@ -82,7 +82,7 @@ const getObjectComponent = (key, object) => (
  * @param {function(string, string, [string], number, number, function([{}]), function(error))} fetchItems Cache redux
  * function to perform a batch fetch operation.
  */
-const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, sortFunction, setVisibleObjects, setIsLoading, fetchItems) => {
+export const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, sortFunction, setVisibleObjects, setIsLoading, fetchItems) => {
     setIsLoading(true);
     for (const itemType in typeIDs) {
         if (typeIDs.hasOwnProperty(itemType)) {
@@ -117,7 +117,7 @@ const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, sortFunct
  * @param {function([{}])} setVisibleObjects Sets the visible objects state.
  * @param {function(boolean)} setIsLoading Sets the loading state.
  */
-const addObject = (object, randomized, sortFunction, setVisibleObjects, setIsLoading) => {
+export const addObject = (object, randomized, sortFunction, setVisibleObjects, setIsLoading) => {
     if (object && object.id) {
         setVisibleObjects(p => {
             const a = [...p, object];
