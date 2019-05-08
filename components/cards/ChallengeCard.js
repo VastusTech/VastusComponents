@@ -81,7 +81,7 @@ const getDaysLeft = (endTime) => {
     if (daysLeft(parseISOString(endTime)) <= 0) {
         return "Challenge Completed"
     }
-    else if (daysLeft(parseISOString(endTime)) == 1) {
+    else if (daysLeft(parseISOString(endTime)) === 1) {
         return daysLeft(parseISOString(endTime)) + " Day Left";
     }
     else {
