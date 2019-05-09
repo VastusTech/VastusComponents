@@ -319,7 +319,7 @@ function overwriteFetch(id, itemType, variableList, dataHandler, failureHandler,
             } else {
                 // Then the fetch came up with nothing!
                 dispatch(putItem(id, itemType, null));
-                err&&console.err("Couldn't find ID = " + id + " for item type = " + itemType);
+                err&&console.error("Couldn't find ID = " + id + " for item type = " + itemType);
                 dispatch(setIsNotLoading());
                 if (dataHandler) {
                     log&&console.log("D H " + dataHandler.toString());
@@ -924,13 +924,12 @@ function putItemQuery(itemType, normalizedQueryString, nextToken, queryResult) {
         }
     };
 }
-function removeItem(itemType, id, dispatch) {
+export function removeItem(itemType, id) {
     return {
         type: REMOVE_ITEM,
         payload: {
             id,
-            itemType,
-            dispatch
+            itemType
         }
     }
 }

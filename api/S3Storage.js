@@ -7,7 +7,7 @@ import TestHelper from "../testing/TestHelper";
  * Class for handling all the interactions with our S3 Bucket files.
  */
 class S3Storage {
-    static bucketName = 'vastusofficial';
+    static bucketName = process.env.NODE_ENV === "production" ? 'vastusofficial' : 'vastusdevelopmentofficial';
     static multipartSize = 10 * 1024 * 1024;
     static multipartQueueSize = 8;
 

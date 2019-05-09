@@ -84,68 +84,75 @@ const InviteFeed = (props) => {
 
     useEffect(() => {
         if (props.user.id) {
-            setIsLoading(false);
-            const fetchAndAddInvite = (inviteID) => {
-                props.fetchInvite(inviteID, InviteCardInfo.fetchList, (data) => {
-                    setNotifications(p => [
-                        ...p,
-                        data
-                    ]);
-                    fetchAboutAndFromInfo(data, props.fetchClient, props.fetchTrainer, props.fetchEvent,
-                        props.fetchChallenge, props.fetchGroup);
-                    setIsLoading(false);
-                });
-            };
-            const fetchAndAddReceivedInvites = (itemType, id) => {
-                let fetchFunction;
-                if (itemType === "Event") { fetchFunction = props.fetchEvent; }
-                if (itemType === "Challenge") { fetchFunction = props.fetchChallenge; }
-                if (itemType === "Group") { fetchFunction = props.fetchGroup; }
-                fetchFunction(id, ["receivedInvites"], (data) => {
-                    if (data.receivedInvites && data.receivedInvites.length > 0) {
-                        for (let i = 0; i < data.receivedInvites.length; i++) {
-                            fetchAndAddInvite(data.receivedInvites[i]);
-                        }
-                        setIsLoading(false);
-                    }
-                    else {
-                        setIsLoading(false);
-                    }
-                });
-            };
-            props.fetchUserAttributes(["receivedInvites", "ownedEvents", "ownedChallenges", "ownedGroups"], (data) => {
-                if (data) {
-                    if (data.hasOwnProperty("receivedInvites") && data.receivedInvites) {
-                        for (let i = 0; i < data.receivedInvites.length; i++) {
-                            setIsLoading(true);
-                            fetchAndAddInvite(data.receivedInvites[i]);
-                        }
-                    }
-                    if (data.hasOwnProperty("ownedEvents") && data.ownedEvents) {
-                        for (let i = 0; i < data.ownedEvents.length; i++) {
-                            setIsLoading(true);
-                            fetchAndAddReceivedInvites("Event", data.ownedEvents[i]);
-                        }
-                    }
-                    if (data.hasOwnProperty("ownedChallenges") && data.ownedChallenges) {
-                        for (let i = 0; i < data.ownedChallenges.length; i++) {
-                            setIsLoading(true);
-                            fetchAndAddReceivedInvites("Challenge", data.ownedChallenges[i]);
-                        }
-                    }
-                    if (data.hasOwnProperty("ownedGroups") && data.ownedGroups) {
-                        for (let i = 0; i < data.ownedGroups.length; i++) {
-                            setIsLoading(true);
-                            fetchAndAddReceivedInvites("Group", data.ownedGroups[i]);
-                        }
-                    }
-                }
-                else {
-                    setIsLoading(false);
-                }
+            setIsLoading(true);
+            props.fetchUserAttributes(["receivedInvites", "ownedEvents", "ownedChallenges", "ownedGroups"], () => {
+                alert("Updated user");
+                setIsLoading(false);
             });
         }
     }, [props.user.id]);
+
+    useEffect(() => {
+        const fetchAndAddInvite = (inviteID) => {
+            props.fetchInvite(inviteID, InviteCardInfo.fetchList, (data) => {
+                setNotifications(p => [
+                    ...p,
+                    data
+                ]);
+                fetchAboutAndFromInfo(data, props.fetchClient, props.fetchTrainer, props.fetchEvent,
+                    props.fetchChallenge, props.fetchGroup);
+                setIsLoading(false);
+            });
+        };
+        const fetchAndAddReceivedInvites = (itemType, id) => {
+            let fetchFunction;
+            if (itemType === "Event") {
+                fetchFunction = props.fetchEvent;
+            }
+            if (itemType === "Challenge") {
+                fetchFunction = props.fetchChallenge;
+            }
+            if (itemType === "Group") {
+                fetchFunction = props.fetchGroup;
+            }
+            fetchFunction(id, ["receivedInvites"], (data) => {
+                if (data.receivedInvites && data.receivedInvites.length > 0) {
+                    for (let i = 0; i < data.receivedInvites.length; i++) {
+                        fetchAndAddInvite(data.receivedInvites[i]);
+                    }
+                    setIsLoading(false);
+                } else {
+                    setIsLoading(false);
+                }
+            });
+        };
+        setNotifications([]);
+        const user = props.user;
+        if (user.hasOwnProperty("receivedInvites") && user.receivedInvites) {
+            for (let i = 0; i < user.receivedInvites.length; i++) {
+                setIsLoading(true);
+                fetchAndAddInvite(user.receivedInvites[i]);
+            }
+        }
+        if (user.hasOwnProperty("ownedEvents") && user.ownedEvents) {
+            for (let i = 0; i < user.ownedEvents.length; i++) {
+                setIsLoading(true);
+                fetchAndAddReceivedInvites("Event", user.ownedEvents[i]);
+            }
+        }
+        if (user.hasOwnProperty("ownedChallenges") && user.ownedChallenges) {
+            for (let i = 0; i < user.ownedChallenges.length; i++) {
+                setIsLoading(true);
+                fetchAndAddReceivedInvites("Challenge", user.ownedChallenges[i]);
+            }
+        }
+        if (user.hasOwnProperty("ownedGroups") && user.ownedGroups) {
+            for (let i = 0; i < user.ownedGroups.length; i++) {
+                setIsLoading(true);
+                fetchAndAddReceivedInvites("Group", user.ownedGroups[i]);
+            }
+        }
+    }, [props.user]);
 
     //The buddy requests consists of a profile picture with the name of the user who has sent you a request.
     //To the right of the request is two buttons, one to accept and one to deny the current request.
@@ -160,7 +167,7 @@ const InviteFeed = (props) => {
         return(
             <Fragment>
                 {_.times(notifications.length, i => (
-                    <InviteCard invite={notifications[i]}/>
+                    <InviteCard key={i} invite={notifications[i]}/>
                 ))}
             </Fragment>
         );

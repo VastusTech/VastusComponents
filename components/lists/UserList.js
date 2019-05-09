@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import _ from "lodash";
 import { List, Message, Visibility } from 'semantic-ui-react';
-import ClientCard, {ClientCardInfo} from "../cards/ClientCard";
 import { connect } from "react-redux";
 import {fetchItems} from "../../redux/actions/cacheActions";
 import Spinner from "../props/Spinner";
-import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
-import TrainerCard, {TrainerCardInfo} from "../cards/TrainerCard";
-import EventCard from "../cards/EventCard";
-import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
-import PostCard from "../cards/PostCard";
+import {getItemTypeFromID} from "../../logic/ItemType";
 import {shuffleArray} from "../../logic/ArrayHelper";
+import UserCard, {UserCardInfo} from "../cards/UserCard";
+import {err} from "../../../Constants";
 
 // TODO Test the new "visibility" fetch system!
 // TODO USING VISIBILITY WITH A MODAL DOESN'T WORK?
@@ -18,9 +15,8 @@ import {shuffleArray} from "../../logic/ArrayHelper";
 const numFetch = 5;
 
 type Props = {
-    ids: [string],
-    noObjectsMessage: string,
-    acceptedItemTypes?: [string],
+    userIDs: [string],
+    noUsersMessage: string,
     randomized: boolean,
     sortFunction?: any
 }
@@ -37,39 +33,13 @@ export const objectComponents = (objects) => {
         if (objects.hasOwnProperty(key)) {
             components.push(
                 <List.Item key={key}>
-                    {getObjectComponent(parseInt(key) + 1, objects[key])}
+                    <UserCard rank={parseInt(key) + 1} user={objects[key]}/>
                 </List.Item>
             );
         }
     }
     return components;
 };
-
-/**
- * Gets a single database object component card for the list.
- *
- * @param {number} key The key of the object in the list (order / rank).
- * @param {{id: string, item_type: string}} object The object to display as the component.
- * @return {*} The React JSX to display the object component.
- */
-export const getObjectComponent = (key, object) => (
-    switchReturnItemType(object.item_type,
-        <ClientCard rank={key} client={object}/>,
-        <TrainerCard rank={key} trainer={object}/>,
-        null,
-        null,
-        null,
-        <EventCard event={object}/>,
-        <ChallengeCard challenge={object}/>,
-        null,
-        <PostCard postID={object.id}/>,
-        null,
-        null,
-        null,
-        null,
-        "Get database object list object not implemented for item type"
-    )
-);
 
 /**
  * Uses the Batch Fetch system of GraphQL to fetch more objects of the same type together.
@@ -86,21 +56,11 @@ export const getObjectComponent = (key, object) => (
  */
 export const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, sortFunction, setVisibleObjects, setTypeHiddenIDIndex, setIsLoading, fetchItems) => {
     setIsLoading(true);
+    const variableList = UserCardInfo.fetchList;
     for (const itemType in typeIDs) {
         if (typeIDs.hasOwnProperty(itemType)) {
             const ids = typeIDs[itemType];
             const hiddenIndex = typeHiddenIDIndex[itemType];
-            const variableList = switchReturnItemType(itemType,
-                ClientCardInfo.fetchList,
-                TrainerCardInfo.fetchList,
-                null, null, null,
-                EventCard.fetchVariableList,
-                ChallengeCardInfo.fetchList,
-                null,
-                PostCard.fetchVariableList,
-                null, null, null, null, null,
-                "Get variable list from item type not implemented!");
-            // alert(ids.length + " vs " + hiddenIndex);
             if (ids.length > hiddenIndex) {
                 fetchItems(ids, itemType, variableList, hiddenIndex, numFetch, (items) => {
                     for (let i = 0; i < items.length; i++) {
@@ -142,13 +102,13 @@ export const addObject = (object, randomized, sortFunction, setVisibleObjects, s
 };
 
 /**
- * Displays a list of objects from the database, using the props
+ * Displays a list of Users from the database, using the props and making them all look alike.
  *
  * @param {Props} props The props passed into the component.
  * @return {*} The React JSX to display the component.
  * @constructor
  */
-const DatabaseObjectList = (props: Props) => {
+const UserList = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [ids, setIDs] = useState(null);
     const [typeIDs, setTypeIDs] = useState({});
@@ -159,9 +119,9 @@ const DatabaseObjectList = (props: Props) => {
 
     // Component will receive new props
     useEffect(() => {
-        if (props.ids && JSON.stringify(props.ids) !== JSON.stringify(ids)) {
+        if (props.userIDs && JSON.stringify(props.userIDs) !== JSON.stringify(ids)) {
             setIsLoading(true);
-            const idsTemp = [...props.ids];
+            const idsTemp = [...props.userIDs];
             if (props.randomized === true) {
                 shuffleArray(idsTemp)
             }
@@ -173,7 +133,7 @@ const DatabaseObjectList = (props: Props) => {
             for (let i = 0; i < idsTemp.length; i++) {
                 const id = idsTemp[i];
                 const itemType = getItemTypeFromID(id);
-                if (!props.acceptedItemTypes || props.acceptedItemTypes.includes(itemType)) {
+                if (itemType === "Client" || itemType === "Trainer" || itemType === "Gym" || itemType === "Sponsor") {
                     if (typeIDsTemp[itemType]) {
                         typeIDsTemp[itemType].push(id);
                     }
@@ -181,6 +141,9 @@ const DatabaseObjectList = (props: Props) => {
                         typeIDsTemp[itemType] = [id];
                         typeHiddenIDIndexTemp[itemType] = 0;
                     }
+                }
+                else {
+                    err&&console.error("Found a non-user item type in a user list = " + itemType);
                 }
             }
             setTypeIDs(typeIDsTemp);
@@ -247,8 +210,8 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-DatabaseObjectList.defaultProps = {
+UserList.defaultProps = {
     randomized: false
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DatabaseObjectList);
+export default connect(mapStateToProps, mapDispatchToProps)(UserList);

@@ -16,6 +16,8 @@ import {err} from "../../../Constants";
 import GroupFunctions from "../../database_functions/GroupFunctions";
 import GroupDescriptionModal from "../modals/GroupDescriptionModal";
 import type Invite from "../../types/Invite";
+import {addToItemAttribute, /*removeFromItemAttribute, */removeItem} from "../../redux/actions/cacheActions";
+import {addToUserAttribute, removeFromUserAttribute} from "../../redux/actions/userActions";
 
 /**
  * All of the different fetchLists used for the different types of cards.
@@ -74,13 +76,18 @@ export const isValidRequest = (userID, inviteID, aboutID, fromID, toID) => (user
  * @param {string} fromID The id of the user that is sending the request.
  * @param {string} toID The id of the user that the request is being sent to.
  * @param {function(boolean)} setIsLoading Sets isLoading to the given boolean.
+ * @param {function(string, string)} removeItem Removes an item from the cache.
+ * @param {function(string, string, string)} removeFromUserAttribute Removes from the user's set attribute.
  * @param {function()} responseHandler {string}
  */
-export const checkResponse = (userID, inviteID, aboutID, fromID, toID, setIsLoading, responseHandler) => {
+export const checkResponse = (userID, inviteID, aboutID, fromID, toID, setIsLoading, removeItem,
+                              removeFromUserAttribute, responseHandler) => {
     setIsLoading(true);
     if (isValidRequest(userID, inviteID, aboutID, fromID, toID)) {
         responseHandler(() => {
             // this.props.feedUpdate();
+            removeFromUserAttribute("receivedInvites", inviteID);
+            removeItem("Invite", inviteID);
             setIsLoading(false);
         }, (error) => {
             console.log(error);
@@ -99,9 +106,12 @@ export const checkResponse = (userID, inviteID, aboutID, fromID, toID, setIsLoad
  * @param {string} userID The current user's id.
  * @param {string} inviteID The id that represents the invite itself.
  * @param {function(boolean)} setIsLoading Sets isLoading to the given boolean.
+ * @param {function(string, string, string)} removeFromUserAttribute Removes from the user's set attribute.
+ * @param {function(string, string)} removeItem Removes an item from the cache.
  */
-const deleteRequest = (userID, inviteID, setIsLoading) => {
-    checkResponse(userID, inviteID, {}, {}, {}, setIsLoading, (successHandler, failureHandler) => {
+const deleteRequest = (userID, inviteID, setIsLoading, removeFromUserAttribute, removeItem) => {
+    checkResponse(userID, inviteID, {}, {}, {}, setIsLoading, removeItem, removeFromUserAttribute,
+        (successHandler, failureHandler) => {
         InviteFunctions.delete(userID, inviteID, successHandler, failureHandler);
     });
 };
@@ -110,12 +120,23 @@ const deleteRequest = (userID, inviteID, setIsLoading) => {
  * Accepts a friend request for the current user.
  *
  * @param {string} userID The current user's id.
+ * @param {string} inviteID The id that represents the invite itself.
  * @param {string} aboutID The id of the user that the request is being sent to
  * @param {function(boolean)} setIsLoading Sets isLoading to the given boolean.
+ * @param {function(string, string)} addToUserAttribute Updates a set attribute in the user in the cache.
+ * @param {function(string, string, string)} addToItemAttribute Updates a set attribute in an item in the cache.
+ * @param {function(string, string, string)} removeFromUserAttribute Removes from the user's set attribute.
+ * @param {function(string, string)} removeItem Removes an item from the cache.
  */
-const handleAcceptFriendRequest = (userID, aboutID, setIsLoading) => {
-    checkResponse(userID, {}, aboutID, {}, {}, setIsLoading, (successHandler, failureHandler) => {
-        UserFunctions.addFriend(userID, userID, aboutID, successHandler, failureHandler);
+const handleAcceptFriendRequest = (userID, inviteID, aboutID, setIsLoading, addToUserAttribute, addToItemAttribute,
+                                   removeFromUserAttribute, removeItem) => {
+    checkResponse(userID, inviteID, aboutID, {}, {}, setIsLoading, removeItem, removeFromUserAttribute,
+        (successHandler, failureHandler) => {
+        UserFunctions.addFriend(userID, userID, aboutID, () => {
+            addToUserAttribute("friends", aboutID);
+            addToItemAttribute(aboutID, "friends", userID);
+            successHandler();
+        }, failureHandler);
     });
 };
 
@@ -130,12 +151,23 @@ const handleDeclineFriendRequest = deleteRequest;
  * Accepts the invite to an event for the current user.
  *
  * @param {string} userID The current user's id.
+ * @param {string} inviteID The id that represents the invite itself.
  * @param {string} aboutID The id of the user that the request is being sent to
  * @param {function(boolean)} setIsLoading Sets isLoading to the given boolean.
+ * @param {function(string, string)} addToUserAttribute Updates a set attribute in the user in the cache.
+ * @param {function(string, string, string)} addToItemAttribute Updates a set attribute in an item in the cache.
+ * @param {function(string, string, string)} removeFromUserAttribute Removes from the user's set attribute.
+ * @param {function(string, string)} removeItem Removes an item from the cache.
  */
-const handleAcceptEventInvite = (userID, aboutID, setIsLoading) => {
-    checkResponse(userID, {}, aboutID, {}, {}, setIsLoading, (successHandler, failureHandler) => {
-        UserFunctions.addEvent(userID, userID, aboutID, successHandler, failureHandler);
+const handleAcceptEventInvite = (userID, inviteID, aboutID, setIsLoading, addToUserAttribute, addToItemAttribute,
+                                 removeFromUserAttribute, removeItem) => {
+    checkResponse(userID, inviteID, aboutID, {}, {}, setIsLoading, removeItem, removeFromUserAttribute,
+        (successHandler, failureHandler) => {
+        UserFunctions.addEvent(userID, userID, aboutID, () => {
+            addToUserAttribute("scheduledEvents", aboutID);
+            addToItemAttribute(aboutID, "members", userID);
+            successHandler();
+        }, failureHandler);
     });
 };
 
@@ -150,12 +182,22 @@ const handleDeclineEventInvite = deleteRequest;
  * Accepts invite to challenge for current user.
  *
  * @param {string} userID The current user's id.
+ * @param {string} inviteID The id that represents the invite itself.
  * @param {string} aboutID The id of the user that the request is being sent to
  * @param {function(boolean)} setIsLoading Sets isLoading to the given boolean.
+ * @param {function(string, string)} addToUserAttribute Updates a set attribute in the user in the cache.
+ * @param {function(string, string, string)} addToItemAttribute Updates a set attribute in an item in the cache.
+ * @param {function(string, string, string)} removeFromUserAttribute Removes from the user's set attribute.
+ * @param {function(string, string)} removeItem Removes an item from the cache.
  */
-const handleAcceptChallengeInvite = (userID, aboutID, setIsLoading) => {
-    checkResponse(userID, {}, aboutID, {}, {}, setIsLoading, (successHandler, failureHandler) => {
-        UserFunctions.addChallenge(userID, userID, aboutID, successHandler, failureHandler);
+const handleAcceptChallengeInvite = (userID, inviteID, aboutID, setIsLoading, addToUserAttribute, addToItemAttribute,
+                                     removeFromUserAttribute, removeItem) => {
+    checkResponse(userID, inviteID, aboutID, {}, {}, setIsLoading, removeItem, removeFromUserAttribute,
+        (successHandler, failureHandler) => {
+        UserFunctions.addChallenge(userID, userID, aboutID, () => {
+            addToUserAttribute("challenges", aboutID);
+            addToItemAttribute(aboutID, "members", userID);
+        }, failureHandler);
     });
 };
 
@@ -170,12 +212,23 @@ const handleDeclineChallengeInvite = deleteRequest;
  * Accepts the invite to a group for the current user.
  *
  * @param {string} userID The current user's id.
+ * @param {string} inviteID The id that represents the invite itself.
  * @param {string} aboutID The id of the group that corresponds to the invite.
  * @param {function(boolean)} setIsLoading Sets isLoading to the given boolean.
+ * @param {function(string, string)} addToUserAttribute Updates a set attribute in the user in the cache.
+ * @param {function(string, string, string)} addToItemAttribute Updates a set attribute in an item in the cache.
+ * @param {function(string, string, string)} removeFromUserAttribute Removes from the user's set attribute.
+ * @param {function(string, string)} removeItem Removes an item from the cache.
  */
-const handleAcceptGroupInvite = (userID, aboutID, setIsLoading) => {
-    checkResponse(userID, {}, aboutID, {}, {}, setIsLoading, (successHandler, failureHandler) => {
-        UserFunctions.addGroup(userID, userID, aboutID, successHandler, failureHandler);
+const handleAcceptGroupInvite = (userID, inviteID, aboutID, setIsLoading, addToUserAttribute, addToItemAttribute,
+                                 removeFromUserAttribute, removeItem) => {
+    checkResponse(userID, inviteID, aboutID, {}, {}, setIsLoading, removeItem, removeFromUserAttribute,
+        (successHandler, failureHandler) => {
+        UserFunctions.addGroup(userID, userID, aboutID, () => {
+            addToUserAttribute("groups", aboutID);
+            addToItemAttribute(aboutID, "members", userID);
+            successHandler();
+        }, failureHandler);
     });
 };
 
@@ -190,13 +243,24 @@ const handleDeclineGroupInvite = deleteRequest;
  * Accepts the request to a event to an event for the current user.
  *
  * @param {string} userID The current user's id.
+ * @param {string} inviteID The id that represents the invite itself.
  * @param {string} toID The id of the user that the event request is being sent to.
  * @param {string} aboutID The id of the event that corresponds to the request.
  * @param {function(boolean)} setIsLoading Sets isLoading to the given boolean.
+ * @param {function(string, string)} addToUserAttribute Updates a set attribute in the user in the cache.
+ * @param {function(string, string, string)} addToItemAttribute Updates a set attribute in an item in the cache.
+ * @param {function(string, string, string)} removeFromUserAttribute Removes from the user's set attribute.
+ * @param {function(string, string)} removeItem Removes an item from the cache.
  */
-const handleAcceptEventRequest = (userID, toID, aboutID, setIsLoading) => {
-    checkResponse(userID, {}, aboutID, {}, toID, setIsLoading, (successHandler, failureHandler) => {
-        EventFunctions.addMember(userID, toID, aboutID, successHandler, failureHandler);
+const handleAcceptEventRequest = (userID, inviteID, toID, aboutID, setIsLoading, addToUserAttribute, addToItemAttribute,
+                                  removeFromUserAttribute, removeItem) => {
+    checkResponse(userID, inviteID, aboutID, {}, toID, setIsLoading, removeItem, removeFromUserAttribute,
+        (successHandler, failureHandler) => {
+        EventFunctions.addMember(userID, toID, aboutID, () => {
+            addToItemAttribute(toID, "members", aboutID);
+            addToItemAttribute(aboutID, "scheduledEvents", toID);
+            successHandler();
+        }, failureHandler);
     });
 };
 
@@ -210,14 +274,25 @@ const handleDeclineEventRequest = deleteRequest;
 /**
  * Accepts a challenge invite for the current user.
  *
- * {string} userID The current user's id.
+ * @param {string} userID The current user's id.
+ * @param {string} inviteID The id that represents the invite itself.
  * @param {string} toID The id of the user that the event request is being sent to.
  * @param {string} aboutID The id of the event that corresponds to the request.
  * @param {function(boolean)} setIsLoading Sets isLoading to the given boolean.
+ * @param {function(string, string)} addToUserAttribute Updates a set attribute in the user in the cache.
+ * @param {function(string, string, string)} addToItemAttribute Updates a set attribute in an item in the cache.
+ * @param {function(string, string, string)} removeFromUserAttribute Removes from the user's set attribute.
+ * @param {function(string, string)} removeItem Removes an item from the cache.
  */
-const handleAcceptChallengeRequest = (userID, toID, aboutID, setIsLoading) => {
-    checkResponse(userID, {}, aboutID, {}, toID, setIsLoading, (successHandler, failureHandler) => {
-        ChallengeFunctions.addMember(userID, toID, aboutID, successHandler, failureHandler);
+const handleAcceptChallengeRequest = (userID, inviteID, toID, aboutID, setIsLoading, addToUserAttribute,
+                                      addToItemAttribute, removeFromUserAttribute, removeItem) => {
+    checkResponse(userID, inviteID, aboutID, {}, toID, setIsLoading, removeItem, removeFromUserAttribute,
+        (successHandler, failureHandler) => {
+        ChallengeFunctions.addMember(userID, toID, aboutID, () => {
+            addToItemAttribute(toID, "members", aboutID);
+            addToItemAttribute(aboutID, "challenges", toID);
+            successHandler();
+        }, failureHandler);
     });
 };
 
@@ -232,13 +307,24 @@ const handleDeclineChallengeRequest = deleteRequest;
  * Accepts a group invite for the current user.
  *
  * @param {string} userID The id of the author.
+ * @param {string} inviteID The id that represents the invite itself.
  * @param {string} toID The id of the user being sent the invite.
  * @param {string} aboutID The id of the group that the user is being invited to.
  * @param {function(boolean)} setIsLoading Sets isLoading to the given boolean.
+ * @param {function(string, string)} addToUserAttribute Updates a set attribute in the user in the cache.
+ * @param {function(string, string, string)} addToItemAttribute Updates a set attribute in an item in the cache.
+ * @param {function(string, string, string)} removeFromUserAttribute Removes from the user's set attribute.
+ * @param {function(string, string)} removeItem Removes an item from the cache.
  */
-const handleAcceptGroupRequest = (userID, toID, aboutID, setIsLoading) => {
-    checkResponse(userID, {}, aboutID, {}, toID, setIsLoading, (successHandler, failureHandler) => {
-        GroupFunctions.addMember(userID, toID, aboutID, successHandler, failureHandler);
+const handleAcceptGroupRequest = (userID, inviteID, toID, aboutID, setIsLoading, addToUserAttribute, addToItemAttribute,
+                                  removeFromUserAttribute, removeItem) => {
+    checkResponse(userID, inviteID, aboutID, {}, toID, setIsLoading, removeItem, removeFromUserAttribute,
+        (successHandler, failureHandler) => {
+        GroupFunctions.addMember(userID, toID, aboutID, () => {
+            addToItemAttribute(toID, "members", aboutID);
+            addToItemAttribute(aboutID, "groups", toID);
+            successHandler();
+        }, failureHandler);
     });
 };
 
@@ -335,15 +421,20 @@ export const aboutModal = (aboutID, aboutModalOpen, setAboutModalOpen) => {
  * @param {function(boolean)} setAboutModalOpen Sets the open attribute for the about model to open.
  * @param {boolean} isLoading Shows whether the invite component is loading or not.
  * @param {function(boolean)} setIsLoading Sets isLoading to the given boolean.
+ * @param {function(string, string)} addToUserAttribute Updates a set attribute in the user in the cache.
+ * @param {function(string, string, string)} addToItemAttribute Updates a set attribute in an item in the cache.
+ * @param {function(string, string, string)} removeFromUserAttribute Removes from the user's set attribute.
+ * @param {function(string, string)} removeItem Removes an item from the cache.
  * @returns {*} The React JSX used to display the component.
  */
 export const getInviteDetails = (userID, getInviteAttribute, getFromAttribute, getToAttribute, getAboutAttribute,
                           fromModalOpen, setFromModalOpen, toModalOpen, setToModalOpen, aboutModalOpen,
-                          setAboutModalOpen, isLoading, setIsLoading) => {
+                          setAboutModalOpen, isLoading, setIsLoading, addToUserAttribute, addToItemAttribute,
+                                 removeFromUserAttribute, removeItem) => {
     const type = getInviteAttribute("inviteType");
     if (type === "friendRequest") {
         return [
-            <Card.Content textAlign='center'>
+            <Card.Content key={0} textAlign='center'>
                 <Card.Header onClick={() => setFromModalOpen(true)}>
                     {getFromAttribute("name")}
                 </Card.Header>
@@ -352,10 +443,10 @@ export const getInviteDetails = (userID, getInviteAttribute, getFromAttribute, g
                     has sent you a buddy request {/*Insert Invite Sent Time Here*/}
                 </Card.Description>
             </Card.Content>,
-            <Card.Content extra textAlign='center'>
+            <Card.Content key={1} extra textAlign='center'>
                 <Button.Group fluid>
-                    <Button loading={isLoading} onClick={() => handleDeclineFriendRequest(userID, getInviteAttribute("id"), setIsLoading)}>Deny</Button>
-                    <Button loading={isLoading} primary onClick={() => handleAcceptFriendRequest(userID, getInviteAttribute("about"), setIsLoading)}>Accept</Button>
+                    <Button loading={isLoading} onClick={() => handleDeclineFriendRequest(userID, getInviteAttribute("id"), setIsLoading, removeFromUserAttribute, removeItem)}>Deny</Button>
+                    <Button loading={isLoading} primary onClick={() => handleAcceptFriendRequest(userID, getInviteAttribute("id"), getInviteAttribute("about"), setIsLoading, addToUserAttribute, addToItemAttribute, removeFromUserAttribute, removeItem)}>Accept</Button>
                 </Button.Group>
             </Card.Content>
         ];
@@ -382,9 +473,9 @@ export const getInviteDetails = (userID, getInviteAttribute, getFromAttribute, g
                             <Divider/>
                             <Feed.Extra>
                                 <Button inverted loading={isLoading} disabled={isLoading} floated="right"
-                                        size="small" onClick={() => handleDeclineEventInvite(userID, getInviteAttribute("id"), setIsLoading)}>Deny</Button>
+                                        size="small" onClick={() => handleDeclineEventInvite(userID, getInviteAttribute("id"), setIsLoading, removeFromUserAttribute, removeItem)}>Deny</Button>
                                 <Button primary loading={isLoading} disabled={isLoading} floated="right"
-                                        size="small" onClick={() => handleAcceptEventInvite(userID, getInviteAttribute("about"), setIsLoading)}>Accept</Button>
+                                        size="small" onClick={() => handleAcceptEventInvite(userID, getInviteAttribute("id"), getInviteAttribute("about"), setIsLoading, addToUserAttribute, addToItemAttribute, removeFromUserAttribute, removeItem)}>Accept</Button>
                             </Feed.Extra>
                         </Feed.Content>
                     </Feed.Event>
@@ -394,7 +485,7 @@ export const getInviteDetails = (userID, getInviteAttribute, getFromAttribute, g
     }
     else if (type === "challengeInvite") {
         return [
-            <Card.Content textAlign='center'>
+            <Card.Content key={0} textAlign='center'>
                 <Card.Header onClick={() => setFromModalOpen(true)}>
                     {getFromAttribute("name")}
                 </Card.Header>
@@ -407,17 +498,17 @@ export const getInviteDetails = (userID, getInviteAttribute, getFromAttribute, g
                     {aboutModal(getInviteAttribute("about"), aboutModalOpen, setAboutModalOpen)}
                 </Card.Description>
             </Card.Content>,
-            <Card.Content extra textAlign='center'>
+            <Card.Content key={1} extra textAlign='center'>
                 <Button.Group fluid>
-                    <Button loading={isLoading} onClick={() => handleDeclineChallengeInvite(userID, getInviteAttribute("id"), setIsLoading)}>Deny</Button>
-                    <Button loading={isLoading} primary onClick={() => handleAcceptChallengeInvite(userID, getInviteAttribute("about"), setIsLoading)}>Accept</Button>
+                    <Button loading={isLoading} onClick={() => handleDeclineChallengeInvite(userID, getInviteAttribute("id"), setIsLoading, removeFromUserAttribute, removeItem)}>Deny</Button>
+                    <Button loading={isLoading} primary onClick={() => handleAcceptChallengeInvite(userID, getInviteAttribute("id"), getInviteAttribute("about"), setIsLoading, addToUserAttribute, addToItemAttribute, removeFromUserAttribute, removeItem)}>Accept</Button>
                 </Button.Group>
             </Card.Content>
         ];
     }
     else if (type === "groupInvite") {
         return [
-            <Card.Content textAlign='center'>
+            <Card.Content key={0} textAlign='center'>
                 <Card.Header onClick={() => setFromModalOpen(true)}>
                     {getFromAttribute("name")}
                 </Card.Header>
@@ -430,10 +521,10 @@ export const getInviteDetails = (userID, getInviteAttribute, getFromAttribute, g
                     {aboutModal(getInviteAttribute("about"), aboutModalOpen, setAboutModalOpen)}
                 </Card.Description>
             </Card.Content>,
-            <Card.Content extra textAlign='center'>
+            <Card.Content key={1} extra textAlign='center'>
                 <Button.Group fluid>
-                    <Button loading={isLoading} onClick={() => handleDeclineGroupInvite(userID, getInviteAttribute("id"), setIsLoading)}>Deny</Button>
-                    <Button loading={isLoading} primary onClick={() => handleAcceptGroupInvite(userID, getInviteAttribute("about"), setIsLoading)}>Accept</Button>
+                    <Button loading={isLoading} onClick={() => handleDeclineGroupInvite(userID, getInviteAttribute("id"), setIsLoading, removeFromUserAttribute, removeItem)}>Deny</Button>
+                    <Button loading={isLoading} primary onClick={() => handleAcceptGroupInvite(userID, getInviteAttribute("id"), getInviteAttribute("about"), setIsLoading, addToUserAttribute, addToItemAttribute, removeFromUserAttribute, removeItem)}>Accept</Button>
                 </Button.Group>
             </Card.Content>
         ];
@@ -459,9 +550,9 @@ export const getInviteDetails = (userID, getInviteAttribute, getFromAttribute, g
                             <Divider/>
                             <Feed.Extra>
                                 <Button inverted loading={isLoading} disabled={isLoading} floated="right"
-                                        size="small" onClick={() => handleDeclineEventRequest(userID, getInviteAttribute("id"), setIsLoading)}>Deny</Button>
+                                        size="small" onClick={() => handleDeclineEventRequest(userID, getInviteAttribute("id"), setIsLoading, removeFromUserAttribute, removeItem)}>Deny</Button>
                                 <Button primary loading={isLoading} disabled={isLoading} floated="right"
-                                        size="small" onClick={() => handleAcceptEventRequest(userID, getInviteAttribute("to"), getInviteAttribute("about"), setIsLoading)}>Accept</Button>
+                                        size="small" onClick={() => handleAcceptEventRequest(userID, getInviteAttribute("id"), getInviteAttribute("to"), getInviteAttribute("about"), setIsLoading, addToUserAttribute, addToItemAttribute, removeFromUserAttribute, removeItem)}>Accept</Button>
                             </Feed.Extra>
                         </Feed.Content>
                     </Feed.Event>
@@ -471,7 +562,7 @@ export const getInviteDetails = (userID, getInviteAttribute, getFromAttribute, g
     }
     else if (type === "challengeRequest") {
         return [
-            <Card.Content textAlign='center'>
+            <Card.Content key={0} textAlign='center'>
                 <Card.Header onClick={() => setFromModalOpen(true)}>
                     {getFromAttribute("name")}
                 </Card.Header>
@@ -484,10 +575,10 @@ export const getInviteDetails = (userID, getInviteAttribute, getFromAttribute, g
                     {toModal(getInviteAttribute("to"), toModalOpen, setToModalOpen)}
                 </Card.Description>
             </Card.Content>,
-            <Card.Content extra textAlign='center'>
+            <Card.Content key={1} extra textAlign='center'>
                 <Button.Group fluid>
-                    <Button loading={isLoading} onClick={() => handleDeclineChallengeRequest(userID, getInviteAttribute("id"), setIsLoading)}>Deny</Button>
-                    <Button primary loading={isLoading} onClick={() => handleAcceptChallengeRequest(userID, getInviteAttribute("to"), getInviteAttribute("about"), setIsLoading)}>Accept</Button>
+                    <Button loading={isLoading} onClick={() => handleDeclineChallengeRequest(userID, getInviteAttribute("id"), setIsLoading, removeFromUserAttribute, removeItem)}>Deny</Button>
+                    <Button primary loading={isLoading} onClick={() => handleAcceptChallengeRequest(userID, getInviteAttribute("id"), getInviteAttribute("to"), getInviteAttribute("about"), setIsLoading, addToUserAttribute, addToItemAttribute, removeFromUserAttribute, removeItem)}>Accept</Button>
                 </Button.Group>
             </Card.Content>
         ]
@@ -513,9 +604,9 @@ export const getInviteDetails = (userID, getInviteAttribute, getFromAttribute, g
                             <Divider/>
                             <Feed.Extra>
                                 <Button inverted loading={isLoading} disabled={isLoading} floated="right"
-                                        size="small" onClick={() => handleDeclineGroupRequest(userID, getInviteAttribute("id"), setIsLoading)}>Deny</Button>
+                                        size="small" onClick={() => handleDeclineGroupRequest(userID, getInviteAttribute("id"), setIsLoading, removeFromUserAttribute, removeItem)}>Deny</Button>
                                 <Button primary loading={isLoading} disabled={isLoading} floated="right"
-                                        size="small" onClick={() => handleAcceptGroupRequest(userID, getInviteAttribute("to"), getInviteAttribute("about"), setIsLoading)}>Accept</Button>
+                                        size="small" onClick={() => handleAcceptGroupRequest(userID, getInviteAttribute("id"), getInviteAttribute("to"), getInviteAttribute("about"), setIsLoading, addToUserAttribute, addToItemAttribute, removeFromUserAttribute, removeItem)}>Accept</Button>
                             </Feed.Extra>
                         </Feed.Content>
                     </Feed.Event>
@@ -581,7 +672,8 @@ const InviteCard = (props: Props) => {
             </div>
             {getInviteDetails(props.user.id, getInviteAttribute, getFromAttribute, getToAttribute, getAboutAttribute,
             fromModalOpen, setFromModalOpen, toModalOpen, setToModalOpen, aboutModalOpen, setAboutModalOpen, isLoading,
-            setIsLoading)}
+            setIsLoading, props.addToUserAttribute, props.addToItemAttribute, props.removeFromUserAttribute,
+                props.removeItem)}
         </Card>
     );
 };
@@ -591,4 +683,24 @@ const mapStateToProps = state => ({
     user: state.user
 });
 
-export default connect(mapStateToProps)(InviteCard);
+const mapDispatchToProps = dispatch => {
+    return {
+        removeItem: (id, itemType) => {
+            dispatch(removeItem(id, itemType));
+        },
+        addToUserAttribute: (attributeName, attributeValue) => {
+            dispatch(addToUserAttribute(attributeName, attributeValue));
+        },
+        removeFromUserAttribute: (attributeName, attributeValue) => {
+            dispatch(removeFromUserAttribute(attributeName, attributeValue));
+        },
+        addToItemAttribute: (id, attributeName, attributeValue) => {
+            dispatch(addToItemAttribute(id, attributeName, attributeValue));
+        },
+        // removeFromItemAttribute: (id, attributeName, attributeValue) => {
+        //     dispatch(removeFromItemAttribute(id, attributeName, attributeValue));
+        // }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(InviteCard);
