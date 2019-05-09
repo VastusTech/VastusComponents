@@ -8,6 +8,7 @@ describe("high level functions", () => {
         expect(GroupFunctions.createGroup(
             "FROMID", "TITLE", "DESCRIPTION", "ACCESS"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Group',
@@ -29,6 +30,7 @@ describe("high level functions", () => {
             "FROMID", "TITLE", "DESCRIPTION", "MOTTO", "GROUPIMAGE", ["OWNER1", "OWNER2", "OWNER3"],
             ["MEMBER1", "MEMBER2", "MEMBER3"], ["TAG1", "TAG2", "TAG3"], "ACCESS", "RESTRICTION"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Group',
@@ -49,6 +51,7 @@ describe("high level functions", () => {
         expect(GroupFunctions.updateToPrivate(
             "FROMID", "GROUPID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Group',
@@ -62,6 +65,7 @@ describe("high level functions", () => {
         expect(GroupFunctions.updateToPublic(
             "FROMID", "GROUPID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Group',
@@ -75,6 +79,7 @@ describe("high level functions", () => {
         expect(GroupFunctions.updateToInviteOnly(
             "FROMID", "GROUPID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Group',
@@ -88,6 +93,7 @@ describe("high level functions", () => {
         expect(GroupFunctions.updateToUnrestricted(
             "FROMID", "GROUPID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Group',
@@ -101,6 +107,7 @@ describe("high level functions", () => {
         expect(GroupFunctions.addTag(
             "FROMID", "GROUPID", "TAG"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Group',
@@ -114,6 +121,7 @@ describe("high level functions", () => {
         expect(GroupFunctions.removeTag(
             "FROMID", "GROUPID", "TAG"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Group',
@@ -127,6 +135,7 @@ describe("high level functions", () => {
         expect(GroupFunctions.addMember(
             "FROMID", "GROUPID", "MEMBER"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Message',
@@ -140,6 +149,7 @@ describe("high level functions", () => {
         expect(GroupFunctions.removeMember(
             "FROMID", "GROUPID", "MEMBER"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Message',
@@ -153,6 +163,7 @@ describe("high level functions", () => {
         expect(GroupFunctions.updateTitle(
             "FROMID", "GROUPID", "TITLE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Group',
@@ -166,6 +177,7 @@ describe("high level functions", () => {
         expect(GroupFunctions.updateMotto(
             "FROMID", "GROUPID", "MOTTO"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Group',
@@ -179,6 +191,7 @@ describe("high level functions", () => {
         expect(GroupFunctions.updateDescription(
             "FROMID", "GROUPID", "DESCRIPTION"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Group',
@@ -192,6 +205,7 @@ describe("high level functions", () => {
         expect(GroupFunctions.updateGroupImage(
             "FROMID", "GROUPID", "GROUPIMAGE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Group',
@@ -207,6 +221,7 @@ describe("low level functions", () => {
             "FROMID", "TITLE", "DESCRIPTION", "MOTTO", "GROUPIMAGE", ["OWNER1", "OWNER2", "OWNER3"],
             ["MEMBER1", "MEMBER2", "MEMBER3"], ["TAG1", "TAG2", "TAG3"], "ACCESS", "RESTRICTION"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Group',
@@ -227,6 +242,7 @@ describe("low level functions", () => {
         expect(GroupFunctions.updateAdd(
             "FROMID", "GROUPID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Group',
@@ -240,6 +256,7 @@ describe("low level functions", () => {
         expect(GroupFunctions.updateRemove(
             "FROMID", "GROUPID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Group',
@@ -253,6 +270,7 @@ describe("low level functions", () => {
         expect(GroupFunctions.updateSet(
             "FROMID", "GROUPID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Group',
@@ -266,6 +284,7 @@ describe("low level functions", () => {
         expect(GroupFunctions.delete(
             "FROMID", "GROUPID",
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'DELETE',
             itemType: 'Group',

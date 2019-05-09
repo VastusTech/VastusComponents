@@ -14,6 +14,7 @@ describe("high level methods", () => {
         expect(Lambda.create(
             "FROMID", "Client", {KEY: "VALUE"}
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Client',
@@ -27,6 +28,7 @@ describe("high level methods", () => {
         expect(Lambda.updateSetAttribute(
             "FROMID", "OBJECTID", "OBJECTITEMTYPE", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'OBJECTITEMTYPE',
@@ -40,6 +42,7 @@ describe("high level methods", () => {
         expect(Lambda.updateAddToAttribute(
             "FROMID", "OBJECTID", "OBJECTITEMTYPE", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'OBJECTITEMTYPE',
@@ -53,6 +56,7 @@ describe("high level methods", () => {
         expect(Lambda.updateRemoveFromAttribute(
             "FROMID", "OBJECTID", "OBJECTITEMTYPE", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'OBJECTITEMTYPE',
@@ -66,6 +70,7 @@ describe("high level methods", () => {
         expect(Lambda.delete(
             "FROMID", "OBJECTID", "OBJECTITEMTYPE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'DELETE',
             itemType: 'OBJECTITEMTYPE',

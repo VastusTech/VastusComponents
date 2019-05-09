@@ -8,6 +8,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createFriendRequest(
             "FROMID", "FROM", "TO"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -24,6 +25,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createFriendRequestOptional(
             "FROMID", "FROM", "TO", "MESSAGE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -40,6 +42,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createEventInvite(
             "FROMID", "FROM", "TO", "EVENTID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -56,6 +59,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createEventInviteOptional(
             "FROMID", "FROM", "TO", "EVENTID", "MESSAGE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -72,6 +76,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createChallengeInvite(
             "FROMID", "FROM", "TO", "CHALLENGEID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -88,6 +93,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createChallengeInviteOptional(
             "FROMID", "FROM", "TO", "CHALLENGEID", "MESSAGE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -105,6 +111,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createGroupInvite(
             "FROMID", "FROM", "TO", "GROUPID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -122,6 +129,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createGroupInviteOptional(
             "FROMID", "FROM", "TO", "GROUPID", "MESSAGE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -139,6 +147,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createEventRequest(
             "FROMID", "FROM", "EVENTID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -156,6 +165,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createEventRequestOptional(
             "FROMID", "FROM", "EVENTID", "MESSAGE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -173,6 +183,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createChallengeRequest(
             "FROMID", "FROM", "CHALLENGEID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -190,6 +201,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createChallengeRequestOptional(
             "FROMID", "FROM", "CHALLENGEID", "MESSAGE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -207,6 +219,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createGroupRequest(
             "FROMID", "FROM", "GROUPID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -224,6 +237,7 @@ describe("high level functions", () => {
         expect(InviteFunctions.createGroupRequestOptional(
             "FROMID", "FROM", "GROUPID", "MESSAGE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -242,6 +256,7 @@ describe("low level functions", () => {
         expect(InviteFunctions.create(
             "FROMID", "FROM", "TO", "INVITETYPE", "ABOUT", "DESCRIPTION"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Invite',
@@ -258,6 +273,7 @@ describe("low level functions", () => {
         expect(InviteFunctions.updateAdd(
             "FROMID", "INVITEID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Invite',
@@ -271,6 +287,7 @@ describe("low level functions", () => {
         expect(InviteFunctions.updateRemove(
             "FROMID", "INVITEID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Invite',
@@ -284,6 +301,7 @@ describe("low level functions", () => {
         expect(InviteFunctions.updateSet(
             "FROMID", "INVITEID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Invite',
@@ -297,6 +315,7 @@ describe("low level functions", () => {
         expect(InviteFunctions.delete(
             "FROMID", "INVITEID",
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'DELETE',
             itemType: 'Invite',

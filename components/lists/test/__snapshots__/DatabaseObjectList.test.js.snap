@@ -31,7 +31,6 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "function",
     "props": Object {
-      "fetchItem": [Function],
       "fetchItems": [Function],
       "ids": Array [],
       "noObjectsMessage": "no objects",
@@ -74,7 +73,6 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "function",
       "props": Object {
-        "fetchItem": [Function],
         "fetchItems": [Function],
         "ids": Array [],
         "noObjectsMessage": "no objects",

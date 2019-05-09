@@ -1,9 +1,9 @@
+import "../../../testing/SetTesting";
 import React from 'react';
 import { shallow } from 'enzyme';
-import TestConfig, {store} from "../../../testing/TestConfig";
+import {store} from "../../../testing/TestHelper";
 import TrainerModal from "../TrainerModal";
 
-TestConfig();
 it('renders without crashing', () => {
     const component = shallow(<TrainerModal trainerID={null} onClose={() => {}} open={true} store={store()}/>);
     expect(component).toMatchSnapshot();

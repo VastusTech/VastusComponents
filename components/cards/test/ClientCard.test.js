@@ -15,7 +15,7 @@ const client1 = {
 
 it('renders without crashing', () => {
     const component = shallow(<ClientCard store={store()} clientID={null}/>);
-    expect(component).toMatchSnapshot();
+    global.expect(component).toMatchSnapshot();
 });
 
 describe("Client Card", () => {

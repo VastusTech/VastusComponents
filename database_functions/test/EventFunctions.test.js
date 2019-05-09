@@ -8,6 +8,7 @@ describe("high level functions", () => {
         expect(EventFunctions.createEvent(
             "FROMID", "OWNER", "TIME", "CAPACITY", "ADDRESS", "TITLE", ["TAG1", "TAG2", "TAG3"], "ACCESS"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Event',
@@ -32,6 +33,7 @@ describe("high level functions", () => {
             "FROMID", "OWNER", "TIME", "CAPACITY", "ADDRESS", "TITLE", "DESCRIPTION", ["TAG1", "TAG2", "TAG3"],
             ["MEMBER1", "MEMBER2", "MEMBER3"], "ACCESS", "RESTRICTION"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Event',
@@ -55,6 +57,7 @@ describe("high level functions", () => {
         expect(EventFunctions.createChallengeEvent(
             "FROMID", "CHALLENGEID", "OWNER", "TIME", "CAPACITY", "ADDRESS", "TITLE", ["TAG1", "TAG2", "TAG3"], "ACCESS"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Event',
@@ -79,6 +82,7 @@ describe("high level functions", () => {
             "FROMID", "CHALLENGEID", "OWNER", "TIME", "CAPACITY", "ADDRESS", "TITLE", "DESCRIPTION", ["TAG1", "TAG2", "TAG3"],
             ["MEMBER1", "MEMBER2", "MEMBER3"], "ACCESS", "RESTRICTION"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Event',
@@ -102,6 +106,7 @@ describe("high level functions", () => {
         expect(EventFunctions.createGroupEvent(
             "FROMID", "GROUPID", "OWNER", "TIME", "CAPACITY", "ADDRESS", "TITLE", ["TAG1", "TAG2", "TAG3"], "ACCESS"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Event',
@@ -126,6 +131,7 @@ describe("high level functions", () => {
             "FROMID", "GROUPID", "OWNER", "TIME", "CAPACITY", "ADDRESS", "TITLE", "DESCRIPTION", ["TAG1", "TAG2", "TAG3"],
             ["MEMBER1", "MEMBER2", "MEMBER3"], "ACCESS", "RESTRICTION"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Event',
@@ -149,6 +155,7 @@ describe("high level functions", () => {
         expect(EventFunctions.updateToPrivate(
             "FROMID", "EVENTID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Event',
@@ -162,6 +169,7 @@ describe("high level functions", () => {
         expect(EventFunctions.updateToPublic(
             "FROMID", "EVENTID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Event',
@@ -175,6 +183,7 @@ describe("high level functions", () => {
         expect(EventFunctions.updateToInviteOnly(
             "FROMID", "EVENTID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Event',
@@ -188,6 +197,7 @@ describe("high level functions", () => {
         expect(EventFunctions.updateToUnrestricted(
             "FROMID", "EVENTID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Event',
@@ -201,6 +211,7 @@ describe("high level functions", () => {
         expect(EventFunctions.addTag(
             "FROMID", "EVENTID", "TAG"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Event',
@@ -214,6 +225,7 @@ describe("high level functions", () => {
         expect(EventFunctions.removeTag(
             "FROMID", "EVENTID", "TAG"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Event',
@@ -227,6 +239,7 @@ describe("high level functions", () => {
         expect(EventFunctions.addMember(
             "FROMID", "EVENTID", "MEMBER"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Message',
@@ -240,6 +253,7 @@ describe("high level functions", () => {
         expect(EventFunctions.removeMember(
             "FROMID", "EVENTID", "MEMBER"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Message',
@@ -253,6 +267,7 @@ describe("high level functions", () => {
         expect(EventFunctions.updateAddress(
             "FROMID", "EVENTID", "ADDRESS"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Event',
@@ -266,6 +281,7 @@ describe("high level functions", () => {
         expect(EventFunctions.updateCapacity(
             "FROMID", "EVENTID", "CAPACITY"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Event',
@@ -279,6 +295,7 @@ describe("high level functions", () => {
         expect(EventFunctions.updateTitle(
             "FROMID", "EVENTID", "TITLE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Event',
@@ -292,6 +309,7 @@ describe("high level functions", () => {
         expect(EventFunctions.updateDescription(
             "FROMID", "EVENTID", "DESCRIPTION"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Event',
@@ -307,6 +325,7 @@ describe("low level functions", () => {
             "FROMID", "OWNER", "TIME", "CAPACITY", "ADDRESS", "TITLE", "DESCRIPTION", ["TAG1", "TAG2", "TAG3"],
             ["MEMBER1", "MEMBER2", "MEMBER3"], "ACCESS", "RESTRICTION", "CHALLENGEID", "GROUPID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Event',
@@ -330,6 +349,7 @@ describe("low level functions", () => {
         expect(EventFunctions.updateAdd(
             "FROMID", "EVENTID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Event',
@@ -343,6 +363,7 @@ describe("low level functions", () => {
         expect(EventFunctions.updateRemove(
             "FROMID", "EVENTID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Event',
@@ -356,6 +377,7 @@ describe("low level functions", () => {
         expect(EventFunctions.updateSet(
             "FROMID", "EVENTID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Event',
@@ -369,6 +391,7 @@ describe("low level functions", () => {
         expect(EventFunctions.delete(
             "FROMID", "EVENTID",
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'DELETE',
             itemType: 'Event',

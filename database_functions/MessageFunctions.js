@@ -136,6 +136,7 @@ class MessageFunctions {
 
     static updateAdd(fromID, board, messageID, attributeName, attributeValue, successHandler, failureHandler) {
         return Lambda.invokeDatabaseLambda({
+            environmentType: process.env.NODE_ENV,
             fromID,
             action: "UPDATEADD",
             itemType,
@@ -147,6 +148,7 @@ class MessageFunctions {
     }
     static updateRemove(fromID, board, messageID, attributeName, attributeValue, successHandler, failureHandler) {
         return Lambda.invokeDatabaseLambda({
+            environmentType: process.env.NODE_ENV,
             fromID,
             action: "UPDATEREMOVE",
             itemType,
@@ -158,6 +160,7 @@ class MessageFunctions {
     }
     static updateSet(fromID, board, messageID, attributeName, attributeValue, successHandler, failureHandler) {
         return Lambda.invokeDatabaseLambda({
+            environmentType: process.env.NODE_ENV,
             fromID,
             action: "UPDATESET",
             itemType,
@@ -181,6 +184,7 @@ class MessageFunctions {
      */
     static delete(fromID, board, messageID, successHandler, failureHandler) {
         return Lambda.invokeDatabaseLambda({
+            environmentType: process.env.NODE_ENV,
             fromID,
             action: "DELETE",
             itemType,

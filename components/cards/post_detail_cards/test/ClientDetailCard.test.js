@@ -1,10 +1,10 @@
+import "../../../../testing/SetTesting";
 import React from 'react';
 import { shallow } from 'enzyme';
-import TestConfig, {store} from "../../../../testing/TestConfig";
+import {store} from "../../../../testing/TestHelper";
 import ClientDetailCard from "../ClientDetailCard";
 
-TestConfig();
 it('renders without crashing', () => {
-    const component = shallow(<ClientDetailCard postID={null} store={store()}/>);
+    const component = shallow(<ClientDetailCard client={null} store={store()}/>);
     expect(component).toMatchSnapshot();
 });

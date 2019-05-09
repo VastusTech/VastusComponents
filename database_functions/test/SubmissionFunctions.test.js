@@ -8,6 +8,7 @@ describe("high level functions", () => {
         expect(SubmissionFunctions.createSubmission(
             "FROMID", "BY", "DESCRIPTION", "ABOUT", {"PICTUREPATH": "PICTURE"}, {"VIDEOPATH": "VIDEO"}
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Submission',
@@ -25,6 +26,7 @@ describe("high level functions", () => {
         expect(SubmissionFunctions.updateDescription(
             "FROMID", "SUBMISSIONID", "DESCRIPTION"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Submission',
@@ -38,6 +40,7 @@ describe("high level functions", () => {
         expect(SubmissionFunctions.addPicture(
             "FROMID", "SUBMISSIONID", "PICTURE", "PICTUREPATH"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Submission',
@@ -51,6 +54,7 @@ describe("high level functions", () => {
         expect(SubmissionFunctions.addVideo(
             "FROMID", "SUBMISSIONID", "VIDEO", "VIDEOPATH"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Submission',
@@ -64,6 +68,7 @@ describe("high level functions", () => {
         expect(SubmissionFunctions.removePicture(
             "FROMID", "SUBMISSIONID", "PICTUREPATH"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Submission',
@@ -77,6 +82,7 @@ describe("high level functions", () => {
         expect(SubmissionFunctions.removeVideo(
             "FROMID", "SUBMISSIONID", "VIDEOPATH"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Submission',
@@ -91,6 +97,7 @@ describe("low level functions", () => {
         expect(SubmissionFunctions.create(
             "FROMID", "BY", "DESCRIPTION", "ABOUT", {"PICTUREPATH": "PICTURE"}, {"VIDEOPATH": "VIDEO"}
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Submission',
@@ -108,6 +115,7 @@ describe("low level functions", () => {
         expect(SubmissionFunctions.updateAdd(
             "FROMID", "SUBMISSIONID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Submission',
@@ -121,6 +129,7 @@ describe("low level functions", () => {
         expect(SubmissionFunctions.updateRemove(
             "FROMID", "SUBMISSIONID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Submission',
@@ -134,6 +143,7 @@ describe("low level functions", () => {
         expect(SubmissionFunctions.updateSet(
             "FROMID", "SUBMISSIONID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Submission',
@@ -147,6 +157,7 @@ describe("low level functions", () => {
         expect(SubmissionFunctions.delete(
             "FROMID", "SUBMISSIONID",
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'DELETE',
             itemType: 'Submission',

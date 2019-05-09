@@ -8,6 +8,7 @@ describe("high level functions", () => {
         expect(CommentFunctions.createComment(
             "FROMID", "BYID", "ONID", "COMMENT"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Comment',
@@ -23,6 +24,7 @@ describe("high level functions", () => {
         expect(CommentFunctions.updateComment(
             "FROMID", "COMMENTID", "COMMENT"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Comment',
@@ -37,6 +39,7 @@ describe("low level functions", () => {
         expect(CommentFunctions.create(
             "FROMID", "BY", "ON", "COMMENT"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Comment',
@@ -52,6 +55,7 @@ describe("low level functions", () => {
         expect(CommentFunctions.updateAdd(
             "FROMID", "COMMENTID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Comment',
@@ -65,6 +69,7 @@ describe("low level functions", () => {
         expect(CommentFunctions.updateRemove(
             "FROMID", "COMMENTID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Comment',
@@ -78,6 +83,7 @@ describe("low level functions", () => {
         expect(CommentFunctions.updateSet(
             "FROMID", "COMMENTID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Comment',
@@ -91,6 +97,7 @@ describe("low level functions", () => {
         expect(CommentFunctions.delete(
             "FROMID", "COMMENTID",
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'DELETE',
             itemType: 'Comment',

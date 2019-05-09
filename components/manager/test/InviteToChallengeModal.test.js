@@ -1,7 +1,7 @@
+import "../../../testing/SetTesting";
 import React from 'react';
 import { shallow } from 'enzyme';
 import { store, funCompWrapper } from "../../../testing/TestHelper";
-import "../../../testing/SetTesting";
 import {expect} from "chai";
 import InviteToChallengeModal, {challengeButtons, errorHandler} from "../InviteToChallengeModal";
 

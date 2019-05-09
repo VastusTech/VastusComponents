@@ -30,9 +30,10 @@ describe("Auth Actions", function () {
             reduxStore.dispatch(logIn("USERNAME", "PASSWORD")).then(() => {
                 expect(reduxStore.getActions()).excludingEvery('asyncDispatch').to.eql([
                     { type: 'SET_IS_LOADING' },
-                    { type: 'LOG_IN' },
                     { payload: {}, type: 'FORCE_SET_USER' },
-                    { type: 'SET_IS_NOT_LOADING' }
+                    { type: 'LOG_IN' },
+                    { type: 'SET_IS_NOT_LOADING' },
+                    { type: 'SET_APP_IS_NOT_LOADING' }
                 ]);
                 done();
             });

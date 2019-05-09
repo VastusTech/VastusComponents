@@ -7,7 +7,7 @@ import ChallengeDescriptionModal, {displayTagIcons} from "../ChallengeDescriptio
 
 it('renders without crashing', () => {
     const component = shallow(<ChallengeDescriptionModal challengeID={null} onClose={() => {}} open={true} store={store()}/>);
-    expect(component).toMatchSnapshot();
+    global.expect(component).toMatchSnapshot();
 });
 
 describe("Display Tag Icons", () => {
