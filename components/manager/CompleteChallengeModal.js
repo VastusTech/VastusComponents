@@ -40,7 +40,7 @@ const declareWinnerButtonHandler = (userID, challengeID, winnerID, onClose) => {
  * @param {function()} onClose The function to close the modal.
  * @return {*} The React JSX to display the list of winner buttons.
  */
-const winnerButtons = (members, userID, challengeID, onClose) => {
+export const winnerButtons = (members, userID, challengeID, onClose) => {
     const rowProps = [];
     for (let i = 0; i < members.length; i++) {
         rowProps.push(

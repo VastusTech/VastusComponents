@@ -46,7 +46,7 @@ type Props = {
  * @param tags
  * @return {*}
  */
-const displayTagIcons = (tags) => {
+export const displayTagIcons = (tags) => {
     if (tags) {
         if (tags.length === 1) {
             return (
@@ -188,7 +188,7 @@ const handleRequestChallengeButton = (userID, challengeID, setIsLoading) => {
  * @param setOwnerModalOpen
  * @return {*}
  */
-const createCorrectModal = (ownerID, ownerModalOpen, setOwnerModalOpen) => {
+export const createCorrectModal = (ownerID, ownerModalOpen, setOwnerModalOpen) => {
     const itemType = getItemTypeFromID(ownerID);
     if (itemType === "Client") {
         return (
@@ -203,7 +203,7 @@ const createCorrectModal = (ownerID, ownerModalOpen, setOwnerModalOpen) => {
     return null;
 };
 
-const selectWinner = (isOwned, openCompleteModal) => {
+export const selectWinner = (isOwned, openCompleteModal) => {
     if(isOwned) {
         return (
             <Button primary fluid onClick={openCompleteModal}>Select Winner</Button>
@@ -229,7 +229,7 @@ const selectWinner = (isOwned, openCompleteModal) => {
  * @param onClose
  * @return {*}
  */
-const createCorrectButton = (userID, challengeID, submissions, isLoading, isCompleted, isOwned, isJoined, isRestricted,
+export const createCorrectButton = (userID, challengeID, submissions, isLoading, isCompleted, isOwned, isJoined, isRestricted,
                              isRequesting, setIsLoading, setSubmitModalOpen, openCompleteModal) => {
     const panes = [
         { menuItem: 'Submissions', render: () => (
@@ -313,7 +313,7 @@ const createCorrectButton = (userID, challengeID, submissions, isLoading, isComp
  * @param {Streak} streak
  * @return {*}
  */
-const displayStreakInfo = (ifStreak, isJoined, streak) => {
+export const displayStreakInfo = (ifStreak, isJoined, streak) => {
     if (ifStreak && isJoined) {
         if (streak) {
             const currentNumber = streak.N;
@@ -379,7 +379,7 @@ const displayStreakInfo = (ifStreak, isJoined, streak) => {
  * @param error
  * @return {*}
  */
-const displayError = (error) => {
+export const displayError = (error) => {
     if (error === "Error while trying to update an item in the database safely. Error: The item failed the checkHandler: That challenge is already filled up!") {
         return (<Message negative>
             <Message.Header>Sorry!</Message.Header>
@@ -394,7 +394,7 @@ const displayError = (error) => {
  * @param isDeleted
  * @return {*}
  */
-const challengeDeleted = (isDeleted) => {
+export const challengeDeleted = (isDeleted) => {
     if(isDeleted) {
         return (<Message negative>
             <Message.Header>This Challenge is Deleted!</Message.Header>
@@ -409,7 +409,7 @@ const challengeDeleted = (isDeleted) => {
  * @param {function(boolean)} setIsEditing {boolean} Function for setting the edit boolean.
  * @returns {*} The React JSX used to display the component.
  */
-function editButton(isEditing, setIsEditing) {
+export function editButton(isEditing, setIsEditing) {
     if(!isEditing) {
         return (
             <Button onClick = { () => setIsEditing(p => !p)} floated='left' circular icon color={'purple'}>
@@ -439,7 +439,7 @@ function editButton(isEditing, setIsEditing) {
  * @param {boolean} isJoined If the user has joined the challenge or not.
  * @returns {*} The React JSX used to display the component.
  */
-function createCorrectSettingsButton(isOwned, isJoined, challengeID, setIsLoading, isLoading, userID, setCompleteModalOpen, onClose) {
+export function createCorrectSettingsButton(isOwned, isJoined, challengeID, setIsLoading, isLoading, userID, setCompleteModalOpen, onClose) {
     if(isOwned) {
         return (<Popup
             trigger={<Button floated='right' circular icon color={'purple'}>

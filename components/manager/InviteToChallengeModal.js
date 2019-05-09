@@ -49,7 +49,7 @@ const handleInviteToChallenge = (userID, friendID, challengeID, onClose, setIsLo
  * @param {function()} onClose Closes the modal.
  * @return {*} The React JSX to display the Challenge buttons.
  */
-const challengeButtons = (userID, friendID, challenges, isLoading, isDisabled, setIsLoading, setIsDisabled, setError, onClose) => {
+export const challengeButtons = (userID, friendID, challenges, isLoading, isDisabled, setIsLoading, setIsDisabled, setError, onClose) => {
     const rowProps = [];
     for (let i = 0; i < challenges.length; i++) {
         rowProps.push(
@@ -74,7 +74,7 @@ const challengeButtons = (userID, friendID, challenges, isLoading, isDisabled, s
  * @param error
  * @return {*}
  */
-const errorHandler = (error) => {
+export const errorHandler = (error) => {
     if (error) {
         return (
             <Message color='red'>
