@@ -74,7 +74,7 @@ const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, acces
  * @param {boolean} show Whether the User has successfully created a Challenge or not.
  * @return {*} The React JSX to display the success label or null if not applicable.
  */
-const createSuccessLabel = (show) => {
+export const createSuccessLabel = (show) => {
     if (show) {
         return (<Message positive>
             <Message.Header>Success!</Message.Header>
@@ -94,7 +94,7 @@ const createSuccessLabel = (show) => {
  * @param {string} error The error message string.
  * @return {*} The React JSX to show the error message.
  */
-const displayError = (error) => {
+export const displayError = (error) => {
     if(error !== "") {
         return (<Message negative>
             <Message.Header>Sorry!</Message.Header>
@@ -103,7 +103,7 @@ const displayError = (error) => {
     }
 };
 
-const tasksPlural = (value) => {
+export const tasksPlural = (value) => {
     if(value > 1) {
         return "tasks";
     }

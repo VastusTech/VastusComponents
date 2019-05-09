@@ -23,7 +23,7 @@ const minimumSearchResults = 6;
  * @param {function(boolean)} setResultModalOpen Set's the component result modal open state.
  * @return {*} The React JSX to display the result modal.
  */
-const getResultModal = (result, resultModalOpen, setResultModalOpen) => {
+export const getResultModal = (result, resultModalOpen, setResultModalOpen) => {
     if (!result) {
         return null;
     }
@@ -48,7 +48,7 @@ const getResultModal = (result, resultModalOpen, setResultModalOpen) => {
  * @param {boolean} searchBarEnabled Whether the search bar is enabled or not.
  * @return {*} The formatted results for the Search Bar component.
  */
-const getFormattedResults = (searchQuery, results, searchBarEnabled) => {
+export const getFormattedResults = (searchQuery, results, searchBarEnabled) => {
     const formattedResults = [];
     if (searchBarEnabled) {
         const resultTitles = [];
