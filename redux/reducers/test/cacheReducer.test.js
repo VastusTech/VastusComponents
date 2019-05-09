@@ -5,7 +5,7 @@ import cache, {CLEAR_ITEM_CACHE, CLEAR_NORMALIZED_ITEM_QUERY, PUT_ITEM_QUERY, PU
 import {expect} from "chai";
 
 it("Ignores other actions correctly", () => {
-    expect(cache({}, {type: "__NOT_A_REAL_ACTION__", payload: null}).to.eql({}));
+    expect(cache({}, {type: "__NOT_A_REAL_ACTION__", payload: null})).to.eql({});
 });
 
 describe("Cache Reducer", function () {

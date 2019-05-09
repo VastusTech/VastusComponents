@@ -3,8 +3,21 @@
 exports[`renders without crashing 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Connect(EventCard)
-    eventID={null}
+  Symbol(enzyme.__unrendered__): <EventCard
+    event={
+      Object {
+        "capacity": 5,
+        "id": "EV0001",
+        "members": Array [
+          "Blake",
+          "Kaloob",
+          "Leo",
+        ],
+        "time": "2019-09-15T15:53:00",
+        "time_created": "2019-07-14T15:53:00",
+        "title": "Sleeny's event",
+      }
+    }
     store={
       Object {
         "clearActions": [Function],
@@ -30,41 +43,170 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "class",
     "props": Object {
-      "cache": undefined,
-      "eventID": null,
-      "fetchEvent": [Function],
-      "info": undefined,
-      "store": Object {
-        "clearActions": [Function],
-        "dispatch": [Function],
-        "getActions": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-      },
-      "storeSubscription": Subscription {
-        "listeners": Object {
-          "clear": [Function],
-          "get": [Function],
-          "notify": [Function],
-          "subscribe": [Function],
-        },
-        "onStateChange": [Function],
-        "parentSub": undefined,
-        "store": Object {
-          "clearActions": [Function],
-          "dispatch": [Function],
-          "getActions": [Function],
-          "getState": [Function],
-          "replaceReducer": [Function],
-          "subscribe": [Function],
-        },
-        "unsubscribe": [Function],
-      },
-      "user": undefined,
+      "children": Array [
+        <CardContent>
+          <CardHeader
+            textAlign="center"
+          >
+            Sleeny's event
+          </CardHeader>
+          <CardMeta
+            textAlign="center"
+          >
+            Sun, Sep 15, 2019 03:53PM
+          </CardMeta>
+          <Connect(EventDescriptionModal)
+            eventID="EV0001"
+            onClose={[Function]}
+            open={false}
+          />
+        </CardContent>,
+        <CardContent
+          extra={true}
+        >
+          <CardMeta>
+            Sun, Jul 14, 2019 03:53PM
+          </CardMeta>
+          <CardMeta
+            textAlign="center"
+          >
+            3
+             of 
+            5
+             spots taken.
+          </CardMeta>
+        </CardContent>,
+      ],
+      "fluid": true,
+      "onClick": [Function],
+      "raised": true,
     },
     "ref": null,
-    "rendered": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "children": Array [
+            <CardHeader
+              textAlign="center"
+            >
+              Sleeny's event
+            </CardHeader>,
+            <CardMeta
+              textAlign="center"
+            >
+              Sun, Sep 15, 2019 03:53PM
+            </CardMeta>,
+            <Connect(EventDescriptionModal)
+              eventID="EV0001"
+              onClose={[Function]}
+              open={false}
+            />,
+          ],
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "function",
+            "props": Object {
+              "children": "Sleeny's event",
+              "textAlign": "center",
+            },
+            "ref": null,
+            "rendered": "Sleeny's event",
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "function",
+            "props": Object {
+              "children": "Sun, Sep 15, 2019 03:53PM",
+              "textAlign": "center",
+            },
+            "ref": null,
+            "rendered": "Sun, Sep 15, 2019 03:53PM",
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "eventID": "EV0001",
+              "onClose": [Function],
+              "open": false,
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+        ],
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "children": Array [
+            <CardMeta>
+              Sun, Jul 14, 2019 03:53PM
+            </CardMeta>,
+            <CardMeta
+              textAlign="center"
+            >
+              3
+               of 
+              5
+               spots taken.
+            </CardMeta>,
+          ],
+          "extra": true,
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "function",
+            "props": Object {
+              "children": "Sun, Jul 14, 2019 03:53PM",
+            },
+            "ref": null,
+            "rendered": "Sun, Jul 14, 2019 03:53PM",
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "function",
+            "props": Object {
+              "children": Array [
+                3,
+                " of ",
+                5,
+                " spots taken.",
+              ],
+              "textAlign": "center",
+            },
+            "ref": null,
+            "rendered": Array [
+              3,
+              " of ",
+              5,
+              " spots taken.",
+            ],
+            "type": [Function],
+          },
+        ],
+        "type": [Function],
+      },
+    ],
     "type": [Function],
   },
   Symbol(enzyme.__nodes__): Array [
@@ -73,41 +215,170 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "class",
       "props": Object {
-        "cache": undefined,
-        "eventID": null,
-        "fetchEvent": [Function],
-        "info": undefined,
-        "store": Object {
-          "clearActions": [Function],
-          "dispatch": [Function],
-          "getActions": [Function],
-          "getState": [Function],
-          "replaceReducer": [Function],
-          "subscribe": [Function],
-        },
-        "storeSubscription": Subscription {
-          "listeners": Object {
-            "clear": [Function],
-            "get": [Function],
-            "notify": [Function],
-            "subscribe": [Function],
-          },
-          "onStateChange": [Function],
-          "parentSub": undefined,
-          "store": Object {
-            "clearActions": [Function],
-            "dispatch": [Function],
-            "getActions": [Function],
-            "getState": [Function],
-            "replaceReducer": [Function],
-            "subscribe": [Function],
-          },
-          "unsubscribe": [Function],
-        },
-        "user": undefined,
+        "children": Array [
+          <CardContent>
+            <CardHeader
+              textAlign="center"
+            >
+              Sleeny's event
+            </CardHeader>
+            <CardMeta
+              textAlign="center"
+            >
+              Sun, Sep 15, 2019 03:53PM
+            </CardMeta>
+            <Connect(EventDescriptionModal)
+              eventID="EV0001"
+              onClose={[Function]}
+              open={false}
+            />
+          </CardContent>,
+          <CardContent
+            extra={true}
+          >
+            <CardMeta>
+              Sun, Jul 14, 2019 03:53PM
+            </CardMeta>
+            <CardMeta
+              textAlign="center"
+            >
+              3
+               of 
+              5
+               spots taken.
+            </CardMeta>
+          </CardContent>,
+        ],
+        "fluid": true,
+        "onClick": [Function],
+        "raised": true,
       },
       "ref": null,
-      "rendered": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "children": Array [
+              <CardHeader
+                textAlign="center"
+              >
+                Sleeny's event
+              </CardHeader>,
+              <CardMeta
+                textAlign="center"
+              >
+                Sun, Sep 15, 2019 03:53PM
+              </CardMeta>,
+              <Connect(EventDescriptionModal)
+                eventID="EV0001"
+                onClose={[Function]}
+                open={false}
+              />,
+            ],
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "function",
+              "props": Object {
+                "children": "Sleeny's event",
+                "textAlign": "center",
+              },
+              "ref": null,
+              "rendered": "Sleeny's event",
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "function",
+              "props": Object {
+                "children": "Sun, Sep 15, 2019 03:53PM",
+                "textAlign": "center",
+              },
+              "ref": null,
+              "rendered": "Sun, Sep 15, 2019 03:53PM",
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "eventID": "EV0001",
+                "onClose": [Function],
+                "open": false,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+          ],
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "children": Array [
+              <CardMeta>
+                Sun, Jul 14, 2019 03:53PM
+              </CardMeta>,
+              <CardMeta
+                textAlign="center"
+              >
+                3
+                 of 
+                5
+                 spots taken.
+              </CardMeta>,
+            ],
+            "extra": true,
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "function",
+              "props": Object {
+                "children": "Sun, Jul 14, 2019 03:53PM",
+              },
+              "ref": null,
+              "rendered": "Sun, Jul 14, 2019 03:53PM",
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "function",
+              "props": Object {
+                "children": Array [
+                  3,
+                  " of ",
+                  5,
+                  " spots taken.",
+                ],
+                "textAlign": "center",
+              },
+              "ref": null,
+              "rendered": Array [
+                3,
+                " of ",
+                5,
+                " spots taken.",
+              ],
+              "type": [Function],
+            },
+          ],
+          "type": [Function],
+        },
+      ],
       "type": [Function],
     },
   ],
@@ -123,7 +394,10 @@ ShallowWrapper {
           "getChildContext": Object {
             "calledByRenderer": false,
           },
-          "getDerivedStateFromProps": true,
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
           "getSnapshotBeforeUpdate": true,
           "setState": Object {
             "skipsComponentDidUpdateOnNullish": true,

@@ -8,6 +8,7 @@ describe("high level functions", () => {
         expect(ClientFunctions.createClient(
             "FROMID", "NAME", "EMAIL", "USERNAME"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Client',
@@ -28,6 +29,7 @@ describe("high level functions", () => {
         expect(ClientFunctions.createClientOptional(
             "FROMID", "NAME", "GENDER", "BIRTHDAY", "EMAIL", "USERNAME", "BIO"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Client',
@@ -47,6 +49,7 @@ describe("high level functions", () => {
         expect(ClientFunctions.createFederatedClient(
             "FROMID", "NAME", "EMAIL", "USERNAME", "FEDERATEDID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Client',
@@ -67,6 +70,7 @@ describe("high level functions", () => {
         expect(ClientFunctions.createFederatedClientOptional(
             "FROMID", "NAME", "GENDER", "BIRTHDAY", "EMAIL", "USERNAME", "FEDERATEDID", "BIO"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Client',
@@ -87,6 +91,7 @@ describe("low level functions", () => {
         expect(ClientFunctions.create(
             "FROMID", "NAME", "GENDER", "BIRTHDAY", "EMAIL", "USERNAME", "STRIPEID", "FEDERATEDID", "BIO"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Client',
@@ -106,6 +111,7 @@ describe("low level functions", () => {
         expect(ClientFunctions.updateAdd(
             "FROMID", "CLIENTID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Client',
@@ -119,6 +125,7 @@ describe("low level functions", () => {
         expect(ClientFunctions.updateRemove(
             "FROMID", "CLIENTID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Client',
@@ -132,6 +139,7 @@ describe("low level functions", () => {
         expect(ClientFunctions.updateSet(
             "FROMID", "CLIENTID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Client',
@@ -145,6 +153,7 @@ describe("low level functions", () => {
         expect(ClientFunctions.delete(
             "FROMID", "CLIENTID",
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'DELETE',
             itemType: 'Client',

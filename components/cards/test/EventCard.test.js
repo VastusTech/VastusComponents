@@ -16,7 +16,7 @@ const event1 = {
 
 it('renders without crashing', () => {
     const component = shallow(<EventCard store={store()} event={event1}/>);
-    expect(component).toMatchSnapshot();
+    global.expect(component).toMatchSnapshot();
 });
 
 describe("Event Card", () => {
@@ -71,8 +71,6 @@ describe("Event Card", () => {
         //TODO: Test that pressing the card sets descriptionModalOpen to true
         it('trainer card with trainer prop displays trainer name in header', () => {
             const component = shallow(<EventCard store={store()} event={event1}/>);
-
-            console.log(component.state());
 
             expect(component.find("CardHeader").render().text()).equals("Sleeny");
         });

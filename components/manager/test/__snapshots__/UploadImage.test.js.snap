@@ -63,7 +63,6 @@ ShallowWrapper {
           as="button"
           onClick={[Function]}
           primary={true}
-          role="button"
         >
           <Icon
             as="i"
@@ -74,9 +73,14 @@ ShallowWrapper {
           as="button"
           onClick={[Function]}
           primary={true}
-          role="button"
         >
           Upload
+        </Button>,
+        <Button
+          as="button"
+          onClick={[Function]}
+        >
+          Cancel
         </Button>,
       ],
     },
@@ -127,7 +131,6 @@ ShallowWrapper {
           />,
           "onClick": [Function],
           "primary": true,
-          "role": "button",
         },
         "ref": null,
         "rendered": Object {
@@ -153,10 +156,22 @@ ShallowWrapper {
           "children": "Upload",
           "onClick": [Function],
           "primary": true,
-          "role": "button",
         },
         "ref": null,
         "rendered": "Upload",
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "as": "button",
+          "children": "Cancel",
+          "onClick": [Function],
+        },
+        "ref": null,
+        "rendered": "Cancel",
         "type": [Function],
       },
     ],
@@ -200,7 +215,6 @@ ShallowWrapper {
             as="button"
             onClick={[Function]}
             primary={true}
-            role="button"
           >
             <Icon
               as="i"
@@ -211,9 +225,14 @@ ShallowWrapper {
             as="button"
             onClick={[Function]}
             primary={true}
-            role="button"
           >
             Upload
+          </Button>,
+          <Button
+            as="button"
+            onClick={[Function]}
+          >
+            Cancel
           </Button>,
         ],
       },
@@ -264,7 +283,6 @@ ShallowWrapper {
             />,
             "onClick": [Function],
             "primary": true,
-            "role": "button",
           },
           "ref": null,
           "rendered": Object {
@@ -290,10 +308,22 @@ ShallowWrapper {
             "children": "Upload",
             "onClick": [Function],
             "primary": true,
-            "role": "button",
           },
           "ref": null,
           "rendered": "Upload",
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "as": "button",
+            "children": "Cancel",
+            "onClick": [Function],
+          },
+          "ref": null,
+          "rendered": "Cancel",
           "type": [Function],
         },
       ],
@@ -312,7 +342,10 @@ ShallowWrapper {
           "getChildContext": Object {
             "calledByRenderer": false,
           },
-          "getDerivedStateFromProps": true,
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
           "getSnapshotBeforeUpdate": true,
           "setState": Object {
             "skipsComponentDidUpdateOnNullish": true,

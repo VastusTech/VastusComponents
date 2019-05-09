@@ -8,6 +8,7 @@ describe("high level functions", () => {
         expect(TrainerFunctions.createTrainer(
             "FROMID", "NAME", "EMAIL", "USERNAME"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Trainer',
@@ -15,8 +16,8 @@ describe("high level functions", () => {
                 name: 'NAME',
                 gender: null,
                 birthday: null,
-                username: 'EMAIL',
-                email: 'USERNAME',
+                username: 'USERNAME',
+                email: 'EMAIL',
                 bio: null,
                 stripeID: null,
                 federatedID: null
@@ -28,6 +29,7 @@ describe("high level functions", () => {
         expect(TrainerFunctions.createTrainerOptional(
             "FROMID", "NAME", "GENDER", "BIRTHDAY", "EMAIL", "USERNAME", "BIO"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Trainer',
@@ -48,6 +50,7 @@ describe("high level functions", () => {
         expect(TrainerFunctions.createFederatedTrainer(
             "FROMID", "NAME", "EMAIL", "USERNAME", "FEDERATEDID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Trainer',
@@ -68,6 +71,7 @@ describe("high level functions", () => {
         expect(TrainerFunctions.createFederatedTrainerOptional(
             "FROMID", "NAME", "GENDER", "BIRTHDAY", "EMAIL", "USERNAME", "FEDERATEDID", "BIO"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Trainer',
@@ -89,6 +93,7 @@ describe("low level functions", () => {
         expect(TrainerFunctions.create(
             "FROMID", "NAME", "GENDER", "BIRTHDAY", "EMAIL", "USERNAME", "STRIPEID", "FEDERATEDID", "BIO"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Trainer',
@@ -109,6 +114,7 @@ describe("low level functions", () => {
         expect(TrainerFunctions.updateAdd(
             "FROMID", "TRAINERID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Trainer',
@@ -122,6 +128,7 @@ describe("low level functions", () => {
         expect(TrainerFunctions.updateRemove(
             "FROMID", "TRAINERID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Trainer',
@@ -135,6 +142,7 @@ describe("low level functions", () => {
         expect(TrainerFunctions.updateSet(
             "FROMID", "TRAINERID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Trainer',
@@ -148,6 +156,7 @@ describe("low level functions", () => {
         expect(TrainerFunctions.delete(
             "FROMID", "TRAINERID",
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'DELETE',
             itemType: 'Trainer',

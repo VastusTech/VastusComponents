@@ -27,10 +27,10 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "class",
+    "nodeType": "function",
     "props": Object {
       "cache": undefined,
-      "fetchChallenge": [Function],
+      "fetchChallenges": [Function],
       "fetchUserAttributes": [Function],
       "info": undefined,
       "store": Object {
@@ -70,10 +70,10 @@ ShallowWrapper {
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "class",
+      "nodeType": "function",
       "props": Object {
         "cache": undefined,
-        "fetchChallenge": [Function],
+        "fetchChallenges": [Function],
         "fetchUserAttributes": [Function],
         "info": undefined,
         "store": Object {
@@ -122,7 +122,10 @@ ShallowWrapper {
           "getChildContext": Object {
             "calledByRenderer": false,
           },
-          "getDerivedStateFromProps": true,
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
           "getSnapshotBeforeUpdate": true,
           "setState": Object {
             "skipsComponentDidUpdateOnNullish": true,
@@ -130,6 +133,9 @@ ShallowWrapper {
         },
       },
     },
+  },
+  Symbol(enzyme.__childContext__): Object {
+    "storeSubscription": undefined,
   },
 }
 `;

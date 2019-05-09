@@ -78,6 +78,9 @@ export function subscribeFetchUserAttributes(variableList, dataHandler, failureH
             //     if (dataHandler) { dataHandler(getStore().user); }
             // }));
         }
+        else {
+            dataHandler({});
+        }
     }
 }
 

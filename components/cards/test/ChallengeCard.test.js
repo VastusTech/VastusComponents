@@ -32,7 +32,7 @@ const challenge4 = {
 
 it('renders without crashing', () => {
     const component = shallow(<ChallengeCard store={store()} challenge={null}/>);
-    expect(component).toMatchSnapshot()
+    global.expect(component).toMatchSnapshot()
 });
 
 describe('Challenge Card', function () {

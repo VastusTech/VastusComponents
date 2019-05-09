@@ -8,6 +8,7 @@ describe("high level functions", () => {
         expect(MessageFunctions.createTextMessage(
             "FROMID", "FROM", "NAME", "PROFILEIMAGEPATH", "BOARD", "MESSAGE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Message',
@@ -26,6 +27,7 @@ describe("high level functions", () => {
         expect(MessageFunctions.createPictureMessage(
             "FROMID", "FROM", "NAME", "PROFILEIMAGEPATH", "BOARD", "PICTURE", "PICTUREPATH"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Message',
@@ -44,6 +46,7 @@ describe("high level functions", () => {
         expect(MessageFunctions.createVideoMessage(
             "FROMID", "FROM", "NAME", "PROFILEIMAGEPATH", "BOARD", "VIDEO", "VIDEOPATH"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Message',
@@ -62,6 +65,7 @@ describe("high level functions", () => {
         expect(MessageFunctions.addLastSeen(
             "FROMID", "BOARD", "MESSAGEID", "USERID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Message',
@@ -77,6 +81,7 @@ describe("low level functions", () => {
         expect(MessageFunctions.create(
             "FROMID", "BOARD", "FROM", "NAME", "PROFILEIMAGEPATH", "TYPE", "MESSAGE", "FILE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Message',
@@ -94,6 +99,7 @@ describe("low level functions", () => {
         expect(MessageFunctions.updateAdd(
             "FROMID", "BOARD", "MESSAGEID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Message',
@@ -108,6 +114,7 @@ describe("low level functions", () => {
         expect(MessageFunctions.updateRemove(
             "FROMID", "BOARD", "MESSAGEID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Message',
@@ -122,6 +129,7 @@ describe("low level functions", () => {
         expect(MessageFunctions.updateSet(
             "FROMID", "BOARD", "MESSAGEID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Message',
@@ -136,6 +144,7 @@ describe("low level functions", () => {
         expect(MessageFunctions.delete(
             "FROMID", "BOARD", "MESSAGEID",
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'DELETE',
             itemType: 'Message',

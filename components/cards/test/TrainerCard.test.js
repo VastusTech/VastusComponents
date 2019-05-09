@@ -74,8 +74,6 @@ describe("Post Card", () => {
         it('trainer card with trainer prop displays trainer name in header', () => {
             const component = shallow(<TrainerCard store={store(reduxState)} rank={1} trainer={trainer1}/>);
 
-            console.log(component.state());
-
             expect(component.find("CardHeader").render().text()).equals("Sleeny");
         });
     });

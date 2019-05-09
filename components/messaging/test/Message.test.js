@@ -33,7 +33,7 @@ const message3 = {
 
 it('renders without crashing', () => {
     const component = shallow(<Message userID={"CL0001"} message={message1} store={store()}/>);
-    expect(component).toMatchSnapshot();
+    global.expect(component).toMatchSnapshot();
 });
 
 describe("Message", () => {

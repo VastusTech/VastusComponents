@@ -34,11 +34,14 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "function",
     "props": Object {
+      "addToItemAttribute": [Function],
+      "addToUserAttribute": [Function],
       "cache": undefined,
-      "dispatch": [Function],
       "invite": Object {
         "id": "IV0001",
       },
+      "removeFromUserAttribute": [Function],
+      "removeItem": [Function],
       "store": Object {
         "clearActions": [Function],
         "dispatch": [Function],
@@ -78,11 +81,14 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "function",
       "props": Object {
+        "addToItemAttribute": [Function],
+        "addToUserAttribute": [Function],
         "cache": undefined,
-        "dispatch": [Function],
         "invite": Object {
           "id": "IV0001",
         },
+        "removeFromUserAttribute": [Function],
+        "removeItem": [Function],
         "store": Object {
           "clearActions": [Function],
           "dispatch": [Function],
