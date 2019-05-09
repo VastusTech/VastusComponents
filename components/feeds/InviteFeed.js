@@ -86,7 +86,6 @@ const InviteFeed = (props) => {
         if (props.user.id) {
             setIsLoading(true);
             props.fetchUserAttributes(["receivedInvites", "ownedEvents", "ownedChallenges", "ownedGroups"], () => {
-                alert("Updated user");
                 setIsLoading(false);
             });
         }

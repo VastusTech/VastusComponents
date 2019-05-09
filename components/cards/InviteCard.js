@@ -86,9 +86,9 @@ export const checkResponse = (userID, inviteID, aboutID, fromID, toID, setIsLoad
     if (isValidRequest(userID, inviteID, aboutID, fromID, toID)) {
         responseHandler(() => {
             // this.props.feedUpdate();
+            setIsLoading(false);
             removeFromUserAttribute("receivedInvites", inviteID);
             removeItem("Invite", inviteID);
-            setIsLoading(false);
         }, (error) => {
             console.log(error);
             setIsLoading(false);
@@ -164,9 +164,9 @@ const handleAcceptEventInvite = (userID, inviteID, aboutID, setIsLoading, addToU
     checkResponse(userID, inviteID, aboutID, {}, {}, setIsLoading, removeItem, removeFromUserAttribute,
         (successHandler, failureHandler) => {
         UserFunctions.addEvent(userID, userID, aboutID, () => {
+            successHandler();
             addToUserAttribute("scheduledEvents", aboutID);
             addToItemAttribute(aboutID, "members", userID);
-            successHandler();
         }, failureHandler);
     });
 };
@@ -195,6 +195,7 @@ const handleAcceptChallengeInvite = (userID, inviteID, aboutID, setIsLoading, ad
     checkResponse(userID, inviteID, aboutID, {}, {}, setIsLoading, removeItem, removeFromUserAttribute,
         (successHandler, failureHandler) => {
         UserFunctions.addChallenge(userID, userID, aboutID, () => {
+            successHandler();
             addToUserAttribute("challenges", aboutID);
             addToItemAttribute(aboutID, "members", userID);
         }, failureHandler);
@@ -225,9 +226,9 @@ const handleAcceptGroupInvite = (userID, inviteID, aboutID, setIsLoading, addToU
     checkResponse(userID, inviteID, aboutID, {}, {}, setIsLoading, removeItem, removeFromUserAttribute,
         (successHandler, failureHandler) => {
         UserFunctions.addGroup(userID, userID, aboutID, () => {
+            successHandler();
             addToUserAttribute("groups", aboutID);
             addToItemAttribute(aboutID, "members", userID);
-            successHandler();
         }, failureHandler);
     });
 };
@@ -257,9 +258,9 @@ const handleAcceptEventRequest = (userID, inviteID, toID, aboutID, setIsLoading,
     checkResponse(userID, inviteID, aboutID, {}, toID, setIsLoading, removeItem, removeFromUserAttribute,
         (successHandler, failureHandler) => {
         EventFunctions.addMember(userID, toID, aboutID, () => {
+            successHandler();
             addToItemAttribute(toID, "members", aboutID);
             addToItemAttribute(aboutID, "scheduledEvents", toID);
-            successHandler();
         }, failureHandler);
     });
 };
@@ -289,9 +290,9 @@ const handleAcceptChallengeRequest = (userID, inviteID, toID, aboutID, setIsLoad
     checkResponse(userID, inviteID, aboutID, {}, toID, setIsLoading, removeItem, removeFromUserAttribute,
         (successHandler, failureHandler) => {
         ChallengeFunctions.addMember(userID, toID, aboutID, () => {
+            successHandler();
             addToItemAttribute(toID, "members", aboutID);
             addToItemAttribute(aboutID, "challenges", toID);
-            successHandler();
         }, failureHandler);
     });
 };
@@ -321,9 +322,9 @@ const handleAcceptGroupRequest = (userID, inviteID, toID, aboutID, setIsLoading,
     checkResponse(userID, inviteID, aboutID, {}, toID, setIsLoading, removeItem, removeFromUserAttribute,
         (successHandler, failureHandler) => {
         GroupFunctions.addMember(userID, toID, aboutID, () => {
+            successHandler();
             addToItemAttribute(toID, "members", aboutID);
             addToItemAttribute(aboutID, "groups", toID);
-            successHandler();
         }, failureHandler);
     });
 };
