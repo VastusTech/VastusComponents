@@ -119,9 +119,10 @@ const ChallengeCard = (props: Props) => {
                 {displayTagIcons(getChallengeAttribute("tags"))}
                 <ChallengeDescriptionModal
                     open={modalOpen}
-                    onClose={setModalOpen.bind(false)}
+                    onClose={() => setModalOpen(false)}
                     challengeID={getChallengeAttribute("id")}
-                    daysLeft={getDaysLeft()}/>
+                    daysLeft={getDaysLeft()}
+                />
             </Card.Content>
             <Card.Content extra>
                 <Card.Meta textAlign = 'center'>

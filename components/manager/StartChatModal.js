@@ -28,7 +28,7 @@ type Props = {
  */
 const createChat = (userID, selectedIDs, addToUserAttribute, onClose) => {
     debugAlert("Creating chat with " + JSON.stringify(selectedIDs));
-    const board = getMessageBoardName(selectedIDs);
+    const board = getMessageBoardName([userID, ...selectedIDs]);
     debugAlert(board);
     UserFunctions.addMessageBoard(userID, userID, board, () => {
             console.log("Successfully added message board to chat");

@@ -924,13 +924,12 @@ function putItemQuery(itemType, normalizedQueryString, nextToken, queryResult) {
         }
     };
 }
-function removeItem(itemType, id, dispatch) {
+export function removeItem(itemType, id) {
     return {
         type: REMOVE_ITEM,
         payload: {
             id,
-            itemType,
-            dispatch
+            itemType
         }
     }
 }

@@ -15,7 +15,7 @@ import {shuffleArray} from "../../logic/ArrayHelper";
 // TODO Test the new "visibility" fetch system!
 // TODO USING VISIBILITY WITH A MODAL DOESN'T WORK?
 
-const numFetch = 2;
+const numFetch = 5;
 
 type Props = {
     ids: [string],
@@ -218,12 +218,10 @@ const DatabaseObjectList = (props: Props) => {
                                 for (const itemType in typeIDs) {
                                     if (typeIDs.hasOwnProperty(itemType)) {
                                         if (typeIDs[itemType].length !== typeHiddenIDIndex[itemType]) {
-                                            alert(JSON.stringify(typeIDs) + " and " + JSON.stringify(typeHiddenIDIndex));
                                             return true
                                         }
                                     }
                                 }
-                                alert("false");
                                 return false;
                             })()
                         }/>

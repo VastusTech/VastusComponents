@@ -12,7 +12,7 @@ import {err} from "../../../Constants";
 // TODO Test the new "visibility" fetch system!
 // TODO USING VISIBILITY WITH A MODAL DOESN'T WORK?
 
-const numFetch = 2;
+const numFetch = 5;
 
 type Props = {
     userIDs: [string],
