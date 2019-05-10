@@ -412,6 +412,16 @@ class GroupDescriptionModal extends Component<Props> {
                         </Modal.Content>
                     </Modal>
                     <Modal trigger={
+                        <Button primary className="u-button--flat u-padding-left--1">
+                            <Icon name='users' /> Challenges</Button>}>
+                        <Modal.Content>
+                            <DatabaseObjectList ids={this.getGroupAttribute("challenges")}
+                                                noObjectsMessage={"No challenges yet!"}
+                                                sortFuntion={(a, b) => a.endTime.localeCompare(b.endTime)}
+                            />
+                        </Modal.Content>
+                    </Modal>
+                    <Modal trigger={
                         <Button floated='right' primary className="u-button--flat u-padding-left--1">
                             <Icon name='users' /> Members</Button>}>
                         <Modal.Content>
