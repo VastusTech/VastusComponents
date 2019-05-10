@@ -227,19 +227,19 @@ describe("high level functions", () => {
         });
     });
 // static addMember(fromID, challengeID, userID, successHandler, failureHandler) {
-    it("Should add a member to a challenge correctly", () => {
-        expect(ChallengeFunctions.addMember(
-            "FROMID", "CHALLENGEID", "USERID"
-        )).to.eql({
-            environmentType: 'test',
-            fromID: 'FROMID',
-            action: 'UPDATEADD',
-            itemType: null,
-            identifiers: [ 'USERID' ],
-            attributeName: 'challenges',
-            attributeValues: [ 'CHALLENGEID' ]
-        });
-    });
+//     it("Should add a member to a challenge correctly", () => {
+//         expect(ChallengeFunctions.addMember(
+//             "FROMID", "CHALLENGEID", "USERID"
+//         )).to.eql({
+//             environmentType: 'test',
+//             fromID: 'FROMID',
+//             action: 'UPDATEADD',
+//             itemType: null,
+//             identifiers: [ 'USERID' ],
+//             attributeName: 'challenges',
+//             attributeValues: [ 'CHALLENGEID' ]
+//         });
+//     });
 // static removeMember(fromID, challengeID, userID, successHandler, failureHandler) {
     it("Should remove a member from a challenge correctly", () => {
         expect(ChallengeFunctions.removeMember(

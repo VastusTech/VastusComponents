@@ -11,6 +11,7 @@ import {
     ADD_MESSAGE,
     UNSUBSCRIBE_FROM_BOARD
 } from "../reducers/messageReducer";
+import {getIDsFromMessageBoard} from "../../logic/MessageHelper";
 const notFoundPicture = require('../../img/not_found.png');
 const defaultProfilePicture = require("../../img/roundProfile.png");
 
@@ -79,8 +80,24 @@ function queryNextMessagesFromBoardOptionalSubscribe(board, limit, ifSubscribe, 
         }
         // If this is the first time querying the board, Ably subscribe to it.
         if (ifSubscribe && getStore().message.boardIfSubscribed[board] !== true) {
+            let ifAddMessageFromBoardNotification = false;
+            const boardIDs = getIDsFromMessageBoard(board);
+            if (boardIDs.length === 1) {
+                const boardID = boardIDs[0];
+                const user = getStore().user;
+                // You subscribe to a Challenge/Event/Group only if you're not an owner of that thing.
+                 ifAddMessageFromBoardNotification = !((user.ownedEvents && user.ownedEvents.includes(boardID)) ||
+                    (user.ownedChallenges && user.ownedChallenges.includes(boardID)) ||
+                    (user.ownedGroups && user.ownedGroups.includes(boardID)));
+            }
+            // If the board has more than one ID, then that means that it's a person chat / multiple person chat, and you
+            // don't subscribe to it, because you'll be notified about it anyways.
             dispatch(addHandlerAndUnsubscription(getBoardChannel(board), (message) => {
-                dispatch(addMessageFromNotification(board, message.data));
+                // Handle event types of message
+                // TODO EVENT TYPES FOR READ AND TYPING
+                if (ifAddMessageFromBoardNotification) {
+                    dispatch(addMessageFromNotification(board, message.data));
+                }
             }, (state) => {
                 // When it unsubscribes, we clear the board
                 clearBoard(board, dispatch);

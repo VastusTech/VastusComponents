@@ -3,7 +3,7 @@ import {setAppIsNotLoading, setError, setIsLoading, setIsNotLoading} from "./inf
 import {setUser, forceSetUser, subscribeFetchUserAttributes} from "./userActions";
 import {removeAllHandlers} from "./ablyActions";
 import QL from "../../api/GraphQL";
-import {appUserItemType, err, log} from "../../../Constants";
+import {appUserItemType, err, log, userInitialFetchList} from "../../../Constants";
 import UserFunctions from "../../database_functions/UserFunctions";
 
 // =========================================================================================================
@@ -37,10 +37,7 @@ export function updateAuth() {
                         // dispatch(addHandlerToNotifications((message) => {
                         //     console.log("Received ABLY notification!!!!!\n" + JSON.stringify(message));
                         // }));
-                        dispatch(subscribeFetchUserAttributes(["name", "username", "birthday", "profileImagePath",
-                            "profileImagePaths", "challengesWon", "friends", "scheduledEvents", "ownedEvents", "completedEvents",
-                            "challenges", "ownedChallenges", "completedChallenges", "groups", "ownedGroups", "receivedInvites",
-                            "invitedChallenges", "messageBoards", "streaks"], () => {
+                        dispatch(subscribeFetchUserAttributes(userInitialFetchList, () => {
                             dispatch(authLogIn());
                             dispatch(setIsNotLoading());
                             dispatch(setAppIsNotLoading());
@@ -68,10 +65,7 @@ export function updateAuth() {
                     log&&console.log("REDUX: Successfully updated the authentication credentials for federated identity");
                     if (user) {
                         dispatch(setUser(user));
-                        dispatch(subscribeFetchUserAttributes(["name", "username", "birthday", "profileImagePath",
-                            "profileImagePaths", "challengesWon", "friends", "scheduledEvents", "ownedEvents", "completedEvents",
-                            "challenges", "ownedChallenges", "completedChallenges", "groups", "ownedGroups", "receivedInvites",
-                            "invitedChallenges", "messageBoards", "streaks"], () => {
+                        dispatch(subscribeFetchUserAttributes(userInitialFetchList, () => {
                             dispatch(authLogIn());
                             dispatch(setIsNotLoading());
                             dispatch(setAppIsNotLoading());
@@ -124,10 +118,7 @@ export function logIn(username, password) {
                     } else {
                         dispatch(setUser(user));
                     }
-                    dispatch(subscribeFetchUserAttributes(["name", "username", "birthday", "profileImagePath",
-                        "profileImagePaths", "challengesWon", "friends", "scheduledEvents", "ownedEvents", "completedEvents",
-                        "challenges", "ownedChallenges", "completedChallenges", "groups", "ownedGroups", "receivedInvites",
-                        "invitedChallenges", "messageBoards", "streaks"], () => {
+                    dispatch(subscribeFetchUserAttributes(userInitialFetchList, () => {
                         dispatch(authLogIn());
                         dispatch(setIsNotLoading());
                         dispatch(setAppIsNotLoading());

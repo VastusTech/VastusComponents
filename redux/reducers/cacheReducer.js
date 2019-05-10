@@ -2,6 +2,20 @@ import {err} from "../../../Constants";
 import {removeChannelSubscription} from "../actions/ablyActions";
 import {subtractedArray, withUniqueAdded} from "../../logic/ArrayHelper";
 import {switchReturnItemType} from "../../logic/ItemType";
+import type Client from "../../types/Client";
+import type Trainer from "../../types/Trainer";
+import type Gym from "../../types/Gym";
+import type Workout from "../../types/Workout";
+import type Review from "../../types/Review";
+import type Event from "../../types/Event";
+import type Challenge from "../../types/Challenge";
+import type Invite from "../../types/Invite";
+import type Post from "../../types/Post";
+import type Submission from "../../types/Submission";
+import type Group from "../../types/Group";
+import type Comment from "../../types/Comment";
+import type Sponsor from "../../types/Sponsor";
+import type Streak from "../../types/Streak";
 
 /**
  * Gets the object channel Ably name from the given id.
@@ -71,20 +85,20 @@ const getItemQueryCacheSize = (itemType) => {
 };
 
 type CacheReducer = {
-    clients: Object<string, Object>,
-    trainers: Object<string, Object>,
-    gyms: Object<string, Object>,
-    workouts: Object<string, Object>,
-    reviews: Object<string, Object>,
-    events: Object<string, Object>,
-    challenges: Object<string, Object>,
-    invites: Object<string, Object>,
-    posts: Object<string, Object>,
-    submissions: Object<string, Object>,
-    groups: Object<string, Object>,
-    comments: Object<string, Object>,
-    sponsors: Object<string, Object>,
-    streaks: Object<string, Object>,
+    clients: Object<string, Client>,
+    trainers: Object<string, Trainer>,
+    gyms: Object<string, Gym>,
+    workouts: Object<string, Workout>,
+    reviews: Object<string, Review>,
+    events: Object<string, Event>,
+    challenges: Object<string, Challenge>,
+    invites: Object<string, Invite>,
+    posts: Object<string, Post>,
+    submissions: Object<string, Submission>,
+    groups: Object<string, Group>,
+    comments: Object<string, Comment>,
+    sponsors: Object<string, Sponsor>,
+    streaks: Object<string, Streak>,
     clientLRUHandler: [string],
     trainerLRUHandler: [string],
     gymLRUHandler: [string],

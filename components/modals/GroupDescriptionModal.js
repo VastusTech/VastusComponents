@@ -148,7 +148,7 @@ class GroupDescriptionModal extends Component<Props> {
     handleJoinGroupButton() {
         //console.log("Handling joining the event");
         this.setState({isJoinLoading: true, isLoading: true});
-        UserFunctions.addGroup(this.props.user.id, this.props.user.id, this.getGroupAttribute("id"),
+        UserFunctions.addGroup(this.props.user.id, this.props.user.id, this.getGroupAttribute("id"), null,
             () => {
                 this.forceUpdate();
                 //console.log(JSON.stringify(data));

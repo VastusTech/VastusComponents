@@ -235,19 +235,19 @@ describe("high level functions", () => {
         });
     });
     // static addMember(fromID, eventID, userID, successHandler, failureHandler) {
-    it("Should add a member to the event", () => {
-        expect(EventFunctions.addMember(
-            "FROMID", "EVENTID", "MEMBER"
-        )).to.eql({
-            environmentType: 'test',
-            fromID: 'FROMID',
-            action: 'UPDATEADD',
-            itemType: 'Message',
-            identifiers: [ 'MEMBER' ],
-            attributeName: 'scheduledEvents',
-            attributeValues: [ 'EVENTID' ]
-        });
-    });
+    // it("Should add a member to the event", () => {
+    //     expect(EventFunctions.addMember(
+    //         "FROMID", "EVENTID", "MEMBER"
+    //     )).to.eql({
+    //         environmentType: 'test',
+    //         fromID: 'FROMID',
+    //         action: 'UPDATEADD',
+    //         itemType: 'Message',
+    //         identifiers: [ 'MEMBER' ],
+    //         attributeName: 'scheduledEvents',
+    //         attributeValues: [ 'EVENTID' ]
+    //     });
+    // });
     // static removeMember(fromID, eventID, userID, successHandler, failureHandler) {
     it("Should remove a member from the event", () => {
         expect(EventFunctions.removeMember(

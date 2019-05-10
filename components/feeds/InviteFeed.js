@@ -16,6 +16,16 @@ import {getItemTypeFromID} from "../../logic/ItemType";
 import {err, log} from "../../../Constants";
 import Spinner from "../props/Spinner";
 
+/**
+ * Fetches the about and from info for an invite so that the InviteCard can properly display the information.
+ *
+ * @param {Invite} invite The invite object to fetch the info for.
+ * @param {function(string, [string])} fetchClient The function to fetch a Client from the database.
+ * @param {function(string, [string])} fetchTrainer The function to fetch a Trainer from the database.
+ * @param {function(string, [string])} fetchEvent The function to fetch an Event from the database.
+ * @param {function(string, [string])} fetchChallenge The function to fetch a Challenge from the database.
+ * @param {function(string, [string])} fetchGroup The function to fetch a Group from the database.
+ */
 const fetchAboutAndFromInfo = (invite, fetchClient, fetchTrainer, fetchEvent, fetchChallenge, fetchGroup) => {
     // TODO We don't need this much stuff....
     if (invite && invite.from && invite.to && invite.inviteType && invite.about) {
@@ -151,7 +161,7 @@ const InviteFeed = (props) => {
                 fetchAndAddReceivedInvites("Group", user.ownedGroups[i]);
             }
         }
-    }, [props.user]);
+    }, [props.user.receivedInvites, props.user.ownedEvents, props.user.ownedChallenges, props.user.ownedGroups]);
 
     //The buddy requests consists of a profile picture with the name of the user who has sent you a request.
     //To the right of the request is two buttons, one to accept and one to deny the current request.

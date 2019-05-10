@@ -147,7 +147,7 @@ const handleJoinChallengeButton = (userID, challengeID, setIsLoading) => {
     //console.log("Handling joining the event");
     // this.setState({isJoinLoading: true, isLoading: true});
     setIsLoading(true);
-    UserFunctions.addChallenge(userID, userID, challengeID,
+    UserFunctions.addChallenge(userID, userID, challengeID, null,
         () => {
             setIsLoading(false);
             // this.forceUpdate();
