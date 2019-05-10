@@ -9,6 +9,7 @@ import {getNowTimeString} from "../../logic/TimeHelper";
 /**
  * Handles the actual creation of the Challenge given the inputted info from the User.
  *
+ * @param {string} groupID The ID of associated group with the Challenge.
  * @param {string} userID The ID of the User creating the Challenge.
  * @param {string} endDate The ISO string of the date that the Challenge ends.
  * @param {number} capacity The max number of members for the challenge.
@@ -26,10 +27,11 @@ import {getNowTimeString} from "../../logic/TimeHelper";
  * @param {function(error)} setError Sets the error state.
  * @param {function(true)} setShowSuccessModal Sets the showing of success modal state.
  */
-const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, access, restriction, prize, challengeType,
+const handleSubmit = (groupID, userID, endDate, capacity, title, goal, tagsPressed, access, restriction, prize, challengeType,
                       streakUpdateSpanType, streakUpdateInterval, streakN, setIsLoading, setError, setShowSuccessModal) => {
     //this.setState({isSubmitLoading: true});
     alert("Current user: " + userID);
+    alert("Associated Group: " + groupID);
     const tags = [];
     for (const key in tagsPressed) {
         if (tagsPressed.hasOwnProperty(key) && tagsPressed[key]) {
@@ -39,10 +41,10 @@ const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, acces
     // TODO Check to see if valid inputs!
     if (capacity && title && goal && tags) {
         if (Number.isInteger(+capacity)) {
-            ChallengeFunctions.createChallengeOptional(userID, userID, endDate, capacity, title, goal, null,
+            ChallengeFunctions.createGroupChallengeOptional(userID, groupID, userID, endDate, capacity, title, goal, null,
                 null, null, tags, access, restriction, null, challengeType, streakUpdateSpanType, streakUpdateInterval,
                 streakN, (data) => {
-                    console.log("Successfully created a challenge!");
+                    console.log("Successfully created a group challenge!");
                     setIsLoading(false);
                     setShowSuccessModal(true);
                     // this.closeModal();
@@ -170,6 +172,10 @@ const intervalsPlural = (value, setStreakUpdateSpanType, streakUpdateSpanType) =
     }
 }
 
+type Props = {
+    associatedGroup: string
+}
+
 /**
  * This is the modal for creating Challenges. Every input is in the form of a normal text input.
  * Inputting the time and date utilizes the Semantic-ui Calendar React library which isn't vanilla Semantic.
@@ -178,7 +184,7 @@ const intervalsPlural = (value, setStreakUpdateSpanType, streakUpdateSpanType) =
  * @return {*} The React JSX to display the component.
  * @constructor
  */
-const CreateChallengeProp = (props) => {
+const CreateGroupChallengeProp = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [tagsPressed, setTagsPressed] = useState({
@@ -199,6 +205,8 @@ const CreateChallengeProp = (props) => {
     const [streakUpdateSpanType, setStreakUpdateSpanType] = useState(null);
     const [streakUpdateInterval, setStreakUpdateInterval] = useState(null);
     const [streakN, setStreakN] = useState(null);
+
+    //alert(props.associatedGroup);
 
     return (
         <div align='center'>
@@ -238,7 +246,7 @@ const CreateChallengeProp = (props) => {
                     <Grid centered>
                         <Grid.Row centered>
                             <Grid.Column>
-                                <Form onSubmit={() => handleSubmit(props.user.id, endTime, capacity, title, goal, tagsPressed,
+                                <Form onSubmit={() => handleSubmit(props.associatedGroup, props.user.id, endTime, capacity, title, goal, tagsPressed,
                                     access, restriction, prize, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
                                     setIsLoading, setError, setShowSuccessLabel)}>
                                     <Form.Input fluid label="Title" type="text" name="title" placeholder="Title" onChange={value => setTitle(value.target.value)}/>
@@ -259,17 +267,17 @@ const CreateChallengeProp = (props) => {
                                                             Complete
                                                         </Grid.Column>
                                                         <Grid.Column>
-                                                    <Form.Input fluid type="number" name="streakUpdateInterval" value={streakUpdateInterval ? streakUpdateInterval : ""}
-                                                                onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
-                                                                    ? setStreakUpdateInterval(1) : setStreakUpdateInterval(value.target.value)}/>
+                                                            <Form.Input fluid type="number" name="streakUpdateInterval" value={streakUpdateInterval ? streakUpdateInterval : ""}
+                                                                        onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
+                                                                            ? setStreakUpdateInterval(1) : setStreakUpdateInterval(value.target.value)}/>
                                                         </Grid.Column>
                                                         <Grid.Column style={{marginTop: '15px'}} width={3}>
                                                             {tasksPlural(streakUpdateInterval)} every
                                                         </Grid.Column>
                                                         <Grid.Column>
                                                             <Form.Input fluid type="number" name="streakN" value={streakN ? streakN : ""}
-                                                                onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
-                                                                    ? setStreakN(1) : setStreakN(value.target.value)}/>
+                                                                        onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
+                                                                            ? setStreakN(1) : setStreakN(value.target.value)}/>
                                                         </Grid.Column>
                                                         <Grid.Column>
                                                             {intervalsPlural(streakN, setStreakUpdateSpanType, streakUpdateSpanType)}
@@ -291,7 +299,7 @@ const CreateChallengeProp = (props) => {
                                     <Form.Field width={12}>
                                         <Checkbox toggle
                                                   onClick={() => {setChallengeType(p => p ? null : "streak");
-                                                  setStreakN(1); setStreakUpdateInterval(1); setStreakUpdateSpanType("daily")}}
+                                                      setStreakN(1); setStreakUpdateInterval(1); setStreakUpdateSpanType("daily")}}
                                                   checked={challengeType === "streak"}
                                                   label={challengeType ? challengeType : "streak off"} />
                                     </Form.Field>
@@ -316,11 +324,11 @@ const CreateChallengeProp = (props) => {
             </div>
             <Modal.Actions>
                 <Button loading={isLoading} disabled={isLoading} primary size="big" type='button'
-                        onClick={() => handleSubmit(props.user.id, endTime, capacity, title, goal, tagsPressed, access,
+                        onClick={() => handleSubmit(props.associatedGroup, props.user.id, endTime, capacity, title, goal, tagsPressed, access,
                             restriction, prize, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
                             setIsLoading, setError, setShowSuccessLabel)}>Submit</Button>
             </Modal.Actions>
-        {createSuccessLabel(showSuccessLabel)}
+            {createSuccessLabel(showSuccessLabel)}
         </div>
     );
 };
@@ -342,4 +350,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateChallengeProp);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateGroupChallengeProp);

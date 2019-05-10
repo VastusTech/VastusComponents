@@ -158,7 +158,7 @@ class EventDescriptionModal extends Component<Props> {
     handleJoinEventButton() {
         //console.log("Handling joining the event");
         this.setState({isLoading: true});
-        UserFunctions.addEvent(this.props.user.id, this.props.user.id, this.getEventAttribute("id"),
+        UserFunctions.addEvent(this.props.user.id, this.props.user.id, this.getEventAttribute("id"), null,
             (data) => {
                 this.forceUpdate(data.id);
                 //console.log(JSON.stringify(data));

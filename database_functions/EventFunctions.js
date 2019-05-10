@@ -243,11 +243,29 @@ class EventFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
+     * function(string, string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static addMember(fromID, eventID, userID, successHandler, failureHandler) {
-        return UserFunctions.addEvent(fromID, userID, eventID, successHandler, failureHandler);
-    }
+    // static addMember(fromID, eventID, userID, successHandler, failureHandler, props) {
+    //     return UserFunctions.addEvent(fromID, userID, eventID, (data) => {
+    //         if (props) {
+    //             if (props.addToItemAttribute && props.addToUserAttribute) {
+    //                 // TODO
+    //                 err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+    //             }
+    //             else {
+    //                 err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+    //             }
+    //         }
+    //         else {
+    //             err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+    //         }
+    //         successHandler && successHandler(data);
+    //     }, failureHandler);
+    // }
 
     /**
      * Removes a User from an Event's members and the Event from the User's Events in the database.

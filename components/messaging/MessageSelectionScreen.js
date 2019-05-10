@@ -22,7 +22,7 @@ type Props = {
     sortFunction?: any
 }
 
-class DatabaseObjectList extends Component<Props> {
+class MessageSelectionScreen extends Component<Props> {
     state = {
         isLoading: true,
         ids: null,
@@ -168,4 +168,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DatabaseObjectList);
+export default connect(mapStateToProps, mapDispatchToProps)(MessageSelectionScreen);

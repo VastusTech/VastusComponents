@@ -12,6 +12,10 @@ import Logo from "../../img/vt_new.svg";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
 // import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import CreatePostProp from "../manager/CreatePost";
+import CreateChallengeProp from "../manager/CreateChallenge";
+import GroupFeed from "../feeds/DatabaseObjectFeed";
+import ChallengeList from "../lists/ChallengeList";
+import CreateGroupChallengeProp from "../manager/CreateGroupChallenge";
 
 // TODO PLEASE REFACTOR THIS IS CRINGY
 // TODO Rewrite for the new design
@@ -148,7 +152,7 @@ class GroupDescriptionModal extends Component<Props> {
     handleJoinGroupButton() {
         //console.log("Handling joining the event");
         this.setState({isJoinLoading: true, isLoading: true});
-        UserFunctions.addGroup(this.props.user.id, this.props.user.id, this.getGroupAttribute("id"),
+        UserFunctions.addGroup(this.props.user.id, this.props.user.id, this.getGroupAttribute("id"), null,
             () => {
                 this.forceUpdate();
                 //console.log(JSON.stringify(data));
@@ -277,7 +281,7 @@ class GroupDescriptionModal extends Component<Props> {
                 <Fragment>
                     <Divider className='u-margin-top--4' />
                     <Card fluid>
-                        <Tab menu={{ widths: 2, inverted: true }} panes={panes} className='u-challenge u-margin-top--2' />
+                        <Tab menu={{ widths: 3, inverted: true }} panes={panes} className='u-challenge u-margin-top--2' />
                     </Card>
                 </Fragment>
             )
@@ -288,7 +292,7 @@ class GroupDescriptionModal extends Component<Props> {
                     <Divider className='u-margin-top--4' />
                     <Card fluid>
                         {/*{alert(this.state.groupID)}*/}
-                        <Tab menu={{ widths: 2, inverted: true }} panes={panes} className='u-challenge u-margin-top--2' />
+                        <Tab menu={{ widths: 3, inverted: true }} panes={panes} className='u-challenge u-margin-top--2' />
                     </Card>
                 </Fragment>
             )
@@ -340,6 +344,11 @@ class GroupDescriptionModal extends Component<Props> {
                     <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
                         <Modal trigger={<Button fluid primary>Create Post</Button>} closeIcon>
                             <CreatePostProp/>
+                        </Modal>
+                        <Modal closeIcon trigger={<Button fluid primary>Create Challenge {" "}<Icon name="trophy"/></Button>}>
+                            <Modal.Content>
+                                <CreateGroupChallengeProp associatedGroup={this.props.groupID}/>
+                            </Modal.Content>
                         </Modal>
                         <DatabaseObjectList ids={this.state.posts}
                                             noObjectsMessage="No posts yet!"

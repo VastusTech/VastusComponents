@@ -40,6 +40,7 @@ ShallowWrapper {
       "invite": Object {
         "id": "IV0001",
       },
+      "removeFromItemAttribute": [Function],
       "removeFromUserAttribute": [Function],
       "removeItem": [Function],
       "store": Object {
@@ -87,6 +88,7 @@ ShallowWrapper {
         "invite": Object {
           "id": "IV0001",
         },
+        "removeFromItemAttribute": [Function],
         "removeFromUserAttribute": [Function],
         "removeItem": [Function],
         "store": Object {

@@ -2,8 +2,13 @@ import React, { useState, useEffect } from 'react';
 import {Modal, Button, Dimmer, Message, Icon, Grid} from 'semantic-ui-react';
 import { connect } from "react-redux";
 import InviteToChallengeModalProp from "../manager/InviteToChallengeModal";
-import {fetchClient} from "../../redux/convenience/cacheItemTypeActions";
-import {forceFetchUserAttributes} from "../../redux/actions/userActions";
+import {fetchClient, fetchInvite} from "../../redux/convenience/cacheItemTypeActions";
+import {
+    addToUserAttribute,
+    fetchUserAttributes,
+    forceFetchUserAttributes,
+    removeFromUserAttribute
+} from "../../redux/actions/userActions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
 import UserFunctions from "../../database_functions/UserFunctions";
 import {debugAlert} from "../../logic/DebuggingHelper";
@@ -13,6 +18,8 @@ import {getClientAttribute} from "../../logic/CacheRetrievalHelper";
 import Spinner from "../props/Spinner";
 import {getMessageBoardName} from "../../logic/MessageHelper";
 import ProfileImage from "../props/ProfileImage";
+import type Invite from "../../types/Invite";
+import {addToItemAttribute, removeFromItemAttribute} from "../../redux/actions/cacheActions";
 
 // TODO Rewrite for the new design
 // TODO Move the functions outside of the component to improve efficiency
@@ -24,7 +31,8 @@ type Props = {
 }
 
 /**
- * TODO
+ * Client Modal allows you to see a Client's attributes and also you can interact with the Client like adding them as a
+ * friend.
  *
  * @param props
  * @return {*}
@@ -34,16 +42,26 @@ const ClientModal = (props: Props) => {
     const [clientID, setClientID] = useState(null);
     // const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [isAddFriendLoading, setIsAddFriendLoading] = useState(false);
-    const [isRemoveFriendLoading, setIsRemoveFriendLoading] = useState(false);
+    const [isActionButtonLoading, setIsActionButtonLoading] = useState(false);
     const [inviteModalOpen, setInviteModalOpen] = useState(false);
-    const [sentFriendRequest, setSentFriendRequest] = useState(false);
+    const [isFriend, setIsFriend] = useState(false);
+    const [friendRequestID, setFriendRequestID] = useState(null);
+    const [hasFriendRequest, setHasFriendRequest] = useState(false);
+    const [pendingFriendRequest, setPendingFriendRequest] = useState(false);
+
+    const getAttribute = (attribute) => { return getClientAttribute(clientID, attribute, props.cache); };
 
     // Changed clientID
     useEffect(() => {
         if (props.clientID) {
             setClientID(props.clientID);
+            setError(null);
+            setIsFriend(false);
+            setFriendRequestID(null);
+            setHasFriendRequest(false);
+            setPendingFriendRequest(false);
             // TODO Reset state
+
         }
     }, [props.clientID]);
 
@@ -51,7 +69,6 @@ const ClientModal = (props: Props) => {
     useEffect(() => {
     }, [clientID]);
 
-    // ???? TODO TEST For open?
     useEffect(() => {
         if (props.open && clientID) {
             // alert("opened!");
@@ -60,22 +77,71 @@ const ClientModal = (props: Props) => {
         }
     }, [props.open]);
 
-    const getAttribute = (attribute) => { return getClientAttribute(clientID, attribute, props.cache); };
+    // Automatically update friend status
+    useEffect(() => {
+        if (props.user.friends && props.clientID) {
+            setIsFriend(props.user.friends.includes(props.clientID));
+        }
+        if (props.user.friendRequests && props.clientID) {
+            setHasFriendRequest(props.user.friendRequests.includes(props.clientID));
+        }
+        const clientFriendRequests = getAttribute("friendRequests");
+        if (clientFriendRequests && props.user.id) {
+            setPendingFriendRequest(clientFriendRequests.includes(props.user.id));
+            if (clientFriendRequests.includes(props.user.id)) {
+                props.fetchUserAttributes(["receivedInvites"], (user) => {
+                    if (user.receivedInvites) {
+                        for (let i = 0; i < user.receivedInvites.length; i++) {
+                            const inviteID = user.receivedInvites[i];
+                            props.fetchInvite(inviteID, ["inviteType", "to"], (invite: Invite) => {
+                                if (invite.inviteType === "friendRequest" && invite.to === props.clientID) {
+                                    setFriendRequestID(inviteID);
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        console.error("Error in getting friend request");
+                    }
+                }, (error) => {
+                    console.error("Error in getting friend request invite id." + error);
+                });
+            }
+        }
+    }, [props.user.friends, props.user.friendRequests, getAttribute("friendRequests")]);
 
     const handleAddFriendButton = () => {
         const userID = props.user.id;
         const friendID = getAttribute("id");
         if (userID && friendID) {
-            setIsAddFriendLoading(true);
-            InviteFunctions.createFriendRequest(userID, userID, friendID, (data) => {
-                setIsAddFriendLoading(false);
-                setSentFriendRequest(true);
-                props.forceFetchUserAttributes(["friends"]);
+            setIsActionButtonLoading(true);
+            InviteFunctions.createFriendRequest(userID, userID, friendID, () => {
+                setIsActionButtonLoading(false);
             }, (error) => {
-                setIsAddFriendLoading(false);
+                setIsActionButtonLoading(false);
+                log&&console.log(error);
+                setError(error);
+            }, props);
+        }
+    };
+
+    // This is really long because we want to find the invite ID to delete (locally) as well.
+    const handleAcceptFriendRequestButton = () => {
+        const userID = props.user.id;
+        const friendID = getAttribute("id");
+        alert(userID + " " + friendID + " " + friendRequestID);
+        if (userID && friendID && friendRequestID) {
+            setIsActionButtonLoading(true);
+            UserFunctions.addFriend(userID, userID, friendID, friendRequestID, () => {
+                setIsActionButtonLoading(false);
+            }, (error) => {
+                setIsActionButtonLoading(false);
                 log&&console.log(error);
                 setError(error);
             });
+        }
+        else {
+
         }
     };
 
@@ -83,56 +149,51 @@ const ClientModal = (props: Props) => {
         const userID = props.user.id;
         const friendID = getAttribute("id");
         if (userID && friendID) {
-            setIsRemoveFriendLoading(true);
+            setIsActionButtonLoading(true);
             UserFunctions.removeFriend(userID, userID, friendID, (data) => {
-                setIsRemoveFriendLoading(false);
+                setIsActionButtonLoading(false);
                 log&&console.log("Successfully removed " + getAttribute("name") + " from friends list");
                 props.forceFetchUserAttributes(["friends"]);
             }, (error) => {
-                setIsRemoveFriendLoading(false);
+                setIsActionButtonLoading(false);
                 err&&console.error(error);
                 setError(error);
-            });
+            }, props);
         }
     };
 
     const getCorrectFriendActionButton = () => {
-        const friendID = getAttribute("id");
-        if (friendID) {
-            if (props.user.friends && props.user.friends.length) {
-                if (props.user.friends.includes(friendID)) {
-                    // Then they're already your friend
-                    return (
-                        <Button inverted
-                                fluid
-                                loading={isRemoveFriendLoading}
-                                type='button'
-                                onClick={handleRemoveFriendButton}>
-                            Remove Buddy
-                        </Button>
-                    );
-                }
-            }
-            const friendRequests = getAttribute("friendRequests");
-            if (friendRequests && friendRequests.length && (friendRequests.includes(props.user.id) || sentFriendRequest)) {
-                // Then you already sent a friend request
-                return (
-                    <Button inverted disabled fluid
-                            type='button'>
-                        Sent Request!
-                    </Button>
-                );
-            }
+        if (isFriend) {
+            return (
+                <Button inverted fluid loading={isActionButtonLoading}
+                        type='button' onClick={handleRemoveFriendButton}>
+                    Remove Buddy
+                </Button>
+            );
         }
-        return(
-            <Button inverted
-                    fluid
-                    loading={isAddFriendLoading}
-                    type='button'
-                    onClick={handleAddFriendButton}>
-                Add Buddy
-            </Button>
-        );
+        else if (pendingFriendRequest) {
+            return (
+                <Button inverted disabled fluid type='button'>
+                    Sent Request!
+                </Button>
+            );
+        }
+        else if (hasFriendRequest) {
+            return(
+                <Button inverted fluid loading={isActionButtonLoading}
+                        type='button' onClick={handleAcceptFriendRequestButton}>
+                    Accept Buddy Request
+                </Button>
+            );
+        }
+        else {
+            return(
+                <Button inverted fluid loading={isActionButtonLoading}
+                        type='button' onClick={handleAddFriendButton}>
+                    Add Buddy
+                </Button>
+            );
+        }
     };
 
     // TODO Unsure what this was doing exactly? this.state.showSuccessLabel and this.state.showModal confused me
@@ -244,11 +305,29 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchClient: (id, variablesList) => {
-            dispatch(fetchClient(id, variablesList));
+        fetchClient: (id, variablesList, dataHandler, failureHandler) => {
+            dispatch(fetchClient(id, variablesList, dataHandler, failureHandler));
+        },
+        fetchInvite: (id, variableList, dataHandler, failureHandler) => {
+            dispatch(fetchInvite(id, variableList, dataHandler, failureHandler));
+        },
+        fetchUserAttributes: (variableList, dataHandler, failureHandler) => {
+            dispatch(fetchUserAttributes(variableList, dataHandler, failureHandler));
         },
         forceFetchUserAttributes: (variablesList) => {
             dispatch(forceFetchUserAttributes(variablesList));
+        },
+        addToUserAttribute: (attributeName, attributeValue) => {
+            dispatch(addToUserAttribute(attributeName, attributeValue));
+        },
+        addToItemAttribute: (id, attributeName, attributeValue) => {
+            dispatch(addToItemAttribute(id, attributeName, attributeValue));
+        },
+        removeFromUserAttribute: (attributeName, attributeValue) => {
+            dispatch(removeFromUserAttribute(attributeName, attributeValue));
+        },
+        removeFromItemAttribute: (id, attributeName, attributeValue) => {
+            dispatch(removeFromItemAttribute(id, attributeName, attributeValue));
         }
     }
 };

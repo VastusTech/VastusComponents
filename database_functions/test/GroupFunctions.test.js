@@ -131,19 +131,19 @@ describe("high level functions", () => {
         });
     });
     // static addMember(fromID, groupID, userID, successHandler, failureHandler) {
-    it("Should add a member to a group", () => {
-        expect(GroupFunctions.addMember(
-            "FROMID", "GROUPID", "MEMBER"
-        )).to.eql({
-            environmentType: 'test',
-            fromID: 'FROMID',
-            action: 'UPDATEADD',
-            itemType: 'Message',
-            identifiers: [ 'MEMBER' ],
-            attributeName: 'groups',
-            attributeValues: [ 'GROUPID' ]
-        });
-    });
+    // it("Should add a member to a group", () => {
+    //     expect(GroupFunctions.addMember(
+    //         "FROMID", "GROUPID", "MEMBER"
+    //     )).to.eql({
+    //         environmentType: 'test',
+    //         fromID: 'FROMID',
+    //         action: 'UPDATEADD',
+    //         itemType: 'Message',
+    //         identifiers: [ 'MEMBER' ],
+    //         attributeName: 'groups',
+    //         attributeValues: [ 'GROUPID' ]
+    //     });
+    // });
     // static removeMember(fromID, groupID, userID, successHandler, failureHandler) {
     it("Should remove a member from a group", () => {
         expect(GroupFunctions.removeMember(
