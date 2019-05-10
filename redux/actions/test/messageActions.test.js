@@ -8,7 +8,7 @@ import {getInitialReduxStore, store} from "../../../testing/TestHelper";
 describe("Message Actions", function () {
     let reduxStore;
     beforeEach(() => {
-        reduxStore = store(getInitialReduxStore(['message']));
+        reduxStore = store(getInitialReduxStore(['message', 'user']));
     });
 
     describe("Set Board Read", () => {

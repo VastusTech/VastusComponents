@@ -559,7 +559,9 @@ function removeAttributeIndex(state, id, itemType, attributeName, index) {
         err&&console.error("TRYING TO REMOVE ATTRIBUTES TO A NOT ARRAY!!!! PROBLEM. AttributeName: " + attributeName);
         return;
     }
-    itemCache[id][attributeName] = [...attribute].splice(index, 1);
+    const newAttribute = [...attribute];
+    [...attribute].splice(index, 1);
+    itemCache[id][attributeName] = newAttribute;
 }
 
 /**

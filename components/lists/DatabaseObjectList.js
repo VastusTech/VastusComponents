@@ -9,11 +9,10 @@ import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
 import TrainerCard, {TrainerCardInfo} from "../cards/TrainerCard";
 import EventCard from "../cards/EventCard";
 import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
-import PostCard from "../cards/PostCard";
+import PostCard, {PostCardInfo} from "../cards/PostCard";
 import {shuffleArray} from "../../logic/ArrayHelper";
 
-// TODO Test the new "visibility" fetch system!
-// TODO USING VISIBILITY WITH A MODAL DOESN'T WORK?
+// TODO Don't use this with items that have depth to what they need to grab!!! (i.e Posts with "about" info)
 
 const numFetch = 5;
 
@@ -97,7 +96,7 @@ export const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, so
                 EventCard.fetchVariableList,
                 ChallengeCardInfo.fetchList,
                 null,
-                PostCard.fetchVariableList,
+                PostCardInfo.fetchList,
                 null, null, null, null, null,
                 "Get variable list from item type not implemented!");
             // alert(ids.length + " vs " + hiddenIndex);
