@@ -11,7 +11,7 @@ import {
 import type Group from "../../types/Group";
 
 export const GroupCardInfo = {
-    fetchList: ["id", "item_type", "title", "description", "motto", "restriction", "members", "owners", "time_created", "access"],
+    fetchList: ["id", "item_type", "title", "description", "motto", "restriction", "members", "owners", "time_created", "access", "challenges"],
     ifSubscribe: false
 };
 

@@ -12,9 +12,9 @@ import Logo from "../../img/vt_new.svg";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
 // import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import CreatePostProp from "../manager/CreatePost";
-import CreateChallengeProp from "../manager/CreateChallenge";
-import GroupFeed from "../feeds/DatabaseObjectFeed";
-import ChallengeList from "../lists/ChallengeList";
+// import CreateChallengeProp from "../manager/CreateChallenge";
+// import GroupFeed from "../feeds/DatabaseObjectFeed";
+// import ChallengeList from "../lists/ChallengeList";
 import CreateGroupChallengeProp from "../manager/CreateGroupChallenge";
 
 // TODO PLEASE REFACTOR THIS IS CRINGY
