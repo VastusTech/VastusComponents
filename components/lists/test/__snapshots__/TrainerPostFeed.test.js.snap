@@ -36,7 +36,6 @@ ShallowWrapper {
       "fetchUserAttributes": [Function],
       "forceFetchTrainer": [Function],
       "info": undefined,
-      "putPost": [Function],
       "store": Object {
         "clearActions": [Function],
         "dispatch": [Function],
@@ -83,7 +82,6 @@ ShallowWrapper {
         "fetchUserAttributes": [Function],
         "forceFetchTrainer": [Function],
         "info": undefined,
-        "putPost": [Function],
         "store": Object {
           "clearActions": [Function],
           "dispatch": [Function],
@@ -131,7 +129,10 @@ ShallowWrapper {
           "getChildContext": Object {
             "calledByRenderer": false,
           },
-          "getDerivedStateFromProps": true,
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
           "getSnapshotBeforeUpdate": true,
           "setState": Object {
             "skipsComponentDidUpdateOnNullish": true,
@@ -139,6 +140,9 @@ ShallowWrapper {
         },
       },
     },
+  },
+  Symbol(enzyme.__childContext__): Object {
+    "storeSubscription": undefined,
   },
 }
 `;

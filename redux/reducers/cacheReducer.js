@@ -1,6 +1,6 @@
 import {err} from "../../../Constants";
 import {removeChannelSubscription} from "../actions/ablyActions";
-import {addUniqueToArray, subtractArray} from "../../logic/ArrayHelper";
+import {subtractedArray, withUniqueAdded} from "../../logic/ArrayHelper";
 import {switchReturnItemType} from "../../logic/ItemType";
 
 /**
@@ -498,7 +498,9 @@ function setAttributeIndex(state, id, itemType, attributeName, index, attributeV
         err&&console.error("TRYING TO SET ATTRIBUTE OF A NOT ARRAY!!!! PROBLEM. AttributeName: " + attributeName);
         return;
     }
-    attribute[index] = attributeValue;
+    const newAttribute = [...attribute];
+    newAttribute[index] = attributeValue;
+    itemCache[id][attributeName] = newAttribute;
 }
 
 /**
@@ -526,7 +528,7 @@ function addToAttributes(state, id, itemType, attributes) {
                 err&&console.error("TRYING TO ADD ATTRIBUTES TO A NOT ARRAY!!!! PROBLEM. AttributeName: " + attributeName);
             }
             else {
-                addUniqueToArray(attribute, addAttribute);
+                itemCache[id][attributeName] = withUniqueAdded(attribute, addAttribute);
             }
         }
     }
@@ -557,7 +559,7 @@ function removeAttributeIndex(state, id, itemType, attributeName, index) {
         err&&console.error("TRYING TO REMOVE ATTRIBUTES TO A NOT ARRAY!!!! PROBLEM. AttributeName: " + attributeName);
         return;
     }
-    attribute.splice(index, 1);
+    itemCache[id][attributeName] = [...attribute].splice(index, 1);
 }
 
 /**
@@ -585,7 +587,7 @@ const removeFromAttributes = (state, id, itemType, attributes) => {
                 err&&console.error("TRYING TO REMOVE ATTRIBUTES FROM A NOT ARRAY!!!! PROBLEM. AttributeName: " + attributeName);
             }
             else {
-                subtractArray(attribute, removeAttribute);
+                itemCache[id][attributeName] = subtractedArray(attribute, removeAttribute);
             }
         }
     }

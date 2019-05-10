@@ -8,6 +8,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.createChallenge(
             "FROMID", "OWNER", "ENDTIME", "CAPACITY", "TITLE", "GOAL", "ACCESS", "RESTRICTION", ["TAG1", "TAG2", "TAG3"]
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Challenge',
@@ -39,6 +40,7 @@ describe("high level functions", () => {
             "MEMBER2", "MEMBER3"], ["TAG1", "TAG2", "TAG3"], "ACCESS", "RESTRICTION", "PRIZE", "CHALLENGETYPE",
             "STREAKUPDATESPANTYPE", "STREAKUPDATEINTERVAL", "STREAKN"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Challenge',
@@ -69,6 +71,7 @@ describe("high level functions", () => {
             "FROMID", "GROUPID", "OWNER", "ENDTIME", "CAPACITY", "TITLE", "GOAL", "ACCESS", "RESTRICTION",
             ["TAG1", "TAG2", "TAG3"]
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Challenge',
@@ -100,6 +103,7 @@ describe("high level functions", () => {
                 "MEMBER2", "MEMBER3"], ["TAG1", "TAG2", "TAG3"], "ACCESS", "RESTRICTION", "PRIZE", "CHALLENGETYPE",
             "STREAKUPDATESPANTYPE", "STREAKUPDATEINTERVAL", "STREAKN"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Challenge',
@@ -129,6 +133,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.updateWinner(
             "FROMID", "CHALLENGEID", "WINNERID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Challenge',
@@ -142,6 +147,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.updateToPrivate(
             "FROMID", "CHALLENGEID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Challenge',
@@ -155,6 +161,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.updateToPublic(
             "FROMID", "CHALLENGEID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Challenge',
@@ -168,6 +175,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.updateToInviteOnly(
             "FROMID", "CHALLENGEID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Challenge',
@@ -181,6 +189,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.updateToUnrestricted(
             "FROMID", "CHALLENGEID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Challenge',
@@ -194,6 +203,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.addTag(
             "FROMID", "CHALLENGEID", "TAG"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Challenge',
@@ -207,6 +217,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.removeTag(
             "FROMID", "CHALLENGEID", "TAG"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Challenge',
@@ -220,6 +231,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.addMember(
             "FROMID", "CHALLENGEID", "USERID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: null,
@@ -233,6 +245,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.removeMember(
             "FROMID", "CHALLENGEID", "USERID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: null,
@@ -246,6 +259,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.updateEndTime(
             "FROMID", "CHALLENGEID", "ENDTIME"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Challenge',
@@ -259,6 +273,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.updateCapacity(
             "FROMID", "CHALLENGEID", "CAPACITY"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Challenge',
@@ -272,6 +287,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.updateGoal(
             "FROMID", "CHALLENGEID", "GOAL"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Challenge',
@@ -285,6 +301,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.updatePrize(
             "FROMID", "CHALLENGEID", "PRIZE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Challenge',
@@ -298,6 +315,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.updateTitle(
             "FROMID", "CHALLENGEID", "TITLE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Challenge',
@@ -311,6 +329,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.updateDescription(
             "FROMID", "CHALLENGEID", "DESCRIPTION"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Challenge',
@@ -324,6 +343,7 @@ describe("high level functions", () => {
         expect(ChallengeFunctions.updateDifficulty(
             "FROMID", "CHALLENGEID", "DIFFICULTY"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Challenge',
@@ -341,6 +361,7 @@ describe("low level functions", () => {
             ["MEMBER1", "MEMBER2", "MEMBER3"], ["TAG1", "TAG2", "TAG3"], "ACCESS", "RESTRICTION",
             "PRIZE", "GROUP", "CHALLENGETYPE", "STREAKUPDATESPANTYPE", "STREAKUPDATEINTERVAL", "STREAKN"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Challenge',
@@ -370,6 +391,7 @@ describe("low level functions", () => {
         expect(ChallengeFunctions.updateAdd(
             "FROMID", "CHALLENGEID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Challenge',
@@ -383,6 +405,7 @@ describe("low level functions", () => {
         expect(ChallengeFunctions.updateRemove(
             "FROMID", "CHALLENGEID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Challenge',
@@ -396,6 +419,7 @@ describe("low level functions", () => {
         expect(ChallengeFunctions.updateSet(
             "FROMID", "CHALLENGEID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Challenge',
@@ -409,6 +433,7 @@ describe("low level functions", () => {
         expect(ChallengeFunctions.delete(
             "FROMID", "CHALLENGEID",
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'DELETE',
             itemType: 'Challenge',

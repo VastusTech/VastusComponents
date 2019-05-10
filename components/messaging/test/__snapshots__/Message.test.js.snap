@@ -4,7 +4,16 @@ exports[`renders without crashing 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <_default
-    message={null}
+    message={
+      Object {
+        "from": "CL0001",
+        "message": "Hey there Blinky",
+        "messageURL": "amazonaws.com",
+        "name": "Sleeny",
+        "profilePicture": "this/is/a/fake/path",
+        "type": "picture",
+      }
+    }
     store={
       Object {
         "clearActions": [Function],
@@ -15,7 +24,7 @@ ShallowWrapper {
         "subscribe": [Function],
       }
     }
-    userID={null}
+    userID="CL0001"
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -26,9 +35,315 @@ ShallowWrapper {
     "simulateEvent": [Function],
     "unmount": [Function],
   },
-  Symbol(enzyme.__node__): null,
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <div>
+          <Button
+            as="button"
+            floated="right"
+            labelPosition="right"
+          >
+            <Label
+              className="ui right fluid"
+              color="purple"
+              pointing="right"
+            >
+              <div
+                className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
+                style={
+                  Object {
+                    "backgroundImage": "url(amazonaws.com)",
+                  }
+                }
+              />
+            </Label>
+          </Button>
+        </div>,
+        <br />,
+        <br />,
+        <br />,
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": <Button
+            as="button"
+            floated="right"
+            labelPosition="right"
+          >
+            <Label
+              className="ui right fluid"
+              color="purple"
+              pointing="right"
+            >
+              <div
+                className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
+                style={
+                  Object {
+                    "backgroundImage": "url(amazonaws.com)",
+                  }
+                }
+              />
+            </Label>
+          </Button>,
+        },
+        "ref": null,
+        "rendered": Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "as": "button",
+            "children": <Label
+              className="ui right fluid"
+              color="purple"
+              pointing="right"
+            >
+              <div
+                className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
+                style={
+                  Object {
+                    "backgroundImage": "url(amazonaws.com)",
+                  }
+                }
+              />
+            </Label>,
+            "floated": "right",
+            "labelPosition": "right",
+          },
+          "ref": null,
+          "rendered": Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "children": <div
+                className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
+                style={
+                  Object {
+                    "backgroundImage": "url(amazonaws.com)",
+                  }
+                }
+              />,
+              "className": "ui right fluid",
+              "color": "purple",
+              "pointing": "right",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4",
+                "style": Object {
+                  "backgroundImage": "url(amazonaws.com)",
+                },
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "div",
+            },
+            "type": [Function],
+          },
+          "type": [Function],
+        },
+        "type": "div",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {},
+        "ref": null,
+        "rendered": null,
+        "type": "br",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {},
+        "ref": null,
+        "rendered": null,
+        "type": "br",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {},
+        "ref": null,
+        "rendered": null,
+        "type": "br",
+      },
+    ],
+    "type": "div",
+  },
   Symbol(enzyme.__nodes__): Array [
-    null,
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <div>
+            <Button
+              as="button"
+              floated="right"
+              labelPosition="right"
+            >
+              <Label
+                className="ui right fluid"
+                color="purple"
+                pointing="right"
+              >
+                <div
+                  className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
+                  style={
+                    Object {
+                      "backgroundImage": "url(amazonaws.com)",
+                    }
+                  }
+                />
+              </Label>
+            </Button>
+          </div>,
+          <br />,
+          <br />,
+          <br />,
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": <Button
+              as="button"
+              floated="right"
+              labelPosition="right"
+            >
+              <Label
+                className="ui right fluid"
+                color="purple"
+                pointing="right"
+              >
+                <div
+                  className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
+                  style={
+                    Object {
+                      "backgroundImage": "url(amazonaws.com)",
+                    }
+                  }
+                />
+              </Label>
+            </Button>,
+          },
+          "ref": null,
+          "rendered": Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "as": "button",
+              "children": <Label
+                className="ui right fluid"
+                color="purple"
+                pointing="right"
+              >
+                <div
+                  className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
+                  style={
+                    Object {
+                      "backgroundImage": "url(amazonaws.com)",
+                    }
+                  }
+                />
+              </Label>,
+              "floated": "right",
+              "labelPosition": "right",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": <div
+                  className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
+                  style={
+                    Object {
+                      "backgroundImage": "url(amazonaws.com)",
+                    }
+                  }
+                />,
+                "className": "ui right fluid",
+                "color": "purple",
+                "pointing": "right",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "className": "u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4",
+                  "style": Object {
+                    "backgroundImage": "url(amazonaws.com)",
+                  },
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "div",
+              },
+              "type": [Function],
+            },
+            "type": [Function],
+          },
+          "type": "div",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {},
+          "ref": null,
+          "rendered": null,
+          "type": "br",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {},
+          "ref": null,
+          "rendered": null,
+          "type": "br",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {},
+          "ref": null,
+          "rendered": null,
+          "type": "br",
+        },
+      ],
+      "type": "div",
+    },
   ],
   Symbol(enzyme.__options__): Object {
     "adapter": ReactSixteenAdapter {
@@ -42,7 +357,10 @@ ShallowWrapper {
           "getChildContext": Object {
             "calledByRenderer": false,
           },
-          "getDerivedStateFromProps": true,
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
           "getSnapshotBeforeUpdate": true,
           "setState": Object {
             "skipsComponentDidUpdateOnNullish": true,

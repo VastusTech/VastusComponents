@@ -1,5 +1,12 @@
 import "../../../testing/SetTesting";
-import info, {SET_ERROR, CLEAR_ERROR, SET_IS_LOADING, SET_IS_NOT_LOADING, TOGGLE_IS_LOADING} from "../infoReducer";
+import info, {
+    SET_ERROR,
+    CLEAR_ERROR,
+    SET_IS_LOADING,
+    SET_IS_NOT_LOADING,
+    TOGGLE_IS_LOADING,
+    SET_APP_IS_NOT_LOADING
+} from "../infoReducer";
 import {expect} from "chai";
 
 it("Ignores other actions correctly", () => {
@@ -20,6 +27,7 @@ describe("Info Reducer", () => {
             const error = Error("Test Error");
             expect(info(infoState, {type: SET_ERROR, payload: error})).to.eql({
                 isLoading: false,
+                appIsLoading: true,
                 error
             });
         });
@@ -28,6 +36,7 @@ describe("Info Reducer", () => {
             const error = Error("Test Error");
             expect(info(infoState, {type: SET_ERROR, payload: error})).to.eql({
                 isLoading: false,
+                appIsLoading: true,
                 error
             });
         });
@@ -38,6 +47,7 @@ describe("Info Reducer", () => {
         it("Should set a null error to null", () => {
             expect(info(infoState, {type: CLEAR_ERROR})).to.eql({
                 isLoading: false,
+                appIsLoading: true,
                 error: null
             });
         });
@@ -45,6 +55,7 @@ describe("Info Reducer", () => {
             infoState.error = Error("Existing Test Error");
             expect(info(infoState, {type: CLEAR_ERROR})).to.eql({
                 isLoading: false,
+                appIsLoading: true,
                 error: null
             });
         });
@@ -56,6 +67,7 @@ describe("Info Reducer", () => {
             infoState.isLoading = false;
             expect(info(infoState, {type: SET_IS_LOADING})).to.eql({
                 isLoading: true,
+                appIsLoading: true,
                 error: null
             });
         });
@@ -63,6 +75,7 @@ describe("Info Reducer", () => {
             infoState.isLoading = true;
             expect(info(infoState, {type: SET_IS_LOADING})).to.eql({
                 isLoading: true,
+                appIsLoading: true,
                 error: null
             });
         });
@@ -74,6 +87,7 @@ describe("Info Reducer", () => {
             infoState.isLoading = true;
             expect(info(infoState, {type: SET_IS_NOT_LOADING})).to.eql({
                 isLoading: false,
+                appIsLoading: true,
                 error: null
             });
         });
@@ -81,6 +95,7 @@ describe("Info Reducer", () => {
             infoState.isLoading = false;
             expect(info(infoState, {type: SET_IS_NOT_LOADING})).to.eql({
                 isLoading: false,
+                appIsLoading: true,
                 error: null
             });
         });
@@ -92,6 +107,7 @@ describe("Info Reducer", () => {
             infoState.isLoading = true;
             expect(info(infoState, {type: TOGGLE_IS_LOADING})).to.eql({
                 isLoading: false,
+                appIsLoading: true,
                 error: null
             });
         });
@@ -99,16 +115,27 @@ describe("Info Reducer", () => {
             infoState.isLoading = false;
             expect(info(infoState, {type: TOGGLE_IS_LOADING})).to.eql({
                 isLoading: true,
+                appIsLoading: true,
                 error: null
             });
         });
     });
 
+    describe(SET_APP_IS_NOT_LOADING, () => {
+        it("Should set app is not loading", () => {
+            expect(info(infoState, {type: SET_APP_IS_NOT_LOADING})).to.eql({
+                isLoading: false,
+                appIsLoading: false,
+                error: null
+            });
+        });
+    });
 });
 
 it("Gets the initial state properly", function () {
     expect(info(undefined, {type: "__INIT__", payload: null})).to.eql({
         isLoading: false,
+        appIsLoading: true,
         error: null
     });
 });

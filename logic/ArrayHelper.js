@@ -14,7 +14,7 @@ export function subtractArray(originalArray, minusArray) {
 }
 
 // Does the same thing but doesn't affect the array
-export function subtractArrayCopy(array, minusArray) {
+export function subtractedArray(array, minusArray) {
     return subtractArray([...array], minusArray);
 }
 
@@ -45,6 +45,18 @@ export function addUniqueToArray(originalArray, newArray) {
         addUniqueElementToArray(originalArray, e);
     }
     return originalArray;
+}
+
+/**
+ * Returns a new list with the new list and the unique elements from the second list added onto it. Does not affect the
+ * list.
+ *
+ * @param {[*]} originalArray The array to be added to.
+ * @param {[*]} newArray The array of elements to be added to the original array.
+ * @return {[*]} the new array that is has the unique elements added to it.
+ */
+export function withUniqueAdded(originalArray, newArray) {
+    return addUniqueToArray([...originalArray], newArray);
 }
 
 /**

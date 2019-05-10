@@ -1,14 +1,14 @@
+import "../../../testing/SetTesting";
 import React from 'react';
 import { shallow } from 'enzyme';
 import { store, funCompWrapper } from "../../../testing/TestHelper";
-import "../../../testing/SetTesting";
 import {expect} from "chai";
 import UploadImage from "../UploadImage";
 import AvatarEditor from "react-avatar-editor";
 
 it('renders without crashing', () => {
     const component = shallow(<UploadImage callback={() => {}} imageURL={null} store={store()}/>);
-    expect(component).toMatchSnapshot();
+    global.expect(component).toMatchSnapshot();
 });
 
 describe("Upload Image", () => {

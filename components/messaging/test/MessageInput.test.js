@@ -7,7 +7,7 @@ import MessageInput from "../MessageInput";
 
 it('renders without crashing', () => {
     const component = shallow(<MessageInput board={null} store={store()}/>);
-    expect(component).toMatchSnapshot();
+    global.expect(component).toMatchSnapshot();
 });
 
 describe("Message Input", () => {

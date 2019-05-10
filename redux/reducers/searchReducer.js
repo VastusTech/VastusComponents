@@ -1,4 +1,4 @@
-import {subtractArrayCopy} from "../../logic/ArrayHelper";
+import {subtractedArray} from "../../logic/ArrayHelper";
 
 export const ENABLE_TYPE = 'ENABLE_TYPE';
 export const DISABLE_TYPE = 'DISABLE_TYPE';
@@ -426,7 +426,7 @@ export default (state: SearchReducer = initialState, action) => {
         case RESET_TYPE_QUERY:
             state = {
                 ...state,
-                results: subtractArrayCopy(state.results, state.typeQueries[action.payload].results),
+                results: subtractedArray(state.results, state.typeQueries[action.payload].results),
                 typeQueries: {
                     ...state.typeQueries,
                     [action.payload]: {

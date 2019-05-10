@@ -8,6 +8,7 @@ describe("high level functions", () => {
         expect(PostFunctions.createPost(
             "FROMID", "BY", "DESCRIPTION", "ACCESS"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Post',
@@ -27,6 +28,7 @@ describe("high level functions", () => {
         expect(PostFunctions.createPostOptional(
             "FROMID", "BY", "DESCRIPTION", "ACCESS", {"PICTUREPATH": "PICTURE"}, {"VIDEOPATH": "VIDEO"}
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Post',
@@ -46,6 +48,7 @@ describe("high level functions", () => {
         expect(PostFunctions.createShareItemPost(
             "FROMID", "BY", "DESCRIPTION", "ACCESS", "ITEMTYPE", "ITEMID"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Post',
@@ -66,6 +69,7 @@ describe("high level functions", () => {
             "FROMID", "BY", "DESCRIPTION", "ACCESS", "ITEMTYPE", "ITEMID", {"PICTUREPATH": "PICTURE"},
             {"VIDEOPATH": "VIDEO"}
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Post',
@@ -85,6 +89,7 @@ describe("high level functions", () => {
         expect(PostFunctions.updateDescription(
             "FROMID", "POSTID", "DESCRIPTION"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Post',
@@ -98,6 +103,7 @@ describe("high level functions", () => {
         expect(PostFunctions.updateAccess(
             "FROMID", "POSTID", "ACCESS"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Post',
@@ -111,6 +117,7 @@ describe("high level functions", () => {
         expect(PostFunctions.addPicture(
             "FROMID", "POSTID", "PICTURE", "PICTUREPATH"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Post',
@@ -124,6 +131,7 @@ describe("high level functions", () => {
         expect(PostFunctions.addVideo(
             "FROMID", "POSTID", "VIDEO", "VIDEOPATH"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Post',
@@ -137,6 +145,7 @@ describe("high level functions", () => {
         expect(PostFunctions.removePicture(
             "FROMID", "POSTID", "PICTUREPATH"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Post',
@@ -150,6 +159,7 @@ describe("high level functions", () => {
         expect(PostFunctions.removeVideo(
             "FROMID", "POSTID", "VIDEOPATh"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Post',
@@ -165,6 +175,7 @@ describe("low level functions", () => {
             "FROMID", "BY", "DESCRIPTION", "ACCESS", "POSTTYPE", "ABOUT", {"PICTUREPATH": "PICTURE"},
             {"VIDEOPATH": "VIDEO"}
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'CREATE',
             itemType: 'Post',
@@ -183,6 +194,7 @@ describe("low level functions", () => {
         expect(PostFunctions.updateAdd(
             "FROMID", "POSTID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEADD',
             itemType: 'Post',
@@ -196,6 +208,7 @@ describe("low level functions", () => {
         expect(PostFunctions.updateRemove(
             "FROMID", "POSTID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATEREMOVE',
             itemType: 'Post',
@@ -209,6 +222,7 @@ describe("low level functions", () => {
         expect(PostFunctions.updateSet(
             "FROMID", "POSTID", "ATTRIBUTENAME", "ATTRIBUTEVALUE"
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'UPDATESET',
             itemType: 'Post',
@@ -222,6 +236,7 @@ describe("low level functions", () => {
         expect(PostFunctions.delete(
             "FROMID", "POSTID",
         )).to.eql({
+            environmentType: 'test',
             fromID: 'FROMID',
             action: 'DELETE',
             itemType: 'Post',

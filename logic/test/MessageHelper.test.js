@@ -6,7 +6,7 @@ describe("MessageHelper.js", function () {
         expect(getMessageBoardName(["ID0001", "ID0002", "ID0003"])).to.be
             .equal("ID0001_ID0002_ID0003");
         expect(getMessageBoardName(["CL101020203", "TR010101", "CL20"])).to.be
-            .equal("CL101020203_TR10101_CL20");
+            .equal("CL101020203_CL20_TR010101");
     });
 
     it('Should get the IDs from the message board correctly', () => {
