@@ -72,7 +72,7 @@ describe("Event Card", () => {
         it('trainer card with trainer prop displays trainer name in header', () => {
             const component = shallow(<EventCard store={store()} event={event1}/>);
 
-            expect(component.find("CardHeader").render().text()).equals("Sleeny");
+            expect(component.find("CardHeader").render().text()).equals("Sleeny's event");
         });
     });
 });

@@ -14,15 +14,11 @@ it('renders without crashing', () => {
     const icon = message.find("Icon");
     const content = message.find("MessageContent");
     const header = content.find("MessageHeader");
-    console.log("TEST~");
     // expect(header.text()).to.be.equal("Loading...");
-    console.log(header.text());
     const renderedHeader = header.render();
-    console.log(renderedHeader.text());
     const elements = component.getElements();
     for (let i = 0; i < elements.length; i++) {
         const element = elements[i];
-        console.log(element);
     }
     // console.log(JSON.stringify(component.find("div")));
 });

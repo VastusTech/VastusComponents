@@ -44,14 +44,14 @@ export function updateAuth() {
                         }));
                     }
                     else {
-                        console.log("REDUX: Could not fetch the client");
+                        log&&console.log("REDUX: Could not fetch the client");
                         dispatch(setError(Error("User not found in the database")));
                         dispatch(setIsNotLoading());
                         dispatch(setAppIsNotLoading());
                         Auth.signOut();
                     }
                 }, (error) => {
-                    console.error("REDUX: Could not fetch the user, not logged in");
+                    err&&console.error("REDUX: Could not fetch the user, not logged in");
                     err&&console.error(error);
                     // dispatch(setError(error));
                     dispatch(setIsNotLoading());
@@ -75,14 +75,14 @@ export function updateAuth() {
                         // }));
                     }
                     else {
-                        console.error("REDUX: Could not find the federated identity user");
+                        err&&console.error("REDUX: Could not find the federated identity user");
                         dispatch(setError(Error("Could not find the federated identity user")));
                         dispatch(setIsNotLoading());
                         dispatch(setAppIsNotLoading());
                         Auth.signOut();
                     }
                 }, (error) => {
-                    console.error("REDUX: Could not fetch the federated identity user");
+                    err&&console.error("REDUX: Could not fetch the federated identity user");
                     dispatch(setError(error));
                     dispatch(setIsNotLoading());
                     dispatch(setAppIsNotLoading());
@@ -112,7 +112,7 @@ export function logIn(username, password) {
         Auth.signIn(username, password, () => {
             QL.getItemByUsername(appUserItemType, username, ["id", "username"], (user) => {
                 if (user) {
-                    console.log("REDUX: Successfully logged in!");
+                    log&&console.log("REDUX: Successfully logged in!");
                     if (getStore().user.id !== user.id) {
                         dispatch(forceSetUser(user));
                     } else {
@@ -125,12 +125,12 @@ export function logIn(username, password) {
                     }));
                 }
                 else {
-                    console.log("REDUX: Could not fetch the client");
+                    log&&console.log("REDUX: Could not fetch the client");
                     dispatch(setError(Error("User not found in the database")));
                     dispatch(setIsNotLoading());
                 }
             }, (error) => {
-                console.log("REDUX: Could not fetch the client");
+                log&&console.log("REDUX: Could not fetch the client");
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
             });
@@ -152,7 +152,7 @@ export function logIn(username, password) {
             } else {
                 // Unknown
                 log&&console.log("REDUX: Failed log in...");
-                console.error(error);
+                err&&console.error(error);
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
             }
@@ -242,30 +242,30 @@ export function googleSignIn(googleUser) {
                             // }));
                             dispatch(setIsNotLoading());
                         }, (error) => {
-                            console.error("REDUX: Could not create the federated client!");
-                            console.error(error);
+                            err&&console.error("REDUX: Could not create the federated client!");
+                            err&&console.error(error);
                             dispatch(setError(error));
                             dispatch(setIsNotLoading());
                             Auth.signOut();
                         });
                     }, (error) => {
-                        console.error("REDUX: Could not generate the client username!");
-                        console.error(error);
+                        err&&console.error("REDUX: Could not generate the client username!");
+                        err&&console.error(error);
                         dispatch(setError(error));
                         dispatch(setIsNotLoading());
                         Auth.signOut();
                     });
                 }
             }, (error) => {
-                console.error("REDUX: Could not fetch the client by federated ID!");
-                console.error(error);
+                err&&console.error("REDUX: Could not fetch the client by federated ID!");
+                err&&console.error(error);
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
                 Auth.signOut();
             });
         }, (error) => {
-            console.error("Error while federation sign in!");
-            console.error(error);
+            err&&console.error("Error while federation sign in!");
+            err&&console.error(error);
             dispatch(setError(error));
             dispatch(setIsNotLoading());
         });
@@ -302,7 +302,7 @@ function generateGoogleUsername(name, usernameHandler, failureHandler, depth=0) 
             usernameHandler(randomGoogleUsername);
         }
     }, (error) => {
-        console.error("Error querying for username while getting Federated username! Error: " + JSON.stringify(error));
+        err&&console.error("Error querying for username while getting Federated username! Error: " + JSON.stringify(error));
         failureHandler(error);
     });
 }
@@ -332,7 +332,7 @@ export function signUp(username, password, name, email, enterpriseID) {
                 UserFunctions.deleteUser(data.data, appUserItemType, data.data);
             });
         }, (error) => {
-            console.error("REDUX: Creating new client failed...");
+            err&&console.error("REDUX: Creating new client failed...");
             dispatch(setError(error));
             dispatch(setIsNotLoading());
         });
@@ -399,7 +399,7 @@ export function confirmForgotPassword(username, confirmationCode, newPassword) {
             // dispatch(closeForgotPasswordModal());
             dispatch(setIsNotLoading());
         }, (error) => {
-            console.error("REDUX: Failed submitting forgot password...");
+            err&&console.error("REDUX: Failed submitting forgot password...");
             dispatch(setError(error));
             dispatch(setIsNotLoading());
         });

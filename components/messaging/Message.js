@@ -143,7 +143,7 @@ export default (props: Props) => {
                             <strong>{name}</strong>
                         </Grid.Row>
                         <Grid.Row>
-                            <Label pointing='left' size='large' color='white'>
+                            <Label pointing='left' size='large'>
                                 {message}
                             </Label>
                         </Grid.Row>

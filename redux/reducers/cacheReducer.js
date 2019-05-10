@@ -574,7 +574,7 @@ function removeAttributeIndex(state, id, itemType, attributeName, index) {
         return;
     }
     const newAttribute = [...attribute];
-    [...attribute].splice(index, 1);
+    newAttribute.splice(index, 1);
     itemCache[id][attributeName] = newAttribute;
 }
 
