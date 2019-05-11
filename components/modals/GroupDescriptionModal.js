@@ -119,6 +119,15 @@ class GroupDescriptionModal extends Component<Props> {
                     }
                 }
             }
+
+            if (this.state.canCallChecks) {
+                this.isJoined();
+                this.isOwned();
+                this.isRequesting();
+                this.isCompleted();
+                this.isRestricted();
+                this.setState({canCallChecks: false});
+            }
         }
     }
 
@@ -337,18 +346,25 @@ class GroupDescriptionModal extends Component<Props> {
         return null;
     }
 
+    createGroupChallenge(isOwned) {
+        if(isOwned) {
+            return (
+                <Modal closeIcon trigger={<Button fluid primary>Create Challenge {" "}<Icon name="trophy"/></Button>}>
+                    <Modal.Content>
+                        <CreateGroupChallengeProp associatedGroup={this.props.groupID}/>
+                    </Modal.Content>
+                </Modal>
+            );
+        }
+    }
+
     render() {
 
         const panes = [
             { menuItem: 'Group Posts', render: () => (
                     <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
-                        <Modal trigger={<Button fluid primary>Create Post</Button>} closeIcon>
+                        <Modal closeIcon trigger={<Button fluid primary>Create Post</Button>} closeIcon>
                             <CreatePostProp/>
-                        </Modal>
-                        <Modal closeIcon trigger={<Button fluid primary>Create Challenge {" "}<Icon name="trophy"/></Button>}>
-                            <Modal.Content>
-                                <CreateGroupChallengeProp associatedGroup={this.props.groupID}/>
-                            </Modal.Content>
                         </Modal>
                         <DatabaseObjectList ids={this.state.posts}
                                             noObjectsMessage="No posts yet!"
@@ -358,6 +374,15 @@ class GroupDescriptionModal extends Component<Props> {
                         />
                     </Tab.Pane>
                 )},
+            {menuItem: 'Group Challenges', render: () => (
+                    <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
+                        <div>{this.createGroupChallenge(this.state.isOwned)}</div>
+                        <DatabaseObjectList ids={this.getGroupAttribute("challenges")}
+                                            noObjectsMessage={"No challenges yet!"}
+                                            sortFuntion={(a, b) => a.endTime.localeCompare(b.endTime)}
+                        />
+                    </Tab.Pane>)
+            },
             { menuItem: 'Group Chat', render: () => (
                     <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
                         <CommentScreen board={this.state.groupID}/>
@@ -380,15 +405,6 @@ class GroupDescriptionModal extends Component<Props> {
             );
         }
 
-        if (this.state.canCallChecks) {
-            this.isJoined();
-            this.isOwned();
-            this.isRequesting();
-            this.isCompleted();
-            this.isRestricted();
-            this.setState({canCallChecks: false});
-        }
-
         return(
             <Modal open={this.props.open} onClose={this.props.onClose.bind(this)}>
                 <Icon className='close' onClick={() => this.props.onClose()}/>
@@ -396,29 +412,20 @@ class GroupDescriptionModal extends Component<Props> {
                 <Modal.Content>
                     {this.editButton(this.state.isEditing)}
                     {this.createCorrectSettingsButton(this.state.isOwned, this.state.isJoined, this.state.groupID, this.state.isLoading)}
-                    <Grid centered rows='equal'>
-                        <Grid.Row>
-                            <Image src={Logo} size="small" centered />
-                        </Grid.Row>
-                        <Grid.Row>
-                            {"\""}{this.getGroupAttribute("motto")}{"\""}
-                        </Grid.Row>
+                    <Grid centered>
+                        <Grid.Column>
+                            <Image style={{width: '300px', height: '300px', minWidth: '100px', minHeight: '100px'}}
+                                circular src={this.getGroupAttribute("groupImage")} size="large" centered />
+                        </Grid.Column>
+                    </Grid>
+                    <Grid centered>
+                        <strong>{"\""}{this.getGroupAttribute("motto")}{"\""}</strong>
                     </Grid>
                     <Modal trigger={
                         <Button floated='left' primary className="u-button--flat u-padding-left--1">
                             <Icon name='users' /> Owners</Button>}>
                         <Modal.Content>
                             <DatabaseObjectList ids={this.getGroupAttribute("owners")} noObjectsMessage={"No owners yet!"}/>
-                        </Modal.Content>
-                    </Modal>
-                    <Modal trigger={
-                        <Button primary className="u-button--flat u-padding-left--1">
-                            <Icon name='users' /> Challenges</Button>}>
-                        <Modal.Content>
-                            <DatabaseObjectList ids={this.getGroupAttribute("challenges")}
-                                                noObjectsMessage={"No challenges yet!"}
-                                                sortFuntion={(a, b) => a.endTime.localeCompare(b.endTime)}
-                            />
                         </Modal.Content>
                     </Modal>
                     <Modal trigger={

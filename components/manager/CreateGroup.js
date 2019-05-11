@@ -239,8 +239,6 @@ class CreateGroupProp extends Component {
     setPicture = (event) => {
         // const index = this.state.pictures.length;
         this.state.pictures.push(event.target.files[0]);
-        // const path = "/" + this.props.user.id + "/temp/pictures/" + index;
-        this.state.tempPictureURLs.push(URL.createObjectURL(event.target.files[0]));
         this.setState({});
     };
 

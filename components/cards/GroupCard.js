@@ -11,7 +11,7 @@ import {
 import type Group from "../../types/Group";
 
 export const GroupCardInfo = {
-    fetchList: ["id", "item_type", "title", "description", "motto", "restriction", "members", "owners", "time_created", "access", "challenges"],
+    fetchList: ["id", "item_type", "title", "description", "groupImagePath", "motto", "restriction", "members", "owners", "time_created", "access", "challenges"],
     ifSubscribe: false
 };
 
@@ -65,8 +65,8 @@ const GroupCard = (props: Props) => {
         // This is displays a few important pieces of information about the Group for the feed view.
         <Card fluid raised onClick={() => modalOpen||setModalOpen(true)}>
             <Card.Content textAlign = 'center'>
-                <Card.Header textAlign = 'center'>{getGroupAttribute("title")}</Card.Header>
-                <Image src={Logo} size="small" centered />
+                <Card.Header textAlign = 'center' style={{marginBottom: '40px'}}>{getGroupAttribute("title")}</Card.Header>
+                <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${getGroupAttribute("groupImage")})`}}/>
                 <Card.Meta textAlign = 'center' >{"\""}{getGroupAttribute("motto")}{"\""}</Card.Meta>
                 <GroupDescriptionModal open={modalOpen} onClose={() => setModalOpen(false)} groupID={getGroupAttribute("id")}/>
             </Card.Content>

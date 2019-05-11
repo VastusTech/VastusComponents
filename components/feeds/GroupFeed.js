@@ -1,6 +1,6 @@
 import React, {useState, useEffect, Fragment} from 'react'
 import _ from 'lodash'
-import {Visibility} from 'semantic-ui-react'
+import {Button, Grid, Modal, Visibility} from 'semantic-ui-react'
 import { connect } from 'react-redux';
 import { fetchGroupQuery } from "../../redux/convenience/cacheItemTypeActions";
 import {log, err} from "../../../Constants";
@@ -8,6 +8,7 @@ import {debugAlert} from "../../logic/DebuggingHelper";
 import GroupCard, {GroupCardInfo} from "../cards/GroupCard";
 import {arraysIntersect} from "../../logic/ArrayHelper";
 import Spinner from "../props/Spinner";
+import CreateGroupProp from "../manager/CreateGroup";
 
 const groupFeedLength = 50;
 
@@ -103,8 +104,12 @@ const GroupFeed = (props: Props) => {
 
     //This displays the rows in a grid format, with visibility enabled so that we know when the bottom of the page
     //is hit by the user.
-    return (
-        <Visibility onUpdate={_.debounce(handleUpdate, 250)} style={{minWidth: '300px'}}>
+    return [
+        <Modal
+            trigger={<Grid centered><Button primary>Create New Group</Button></Grid>}>
+            <CreateGroupProp/>
+        </Modal>,
+        <Visibility onUpdate={_.debounce(handleUpdate, 250)} style={{minWidth: '300px', marginTop: '40px'}}>
             {_.times(groups.length, i => (
                 <Fragment key={i + 1}>
                     <GroupCard group={groups[i]} />
@@ -112,7 +117,7 @@ const GroupFeed = (props: Props) => {
             ))}
             {!isFinished&&<Spinner/>}
         </Visibility>
-    );
+    ];
 };
 
 const mapStateToProps = (state) => ({
