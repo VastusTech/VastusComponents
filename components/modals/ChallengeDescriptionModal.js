@@ -9,7 +9,7 @@ import {
     subscribeFetchChallenge, fetchStreak
 } from "../../redux/convenience/cacheItemTypeActions";
 import CompleteChallengeModal from "../manager/CompleteChallengeModal";
-import {forceFetchUserAttributes} from "../../redux/actions/userActions";
+import {addToUserAttribute, forceFetchUserAttributes, removeFromUserAttribute} from "../../redux/actions/userActions";
 import CommentScreen from "../messaging/MessageBoard";
 import UserFunctions from "../../database_functions/UserFunctions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
@@ -25,6 +25,12 @@ import {arrayIntersection} from "../../logic/ArrayHelper";
 import {err} from "../../../Constants";
 import SubmissionList from "../lists/SubmissionList";
 import UserList from "../lists/UserList";
+import {
+    addToItemAttribute,
+    clearItemQueryCache,
+    removeFromItemAttribute,
+    removeItem
+} from "../../redux/actions/cacheActions";
 
 export const ChallengeDescriptionModalInfo = {
     // TODO Contains everything that is referenced here
@@ -96,21 +102,17 @@ export const displayTagIcons = (tags) => {
  * @param challengeID
  * @param setIsLoading
  * @param onClose
+ * @param props
  */
-const handleDeleteChallengeButton = (userID, challengeID, setIsLoading, onClose) => {
+const handleDeleteChallengeButton = (userID, challengeID, setIsLoading, onClose, props) => {
     //console.log("Handling deleting the event");
     setIsLoading(true);
     ChallengeFunctions.delete(userID, challengeID, (data) => {
-        // this.forceUpdate(data.id);
-        // console.log(JSON.stringify(data));
-        // this.setState({isLoading: false, isDeleteLoading: false, event: null, isOwned: false, isJoined: false, deleted: true});
+        // setIsLoading(false);
+        // onClose();
+    }, () => {
         setIsLoading(false);
-        onClose();
-    }, (error) => {
-        // console.log(JSON.stringify(error));
-        // this.setState({isLoading: false, isDeleteLoading: false, error: error, deleted: false});
-        setIsLoading(false);
-    })
+    }, props)
 };
 
 /**
@@ -119,8 +121,9 @@ const handleDeleteChallengeButton = (userID, challengeID, setIsLoading, onClose)
  * @param userID
  * @param challengeID
  * @param setIsLoading
+ * @param props
  */
-const handleLeaveChallengeButton = (userID, challengeID, setIsLoading) => {
+const handleLeaveChallengeButton = (userID, challengeID, setIsLoading, props) => {
     //console.log("Handling leaving the event");
     // this.setState({isLeaveLoading: true, isLoading: true});
     setIsLoading(true);
@@ -133,7 +136,7 @@ const handleLeaveChallengeButton = (userID, challengeID, setIsLoading) => {
         setIsLoading(false);
         //console.log(JSON.stringify(error));
         // this.setState({isLoading: false, isLeaveLoading: false, error: error});
-    })
+    }, props);
 };
 
 /**
@@ -142,21 +145,17 @@ const handleLeaveChallengeButton = (userID, challengeID, setIsLoading) => {
  * @param userID
  * @param challengeID
  * @param setIsLoading
+ * @param {{}} props The component props containing the automatic update functions.
  */
-const handleJoinChallengeButton = (userID, challengeID, setIsLoading) => {
+const handleJoinChallengeButton = (userID, challengeID, setIsLoading, props) => {
     //console.log("Handling joining the event");
     // this.setState({isJoinLoading: true, isLoading: true});
     setIsLoading(true);
-    UserFunctions.addChallenge(userID, userID, challengeID, null,
-        () => {
-            setIsLoading(false);
-            // this.forceUpdate();
-            //console.log(JSON.stringify(data));
-            // this.setState({isLoading: false, isJoinLoading: false, isJoined: true});
-        }, (error) => {
-            setIsLoading(false);
-            // this.setState({isLoading: false, isJoinLoading: false, error: error});
-        });
+    UserFunctions.addChallenge(userID, userID, challengeID, null, () => {
+        setIsLoading(false);
+    }, () => {
+        setIsLoading(false);
+    }, props);
 };
 
 /**
@@ -165,19 +164,19 @@ const handleJoinChallengeButton = (userID, challengeID, setIsLoading) => {
  * @param userID
  * @param challengeID
  * @param setIsLoading
+ * @param {{}} props The component props containing the automatic update functions.
  */
-const handleRequestChallengeButton = (userID, challengeID, setIsLoading) => {
+const handleRequestChallengeButton = (userID, challengeID, setIsLoading, props) => {
     // this.setState({isRequestLoading: true, isLoading: true});
     setIsLoading(true);
-    InviteFunctions.createChallengeRequest(userID, userID, challengeID,
-        () => {
-            setIsLoading(false);
-            // this.forceUpdate();
-            // this.setState({isLoading: false, isRequestLoading: false, isRequesting: true});
-        }, (error) => {
-            setIsLoading(false);
-            // this.setState({isLoading: false, isRequestLoading: false, error: error})
-        });
+    InviteFunctions.createChallengeRequest(userID, userID, challengeID, () => {
+        setIsLoading(false);
+        // this.forceUpdate();
+        // this.setState({isLoading: false, isRequestLoading: false, isRequesting: true});
+    }, (error) => {
+        setIsLoading(false);
+        // this.setState({isLoading: false, isRequestLoading: false, error: error})
+    }, props);
 };
 
 /**
@@ -225,12 +224,12 @@ export const selectWinner = (isOwned, openCompleteModal) => {
  * @param isRequesting
  * @param setIsLoading
  * @param setSubmitModalOpen
- * @param setCompleteModalOpen
- * @param onClose
+ * @param openCompleteModal
+ * @param props
  * @return {*}
  */
 export const createCorrectButton = (userID, challengeID, submissions, isLoading, isCompleted, isOwned, isJoined, isRestricted,
-                             isRequesting, setIsLoading, setSubmitModalOpen, openCompleteModal) => {
+                             isRequesting, setIsLoading, setSubmitModalOpen, openCompleteModal, props) => {
     const panes = [
         { menuItem: 'Submissions', render: () => (
                 <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
@@ -296,13 +295,13 @@ export const createCorrectButton = (userID, challengeID, submissions, isLoading,
         }
         else {
             return (<div><Button loading={isLoading} fluid size="large" disabled={isLoading}
-                                 onClick={() => handleRequestChallengeButton(userID, challengeID, setIsLoading)}>Send Join Request</Button></div>)
+                                 onClick={() => handleRequestChallengeButton(userID, challengeID, setIsLoading, props)}>Send Join Request</Button></div>)
         }
     }
     else {
         //console.log(isJoinLoading);
         return (<Button loading={isLoading} fluid size="large" disabled={isLoading}
-                        onClick={() => handleJoinChallengeButton(userID, challengeID, setIsLoading)}>Join</Button>)
+                        onClick={() => handleJoinChallengeButton(userID, challengeID, setIsLoading, props)}>Join</Button>)
     }
 };
 
@@ -439,14 +438,14 @@ export function editButton(isEditing, setIsEditing) {
  * @param {boolean} isJoined If the user has joined the challenge or not.
  * @returns {*} The React JSX used to display the component.
  */
-export function createCorrectSettingsButton(isOwned, isJoined, challengeID, setIsLoading, isLoading, userID, setCompleteModalOpen, onClose) {
+export function createCorrectSettingsButton(isOwned, isJoined, challengeID, setIsLoading, isLoading, userID, setCompleteModalOpen, onClose, props) {
     if(isOwned) {
         return (<Popup
             trigger={<Button floated='right' circular icon color={'purple'}>
                 <Icon name='cog'/>
             </Button>}
             content={<Button loading={isLoading} fluid negative size="large" disabled={isLoading}
-                             onClick={() => handleDeleteChallengeButton(userID, challengeID, setIsLoading, onClose)}>
+                             onClick={() => handleDeleteChallengeButton(userID, challengeID, setIsLoading, onClose, props)}>
                 Delete</Button>}
             on='click'
             position='bottom right'
@@ -458,7 +457,7 @@ export function createCorrectSettingsButton(isOwned, isJoined, challengeID, setI
                 <Icon name='cog'/>
             </Button>}
             content={<Button loading={isLoading} fluid inverted size="large" disabled={isLoading}
-                             onClick={() => handleLeaveChallengeButton(userID, challengeID, setIsLoading)}>
+                             onClick={() => handleLeaveChallengeButton(userID, challengeID, setIsLoading, props)}>
                 Leave
             </Button>}
             on='click'
@@ -498,6 +497,9 @@ const ChallengeDescriptionModal = (props: Props) => {
     useEffect(() => {
         if (props.challengeID) {
             // TODO Reset state?
+            setChallengeType(null); setStreak(null); setIsOwned(false); setIsRequesting(false); setIsJoined(false);
+            setIsCompleted(false); setIsRestricted(false); setOwnerModalOpen(false); setCompleteModalOpen(false);
+            setSubmitModalOpen(false); setDeleted(false); setIsEditing(false);
             props.fetchChallenge(props.challengeID, ChallengeDescriptionModalInfo.fetchList, (challenge) => {
                 if (challenge) {
                     if (challenge.owner) {
@@ -551,7 +553,7 @@ const ChallengeDescriptionModal = (props: Props) => {
         return () => {
             // TODO clean up
         }
-    }, [props.challengeID]);
+    }, [props.challengeID, getChallengeAttribute("members")]);
     // const forceUpdate = () => {
     //     forceFetchChallenge(this.getChallengeAttribute("id"), ["owner",
     //         "time", "capacity", "title", "description", "difficulty", "memberIDs", "memberRequests", "access", "restriction", "prize"]);
@@ -575,7 +577,7 @@ const ChallengeDescriptionModal = (props: Props) => {
                 {getChallengeAttribute("title")}</div>
                     {editButton(isEditing, setIsEditing)}
                     {createCorrectSettingsButton(isOwned, isJoined, props.challengeID, setIsLoading, isLoading,
-                        props.user.id, setCompleteModalOpen, props.onClose)}
+                        props.user.id, setCompleteModalOpen, props.onClose, props)}
                     <div>{displayTagIcons(getChallengeAttribute("tags"))}</div>
                     <div>
                         {daysLeft(parseISOString(getChallengeAttribute("endTime")))} days left
@@ -620,7 +622,7 @@ const ChallengeDescriptionModal = (props: Props) => {
                         <CreateSubmissionModal open={submitModalOpen} onClose={() => setSubmitModalOpen(false)} challengeID={props.challengeID}/>
                         {createCorrectButton(props.user.id, props.challengeID, getChallengeAttribute("submissions"),
                             isLoading, isCompleted, isOwned, isJoined, isRestricted, isRequesting, setIsLoading,
-                            setSubmitModalOpen, setCompleteModalOpen)}
+                            setSubmitModalOpen, setCompleteModalOpen, props)}
                     </Modal.Description>
                     <div>{displayError(props.info.error)}{challengeDeleted(deleted)}</div>
                 </Modal.Content>
@@ -658,6 +660,24 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchStreak: (id, variableList, dataHandler) => {
             dispatch(fetchStreak(id, variableList, dataHandler));
+        },
+        addToUserAttribute: (attributeName, attributeValue) => {
+            dispatch(addToUserAttribute(attributeName, attributeValue));
+        },
+        addToItemAttribute: (id, attributeName, attributeValue) => {
+            dispatch(addToItemAttribute(id, attributeName, attributeValue));
+        },
+        removeFromUserAttribute: (attributeName, attributeValue) => {
+            dispatch(removeFromUserAttribute(attributeName, attributeValue));
+        },
+        removeFromItemAttribute: (id, attributeName, attributeValue) => {
+            dispatch(removeFromItemAttribute(id, attributeName, attributeValue));
+        },
+        removeItem: (itemType, id) => {
+            dispatch(removeItem(itemType, id));
+        },
+        clearItemQueryCache: (itemType) => {
+            dispatch(clearItemQueryCache(itemType));
         }
     };
 };

@@ -160,28 +160,32 @@ const MessageBoardFeed = (props: Props) => {
     useEffect(() => {
         setIsLoading(true);
         props.fetchUserAttributes(["messageBoards"], (user) => {
-            if (user.hasOwnProperty("messageBoards") && user.messageBoards) {
-                setMessageBoards(user.messageBoards);
-                for (const key in user.messageBoards) {
-                    if (user.messageBoards.hasOwnProperty(key)) {
-                        const board = user.messageBoards[key];
-                        const ids = getIDsFromMessageBoard(board);
-                        for (const key in ids) {
-                            if (ids.hasOwnProperty(key) && ids[key] !== props.user.id) {
-                                // fetch the attributes
-                                const id = ids[key];
-                                const itemType = getItemTypeFromID(id);
-                                if (itemType === "Client" || itemType === "Trainer") {
-                                    props.fetchItem(id, itemType, ["name", "profileImagePath"]);
-                                }
+            setIsLoading(false);
+        });
+    }, [props.userID]);
+
+    useEffect(() => {
+        const user = props.user;
+        if (user.messageBoards) {
+            setMessageBoards(user.messageBoards);
+            for (const key in user.messageBoards) {
+                if (user.messageBoards.hasOwnProperty(key)) {
+                    const board = user.messageBoards[key];
+                    const ids = getIDsFromMessageBoard(board);
+                    for (const key in ids) {
+                        if (ids.hasOwnProperty(key) && ids[key] !== props.user.id) {
+                            // fetch the attributes
+                            const id = ids[key];
+                            const itemType = getItemTypeFromID(id);
+                            if (itemType === "Client" || itemType === "Trainer") {
+                                props.fetchItem(id, itemType, ["name", "profileImagePath"]);
                             }
                         }
                     }
                 }
             }
-            setIsLoading(false);
-        });
-    }, [props.userID]);
+        }
+    }, [props.user.messageBoards]);
 
     if (isLoading) {
         return(

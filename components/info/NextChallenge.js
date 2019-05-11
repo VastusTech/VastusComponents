@@ -19,6 +19,7 @@ const NextChallengeProp = props => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        setNextChallenge(null);
         setIsLoading(true);
         if (props.user.challenges && props.user.challenges.length > 0) {
             props.fetchChallenges(props.user.challenges, ChallengeCardInfo.fetchList, 0, props.user.challenges.length, (challenges) => {

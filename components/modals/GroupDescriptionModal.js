@@ -8,7 +8,7 @@ import CommentScreen from "../messaging/MessageBoard";
 import GroupFunctions from "../../database_functions/GroupFunctions";
 import UserFunctions from "../../database_functions/UserFunctions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
-import Logo from "../../img/vt_new.svg";
+// import Logo from "../../img/vt_new.svg";
 import DatabaseObjectList from "../lists/DatabaseObjectList";
 // import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import CreatePostProp from "../manager/CreatePost";
@@ -363,7 +363,7 @@ class GroupDescriptionModal extends Component<Props> {
         const panes = [
             { menuItem: 'Group Posts', render: () => (
                     <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
-                        <Modal closeIcon trigger={<Button fluid primary>Create Post</Button>} closeIcon>
+                        <Modal trigger={<Button fluid primary>Create Post</Button>} closeIcon>
                             <CreatePostProp/>
                         </Modal>
                         <DatabaseObjectList ids={this.state.posts}

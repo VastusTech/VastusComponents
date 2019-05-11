@@ -137,7 +137,7 @@ const PostFeed = (props: Props) => {
             queryPosts(props.filter, nextToken, isFinished, props.user.id, props.user.friends, props.fetchPostQuery, props.fetchClient, props.fetchTrainer, props.fetchEvent, props.fetchChallenge,
                 props.fetchPost, props.fetchGroup, setIsLoading, setIsFinished, setNextToken, setPosts);
         }
-    }, [props.user.id]);
+    }, [props.user.id, props.user.ownedChallenges]);
 
     /**
      *

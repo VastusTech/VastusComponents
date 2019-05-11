@@ -76,16 +76,17 @@ class S3Storage {
             bucket.headObject({
                 Bucket: S3Storage.bucketName,
                 Key: path
-            }, (err) => {
-                if (err) {
-                    if (err.code === "NotFound") {
+            }, (error) => {
+                if (error) {
+                    if (error.code === "NotFound") {
                         if (successHandler) {
                             successHandler(false);
                         }
                     }
                     else {
+                        err&&console.error("If Exists operation failed... Error: " + error);
                         if (failureHandler) {
-                            failureHandler(err);
+                            failureHandler(error);
                         }
                     }
                 }
@@ -175,6 +176,7 @@ class S3Storage {
             let options = {partSize: S3Storage.multipartSize, queueSize: S3Storage.multipartQueueSize};
             bucket.upload(params, options).on('httpUploadProgress', progressHandler).send((error, data) => {
                 if (error) {
+                    err&&console.error("S3Storage failed multipart put!");
                     err && console.error(error);
                     if (failureHandler) {
                         failureHandler(err);
