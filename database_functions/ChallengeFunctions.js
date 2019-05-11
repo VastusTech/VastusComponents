@@ -92,9 +92,11 @@ class ChallengeFunctions {
             access, restriction, prize, null, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
             (data) => {
                 if (props) {
-                    if (props.addToUserAttribute && props.addToItemAttribute) {
-                        // TODO
-                        err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                    if (props.addToUserAttribute && props.clearItemQueryCache) {
+                        props.addToUserAttribute("ownedChallenges", data.data);
+                        props.addToUserAttribute("challenges", data.data);
+                        props.clearItemQueryCache("Challenge");
+                        props.clearItemQueryCache("Post");
                     }
                     else {
                         err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");

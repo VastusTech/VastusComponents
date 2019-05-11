@@ -51,6 +51,7 @@ type Props = {
  */
 const queryPosts = (filter, nextToken, isFinished, userID, friends, fetchPostQuery, fetchClient, fetchTrainer, fetchEvent,
                     fetchChallenge, fetchPost, fetchGroup, setIsLoading, setIsFinished, setNextToken, setPosts) => {
+    alert("Querying posts! NT = " + nextToken + ", isFinished = " + isFinished);
     if (!isFinished) {
         setIsLoading(true);
         debugAlert("Fetching Post Feed Query");
@@ -134,7 +135,10 @@ const PostFeed = (props: Props) => {
     useEffect(() => {
         if (props.user.id) {
             setPosts([]);
-            queryPosts(props.filter, nextToken, isFinished, props.user.id, props.user.friends, props.fetchPostQuery, props.fetchClient, props.fetchTrainer, props.fetchEvent, props.fetchChallenge,
+            setNextToken(null);
+            setIsFinished(false);
+            queryPosts(props.filter, null, false, props.user.id, props.user.friends, props.fetchPostQuery,
+                props.fetchClient, props.fetchTrainer, props.fetchEvent, props.fetchChallenge,
                 props.fetchPost, props.fetchGroup, setIsLoading, setIsFinished, setNextToken, setPosts);
         }
     }, [props.user.id, props.user.ownedChallenges]);
