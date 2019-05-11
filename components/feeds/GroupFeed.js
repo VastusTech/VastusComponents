@@ -104,11 +104,7 @@ const GroupFeed = (props: Props) => {
 
     //This displays the rows in a grid format, with visibility enabled so that we know when the bottom of the page
     //is hit by the user.
-    return [
-        <Modal
-            trigger={<Grid centered><Button primary>Create New Group</Button></Grid>}>
-            <CreateGroupProp/>
-        </Modal>,
+    return (
         <Visibility onUpdate={_.debounce(handleUpdate, 250)} style={{minWidth: '300px', marginTop: '40px'}}>
             {_.times(groups.length, i => (
                 <Fragment key={i + 1}>
@@ -117,7 +113,7 @@ const GroupFeed = (props: Props) => {
             ))}
             {!isFinished&&<Spinner/>}
         </Visibility>
-    ];
+    );
 };
 
 const mapStateToProps = (state) => ({

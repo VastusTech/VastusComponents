@@ -63,6 +63,7 @@ ShallowWrapper {
           as="button"
           onClick={[Function]}
           primary={true}
+          role="button"
         >
           <Icon
             as="i"
@@ -73,12 +74,14 @@ ShallowWrapper {
           as="button"
           onClick={[Function]}
           primary={true}
+          role="button"
         >
           Upload
         </Button>,
         <Button
           as="button"
           onClick={[Function]}
+          role="button"
         >
           Cancel
         </Button>,
@@ -131,6 +134,7 @@ ShallowWrapper {
           />,
           "onClick": [Function],
           "primary": true,
+          "role": "button",
         },
         "ref": null,
         "rendered": Object {
@@ -156,6 +160,7 @@ ShallowWrapper {
           "children": "Upload",
           "onClick": [Function],
           "primary": true,
+          "role": "button",
         },
         "ref": null,
         "rendered": "Upload",
@@ -169,6 +174,7 @@ ShallowWrapper {
           "as": "button",
           "children": "Cancel",
           "onClick": [Function],
+          "role": "button",
         },
         "ref": null,
         "rendered": "Cancel",
@@ -215,6 +221,7 @@ ShallowWrapper {
             as="button"
             onClick={[Function]}
             primary={true}
+            role="button"
           >
             <Icon
               as="i"
@@ -225,12 +232,14 @@ ShallowWrapper {
             as="button"
             onClick={[Function]}
             primary={true}
+            role="button"
           >
             Upload
           </Button>,
           <Button
             as="button"
             onClick={[Function]}
+            role="button"
           >
             Cancel
           </Button>,
@@ -283,6 +292,7 @@ ShallowWrapper {
             />,
             "onClick": [Function],
             "primary": true,
+            "role": "button",
           },
           "ref": null,
           "rendered": Object {
@@ -308,6 +318,7 @@ ShallowWrapper {
             "children": "Upload",
             "onClick": [Function],
             "primary": true,
+            "role": "button",
           },
           "ref": null,
           "rendered": "Upload",
@@ -321,6 +332,7 @@ ShallowWrapper {
             "as": "button",
             "children": "Cancel",
             "onClick": [Function],
+            "role": "button",
           },
           "ref": null,
           "rendered": "Cancel",

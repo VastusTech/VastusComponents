@@ -66,6 +66,7 @@ ShallowWrapper {
           >
             <Button
               as="button"
+              role="button"
             >
               <Icon
                 as="i"
@@ -76,6 +77,7 @@ ShallowWrapper {
             <Button
               as="button"
               primary={true}
+              role="button"
             >
               Vastus Certified
             </Button>
@@ -171,6 +173,7 @@ ShallowWrapper {
           >
             <Button
               as="button"
+              role="button"
             >
               <Icon
                 as="i"
@@ -181,6 +184,7 @@ ShallowWrapper {
             <Button
               as="button"
               primary={true}
+              role="button"
             >
               Vastus Certified
             </Button>
@@ -197,6 +201,7 @@ ShallowWrapper {
             "children": Array [
               <Button
                 as="button"
+                role="button"
               >
                 <Icon
                   as="i"
@@ -207,6 +212,7 @@ ShallowWrapper {
               <Button
                 as="button"
                 primary={true}
+                role="button"
               >
                 Vastus Certified
               </Button>,
@@ -228,6 +234,7 @@ ShallowWrapper {
                   />,
                   " Boston, MA",
                 ],
+                "role": "button",
               },
               "ref": null,
               "rendered": Array [
@@ -255,6 +262,7 @@ ShallowWrapper {
                 "as": "button",
                 "children": "Vastus Certified",
                 "primary": true,
+                "role": "button",
               },
               "ref": null,
               "rendered": "Vastus Certified",
@@ -316,6 +324,7 @@ ShallowWrapper {
             >
               <Button
                 as="button"
+                role="button"
               >
                 <Icon
                   as="i"
@@ -326,6 +335,7 @@ ShallowWrapper {
               <Button
                 as="button"
                 primary={true}
+                role="button"
               >
                 Vastus Certified
               </Button>
@@ -421,6 +431,7 @@ ShallowWrapper {
             >
               <Button
                 as="button"
+                role="button"
               >
                 <Icon
                   as="i"
@@ -431,6 +442,7 @@ ShallowWrapper {
               <Button
                 as="button"
                 primary={true}
+                role="button"
               >
                 Vastus Certified
               </Button>
@@ -447,6 +459,7 @@ ShallowWrapper {
               "children": Array [
                 <Button
                   as="button"
+                  role="button"
                 >
                   <Icon
                     as="i"
@@ -457,6 +470,7 @@ ShallowWrapper {
                 <Button
                   as="button"
                   primary={true}
+                  role="button"
                 >
                   Vastus Certified
                 </Button>,
@@ -478,6 +492,7 @@ ShallowWrapper {
                     />,
                     " Boston, MA",
                   ],
+                  "role": "button",
                 },
                 "ref": null,
                 "rendered": Array [
@@ -505,6 +520,7 @@ ShallowWrapper {
                   "as": "button",
                   "children": "Vastus Certified",
                   "primary": true,
+                  "role": "button",
                 },
                 "ref": null,
                 "rendered": "Vastus Certified",

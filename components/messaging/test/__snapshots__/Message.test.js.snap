@@ -46,6 +46,7 @@ ShallowWrapper {
             as="button"
             floated="right"
             labelPosition="right"
+            role="button"
           >
             <Label
               className="ui right fluid"
@@ -79,6 +80,7 @@ ShallowWrapper {
             as="button"
             floated="right"
             labelPosition="right"
+            role="button"
           >
             <Label
               className="ui right fluid"
@@ -119,6 +121,7 @@ ShallowWrapper {
             </Label>,
             "floated": "right",
             "labelPosition": "right",
+            "role": "button",
           },
           "ref": null,
           "rendered": Object {
@@ -201,6 +204,7 @@ ShallowWrapper {
               as="button"
               floated="right"
               labelPosition="right"
+              role="button"
             >
               <Label
                 className="ui right fluid"
@@ -234,6 +238,7 @@ ShallowWrapper {
               as="button"
               floated="right"
               labelPosition="right"
+              role="button"
             >
               <Label
                 className="ui right fluid"
@@ -274,6 +279,7 @@ ShallowWrapper {
               </Label>,
               "floated": "right",
               "labelPosition": "right",
+              "role": "button",
             },
             "ref": null,
             "rendered": Object {

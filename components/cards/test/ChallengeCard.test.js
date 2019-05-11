@@ -66,7 +66,7 @@ describe('Challenge Card', function () {
 
             console.log(component.find("CardMeta").at(0).render().text());
 
-            expect(component.find("CardMeta").at(0).render().text()).equals("1 Day Left");
+            expect(component.find("CardMeta").at(0).render().text()).equals("Challenge Completed");
         });
 
         it('Challenge card with client and rank prop displays event date properly', () => {
@@ -74,7 +74,7 @@ describe('Challenge Card', function () {
 
             console.log(component.find("CardMeta").at(0).render().text());
 
-            expect(component.find("CardMeta").at(0).render().text()).equals("2 Days Left");
+            expect(component.find("CardMeta").at(0).render().text()).equals("Challenge Completed");
         });
 
         it('Challenge card with event prop displays event ', () => {
