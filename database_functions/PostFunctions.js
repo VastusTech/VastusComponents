@@ -1,6 +1,7 @@
 import Lambda from "../api/Lambda";
 import S3 from "../api/S3Storage";
 import TestHelper from "../testing/TestHelper";
+import {err} from "../../Constants";
 
 /**
  * Holds all the potential properly formatted Lambda functions for Posts.
@@ -22,10 +23,28 @@ class PostFunctions {
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static createPost(fromID, by, description, access, successHandler, failureHandler) {
-        return PostFunctions.createPostOptional(fromID, by, description, access, null, null, successHandler, failureHandler);
+    static createPost(fromID, by, description, access, successHandler, failureHandler, props) {
+        return PostFunctions.createPostOptional(fromID, by, description, access, null, null, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -40,10 +59,28 @@ class PostFunctions {
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static createPostOptional(fromID, by, description, access, pictures, videos, successHandler, failureHandler) {
-        return PostFunctions.create(fromID, by, description, access, null, null, pictures, videos, successHandler, failureHandler);
+    static createPostOptional(fromID, by, description, access, pictures, videos, successHandler, failureHandler, props) {
+        return PostFunctions.create(fromID, by, description, access, null, null, pictures, videos, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -59,10 +96,28 @@ class PostFunctions {
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static createShareItemPost(fromID, by, description, access, itemType, itemID, successHandler, failureHandler) {
-        return PostFunctions.createShareItemPostOptional(fromID, by, description, access, itemType, itemID, null, null, successHandler, failureHandler);
+    static createShareItemPost(fromID, by, description, access, itemType, itemID, successHandler, failureHandler, props) {
+        return PostFunctions.createShareItemPostOptional(fromID, by, description, access, itemType, itemID, null, null, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -80,10 +135,28 @@ class PostFunctions {
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static createShareItemPostOptional(fromID, by, description, access, itemType, itemID, pictures, videos, successHandler, failureHandler) {
-        return PostFunctions.create(fromID, by, description, access, itemType, itemID, pictures, videos, successHandler, failureHandler);
+    static createShareItemPostOptional(fromID, by, description, access, itemType, itemID, pictures, videos, successHandler, failureHandler, props) {
+        return PostFunctions.create(fromID, by, description, access, itemType, itemID, pictures, videos, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     // Update Functions ============================================================
@@ -97,10 +170,28 @@ class PostFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static updateDescription(fromID, postID, description, successHandler, failureHandler) {
-        return PostFunctions.updateSet(fromID, postID, "description", description, successHandler, failureHandler);
+    static updateDescription(fromID, postID, description, successHandler, failureHandler, props) {
+        return PostFunctions.updateSet(fromID, postID, "description", description, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -112,10 +203,28 @@ class PostFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static updateAccess(fromID, postID, access, successHandler, failureHandler) {
-        return PostFunctions.updateSet(fromID, postID, "access", access, successHandler, failureHandler);
+    static updateAccess(fromID, postID, access, successHandler, failureHandler, props) {
+        return PostFunctions.updateSet(fromID, postID, "access", access, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -128,10 +237,29 @@ class PostFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
+     * @return {*} Debugging info about the Lambda operation.
      */
-    static addPicture(fromID, postID, picture, picturePath, successHandler, failureHandler) {
+    static addPicture(fromID, postID, picture, picturePath, successHandler, failureHandler, props) {
         S3.putImage(picturePath, picture, () => {
-            PostFunctions.updateAdd(fromID, postID, "picturePaths", picturePath, successHandler, (error) => {
+            PostFunctions.updateAdd(fromID, postID, "picturePaths", picturePath, (data) => {
+                if (props) {
+                    if (props.addToUserAttribute && props.addToItemAttribute) {
+                        // TODO
+                        err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                    }
+                    else {
+                        err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                    }
+                }
+                else {
+                    err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+                }
+                successHandler && successHandler(data);
+            }, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(picturePath);
                 failureHandler(error);
@@ -152,10 +280,29 @@ class PostFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
+     * @return {*} Debugging info about the Lambda operation.
      */
-    static addVideo(fromID, postID, video, videoPath, successHandler, failureHandler) {
+    static addVideo(fromID, postID, video, videoPath, successHandler, failureHandler, props) {
         S3.putVideo(videoPath, video, successHandler, failureHandler, () => {
-            PostFunctions.updateAdd(fromID, postID, "videoPaths", videoPath, successHandler, (error) => {
+            PostFunctions.updateAdd(fromID, postID, "videoPaths", videoPath, (data) => {
+                if (props) {
+                    if (props.addToUserAttribute && props.addToItemAttribute) {
+                        // TODO
+                        err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                    }
+                    else {
+                        err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                    }
+                }
+                else {
+                    err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+                }
+                successHandler && successHandler(data);
+            }, (error) => {
                 // Try your best to correct, then give up...
                 S3.delete(videoPath);
                 failureHandler(error);
@@ -175,15 +322,28 @@ class PostFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static removePicture(fromID, postID, picturePath, successHandler, failureHandler) {
+    static removePicture(fromID, postID, picturePath, successHandler, failureHandler, props) {
         return PostFunctions.updateRemove(fromID, postID, "picturePaths", picturePath, (data) => {
-            S3.delete(picturePath, () => {
-                if (successHandler) {
-                    successHandler(data);
+            S3.delete(picturePath);
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
                 }
-            }, failureHandler);
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
         }, failureHandler);
     }
 
@@ -196,15 +356,28 @@ class PostFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static removeVideo(fromID, postID, videoPath, successHandler, failureHandler) {
+    static removeVideo(fromID, postID, videoPath, successHandler, failureHandler, props) {
         return PostFunctions.updateRemove(fromID, postID, "videoPaths", videoPath, (data) => {
-            S3.delete(videoPath, () => {
-                if (successHandler) {
-                    successHandler(data);
+            S3.delete(videoPath);
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
                 }
-            }, failureHandler);
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
         }, failureHandler);
     }
 
@@ -306,11 +479,29 @@ class PostFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static delete(fromID, postID, successHandler, failureHandler) {
+    static delete(fromID, postID, successHandler, failureHandler, props) {
         // TODO Delete all the S3 Paths within the Post?
-        return Lambda.delete(fromID, postID, "Post", successHandler, failureHandler);
+        return Lambda.delete(fromID, postID, "Post", (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 }
 

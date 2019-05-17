@@ -1,6 +1,6 @@
 import React, {useState, useEffect, Fragment} from 'react'
 import _ from 'lodash'
-import {Button, Grid, Modal, Visibility} from 'semantic-ui-react'
+import {Visibility} from 'semantic-ui-react'
 import { connect } from 'react-redux';
 import { fetchGroupQuery } from "../../redux/convenience/cacheItemTypeActions";
 import {log, err} from "../../../Constants";
@@ -8,7 +8,6 @@ import {debugAlert} from "../../logic/DebuggingHelper";
 import GroupCard, {GroupCardInfo} from "../cards/GroupCard";
 import {arraysIntersect} from "../../logic/ArrayHelper";
 import Spinner from "../props/Spinner";
-import CreateGroupProp from "../manager/CreateGroup";
 
 const groupFeedLength = 50;
 

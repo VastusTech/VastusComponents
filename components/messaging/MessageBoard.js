@@ -144,7 +144,6 @@ const MessageBoard = (props: Props) => {
                 }
             }
             return () => {
-                alert("Unsubscribing from " + props.board);
                 props.unsubscribeFromBoard(props.board);
                 // Unsubscribe to the Ably messages
                 // Also potentially clear the board?

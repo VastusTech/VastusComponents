@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import {Card, Image, Dimmer, Icon, Button} from 'semantic-ui-react';
+import {Card, Dimmer, Icon, Button} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import GroupDescriptionModal from '../modals/GroupDescriptionModal';
-import Logo from "../../img/vt_new.svg";
+// import Logo from "../../img/vt_new.svg";
 import Spinner from "../props/Spinner";
 import {getAttributeFromObject, getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import {

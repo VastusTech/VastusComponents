@@ -5,6 +5,8 @@ import {setError} from "../../redux/actions/infoActions";
 import {fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
 import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
 import {getNowTimeString} from "../../logic/TimeHelper";
+import {addToUserAttribute} from "../../redux/actions/userActions";
+import {clearItemQueryCache} from "../../redux/actions/cacheActions";
 
 /**
  * Handles the actual creation of the Challenge given the inputted info from the User.
@@ -25,9 +27,10 @@ import {getNowTimeString} from "../../logic/TimeHelper";
  * @param {function(boolean)} setIsLoading Sets the loading state.
  * @param {function(error)} setError Sets the error state.
  * @param {function(true)} setShowSuccessModal Sets the showing of success modal state.
+ * @param {{}} props The props of the component that hold the redux automatic updating functions.
  */
 const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, access, restriction, prize, challengeType,
-                      streakUpdateSpanType, streakUpdateInterval, streakN, setIsLoading, setError, setShowSuccessModal) => {
+                      streakUpdateSpanType, streakUpdateInterval, streakN, setIsLoading, setError, setShowSuccessModal, props) => {
     //this.setState({isSubmitLoading: true});
     alert("Current user: " + userID);
     const tags = [];
@@ -41,7 +44,7 @@ const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, acces
         if (Number.isInteger(+capacity)) {
             ChallengeFunctions.createChallengeOptional(userID, userID, endDate, capacity, title, goal, null,
                 null, null, tags, access, restriction, null, challengeType, streakUpdateSpanType, streakUpdateInterval,
-                streakN, (data) => {
+                streakN, () => {
                     console.log("Successfully created a challenge!");
                     setIsLoading(false);
                     setShowSuccessModal(true);
@@ -54,7 +57,7 @@ const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, acces
                     setError("*" + JSON.stringify(error))
                     // this.setState({submitError: "*" + JSON.stringify(error)});
                     // this.setState({isSubmitLoading: false});
-                });
+                }, props);
         }
         else {
             setIsLoading(false);
@@ -318,7 +321,7 @@ const CreateChallengeProp = (props) => {
                 <Button loading={isLoading} disabled={isLoading} primary size="big" type='button'
                         onClick={() => handleSubmit(props.user.id, endTime, capacity, title, goal, tagsPressed, access,
                             restriction, prize, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
-                            setIsLoading, setError, setShowSuccessLabel)}>Submit</Button>
+                            setIsLoading, setError, setShowSuccessLabel, props)}>Submit</Button>
             </Modal.Actions>
         {createSuccessLabel(showSuccessLabel)}
         </div>
@@ -339,6 +342,12 @@ const mapDispatchToProps = (dispatch) => {
         fetchChallenge: (id, variablesList) => {
             dispatch(fetchChallenge(id, variablesList));
         },
+        addToUserAttribute: (attributeName, attributeValue) => {
+            dispatch(addToUserAttribute(attributeName, attributeValue));
+        },
+        clearItemQueryCache: (itemType) => {
+            dispatch(clearItemQueryCache(itemType));
+        }
     }
 };
 

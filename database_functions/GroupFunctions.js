@@ -2,6 +2,7 @@ import Lambda from "../api/Lambda";
 import UserFunctions from "./UserFunctions";
 import S3 from "../api/S3Storage";
 import TestHelper from "../testing/TestHelper";
+import {err} from "../../Constants";
 
 const itemType = "Group";
 
@@ -25,10 +26,28 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static createGroup(fromID, title, description, access, successHandler, failureHandler) {
-        return GroupFunctions.create(fromID, title, description, null, null, null, null, null, access, null, successHandler, failureHandler);
+    static createGroup(fromID, title, description, access, successHandler, failureHandler, props) {
+        return GroupFunctions.create(fromID, title, description, null, null, null, null, null, access, null, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -47,10 +66,28 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string, data: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static createGroupOptional(fromID, title, description, motto, groupImage, owners, members, tags, access, restriction, successHandler, failureHandler) {
-        return GroupFunctions.create(fromID, title, description, motto, groupImage, owners, members, tags, access, restriction, successHandler, failureHandler);
+    static createGroupOptional(fromID, title, description, motto, groupImage, owners, members, tags, access, restriction, successHandler, failureHandler, props) {
+        return GroupFunctions.create(fromID, title, description, motto, groupImage, owners, members, tags, access, restriction, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     // Update Functions ============================================================
@@ -63,10 +100,28 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static updateToPrivate(fromID, groupID, successHandler, failureHandler) {
-        return GroupFunctions.updateSet(fromID, groupID, "access", "private", successHandler, failureHandler);
+    static updateToPrivate(fromID, groupID, successHandler, failureHandler, props) {
+        return GroupFunctions.updateSet(fromID, groupID, "access", "private", (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -77,10 +132,28 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static updateToPublic(fromID, groupID, successHandler, failureHandler) {
-        return GroupFunctions.updateSet(fromID, groupID, "access", "public", successHandler, failureHandler);
+    static updateToPublic(fromID, groupID, successHandler, failureHandler, props) {
+        return GroupFunctions.updateSet(fromID, groupID, "access", "public", (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -91,10 +164,28 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static updateToInviteOnly(fromID, groupID, successHandler, failureHandler) {
-        return GroupFunctions.updateAdd(fromID, groupID, "restriction", "invite", successHandler, failureHandler);
+    static updateToInviteOnly(fromID, groupID, successHandler, failureHandler, props) {
+        return GroupFunctions.updateAdd(fromID, groupID, "restriction", "invite", (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -105,10 +196,28 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static updateToUnrestricted(fromID, groupID, successHandler, failureHandler) {
-        return GroupFunctions.updateSet(fromID, groupID, "restriction", null, successHandler, failureHandler);
+    static updateToUnrestricted(fromID, groupID, successHandler, failureHandler, props) {
+        return GroupFunctions.updateSet(fromID, groupID, "restriction", null, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -120,10 +229,28 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static addTag(fromID, groupID, tag, successHandler, failureHandler) {
-        return GroupFunctions.updateAdd(fromID, groupID, "tags", tag, successHandler, failureHandler);
+    static addTag(fromID, groupID, tag, successHandler, failureHandler, props) {
+        return GroupFunctions.updateAdd(fromID, groupID, "tags", tag, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -135,10 +262,28 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static removeTag(fromID, groupID, tag, successHandler, failureHandler) {
-        return GroupFunctions.updateRemove(fromID, groupID, "tags", tag, successHandler, failureHandler);
+    static removeTag(fromID, groupID, tag, successHandler, failureHandler, props) {
+        return GroupFunctions.updateRemove(fromID, groupID, "tags", tag, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -152,27 +297,13 @@ class GroupFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    // static addMember(fromID, groupID, userID, successHandler, failureHandler, props) {
-    //     return UserFunctions.addGroup(fromID, userID, groupID, (data) => {
-    //         if (props) {
-    //             if (props.addToItemAttribute && props.addToUserAttribute) {
-    //                 // TODO
-    //                 err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
-    //             }
-    //             else {
-    //                 err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
-    //             }
-    //         }
-    //         else {
-    //             err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
-    //         }
-    //         successHandler && successHandler(data);
-    //     }, failureHandler);
-    // }
+    static addMember(fromID, groupID, userID, successHandler, failureHandler, props) {
+        return UserFunctions.addGroup(fromID, userID, groupID, null, successHandler, failureHandler, props);
+    }
 
     /**
      * Removes a User from the Group and the Group from the member in the database.
@@ -183,10 +314,28 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static removeMember(fromID, groupID, userID, successHandler, failureHandler) {
-        return UserFunctions.removeGroup(fromID, userID, groupID, successHandler, failureHandler);
+    static removeMember(fromID, groupID, userID, successHandler, failureHandler, props) {
+        return UserFunctions.removeGroup(fromID, userID, groupID, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -198,10 +347,28 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static updateTitle(fromID, groupID, title, successHandler, failureHandler) {
-        return GroupFunctions.updateSet(fromID, groupID, "title", title, successHandler, failureHandler);
+    static updateTitle(fromID, groupID, title, successHandler, failureHandler, props) {
+        return GroupFunctions.updateSet(fromID, groupID, "title", title, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -213,10 +380,28 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static updateMotto(fromID, groupID, motto, successHandler, failureHandler) {
-        return GroupFunctions.updateSet(fromID, groupID, "motto", motto, successHandler, failureHandler);
+    static updateMotto(fromID, groupID, motto, successHandler, failureHandler, props) {
+        return GroupFunctions.updateSet(fromID, groupID, "motto", motto, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -228,10 +413,28 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static updateDescription(fromID, groupID, description, successHandler, failureHandler) {
-        return GroupFunctions.updateSet(fromID, groupID, "description", description, successHandler, failureHandler);
+    static updateDescription(fromID, groupID, description, successHandler, failureHandler, props) {
+        return GroupFunctions.updateSet(fromID, groupID, "description", description, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 
     /**
@@ -243,12 +446,30 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static updateGroupImage(fromID, groupID, groupImage, successHandler, failureHandler) {
+    static updateGroupImage(fromID, groupID, groupImage, successHandler, failureHandler, props) {
         return GroupFunctions.updateSet(fromID, groupID, "groupImagePath", groupImage ? "groupImage" : null, (data) => {
             if (groupImage) {
-                S3.putImage("groupImage", groupImage, successHandler, failureHandler);
+                S3.putImage("groupImage", groupImage, () => {
+                    if (props) {
+                        if (props.addToUserAttribute && props.addToItemAttribute) {
+                            // TODO
+                            err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                        }
+                        else {
+                            err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                        }
+                    }
+                    else {
+                        err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+                    }
+                    successHandler && successHandler(data);
+                }, failureHandler);
             }
         }, failureHandler)
     }
@@ -318,10 +539,28 @@ class GroupFunctions {
      * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
      * returned data from the invocation of the Lambda function.
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static delete(fromID, groupID, successHandler, failureHandler) {
-        return Lambda.delete(fromID, groupID, itemType, successHandler, failureHandler);
+    static delete(fromID, groupID, successHandler, failureHandler, props) {
+        return Lambda.delete(fromID, groupID, itemType, (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler && successHandler(data);
+        }, failureHandler);
     }
 }
 

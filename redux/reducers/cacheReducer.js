@@ -37,6 +37,7 @@ export const REMOVE_ITEM =                 "REMOVE_ITEM";
 export const PUT_ITEM_QUERY =              "PUT_ITEM_QUERY";
 export const CLEAR_NORMALIZED_ITEM_QUERY = "CLEAR_NORMALIZED_ITEM_QUERY";
 export const CLEAR_ITEM_CACHE =            "CLEAR_ITEM_CACHE";
+export const CLEAR_ITEM_QUERY_CACHE =      "CLEAR_ITEM_QUERY_CACHE";
 
 
 // TODO Play around with these values maybe? How do we decide this?
@@ -326,6 +327,21 @@ const getItemQueryCache = (state, itemType) => {
 };
 
 /**
+ * Gets the item query cache name for the specified item type.
+ *
+ * @param {CacheReducer} state The state of the cache reducer.
+ * @param {string} itemType The type of item to receive the cache for.
+ * @return {string} Returns the item query cache name for the item type.
+ */
+const getItemQueryCacheName = (state, itemType) => {
+    return switchReturnItemType(itemType, "clientQueries", "trainerQueries", "gymQueries",
+        "workoutQueries", "reviewQueries", "eventQueries", "challengeQueries",
+        "inviteQueries", "postQueries", "submissionQueries", "groupQueries",
+        "commentQueries", "sponsorQueries", null, "streakQueries",
+        "GET ITEM QUERY CACHE CACHE REDUCER");
+};
+
+/**
  * Gets the item query LRU Handler for the specified item type.
  *
  * @param {CacheReducer} state The state of the cache reducer.
@@ -338,6 +354,22 @@ const getItemQueryLRUHandler = (state, itemType) => {
         state.challengeQueryLRUHandler, state.inviteQueryLRUHandler, state.postQueryLRUHandler,
         state.submissionQueryLRUHandler, state.groupQueryLRUHandler, state.commentQueryLRUHandler,
         state.sponsorQueryLRUHandler, null, state.streakQueryLRUHandler, "GET ITEM QUERY LRU HANDLER CACHE REDUCER");
+};
+
+/**
+ * Gets the item query LRU Handler name for the specified item type.
+ *
+ * @param {CacheReducer} state The state of the cache reducer.
+ * @param {string} itemType The type of item to receive the cache for.
+ * @return {string} Returns the item query LRU handler name for the item type.
+ */
+const getItemQueryLRUHandlerName = (state, itemType) => {
+    return switchReturnItemType(itemType, "clientQueryLRUHandler", "trainerQueryLRUHandler",
+        "gymQueryLRUHandler", "workoutQueryLRUHandler", "reviewQueryLRUHandler",
+        "eventQueryLRUHandler", "challengeQueryLRUHandler", "inviteQueryLRUHandler",
+        "postQueryLRUHandler", "submissionQueryLRUHandler", "groupQueryLRUHandler",
+        "commentQueryLRUHandler", "sponsorQueryLRUHandler", null,
+        "streakQueryLRUHandler", "GET ITEM QUERY LRU HANDLER CACHE REDUCER");
 };
 
 /**
@@ -391,6 +423,10 @@ export default (state: CacheReducer = initialState, action) => {
         case CLEAR_ITEM_CACHE:
             state = copyState(state);
             clearCache(state, action.payload.itemType, action.asyncDispatch);
+            break;
+        case CLEAR_ITEM_QUERY_CACHE:
+            state = copyState(state);
+            clearQueryCache(state, action.payload.itemType);
             break;
         default:
             break;
@@ -642,6 +678,17 @@ function clearCache(state, itemType, dispatch) {
             removeItem(state, id, itemType, dispatch)
         }
     }
+}
+
+/**
+ * Clear the entire query cache for a item type so that all queries for that type need to be re-queried.
+ *
+ * @param {CacheReducer} state The current state of the cache reducer.
+ * @param {string} itemType The item type of the query cache to clear.
+ */
+function clearQueryCache(state, itemType) {
+    state[getItemQueryCacheName(state, itemType)] = {};
+    state[getItemQueryLRUHandlerName(state, itemType)] = [];
 }
 
 /**

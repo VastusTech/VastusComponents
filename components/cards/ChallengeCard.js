@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import {Card, Image, Dimmer} from 'semantic-ui-react';
+import {Card, Image, Message} from 'semantic-ui-react';
 import ChallengeDescriptionModal from '../modals/ChallengeDescriptionModal';
 import {daysLeft, parseISOString} from "../../logic/TimeHelper";
-import Spinner from "../props/Spinner";
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
 import type Challenge from "../../types/Challenge";
 
@@ -104,9 +103,11 @@ const ChallengeCard = (props: Props) => {
 
     if (!props.challenge) {
         return (
-            <Dimmer>
-                <Spinner/>
-            </Dimmer>
+            <Message floating negative inverted color="purple">
+                <Message.Header>
+                    Challenge Deleted...
+                </Message.Header>
+            </Message>
         );
     }
     return(

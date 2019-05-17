@@ -8,7 +8,7 @@ import {getItemTypeFromID, switchReturnItemType} from "../../logic/ItemType";
 import {
     getObjectChannelName,
     PUT_ITEM, PUT_ITEM_QUERY, REMOVE_ITEM_ATTRIBUTE_INDEX,
-    REMOVE_FROM_ITEM_ATTRIBUTES, ADD_TO_ITEM_ATTRIBUTES, SET_ITEM_ATTRIBUTE_INDEX, REMOVE_ITEM
+    REMOVE_FROM_ITEM_ATTRIBUTES, ADD_TO_ITEM_ATTRIBUTES, SET_ITEM_ATTRIBUTE_INDEX, REMOVE_ITEM, CLEAR_ITEM_QUERY_CACHE
 } from "../reducers/cacheReducer";
 import {err, log} from "../../../Constants";
 import {addMessageFromNotification} from "./messageActions";
@@ -950,6 +950,14 @@ export function removeItem(itemType, id) {
 //         }
 //     };
 // };
+export const clearItemQueryCache = (itemType) => {
+    return {
+        type: CLEAR_ITEM_QUERY_CACHE,
+        payload: {
+            itemType
+        }
+    }
+};
 // ======================================================================================================
 // Cache Reducer Getter Functions ~
 // ======================================================================================================

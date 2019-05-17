@@ -24,8 +24,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createFriendRequest(fromID, from, to, successHandler, failureHandler, props) {
@@ -59,8 +59,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createFriendRequestOptional(fromID, from, to, message, successHandler, failureHandler, props) {
@@ -94,8 +94,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createEventInvite(fromID, from, to, eventID, successHandler, failureHandler, props) {
@@ -129,8 +129,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createEventInviteOptional(fromID, from, to, eventID, message, successHandler, failureHandler, props) {
@@ -163,8 +163,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createChallengeInvite(fromID, from, to, challengeID, successHandler, failureHandler, props) {
@@ -198,8 +198,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createChallengeInviteOptional(fromID, from, to, challengeID, message, successHandler, failureHandler, props) {
@@ -232,8 +232,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createGroupInvite(fromID, from, to, groupID, successHandler, failureHandler, props) {
@@ -267,8 +267,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createGroupInviteOptional(fromID, from, to, groupID, message, successHandler, failureHandler, props) {
@@ -300,8 +300,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createEventRequest(fromID, from, eventID, successHandler, failureHandler, props) {
@@ -334,8 +334,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createEventRequestOptional(fromID, from, eventID, message, successHandler, failureHandler, props) {
@@ -367,14 +367,17 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createChallengeRequest(fromID, from, challengeID, successHandler, failureHandler, props) {
         return InviteFunctions.create(fromID, from, challengeID, "challengeRequest", from, null, (data) => {
             if (props) {
                 if (props.addToUserAttribute && props.addToItemAttribute) {
+                    props.addToUserAttribute("sentInvites", data.data);
+                    props.addToItemAttribute(challengeID, "receivedInvites", data.data);
+                    props.addToItemAttribute(challengeID, "memberRequests", from);
                     // TODO
                     err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
                 }
@@ -401,8 +404,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createChallengeRequestOptional(fromID, from, challengeID, message, successHandler, failureHandler, props) {
@@ -434,8 +437,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createGroupRequest(fromID, from, groupID, successHandler, failureHandler, props) {
@@ -468,8 +471,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static createGroupRequestOptional(fromID, from, groupID, message, successHandler, failureHandler, props) {
@@ -540,8 +543,8 @@ class InviteFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
      * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
-     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem:
-     * function(string, string)}} props The component props containing the redux automatic update functions.
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
      * @return {*} Debugging info about the Lambda operation.
      */
     static delete(fromID, inviteID, successHandler, failureHandler, props) {
