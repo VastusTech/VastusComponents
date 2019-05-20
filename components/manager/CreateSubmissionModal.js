@@ -225,22 +225,21 @@ class CreateSubmissionModal extends Component<Props> {
                 <Modal.Header className="u-bg--bg">Task Post</Modal.Header>
                 <Modal.Content className="u-bg--bg">
                     {this.displayVideo()}
-                    <Grid centered>
-                        <div className="uploadImage u-flex u-flex-align--center u-margin-top--2">
-                            <div>
-                                <Button primary onClick={() => {this.finishTaskPost(() => {
+                    <Grid columns={2} centered>
+                            <Grid.Column>
+                                <Button primary fluid onClick={() => {this.finishTaskPost(() => {
                                     this.setState({isSubmitLoading: false, notifySubmission: true});
                                 })}} as="label" className="u-bg--primaryGradient">
                                     Complete Task
                                 </Button>
+                            </Grid.Column>
+                            <Grid.Column>
                                 <Button primary fluid as="label" htmlFor="proPicUpload" className="u-bg--primaryGradient">
-                                    <Icon name="camera" className='u-margin-right--0' inverted />
                                     Upload Video
                                 </Button>
-                                <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true} onChange={this.setVideo}/>
-                            </div>
-                        </div>
+                            </Grid.Column>
                     </Grid>
+                    <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true} onChange={this.setVideo}/>
                 </Modal.Content>
                 <div>{this.displaySubmission()}</div>
                 <Button primary fluid loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} onClick={this.handleSubmitButton}>Upload Video</Button>

@@ -28,13 +28,13 @@ class CreatePostProp extends Component {
         checkedRest: false,
         isSubmitLoading: false,
         showModal: false,
-        submitError: "",
+        submitError: null,
         showSuccessModal: false,
         showSuccessLabel: false,
         showSuccessLabelTimer: 0,
         description: "",
         title: "",
-        access: "public",
+        access: "private",
         picturesLoading: false,
         videosLoading: false,
         pictures: [],
@@ -173,8 +173,12 @@ class CreatePostProp extends Component {
             PostFunctions.createPostOptional(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getLatestPicture(), this.getVideos(), (returnValue) => {
                 console.log("Successfully Created Post!");
                 console.log(JSON.stringify(returnValue));
+                this.setState({isSubmitLoading: false});
+                this.setState({showSuccessLabel: true})
             }, (error) => {
                 err&&console.error(error);
+                this.setState({submitError: error});
+                this.setState({isSubmitLoading: false});
             });
             //     PostFunctions.createPostOptional(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {
             //         console.log("Successfully Created Post!");
@@ -257,7 +261,7 @@ class CreatePostProp extends Component {
     };
 
     displayError() {
-        if(this.state.submitError !== "") {
+        if(this.state.submitError) {
             return (<Message negative>
                 <Message.Header>Sorry!</Message.Header>
                 <p>{this.state.submitError}</p>
@@ -278,14 +282,12 @@ class CreatePostProp extends Component {
                                     <Form onSubmit={this.handleSubmit}>
                                         <ReactQuill value={this.state.description}
                                                     onChange={this.changeStateText} />
-                                        <div>{this.displayError()}{this.createSuccessLabel()}</div>
                                     </Form>
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid>
                     </Container>
                     <Card color='purple' align='center'>
-                        <Card.Header align='center' className="u-bg--bg">Add photo or video to post</Card.Header>
                         <div align='center' className="u-bg--bg">
                             {this.displayCurrentVideo()}
                             {this.displayCurrentImage()}
@@ -306,6 +308,7 @@ class CreatePostProp extends Component {
                         disabled={this.state.isSubmitLoading} primary size="big" type='button'
                         onClick={() => { this.handleSubmit()}}>Submit</Button>
                 {this.createSuccessLabel()}
+                {this.displayError()}
             </div>
         );
     }

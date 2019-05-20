@@ -149,7 +149,6 @@ const PostFeed = (props: Props) => {
      * @param calculations
      */
     const handleUpdate = (e, { calculations }) => {
-        log&&console.log(calculations.bottomVisible);
         if (calculations.bottomVisible && !isLoading) {
             log&&console.log("Next Token: " + nextToken);
             queryPosts(props.filter, nextToken, isFinished, props.user.id, props.user.friends, props.fetchPostQuery,

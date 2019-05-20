@@ -210,6 +210,30 @@ export const selectWinner = (isOwned, openCompleteModal) => {
     }
 }
 
+const displaySelectionOptions = (isOwned, openCompleteModal, setSubmitModalOpen) => {
+    if(isOwned) {
+        return (
+        <Grid columns={2} centered celled>
+            <Grid.Column>
+                {selectWinner(isOwned, openCompleteModal)}
+            </Grid.Column>
+            <Grid.Column>
+                    <Button primary fluid onClick={() => setSubmitModalOpen(true)} style={{marginBottom: '20px'}}>
+                        Post Task Completion</Button>
+            </Grid.Column>
+        </Grid>
+        )
+    }
+    else {
+        return (
+            <Grid centered>
+                <Button primary fluid onClick={() => setSubmitModalOpen(true)} style={{marginBottom: '20px'}}>
+                    Post Task Completion</Button>
+            </Grid>
+        )
+    }
+}
+
 /**
  * TODO
  *
@@ -233,19 +257,10 @@ export const createCorrectButton = (userID, challengeID, submissions, isLoading,
     const panes = [
         { menuItem: 'Submissions', render: () => (
                 <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
-                    <Grid columns={2}>
-                        <Grid.Column>
-                            {selectWinner(isOwned, openCompleteModal)}
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Button primary fluid onClick={() => setSubmitModalOpen(true)}>
-                                Task Completion Post</Button>
-                        </Grid.Column>
-                    </Grid>
+                    {displaySelectionOptions(isOwned, openCompleteModal, setSubmitModalOpen)}
                     <SubmissionList ids={submissions}
                                     noSubmissionsMessage="No submissions yet!"
-                                    sortFunction={(a, b) => a.time_created.localeCompare(b.time_created)}
-                    />
+                                    sortFunction={(a, b) => a.time_created.localeCompare(b.time_created)}/>
                     {/*<DatabaseObjectList ids={submissions}*/}
                                         {/*noObjectsMessage="No submissions yet!"*/}
                                         {/*acceptedItemTypes={["Submission"]}*/}
@@ -589,13 +604,6 @@ const ChallengeDescriptionModal = (props: Props) => {
                             <Icon.Group size='large'>
                                 <Icon name='bullseye' />
                             </Icon.Group> {getChallengeAttribute("goal")}
-                        </Grid.Row>
-                        <Grid.Row centered>
-                            <div>
-                                <Icon.Group size='large'>
-                                    <Icon name='trophy' />
-                                </Icon.Group> {getChallengeAttribute("prize")}
-                            </div>
                         </Grid.Row>
                         <Grid.Column>
                                 <Button floated='left' className="u-button--flat" onClick={() => setOwnerModalOpen(true)}>
