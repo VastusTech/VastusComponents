@@ -484,6 +484,18 @@ export function createCorrectSettingsButton(isOwned, isJoined, challengeID, setI
     }
 }
 
+const getDaysLeft = (endTime) => {
+    if (daysLeft(parseISOString(endTime)) <= 0) {
+        return "Challenge Completed"
+    }
+    else if (daysLeft(parseISOString(endTime)) === 1) {
+        return daysLeft(parseISOString(endTime)) + " Day Left";
+    }
+    else {
+        return daysLeft(parseISOString(endTime)) + " Days Left";
+    }
+};
+
 /**
  * TODO
  *
@@ -595,7 +607,7 @@ const ChallengeDescriptionModal = (props: Props) => {
                         props.user.id, setCompleteModalOpen, props.onClose, props)}
                     <div>{displayTagIcons(getChallengeAttribute("tags"))}</div>
                     <div>
-                        {daysLeft(parseISOString(getChallengeAttribute("endTime")))} days left
+                        {getDaysLeft(getChallengeAttribute("endTime"))}
                     </div>
                     </Modal.Header>
                 <Modal.Content align='center'>
