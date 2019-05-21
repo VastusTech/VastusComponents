@@ -256,7 +256,6 @@ const CreateGroupChallengeProp = (props: Props) => {
                                     </div>
                                     <Form.Input fluid label="Capacity" type="text" name="capacity" placeholder="Number of allowed attendees... " onChange={value => setCapacity(value.target.value)}/>
                                     <Form.Input fluid label="Goal" type="text" name="goal" placeholder="Criteria the victor is decided on..." onChange={value => setGoal(value.target.value)}/>
-                                    <Header as='h5'>Streak</Header>
                                     {
                                         challengeType === "streak" ? [
                                             <div key={0} className="field" align="center">

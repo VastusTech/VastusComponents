@@ -273,7 +273,25 @@ class CreatePostProp extends Component {
 
         return (
             <div align='center'>
-                <Header align='center' style={{marginTop: '20px'}}>Write New Post</Header>
+                        <Button primary as="label" htmlFor="picUpload"
+                                style={{marginTop: '10px', marginBottom: '10px'}} icon circular>
+                                <Icon name="plus" inverted/>
+                            <Grid columns={2}>
+                                <Grid.Column>
+                                    <Icon name="camera" inverted
+                                          style={{marginTop: '10px', marginBottom: '10px', marginRight: '-10px'}}/>
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <Icon name="record" inverted
+                                          style={{marginTop: '10px', marginBottom: '10px', marginLeft: '-10px'}}/>
+                                </Grid.Column>
+                            </Grid>
+                            {this.displayCurrentVideo()}
+                            {this.displayCurrentImage()}
+                        </Button>
+                        <input type="file" accept="image/*;capture=camcorder" id="picUpload"
+                               hidden={true} onChange={this.setPicture}/>
+                    <div>{this.displaySubmission()}</div>
                 <div align='center'>
                     <Container align='center'>
                         <Grid centered>
@@ -287,26 +305,12 @@ class CreatePostProp extends Component {
                             </Grid.Row>
                         </Grid>
                     </Container>
-                    <Card color='purple' align='center'>
-                        <div align='center' className="u-bg--bg">
-                            {this.displayCurrentVideo()}
-                            {this.displayCurrentImage()}
-                            <Fragment align='center'>
-                                <div className="uploadImage u-flex u-flex-align--center u-margin-top--2" align='center'>
-                                    <Button primary fluid as="label" htmlFor="picUpload" className="u-bg--primaryGradient" style={{marginRight: '-5px'}}>
-                                        <Icon name="camera" className='u-margin-right--0' inverted />
-                                        Upload Photo/Video
-                                    </Button>
-                                    <input type="file" accept="image/*;capture=camcorder" id="picUpload" hidden={true} onChange={this.setPicture}/>
-                                </div>
-                            </Fragment>
-                        </div>
-                        <div>{this.displaySubmission()}</div>
-                    </Card>
                 </div>
-                <Button loading={this.state.isSubmitLoading} style={{marginTop: '10px'}}
+                <Button loading={this.state.isSubmitLoading} style={{marginBottom: '10px',
+                marginRight: '10px'}}
                         disabled={this.state.isSubmitLoading} primary size="big" type='button'
-                        onClick={() => { this.handleSubmit()}}>Submit</Button>
+                        onClick={() => { this.handleSubmit()}}
+                        icon floated='right' circular><Icon name='send' /></Button>
                 {this.createSuccessLabel()}
                 {this.displayError()}
             </div>
