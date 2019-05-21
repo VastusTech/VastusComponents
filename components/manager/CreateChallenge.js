@@ -205,7 +205,13 @@ const CreateChallengeProp = (props) => {
 
     return (
         <div align='center'>
-            <Header align='center' style={{marginTop: '15px'}}>Challenge Builder</Header>
+            <Form onSubmit={() => handleSubmit(props.user.id, endTime, capacity, title, goal, tagsPressed,
+                access, restriction, prize, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
+                setIsLoading, setError, setShowSuccessLabel)}>
+                <Header as='h3'>
+                <Form.Input fluid type="text" name="title" placeholder={props.user.name + "\'s Challenge"}
+                            onChange={value => setTitle(value.target.value)}/>
+                </Header>
             <div align='center'>
                 <Grid align='center'>
                     <Grid.Row>
@@ -241,77 +247,65 @@ const CreateChallengeProp = (props) => {
                     <Grid centered>
                         <Grid.Row centered>
                             <Grid.Column>
-                                <Form onSubmit={() => handleSubmit(props.user.id, endTime, capacity, title, goal, tagsPressed,
-                                    access, restriction, prize, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
-                                    setIsLoading, setError, setShowSuccessLabel)}>
-                                    <Form.Input fluid label="Title" type="text" name="title" placeholder="Title" onChange={value => setTitle(value.target.value)}/>
-                                    <div className="field">
-                                        <label>End Date & Time</label>
-                                        <input type="datetime-local" name="challengeDate" onChange={value => {setEndTime(value.target.value);}}/>
+                                {/*<Form.Input fluid label="Capacity" type="text" name="capacity" placeholder="Number of allowed attendees... " onChange={value => setCapacity(value.target.value)}/>*/}
+                                    <Form.Input fluid type="text" name="goal" placeholder="Type of challenge..." onChange={value => setGoal(value.target.value)}/>
+                                    <div key={0} className="field" align="center">
+                                        {/*<Header as="h1">{streakUpdateInfo(streakN, streakUpdateInterval, streakUpdateSpanType)}</Header>*/}
+                                        <Header as='h3'>
+                                            <Grid columns={5}>
+                                                <Grid.Column style={{marginTop: '15px'}} width={3}>
+                                                    Complete
+                                                </Grid.Column>
+                                                <Grid.Column>
+                                            <Form.Input fluid type="number" name="streakUpdateInterval" value={streakUpdateInterval ? streakUpdateInterval : ""}
+                                                        onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
+                                                            ? setStreakUpdateInterval(1) : setStreakUpdateInterval(value.target.value)}/>
+                                                </Grid.Column>
+                                                <Grid.Column style={{marginTop: '15px'}} width={3}>
+                                                    {tasksPlural(streakUpdateInterval)} every
+                                                </Grid.Column>
+                                                <Grid.Column>
+                                                    <Form.Input fluid type="number" name="streakN" value={streakN ? streakN : ""}
+                                                        onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
+                                                            ? setStreakN(1) : setStreakN(value.target.value)}/>
+                                                </Grid.Column>
+                                                <Grid.Column>
+                                                    {intervalsPlural(streakN, setStreakUpdateSpanType, streakUpdateSpanType)}
+                                                </Grid.Column>
+                                            </Grid>
+                                            <div className="field">
+                                                <label>until</label>
+                                                <input type="datetime-local" name="challengeDate" onChange={value => {setEndTime(value.target.value);}}/>
+                                            </div>
+                                        </Header>
                                     </div>
-                                    <Form.Input fluid label="Capacity" type="text" name="capacity" placeholder="Number of allowed attendees... " onChange={value => setCapacity(value.target.value)}/>
-                                    <Form.Input fluid label="Goal" type="text" name="goal" placeholder="Criteria the victor is decided on..." onChange={value => setGoal(value.target.value)}/>
-                                    <Header as='h5'>Streak</Header>
-                                    {
-                                        challengeType === "streak" ? [
-                                            <div key={0} className="field" align="center">
-                                                {/*<Header as="h1">{streakUpdateInfo(streakN, streakUpdateInterval, streakUpdateSpanType)}</Header>*/}
-                                                <Header as='h3'>
-                                                    <Grid columns={5}>
-                                                        <Grid.Column style={{marginTop: '15px'}} width={3}>
-                                                            Complete
-                                                        </Grid.Column>
-                                                        <Grid.Column>
-                                                    <Form.Input fluid type="number" name="streakUpdateInterval" value={streakUpdateInterval ? streakUpdateInterval : ""}
-                                                                onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
-                                                                    ? setStreakUpdateInterval(1) : setStreakUpdateInterval(value.target.value)}/>
-                                                        </Grid.Column>
-                                                        <Grid.Column style={{marginTop: '15px'}} width={3}>
-                                                            {tasksPlural(streakUpdateInterval)} every
-                                                        </Grid.Column>
-                                                        <Grid.Column>
-                                                            <Form.Input fluid type="number" name="streakN" value={streakN ? streakN : ""}
-                                                                onChange={value => value.target.value === "" || parseInt(value.target.value) <= 0
-                                                                    ? setStreakN(1) : setStreakN(value.target.value)}/>
-                                                        </Grid.Column>
-                                                        <Grid.Column>
-                                                            {intervalsPlural(streakN, setStreakUpdateSpanType, streakUpdateSpanType)}
-                                                        </Grid.Column>
-                                                    </Grid>
-                                                </Header>
-                                            </div>,
-                                            <div key={1} className="field">
-                                                <label>Update Span</label>
-                                            </div>,
-                                        ] : null
-                                    }
                                     {/*<Form.Field>
                                         <div className="field" width={5}>
                                             <label>Difficulty</label>
                                             <Rating icon='star' defaultRating={1} maxRating={3} />
                                         </div>
                                     </Form.Field>*/}
-                                    <Form.Field width={12}>
+                                {/*Form.Field width={12}>
                                         <Checkbox toggle
                                                   onClick={() => {setChallengeType(p => p ? null : "streak");
                                                   setStreakN(1); setStreakUpdateInterval(1); setStreakUpdateSpanType("daily")}}
                                                   checked={challengeType === "streak"}
                                                   label={challengeType ? challengeType : "streak off"} />
-                                    </Form.Field>
+                                    </Form.Field>*/}
                                     <Form.Field width={12}>
                                         <Checkbox toggle
                                                   onClick={() => setAccess(p => p === "public" ? "private" : "public")}
                                                   checked={access === "public"}
                                                   label={access} />
                                     </Form.Field>
-                                    <Form.Field width={12}>
+                                {/*<Form.Field width={12}>
                                         <Checkbox toggle
                                                   onClick={() => setRestriction(p => p ? null : "restricted")}
                                                   checked={restriction}
                                                   label={restriction ? restriction : "unrestricted"}/>
-                                    </Form.Field>
+                                    </Form.Field>*/}
                                     <div>{displayError(error)}{createSuccessLabel(showSuccessLabel)}</div>
-                                </Form>
+
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
@@ -319,11 +313,12 @@ const CreateChallengeProp = (props) => {
             </div>
             <Modal.Actions>
                 <Button loading={isLoading} disabled={isLoading} primary size="big" type='button'
-                        onClick={() => handleSubmit(props.user.id, endTime, capacity, title, goal, tagsPressed, access,
+                        onClick={() => handleSubmit(props.user.id, endTime, 1000, title, goal, tagsPressed, access,
                             restriction, prize, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
                             setIsLoading, setError, setShowSuccessLabel, props)}>Submit</Button>
             </Modal.Actions>
         {createSuccessLabel(showSuccessLabel)}
+        </Form>
         </div>
     );
 };
