@@ -164,6 +164,35 @@ class CreatePostProp extends Component {
         return null;
     }
 
+    displayMedia() {
+        if(this.state.tempVideoURLs && this.state.tempVideoURLs.length > 0
+            || this.state.tempPictureURLs && this.state.tempPictureURLs.length > 0) {
+            return [
+                <Icon name="plus" inverted/>,
+                    <Card style={{maxWidth: 200, maxHeight: 200, marginBottom: '60px', marginRight: '50px',
+                    marginLeft: '50px'}}>
+                        {this.displayCurrentVideo()}
+                        {this.displayCurrentImage()}
+                    </Card>
+            ];
+        }
+        else {
+            return [
+                <Icon name="plus" inverted/>,
+                <Grid columns={2}>
+                    <Grid.Column>
+                        <Icon name="camera" inverted
+                              style={{marginTop: '10px', marginBottom: '10px', marginRight: '-10px'}}/>
+                    </Grid.Column>
+                    <Grid.Column>
+                        <Icon name="record" inverted
+                              style={{marginTop: '10px', marginBottom: '10px', marginLeft: '-10px'}}/>
+                    </Grid.Column>
+                </Grid>
+            ];
+        }
+    }
+
     handleSubmit = () => {
 
         this.setState({isSubmitLoading: true});
@@ -275,19 +304,8 @@ class CreatePostProp extends Component {
             <div align='center'>
                         <Button primary as="label" htmlFor="picUpload"
                                 style={{marginTop: '10px', marginBottom: '10px'}} icon circular>
-                                <Icon name="plus" inverted/>
-                            <Grid columns={2}>
-                                <Grid.Column>
-                                    <Icon name="camera" inverted
-                                          style={{marginTop: '10px', marginBottom: '10px', marginRight: '-10px'}}/>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Icon name="record" inverted
-                                          style={{marginTop: '10px', marginBottom: '10px', marginLeft: '-10px'}}/>
-                                </Grid.Column>
-                            </Grid>
-                            {this.displayCurrentVideo()}
-                            {this.displayCurrentImage()}
+
+                            {this.displayMedia()}
                         </Button>
                         <input type="file" accept="image/*;capture=camcorder" id="picUpload"
                                hidden={true} onChange={this.setPicture}/>
