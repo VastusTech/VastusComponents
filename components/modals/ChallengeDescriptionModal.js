@@ -327,7 +327,7 @@ export const createCorrectButton = (userID, challengeID, submissions, isLoading,
  * @param {Streak} streak
  * @return {*}
  */
-export const displayStreakInfo = (ifStreak, isJoined, streak) => {
+/*export const displayStreakInfo = (ifStreak, isJoined, streak) => {
     if (ifStreak && isJoined) {
         if (streak) {
             const currentNumber = streak.N;
@@ -385,7 +385,7 @@ export const displayStreakInfo = (ifStreak, isJoined, streak) => {
         }
     }
     return null;
-};
+};*/
 
 /**
  * TODO
@@ -617,10 +617,8 @@ const ChallengeDescriptionModal = (props: Props) => {
                                 <Icon name='bullseye' />
                             </Icon.Group> {getChallengeAttribute("goal")}
                         </Grid.Row>
-                        <Grid.Column>
-                                <Button floated='left' className="u-button--flat" onClick={() => setOwnerModalOpen(true)}>
-                                    <Icon name='user'/> {getOwnerAttribute("name")}
-                                </Button>
+                        <Grid.Row>
+
 
                             <Modal trigger={
                             <Button floated='right' primary className="u-button--flat u-padding-left--1">
@@ -632,10 +630,8 @@ const ChallengeDescriptionModal = (props: Props) => {
                                 />
                             </Modal.Content>
                         </Modal>
-                        </Grid.Column>
+                        </Grid.Row>
                     </Grid>
-                    <Divider/>
-                    {displayStreakInfo(challengeType === "streak", isJoined, streak)}
                     <Modal.Description>
                         {createCorrectModal(getChallengeAttribute("owner"), ownerModalOpen, setOwnerModalOpen)}
                         <CompleteChallengeModal open={completeModalOpen} onClose={() => setCompleteModalOpen(false)} challengeID={props.challengeID}/>
@@ -703,3 +699,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChallengeDescriptionModal);
+
+/*{displayStreakInfo(challengeType === "streak", isJoined, streak)}*/
+

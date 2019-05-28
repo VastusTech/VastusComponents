@@ -219,21 +219,22 @@ const SearchBarProp = (props) => {
     // console.log("Showing " + this.state.searchResults.length + " results");
     // const isLoading = (this.state.clientsLoading || this.state.eventsLoading);
     // console.log(this.props.search.results.length);
+    /* <Fragment>
+        {getResultModal(result, resultModalOpen, setResultModalOpen)}
+        <Search
+            fluid
+            size="large"
+            placeholder="Search for Users and Challenges"
+            loading={isLoading}
+            onResultSelect={(e, {result}) => handleResultSelect(result, setResult, setResultModalOpen)}
+            onSearchChange={(e, {value}) => handleSearchChange(value, props.newSearch, setSearchQuery, setIsLoading)}
+            results={getFormattedResults(searchQuery, props.search.results, props.search.searchBarEnabled)}
+            value={searchQuery}
+            showNoResults={props.search.searchBarEnabled}
+        />
+    </Fragment> */
     return (
-        <Fragment>
-            {getResultModal(result, resultModalOpen, setResultModalOpen)}
-            <Search
-                fluid
-                size="large"
-                placeholder="Search for Users and Challenges"
-                loading={isLoading}
-                onResultSelect={(e, {result}) => handleResultSelect(result, setResult, setResultModalOpen)}
-                onSearchChange={(e, {value}) => handleSearchChange(value, props.newSearch, setSearchQuery, setIsLoading)}
-                results={getFormattedResults(searchQuery, props.search.results, props.search.searchBarEnabled)}
-                value={searchQuery}
-                showNoResults={props.search.searchBarEnabled}
-            />
-        </Fragment>
+        <Fragment></Fragment>
     )
 };
 
