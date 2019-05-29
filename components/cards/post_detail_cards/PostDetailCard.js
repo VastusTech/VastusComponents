@@ -297,9 +297,6 @@ class PostDetailCard extends Component<Props> {
         //log&&console.log("Challenge Info: " + JSON.stringify(this.state.event));
         return(
             <Card>
-                <Card.Header>
-                    <Button className="u-button--flat" onClick={this.openClientModal.bind(this)}>{this.profilePicture()}{this.getOwnerName()}</Button>
-                </Card.Header>
                 <Card.Content>
                     <Card.Description>
                         {this.getPostAttribute("description")}

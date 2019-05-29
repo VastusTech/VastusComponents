@@ -3,6 +3,7 @@ import _ from 'lodash'
 import {Visibility} from 'semantic-ui-react'
 import PostCard, {PostCardInfo} from "../cards/PostCard";
 import { connect } from 'react-redux';
+import {debugAlert} from "../../logic/DebuggingHelper";
 import {
     fetchPost,
     fetchChallenge,
@@ -13,7 +14,6 @@ import {
 import {fetchUserAttributes} from "../../redux/actions/userActions";
 import {getItemTypeFromID} from "../../logic/ItemType";
 import {log, err} from "../../../Constants";
-import {debugAlert} from "../../logic/DebuggingHelper";
 import ClientDetailCard from "../cards/post_detail_cards/ClientDetailCard";
 import TrainerDetailCard from "../cards/post_detail_cards/TrainerDetailCard";
 import PostDetailCard from "../cards/post_detail_cards/PostDetailCard";
@@ -51,7 +51,7 @@ type Props = {
  */
 const queryPosts = (filter, nextToken, isFinished, userID, friends, fetchPostQuery, fetchClient, fetchTrainer, fetchEvent,
                     fetchChallenge, fetchPost, fetchGroup, setIsLoading, setIsFinished, setNextToken, setPosts) => {
-    alert("Querying posts! NT = " + nextToken + ", isFinished = " + isFinished);
+    debugAlert("Querying posts! NT = " + nextToken + ", isFinished = " + isFinished);
     if (!isFinished) {
         setIsLoading(true);
         debugAlert("Fetching Post Feed Query");

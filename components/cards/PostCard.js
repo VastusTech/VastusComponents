@@ -218,20 +218,6 @@ const PostCard = (props: Props) => {
         return(
             <Card color='purple' fluid raised>
                 {/*this.getPostAttribute("about")*/}
-                <Grid style={{marginLeft: '10px', marginTop: '2px', marginBottom: '2px'}}>
-                    <Button className="u-button--flat" id="byButton"
-                            onClick={() => byModalOpen || setByModalOpen(true)}>
-                        <Grid style={{marginLeft: '10px', marginTop: '10px'}}>
-                            <Grid.Column width={6}>
-                                {profilePicture(getByAttribute("profileImage"))}
-                            </Grid.Column>
-                            <Grid.Column width={16} style={{marginLeft: '-15px', marginTop: '15px'}}>
-                                {getByAttribute("name") + " "} {/*this.state.postMessage*/}
-                            </Grid.Column>
-                            {byModal(getByAttribute("id"), getByAttribute("item_type"), byModalOpen, setByModalOpen)}
-                        </Grid>
-                    </Button>
-                </Grid>
                 {/*{openOnce()}*/}
                 <Card.Content>
                     <div align='center'>
@@ -246,11 +232,6 @@ const PostCard = (props: Props) => {
                     </div>
                     <PostDescriptionModal open={postModalOpen} onClose={() => setPostModalOpen(false)}
                                           postID={props.post.id}/>
-                </Card.Content>
-                <Card.Content extra>
-                    <Card.Meta textAlign='center'>
-                        {getPostAttribute("access")}
-                    </Card.Meta>
                 </Card.Content>
             </Card>
         );
