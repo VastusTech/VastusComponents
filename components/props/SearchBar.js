@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React, { useState, Fragment } from 'react'
 import Fuse from "fuse.js";
-import {Search } from 'semantic-ui-react'
+import {Image, Search} from 'semantic-ui-react'
 import EventDescriptionModal from "../modals/EventDescriptionModal";
 import ClientModal from "../modals/ClientModal";
 import TrainerModal from "../modals/TrainerModal";
@@ -12,6 +12,8 @@ import {switchReturnItemType} from "../../logic/ItemType";
 import ChallengeDescriptionModal from "../modals/ChallengeDescriptionModal";
 import PostDescriptionModal from "../modals/PostDescriptionModal";
 import GroupDescriptionModal from "../modals/GroupDescriptionModal";
+import Logo from '../../img/vt_new.svg';
+
 
 const minimumSearchResults = 6;
 
@@ -234,7 +236,9 @@ const SearchBarProp = (props) => {
         />
     </Fragment> */
     return (
-        <Fragment></Fragment>
+        <Fragment>
+            <Image src={Logo} size="mini" centered />
+        </Fragment>
     )
 };
 
