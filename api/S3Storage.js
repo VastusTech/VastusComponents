@@ -39,7 +39,7 @@ class S3Storage {
      * @return {*} Debugging info about the S3 operation.
      */
     static putVideo(path, video, successHandler, failureHandler, progressHandler) {
-        return S3Storage.multipartPut(path, video, "video/*", progress => progressHandler(progress.loaded), successHandler, failureHandler);
+        return S3Storage.multipartPut(path, video, "video/*", progress => progressHandler(parseInt((progress.loaded * 100) / progress.total )), successHandler, failureHandler);
     }
 
     /**
