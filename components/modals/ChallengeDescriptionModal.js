@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Header, Popup} from 'semantic-ui-react';
+import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Progress, Popup} from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 import { connect } from 'react-redux';
 import {
@@ -20,7 +20,6 @@ import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import {daysLeft, parseISOString} from "../../logic/TimeHelper";
 import TrainerModal from "./TrainerModal";
 import Spinner from "../props/Spinner";
-import {streakInfo} from "../../logic/StreakHelper";
 import {arrayIntersection} from "../../logic/ArrayHelper";
 import {err} from "../../../Constants";
 import SubmissionList from "../lists/SubmissionList";
@@ -219,7 +218,8 @@ const displaySelectionOptions = (isOwned, openCompleteModal, setSubmitModalOpen)
             </Grid.Column>
             <Grid.Column>
                     <Button primary fluid onClick={() => setSubmitModalOpen(true)} style={{marginBottom: '20px'}}>
-                        Post Task Completion</Button>
+                        Submit Video For Challenge
+                    </Button>
             </Grid.Column>
         </Grid>
         )
@@ -228,7 +228,8 @@ const displaySelectionOptions = (isOwned, openCompleteModal, setSubmitModalOpen)
         return (
             <Grid centered>
                 <Button primary fluid onClick={() => setSubmitModalOpen(true)} style={{marginBottom: '20px'}}>
-                    Post Task Completion</Button>
+                    Submit Video For Challenge
+                </Button>
             </Grid>
         )
     }
@@ -635,7 +636,7 @@ const ChallengeDescriptionModal = (props: Props) => {
                     <Modal.Description>
                         {createCorrectModal(getChallengeAttribute("owner"), ownerModalOpen, setOwnerModalOpen)}
                         <CompleteChallengeModal open={completeModalOpen} onClose={() => setCompleteModalOpen(false)} challengeID={props.challengeID}/>
-                        <CreateSubmissionModal open={submitModalOpen} onClose={() => setSubmitModalOpen(false)} challengeID={props.challengeID}/>
+                        <CreateSubmissionModal open={submitModalOpen} onClose={() => setSubmitModalOpen(false)} challengeID={props.challengeID} />
                         {createCorrectButton(props.user.id, props.challengeID, getChallengeAttribute("submissions"),
                             isLoading, isCompleted, isOwned, isJoined, isRestricted, isRequesting, setIsLoading,
                             setSubmitModalOpen, setCompleteModalOpen, props)}

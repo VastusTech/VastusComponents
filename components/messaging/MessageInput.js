@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react';
-import {Button, Input, Icon} from "semantic-ui-react";
+import {Button, Input, Icon, Progress} from "semantic-ui-react";
 import {connect} from "react-redux";
 import MessageFunctions from "../../database_functions/MessageFunctions";
 import {err, log} from "../../../Constants";
@@ -18,7 +18,7 @@ type Props = {
  * @param {string} userProfileImagePath The S3 profile image path of the User sending the message.
  * @param {function(boolean)} setIsLoading Sets the loading state.
  */
-const addMessage = (e, board, userID, username, userProfileImagePath, setIsLoading) => {
+const addMessage = (e, board, userID, username, userProfileImagePath, setIsLoading, setPercent) => {
     // Prevent the default behaviour of form submit
     e.preventDefault();
 
@@ -26,13 +26,16 @@ const addMessage = (e, board, userID, username, userProfileImagePath, setIsLoadi
     // and make sure it not some empty strings
     let message = e.target.elements.message.value.trim();
 
+    setPercent(50);
     // Make sure name and comment boxes are filled
     if (message) {
         setIsLoading(true);
         MessageFunctions.createTextMessage(userID, userID, username, userProfileImagePath, board, message, () => {
             log&&console.log("Successfully sent message!");
+            setPercent(100);
             setIsLoading(false);
         }, (error) => {
+            setPercent(0);
             err&&console.error("Failed to send message! Error = " + JSON.stringify(error));
             setIsLoading(false);
         });
@@ -75,6 +78,7 @@ const addPicture = (picture, board, userID, username, userProfileImagePath, setI
  */
 const addVideo = (video, board, userID, username, userProfileImagePath, setIsLoading) => {
     this.setState({sendLoading: true});
+
     MessageFunctions.createVideoMessage(userID, userID, username, userProfileImagePath, board, video, "video", () => {
         setIsLoading(false);
         log&&console.log("Successfully created video message!");
@@ -111,6 +115,14 @@ const addPictureOrVideo = (event, board, userID, username, userProfileImagePath,
     }
 };
 
+const loadingBar = (isLoading, percent) => {
+    if(isLoading) {
+        return (
+            <Progress percent={percent} active color='purple' />
+        );
+    }
+}
+
 /**
  * This is the component to send messages for a message board. Handles text, picture, and video messages.
  *
@@ -120,10 +132,13 @@ const addPictureOrVideo = (event, board, userID, username, userProfileImagePath,
  */
 const MessageInput = (props: Props) => {
     const [isLoading, setIsLoading] = useState(false);
+    const [percent, setPercent] = useState(0);
 
     return (
         <Fragment>
-            <form onSubmit={e => addMessage(e, props.board, props.user.id, props.user.username, props.user.profileImagePath, setIsLoading)} className='u-margin-top--2'>
+
+            <form onSubmit={e => addMessage(e, props.board, props.user.id, props.user.username, props.user.profileImagePath, setIsLoading, setPercent)} className='u-margin-top--2'>
+                {loadingBar(isLoading, percent)}
                 <Input type='text' action fluid className="textarea" name="message" placeholder="Write Message...">
                     <input/>
                     <Button as='label' for='proPicUpload'>

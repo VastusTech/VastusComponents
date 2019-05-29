@@ -38,9 +38,8 @@ class S3Storage {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the S3 operation.
      */
-    static putVideo(path, video, successHandler, failureHandler) {
-        return S3Storage.multipartPut(path, video, "video/*", progress => console.log("Uploaded :: " +
-            parseInt((progress.loaded * 100) / progress.total )+'%'), successHandler, failureHandler);
+    static putVideo(path, video, successHandler, failureHandler, progressHandler) {
+        return S3Storage.multipartPut(path, video, "video/*", progress => progressHandler(progress.loaded), successHandler, failureHandler);
     }
 
     /**

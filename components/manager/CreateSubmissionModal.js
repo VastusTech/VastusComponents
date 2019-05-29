@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Modal, Message, Button, Grid, Icon } from "semantic-ui-react";
+import {Modal, Message, Button, Grid, Icon, Progress} from "semantic-ui-react";
 import { Player } from "video-react";
 import { connect } from "react-redux";
 import SubmissionFunctions from "../../database_functions/SubmissionFunctions";
@@ -26,7 +26,8 @@ class CreateSubmissionModal extends Component<Props> {
         videos: [],
         tempPictureURLs: [],
         tempVideoURLs: [],
-        notifySubmission: false
+        notifySubmission: false,
+        percent: 0
     };
 
     constructor(props) {
@@ -56,7 +57,11 @@ class CreateSubmissionModal extends Component<Props> {
         return null;
     }
 
-    createSubmission(finishHandler) {
+    setPercent = (progress) => {
+        this.setState({percent: progress});
+    }
+
+    createSubmission(finishHandler, progressHandler) {
         const pictures = {};
         const videos = {};
         for (let i = 0; i < this.state.pictures.length; i++) {
@@ -68,7 +73,7 @@ class CreateSubmissionModal extends Component<Props> {
         console.log(JSON.stringify(pictures) + " vids: " + JSON.stringify(videos));
         SubmissionFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Task Video", pictures, videos, finishHandler, (error) => {
             console.error(error);
-        });
+        }, progressHandler);
         // PostFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Submission", this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {
         //     this.setState({picturesLoading: (this.state.pictures.length > 0), videosLoading: (this.state.videos.length > 0)});
         //     console.log(JSON.stringify(returnValue));
@@ -178,9 +183,8 @@ class CreateSubmissionModal extends Component<Props> {
 
     handleSubmitButton() {
         this.setState({isSubmitLoading: true});
-        this.createSubmission(() => {
-            this.setState({isSubmitLoading: false, notifySubmission: true});
-        });
+        this.createSubmission(() => {this.setState({isSubmitLoading: false, notifySubmission: true})
+        }, this.setPercent);
     }
 
     displaySubmission() {
@@ -209,6 +213,14 @@ class CreateSubmissionModal extends Component<Props> {
         return null;
     }
 
+    loadingBar() {
+        if(this.state.isSubmitLoading) {
+            return (
+                <Progress percent={this.state.percent} active color='purple' />
+            );
+        }
+    }
+
 
     // This should show a modal that
     render() {
@@ -223,16 +235,10 @@ class CreateSubmissionModal extends Component<Props> {
         return(
             <Modal centered open={this.props.open} onClose={this.props.onClose.bind(this)} closeIcon>
                 <Modal.Header className="u-bg--bg">Task Post</Modal.Header>
+                {this.loadingBar()}
                 <Modal.Content className="u-bg--bg">
                     {this.displayVideo()}
-                    <Grid columns={2} centered>
-                            <Grid.Column>
-                                <Button primary fluid onClick={() => {this.finishTaskPost(() => {
-                                    this.setState({isSubmitLoading: false, notifySubmission: true});
-                                })}} as="label" className="u-bg--primaryGradient">
-                                    Complete Task
-                                </Button>
-                            </Grid.Column>
+                    <Grid columns={1} centered>
                             <Grid.Column>
                                 <Button primary fluid as="label" htmlFor="proPicUpload" className="u-bg--primaryGradient">
                                     Upload Video
@@ -242,7 +248,7 @@ class CreateSubmissionModal extends Component<Props> {
                     <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true} onChange={this.setVideo}/>
                 </Modal.Content>
                 <div>{this.displaySubmission()}</div>
-                <Button primary fluid loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} onClick={this.handleSubmitButton}>Upload Video</Button>
+                <Button primary fluid loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} onClick={this.handleSubmitButton}>Submit</Button>
             </Modal>
         );
     }

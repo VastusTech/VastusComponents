@@ -28,8 +28,8 @@ class SubmissionFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static createSubmission(fromID, by, challengeID, description, pictures, videos, successHandler, failureHandler) {
-        return SubmissionFunctions.create(fromID, by, description, challengeID, pictures, videos, successHandler, failureHandler);
+    static createSubmission(fromID, by, challengeID, description, pictures, videos, successHandler, failureHandler, progressHandler) {
+        return SubmissionFunctions.create(fromID, by, description, challengeID, pictures, videos, successHandler, failureHandler, progressHandler);
     }
 
     // Update Functions ============================================================
@@ -159,7 +159,7 @@ class SubmissionFunctions {
      * @param {function(error)} failureHandler The function to handle any errors that may occur.
      * @return {*} Debugging info about the Lambda operation.
      */
-    static create(fromID, by, description, about, pictures, videos, successHandler, failureHandler) {
+    static create(fromID, by, description, about, pictures, videos, successHandler, failureHandler, progressHandler) {
         let picturePaths = null;
         let videoPaths = null;
         if (pictures) {
@@ -209,7 +209,7 @@ class SubmissionFunctions {
                     if (videos) {
                         for (const key in videos) {
                             if (videos.hasOwnProperty(key) && videos[key]) {
-                                S3.putVideo(id + "/" + key, videos[key], finish, error);
+                                S3.putVideo(id + "/" + key, videos[key], finish, error, progressHandler);
                             }
                         }
                     }
