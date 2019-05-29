@@ -622,7 +622,8 @@ const ChallengeDescriptionModal = (props: Props) => {
 
 
                             <Modal trigger={
-                            <Button floated='right' primary className="u-button--flat u-padding-left--1">
+                            <Button style={{marginTop: '-15px', marginBottom: '20px'}}
+                                floated='right' primary className="u-button--flat u-padding-left--1">
                                 <Icon name='users' /> Members</Button>} closeIcon>
                             <Modal.Content>
                                 <UserList userIDs={getChallengeAttribute("members")}
