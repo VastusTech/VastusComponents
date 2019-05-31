@@ -24,6 +24,7 @@ import {arrayIntersection} from "../../logic/ArrayHelper";
 import {err} from "../../../Constants";
 import SubmissionList from "../lists/SubmissionList";
 import UserList from "../lists/UserList";
+import ScrollView from "react-inverted-scrollview";
 import {
     addToItemAttribute,
     clearItemQueryCache,
@@ -217,8 +218,9 @@ const displaySelectionOptions = (isOwned, openCompleteModal, setSubmitModalOpen)
                 {selectWinner(isOwned, openCompleteModal)}
             </Grid.Column>
             <Grid.Column>
-                    <Button primary fluid onClick={() => setSubmitModalOpen(true)} style={{marginBottom: '20px'}}>
-                        Submit Video For Challenge
+                    <Button floated='right' primary size='large' circular icon onClick={() => setSubmitModalOpen(true)}
+                            style={{}}>
+                        <Icon name='send'/>
                     </Button>
             </Grid.Column>
         </Grid>
@@ -226,10 +228,13 @@ const displaySelectionOptions = (isOwned, openCompleteModal, setSubmitModalOpen)
     }
     else {
         return (
-            <Grid centered>
-                <Button primary fluid onClick={() => setSubmitModalOpen(true)} style={{marginBottom: '20px'}}>
-                    Submit Video For Challenge
-                </Button>
+            <Grid>
+                <Grid.Column>
+                    <Button floated='right' primary size='large' circular icon onClick={() => setSubmitModalOpen(true)}
+                            style={{}}>
+                        <Icon name='send'/>
+                    </Button>
+                </Grid.Column>
             </Grid>
         )
     }
@@ -256,20 +261,28 @@ const displaySelectionOptions = (isOwned, openCompleteModal, setSubmitModalOpen)
 export const createCorrectButton = (userID, challengeID, submissions, isLoading, isCompleted, isOwned, isJoined, isRestricted,
                              isRequesting, setIsLoading, setSubmitModalOpen, openCompleteModal, props) => {
     const panes = [
-        { menuItem: 'Submissions', render: () => (
+        { menuItem: 'Submissions', render: () => [
                 <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
-                    {displaySelectionOptions(isOwned, openCompleteModal, setSubmitModalOpen)}
+                    <ScrollView
+                        class='chat'
+                        width='100%'
+                        height='300px'
+                    >
                     <SubmissionList ids={submissions}
                                     noSubmissionsMessage="No submissions yet!"
                                     sortFunction={(a, b) => a.time_created.localeCompare(b.time_created)}/>
+                    </ScrollView>
+
                     {/*<DatabaseObjectList ids={submissions}*/}
                                         {/*noObjectsMessage="No submissions yet!"*/}
                                         {/*acceptedItemTypes={["Submission"]}*/}
                                         {/*// TODO Check the sort...*/}
                                         {/*sortFunction={(a, b) => a.time_created.localeCompare(b.time_created)}*/}
                     {/*/>*/}
+                    <Divider/>
+                    {displaySelectionOptions(isOwned, openCompleteModal, setSubmitModalOpen)}
                 </Tab.Pane>
-            )},
+            ]},
         { menuItem: 'Challenge Chat', render: () => (
                 <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
                     <CommentScreen board={challengeID}/>

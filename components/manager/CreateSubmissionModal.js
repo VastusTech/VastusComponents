@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Modal, Message, Button, Grid, Icon, Progress} from "semantic-ui-react";
+import {Modal, Message, Button, Grid, Icon, Progress, Divider} from "semantic-ui-react";
 import { Player } from "video-react";
 import { connect } from "react-redux";
 import SubmissionFunctions from "../../database_functions/SubmissionFunctions";
@@ -234,21 +234,21 @@ class CreateSubmissionModal extends Component<Props> {
         }
         return(
             <Modal centered open={this.props.open} onClose={this.props.onClose.bind(this)} closeIcon>
-                <Modal.Header className="u-bg--bg">Task Post</Modal.Header>
                 {this.loadingBar()}
-                <Modal.Content className="u-bg--bg">
+                <Modal.Content>
                     {this.displayVideo()}
-                    <Grid columns={1} centered>
-                            <Grid.Column>
-                                <Button primary fluid as="label" htmlFor="proPicUpload" className="u-bg--primaryGradient">
-                                    Upload Video
-                                </Button>
-                            </Grid.Column>
+                    <Grid centered>
+                        <Button primary circular icon as='label' size='massive' htmlFor="proPicUpload" className="u-bg--primaryGradient"
+                                style={{marginBottom: '10px', marginTop: '20px'}}>
+                            <Icon name='video camera'/>
+                        </Button>
                     </Grid>
                     <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true} onChange={this.setVideo}/>
+                    <div>{this.displaySubmission()}</div>
+                    <Divider/>
+                    <Button primary floated='right' circular icon loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading}
+                           style={{marginBottom: '10px'}} onClick={this.handleSubmitButton}><Icon name="send"/></Button>
                 </Modal.Content>
-                <div>{this.displaySubmission()}</div>
-                <Button primary fluid loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} onClick={this.handleSubmitButton}>Submit</Button>
             </Modal>
         );
     }
