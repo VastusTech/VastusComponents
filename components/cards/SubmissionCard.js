@@ -65,12 +65,12 @@ const getDisplayMedia = (pictures, videos, props) => {
  * @constructor
  */
 const SubmissionCard = (props: Props) => (
-    <Card>
-        <Card.Header>{getObjectAttribute(getAttributeFromObject(props.submission, "by"), "name", props.cache)}</Card.Header>
+    <Card color='purple'>
+        <Card.Header style={{marginTop: '10px', marginLeft: '10px'}}
+        >{getObjectAttribute(getAttributeFromObject(props.submission, "by"), "name", props.cache)}</Card.Header>
         <Card.Content>
             {getDisplayMedia(getAttributeFromObject(props.submission, "pictures"), getAttributeFromObject(props.submission, "videos"), props)}
         </Card.Content>
-        {convertFromISO(getAttributeFromObject(props.submission, "time_created"))}
     </Card>
 );
 

@@ -20,6 +20,7 @@ class CreateSubmissionModal extends Component<Props> {
     state = {
         challengeID: null,
         isSubmitLoading: false,
+        showLoadingBar: false,
         picturesLoading: false,
         videosLoading: false,
         pictures: [],
@@ -214,7 +215,10 @@ class CreateSubmissionModal extends Component<Props> {
     }
 
     loadingBar() {
-        if(this.state.isSubmitLoading) {
+        if(this.state.isSubmitLoading || this.state.showLoadingBar) {
+            if(!this.state.showLoadingBar) {
+                this.setState({showLoadingBar: true});
+            }
             return (
                 <Progress percent={this.state.percent} active color='purple' />
             );
@@ -234,8 +238,8 @@ class CreateSubmissionModal extends Component<Props> {
         }
         return(
             <Modal centered open={this.props.open} onClose={this.props.onClose.bind(this)} closeIcon>
-                {this.loadingBar()}
                 <Modal.Content>
+                    {this.loadingBar()}
                     {this.displayVideo()}
                     <Grid centered>
                         <Button primary circular icon as='label' size='massive' htmlFor="proPicUpload" className="u-bg--primaryGradient"
