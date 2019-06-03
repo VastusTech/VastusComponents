@@ -184,7 +184,11 @@ const CreateChallengeProp = (props) => {
                         <Grid.Row centered>
                             <Grid.Column>
                                 {/*<Form.Input fluid label="Capacity" type="text" name="capacity" placeholder="Number of allowed attendees... " onChange={value => setCapacity(value.target.value)}/>*/}
-                                    <Form.Input fluid type="text" name="goal" placeholder="Challenge Goal..." onChange={value => setGoal(value.target.value)}/>
+                                <div className="field">
+                                    <label>End Date & Time</label>
+                                    <input type="datetime-local" name="challengeDate" onChange={value => {setEndTime(value.target.value);}}/>
+                                </div>
+                                <Form.Input fluid type="text" name="goal" placeholder="Challenge Goal..." onChange={value => setGoal(value.target.value)}/>
                                     <div key={0} className="field" align="center">
                                         {/*<Header as="h1">{streakUpdateInfo(streakN, streakUpdateInterval, streakUpdateSpanType)}</Header>*/}
                                         <Header as='h3'>
