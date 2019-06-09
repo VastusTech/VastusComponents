@@ -65,7 +65,7 @@ const NextChallengeProp = props => {
     else {
         // Then it's empty, no next scheduled event
         return(
-            <Message>No scheduled challenges!</Message>
+            <Message>Join a challenge below!</Message>
         );
     }
 };
