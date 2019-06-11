@@ -1,5 +1,17 @@
 import React, { useState } from 'react'
-import {Grid, Button, Message, Image, Modal, Form, Container, Checkbox, Header, Dropdown} from 'semantic-ui-react';
+import {
+    Grid,
+    Button,
+    Message,
+    Image,
+    Modal,
+    Form,
+    Container,
+    Checkbox,
+    Header,
+    Dropdown,
+    Icon
+} from 'semantic-ui-react';
 import {connect} from "react-redux";
 import {setError} from "../../redux/actions/infoActions";
 import {fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
@@ -7,6 +19,8 @@ import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
 import {getNowTimeString} from "../../logic/TimeHelper";
 import {addToUserAttribute} from "../../redux/actions/userActions";
 import {clearItemQueryCache} from "../../redux/actions/cacheActions";
+import { Storage } from 'aws-amplify';
+import {err} from "../../../Constants";
 
 /**
  * Handles the actual creation of the Challenge given the inputted info from the User.
@@ -107,7 +121,29 @@ export const displayError = (error) => {
     }
 };
 
+const setPictureURL = (event, userID, setTempPictures) => {
+    const path = "/" + userID + "/temp/pictures/0";
+    Storage.put(path, event.target.files[0], { contentType: "video/*;image/*" })
+        .then(() => {
+            Storage.get(path).then((url) => {
+                setTempPictures(url);
+            }).catch((error) => {
+                err&&console.error(error);
+            })
+        }).catch((error) => {
+        err&&console.error(error);
+    });
+};
 
+const displayCurrentImage = (picture) => {
+    if (picture) {
+        //console.log("Running cur image");
+        return(
+            <Image src={picture} />
+        );
+    }
+    return null;
+}
 
 /**
  * This is the modal for creating Challenges. Every input is in the form of a normal text input.
@@ -130,7 +166,7 @@ const CreateChallengeProp = (props) => {
     const [endTime, setEndTime] = useState(getNowTimeString());
     const [capacity, setCapacity] = useState(25);
     const [goal, setGoal] = useState("");
-    const [prize] = useState("");
+    const [prize, setPrize] = useState("");
     const [restriction, setRestriction] = useState(null);
     const [access, setAccess] = useState("public");
     const [showSuccessLabel, setShowSuccessLabel] = useState(false);
@@ -138,6 +174,12 @@ const CreateChallengeProp = (props) => {
     const [streakUpdateSpanType, setStreakUpdateSpanType] = useState(null);
     const [streakUpdateInterval, setStreakUpdateInterval] = useState(null);
     const [streakN, setStreakN] = useState(null);
+    const [tempPictures, setTempPictures] = useState(null);
+
+    function setPicture(image) {
+        setPictureURL(image, props.user.id, setTempPictures);
+        setPrize(image);
+    }
 
     return (
         <div align='center'>
@@ -198,6 +240,16 @@ const CreateChallengeProp = (props) => {
 
                                         </Header>
                                     </div>
+                                <Grid.Row>
+                                    {/*<UploadImage
+                                    imageURL={prize ? prize.image : null}
+                                    callback={(picture) => {setPrize(picture)}}/>*/}
+                                    {displayCurrentImage(tempPictures)}
+                                    <Button as='label' for='proPicUpload'>
+                                        <Icon name='camera' size = "large" style={{marginLeft: '8px'}}/>
+                                        <input type="file" accept="image/*;video/*;capture=camcorder" id="proPicUpload" hidden='true' onChange={e => setPicture(e)}/>
+                                    </Button>
+                                </Grid.Row>
                                     {/*<Form.Field>
                                         <div className="field" width={5}>
                                             <label>Difficulty</label>
