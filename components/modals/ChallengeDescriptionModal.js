@@ -220,7 +220,7 @@ const displaySelectionOptions = (isOwned, openCompleteModal, setSubmitModalOpen)
             <Grid.Column>
                     <Button floated='right' primary size='large' circular icon onClick={() => setSubmitModalOpen(true)}
                             style={{}}>
-                        <Icon name='send'/>
+                        <Icon name='plus'/>
                     </Button>
             </Grid.Column>
         </Grid>
@@ -232,7 +232,7 @@ const displaySelectionOptions = (isOwned, openCompleteModal, setSubmitModalOpen)
                 <Grid.Column>
                     <Button floated='right' primary size='large' circular icon onClick={() => setSubmitModalOpen(true)}
                             style={{}}>
-                        <Icon name='send'/>
+                        <Icon name='plus'/>
                     </Button>
                 </Grid.Column>
             </Grid>
@@ -617,7 +617,7 @@ const ChallengeDescriptionModal = (props: Props) => {
                 <Modal.Header align='center' style={{marginTop: '10px'}}><div>
                 {getChallengeAttribute("title")}</div>
                     {editButton(isEditing, setIsEditing)}
-                    {createCorrectSettingsButton(isOwned, isJoined, props.challengeID, setIsLoading, isLoading,
+                    {createCorrectSettingsButton(isOwned, true, props.challengeID, setIsLoading, isLoading,
                         props.user.id, setCompleteModalOpen, props.onClose, props)}
                     <div>{displayTagIcons(getChallengeAttribute("tags"))}</div>
                     <div>
@@ -630,6 +630,11 @@ const ChallengeDescriptionModal = (props: Props) => {
                             <Icon.Group size='large'>
                                 <Icon name='bullseye' />
                             </Icon.Group> {getChallengeAttribute("goal")}
+                        </Grid.Row>
+                        <Grid.Row>
+                            Winner Receives:
+                            <Image style={{width: '300px', height: '300px', minWidth: '100px', minHeight: '100px'}}
+                                   circular src={this.getChallengeAttribute("prize")} size="large" centered />
                         </Grid.Row>
                         <Grid.Row>
 
@@ -652,7 +657,7 @@ const ChallengeDescriptionModal = (props: Props) => {
                         <CompleteChallengeModal open={completeModalOpen} onClose={() => setCompleteModalOpen(false)} challengeID={props.challengeID}/>
                         <CreateSubmissionModal open={submitModalOpen} onClose={() => setSubmitModalOpen(false)} challengeID={props.challengeID} />
                         {createCorrectButton(props.user.id, props.challengeID, getChallengeAttribute("submissions"),
-                            isLoading, isCompleted, isOwned, isJoined, isRestricted, isRequesting, setIsLoading,
+                            isLoading, isCompleted, isOwned, true, isRestricted, isRequesting, setIsLoading,
                             setSubmitModalOpen, setCompleteModalOpen, props)}
                     </Modal.Description>
                     <div>{displayError(props.info.error)}{challengeDeleted(deleted)}</div>
