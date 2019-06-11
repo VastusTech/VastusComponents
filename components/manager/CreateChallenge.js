@@ -54,10 +54,11 @@ const handleSubmit = (userID, endDate, capacity, title, goal, tagsPressed, acces
         }
     }
     // TODO Check to see if valid inputs!
-    if (capacity && title && goal && tags) {
+    if (capacity && title && goal && tags && prize) {
         if (Number.isInteger(+capacity)) {
+            alert(prize);
             ChallengeFunctions.createChallengeOptional(userID, userID, endDate, capacity, title, goal, null,
-                null, null, tags, access, restriction, null, null, null, null,
+                null, null, tags, access, restriction, prize, null, null, null,
                 streakN, () => {
                     console.log("Successfully created a challenge!");
                     setIsLoading(false);
@@ -121,8 +122,11 @@ export const displayError = (error) => {
     }
 };
 
-const setPictureURL = (event, userID, setTempPictures) => {
-    const path = "/" + userID + "/temp/pictures/0";
+const setPictureURL = (event, userID, setTempPictures, setPrize, prizes) => {
+    let index = prizes.length;
+    prizes.push(event.target.files[0]);
+    alert("Just Pushed: " + prizes[0]);
+    const path = "/" + userID + "/temp/pictures/" + index;
     Storage.put(path, event.target.files[0], { contentType: "video/*;image/*" })
         .then(() => {
             Storage.get(path).then((url) => {
@@ -166,7 +170,7 @@ const CreateChallengeProp = (props) => {
     const [endTime, setEndTime] = useState(getNowTimeString());
     const [capacity, setCapacity] = useState(25);
     const [goal, setGoal] = useState("");
-    const [prize, setPrize] = useState("");
+    const [prize, setPrize] = useState([]);
     const [restriction, setRestriction] = useState(null);
     const [access, setAccess] = useState("public");
     const [showSuccessLabel, setShowSuccessLabel] = useState(false);
@@ -177,14 +181,25 @@ const CreateChallengeProp = (props) => {
     const [tempPictures, setTempPictures] = useState(null);
 
     function setPicture(image) {
-        setPictureURL(image, props.user.id, setTempPictures);
-        setPrize(image);
+        setPictureURL(image, props.user.id, setTempPictures, setPrize, prize);
+        alert("Image URL: " + image);
+    }
+
+    function getLatestPrizePic() {
+        const pictures = {};
+        for (let i = 0; i < this.state.pictures.length; i++) {
+            pictures["pictures/" + i] = prize[i];
+        }
+        if (this.state.pictures.length > 0) {
+            return [pictures[pictures.length - 1]];
+        }
+        return null;
     }
 
     return (
         <div align='center'>
             <Form onSubmit={() => handleSubmit(props.user.id, endTime, capacity, title, goal, tagsPressed,
-                access, restriction, prize, challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
+                access, restriction, prize[0], challengeType, streakUpdateSpanType, streakUpdateInterval, streakN,
                 setIsLoading, setError, setShowSuccessLabel)}>
                 <Header as='h3'>
                 <Form.Input fluid type="text" name="title" placeholder={props.user.name + "\'s Challenge"}
@@ -220,6 +235,16 @@ const CreateChallengeProp = (props) => {
                             </Button>
                         </Grid.Column>
                     </Grid.Row>
+                    <Grid.Row>
+                        {/*<UploadImage
+                                    imageURL={prize ? prize.image : null}
+                                    callback={(picture) => {setPrize(picture)}}/>*/}
+                        {displayCurrentImage(tempPictures)}
+                        <Button as='label' for='picUpload'>
+                            <Icon name='camera' size = "large" style={{marginLeft: '8px'}}/>
+                            <input type="file" accept="image/*;video/*;capture=camcorder" id="picUpload" hidden='true' onChange={e => setPicture(e)}/>
+                        </Button>
+                    </Grid.Row>
                 </Grid>
                 <Container align='center'>
                     <Grid centered>
@@ -240,16 +265,6 @@ const CreateChallengeProp = (props) => {
 
                                         </Header>
                                     </div>
-                                <Grid.Row>
-                                    {/*<UploadImage
-                                    imageURL={prize ? prize.image : null}
-                                    callback={(picture) => {setPrize(picture)}}/>*/}
-                                    {displayCurrentImage(tempPictures)}
-                                    <Button as='label' for='proPicUpload'>
-                                        <Icon name='camera' size = "large" style={{marginLeft: '8px'}}/>
-                                        <input type="file" accept="image/*;video/*;capture=camcorder" id="proPicUpload" hidden='true' onChange={e => setPicture(e)}/>
-                                    </Button>
-                                </Grid.Row>
                                     {/*<Form.Field>
                                         <div className="field" width={5}>
                                             <label>Difficulty</label>
