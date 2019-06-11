@@ -326,7 +326,6 @@ class GroupDescriptionModal extends Component<Props> {
         }
     }
 
-
     getGroupAttribute(attribute) {
         if (this.props.groupID) {
             let group = this.props.cache.groups[this.props.groupID];

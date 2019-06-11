@@ -632,9 +632,9 @@ const ChallengeDescriptionModal = (props: Props) => {
                             </Icon.Group> {getChallengeAttribute("goal")}
                         </Grid.Row>
                         <Grid.Row>
+                            {alert("Prize View: " + getChallengeAttribute("prize"))}
                             Winner Receives:
-                            <Image style={{width: '300px', height: '300px', minWidth: '100px', minHeight: '100px'}}
-                                   circular src={getChallengeAttribute("prize")} size="large" centered />
+                            <Image src={getChallengeAttribute("prize")} size="large" centered />
                         </Grid.Row>
                         <Grid.Row>
 
