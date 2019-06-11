@@ -634,7 +634,7 @@ const ChallengeDescriptionModal = (props: Props) => {
                         <Grid.Row>
                             Winner Receives:
                             <Image style={{width: '300px', height: '300px', minWidth: '100px', minHeight: '100px'}}
-                                   circular src={this.getChallengeAttribute("prize")} size="large" centered />
+                                   circular src={getChallengeAttribute("prize")} size="large" centered />
                         </Grid.Row>
                         <Grid.Row>
 
