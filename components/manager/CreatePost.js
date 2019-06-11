@@ -114,6 +114,7 @@ class CreatePostProp extends Component {
     setPicture = (event) => {
         const index = this.state.pictures.length;
         this.state.pictures.push(event.target.files[0]);
+        alert("Pics: " + this.state.pictures[0]);
         const path = "/" + this.props.user.id + "/temp/pictures/" + index;
         Storage.put(path, event.target.files[0], { contentType: "video/*;image/*" })
             .then(() => {
