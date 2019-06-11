@@ -121,7 +121,8 @@ export const displayError = (error) => {
     }
 };
 
-const setPictureURL = (event, userID, setTempPictures) => {
+const setPictureURL = (event, userID, setTempPictures, setPrize) => {
+    setPrize(event.target.files[0]);
     const path = "/" + userID + "/temp/pictures/0";
     Storage.put(path, event.target.files[0], { contentType: "video/*;image/*" })
         .then(() => {
@@ -177,8 +178,8 @@ const CreateChallengeProp = (props) => {
     const [tempPictures, setTempPictures] = useState(null);
 
     function setPicture(image) {
-        setPictureURL(image, props.user.id, setTempPictures);
-        setPrize(image);
+        setPictureURL(image, props.user.id, setTempPictures, setPrize);
+        alert("Image URL: " + image);
     }
 
     return (
@@ -220,6 +221,16 @@ const CreateChallengeProp = (props) => {
                             </Button>
                         </Grid.Column>
                     </Grid.Row>
+                    <Grid.Row>
+                        {/*<UploadImage
+                                    imageURL={prize ? prize.image : null}
+                                    callback={(picture) => {setPrize(picture)}}/>*/}
+                        {displayCurrentImage(tempPictures)}
+                        <Button as='label' for='picUpload'>
+                            <Icon name='camera' size = "large" style={{marginLeft: '8px'}}/>
+                            <input type="file" accept="image/*;video/*;capture=camcorder" id="picUpload" hidden='true' onChange={e => setPicture(e)}/>
+                        </Button>
+                    </Grid.Row>
                 </Grid>
                 <Container align='center'>
                     <Grid centered>
@@ -240,16 +251,6 @@ const CreateChallengeProp = (props) => {
 
                                         </Header>
                                     </div>
-                                <Grid.Row>
-                                    {/*<UploadImage
-                                    imageURL={prize ? prize.image : null}
-                                    callback={(picture) => {setPrize(picture)}}/>*/}
-                                    {displayCurrentImage(tempPictures)}
-                                    <Button as='label' for='proPicUpload'>
-                                        <Icon name='camera' size = "large" style={{marginLeft: '8px'}}/>
-                                        <input type="file" accept="image/*;video/*;capture=camcorder" id="proPicUpload" hidden='true' onChange={e => setPicture(e)}/>
-                                    </Button>
-                                </Grid.Row>
                                     {/*<Form.Field>
                                         <div className="field" width={5}>
                                             <label>Difficulty</label>
