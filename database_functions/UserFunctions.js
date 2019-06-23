@@ -702,7 +702,21 @@ class UserFunctions {
         }
         else {
             // Delete it
-            return this.updateSet(fromID, userID, "profileImagePath", null, successHandler, failureHandler);
+            return this.updateSet(fromID, userID, "profileImagePath", null, (data) => {
+                if (props) {
+                    if (props.addToUserAttribute && props.addToItemAttribute) {
+                        // TODO
+                        err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                    }
+                    else {
+                        err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                    }
+                }
+                else {
+                    err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+                }
+                successHandler&&successHandler(data);
+            }, failureHandler);
         }
     }
 
