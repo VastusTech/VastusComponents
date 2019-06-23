@@ -132,6 +132,33 @@ class Lambda {
     }
 
     /**
+     * Handles miscellaneous actions in the Lambda function that have no other action to go with it.
+     * Very special cases.
+     *
+     * @param {string} fromID The user ID that is invoking this Lambda request.
+     * @param {string} objectID The ID of the object to help process.
+     * @param {string} objectItemType The item type of the object to help process.
+     * @param {string} secondaryIdentifier The secondary identifier to help process.
+     * @param {string} specifyAction The specific action to process.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @return {*} Debugging info about the Lambda operation.
+     */
+    static process(fromID, objectID, objectItemType, secondaryIdentifier, specifyAction, successHandler, failureHandler) {
+        return Lambda.invokeDatabaseLambda({
+            fromID: fromID ? fromID : "unauthenticated",
+            action: "PROCESS",
+            itemType: objectItemType,
+            identifiers: [
+                objectID
+            ],
+            secondaryIdentifier,
+            environmentType: process.env.NODE_ENV
+        }, successHandler, failureHandler);
+    }
+
+    /**
      * Indicates to the database Lambda function that an object should be deleted.
      *
      * @param {string} fromID The user ID that is invoking this Lambda request.

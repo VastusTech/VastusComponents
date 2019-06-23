@@ -51,6 +51,7 @@ type Client = {
     invitedGroups: [string],
     messageBoards: [string],
     streaks: [string],
+    credit: number,
     trainersFollowing: [string],
     subscriptions: [string],
 }

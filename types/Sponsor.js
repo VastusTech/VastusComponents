@@ -51,6 +51,8 @@ type Sponsor = {
     invitedGroups: [string],
     messageBoards: [string],
     streaks: [string],
+    credit: number,
+    deals: [string],
 }
 
 export default Sponsor;

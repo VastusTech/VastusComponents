@@ -51,6 +51,7 @@ type Trainer = {
     invitedGroups: [string],
     messageBoards: [string],
     streaks: [string],
+    credit: number,
     gym: string,
     availableTimes: [string],
     workoutSticker: string,

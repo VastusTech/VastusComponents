@@ -706,6 +706,41 @@ class UserFunctions {
         }
     }
 
+    // Process Functions
+
+    /**
+     * Buys a Deal from the database using the User's internal credit system.
+     *
+     * @param {string} fromID The User invoking the Lambda request.
+     * @param {string} userID The ID of the User to buy the Deal.
+     * @param {string} dealID The ID of the Deal to buy.
+     * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+     * returned data from the invocation of the Lambda function.
+     * @param {function(error)} failureHandler The function to handle any errors that may occur.
+     * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+     * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+     * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+     * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
+     * @return {*} Debugging info about the Lambda operation.
+     */
+    static buyDeal(fromID, userID, dealID, successHandler, failureHandler, props) {
+        return Lambda.process(fromID, userID, getItemTypeFromID(userID), dealID, "buy", (data) => {
+            if (props) {
+                if (props.addToUserAttribute && props.addToItemAttribute) {
+                    // TODO
+                    err&&console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+                }
+                else {
+                    err&&console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+                }
+            }
+            else {
+                err&&console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+            }
+            successHandler&&successHandler(data);
+        }, failureHandler);
+    }
+
     // Delete Functions ============================================================
 
     /**

@@ -52,5 +52,6 @@ type User = {
     invitedGroups: [string],
     messageBoards: [string],
     streaks: [string],
+    credit: number,
 }
 export default User;
