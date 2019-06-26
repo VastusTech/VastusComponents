@@ -19,6 +19,7 @@ const ItemType = {
     Message: "Message",
     Streak: "Streak",
     Deal: "Deal",
+    Product: "Product",
 };
 
 const numPrefix = 2;
@@ -64,10 +65,14 @@ export function getItemTypeFromID(id) {
  * @param {string} sponsorValue The Sponsor value.
  * @param {string} messageValue The Message value.
  * @param {string} streakValue The Streak value.
+ * @param {string} dealValue The Deal value.
+ * @param {string} productValue The Product value.
  * @param {string} errorMessage The error message to console if the item is unrecognized.
  * @return {*} The specific item type value.
  */
-export function switchReturnItemType(itemType, clientValue, trainerValue, gymValue, workoutValue, reviewValue, eventValue, challengeValue, inviteValue, postValue, submissionValue, groupValue, commentValue, sponsorValue, messageValue, streakValue, dealValue, errorMessage) {
+export function switchReturnItemType(itemType, clientValue, trainerValue, gymValue, workoutValue, reviewValue, eventValue, 
+                                     challengeValue, inviteValue, postValue, submissionValue, groupValue, commentValue, 
+                                     sponsorValue, messageValue, streakValue, dealValue, productValue, errorMessage) {
     let returnValue = null;
     switch (itemType) {
         case "Client":
@@ -118,6 +123,9 @@ export function switchReturnItemType(itemType, clientValue, trainerValue, gymVal
         case "Deal":
             returnValue = dealValue;
             break;
+        case "Product":
+            returnValue = dealValue;
+            break;
         default:
             returnValue = null;
             break;
@@ -136,24 +144,29 @@ export function switchReturnItemType(itemType, clientValue, trainerValue, gymVal
  * corresponds to.
  *
  * @param {string} itemType The item type to switch.
- * @param {string} clientHandler The _ value.
- * @param {string} trainerHandler The _ value.
- * @param {string} gymHandler The _ value.
- * @param {string} workoutHandler The _ value.
- * @param {string} reviewHandler The _ value.
- * @param {string} eventHandler The _ value.
- * @param {string} challengeHandler The _ value.
- * @param {string} inviteHandler The _ value.
- * @param {string} postHandler The _ value.
- * @param {string} submissionHandler The _ value.
- * @param {string} groupHandler The _ value.
- * @param {string} commentHandler The _ value.
- * @param {string} sponsorHandler The _ value.
- * @param {string} messageHandler The _ value.
- * @param {string} streakHandler The _ value.
+ * @param {string} clientHandler The Client value.
+ * @param {string} trainerHandler The Trainer value.
+ * @param {string} gymHandler The Gym value.
+ * @param {string} workoutHandler The Workout value.
+ * @param {string} reviewHandler The Review value.
+ * @param {string} eventHandler The Event value.
+ * @param {string} challengeHandler The Challenge value.
+ * @param {string} inviteHandler The Invite value.
+ * @param {string} postHandler The Post value.
+ * @param {string} submissionHandler The Submission value.
+ * @param {string} groupHandler The Group value.
+ * @param {string} commentHandler The Comment value.
+ * @param {string} sponsorHandler The Sponsor value.
+ * @param {string} messageHandler The Message value.
+ * @param {string} streakHandler The Streak value.
+ * @param {string} dealHandler The Deal value.
+ * @param {string} productHandler The Product value.
  * @param errorMessage The error message to console if the item type is unrecognized.
  */
-export function switchHandleItemType(itemType, clientHandler, trainerHandler, gymHandler, workoutHandler, reviewHandler, eventHandler, challengeHandler, inviteHandler, postHandler, submissionHandler, groupHandler, commentHandler, sponsorHandler, messageHandler, streakHandler, dealHandler, errorMessage) {
+export function switchHandleItemType(itemType, clientHandler, trainerHandler, gymHandler, workoutHandler, reviewHandler, 
+                                     eventHandler, challengeHandler, inviteHandler, postHandler, submissionHandler, 
+                                     groupHandler, commentHandler, sponsorHandler, messageHandler, streakHandler, 
+                                     dealHandler, productHandler, errorMessage) {
     let itemHandler = null;
     switch (itemType) {
         case "Client":
@@ -203,6 +216,9 @@ export function switchHandleItemType(itemType, clientHandler, trainerHandler, gy
             break;
         case "Deal":
             itemHandler = dealHandler;
+            break;
+        case "Product":
+            itemHandler = productHandler;
             break;
         default:
             itemHandler = null;

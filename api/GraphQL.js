@@ -38,7 +38,7 @@ class GraphQL {
         const func = switchReturnItemType(itemType, GraphQL.getClient, GraphQL.getTrainer, GraphQL.getGym, GraphQL.getWorkout, GraphQL.getReview,
             GraphQL.getEvent, GraphQL.getChallenge, GraphQL.getInvite, GraphQL.getPost, GraphQL.getSubmission,
             GraphQL.getGroup, GraphQL.getComment, GraphQL.getSponsor, GraphQL.getMessage, GraphQL.getStreak, GraphQL.getDeal,
-            "GraphQL get Fetch function function not implemented");
+            GraphQL.getProduct, "GraphQL get Fetch function function not implemented");
         if (func) { return func(id, variableList, successHandler, failureHandler); }
         else { throw Error("Unrecognized item type"); }
     }
@@ -118,7 +118,7 @@ class GraphQL {
         const func = switchReturnItemType(itemType, GraphQL.getClients, GraphQL.getTrainers, GraphQL.getGyms, GraphQL.getWorkouts,
             GraphQL.getReviews, GraphQL.getEvents, GraphQL.getChallenges, GraphQL.getInvites, GraphQL.getPosts,
             GraphQL.getSubmissions, GraphQL.getGroups, GraphQL.getComments, GraphQL.getSponsors, GraphQL.getMessages, GraphQL.getStreaks,
-            GraphQL.getDeals, "GraphQL get Batch Fetch function function not implemented");
+            GraphQL.getDeals, GraphQL.getProducts, "GraphQL get Batch Fetch function function not implemented");
         if (TestHelper.ifTesting && successHandler) {
             const items = [];
             for (let i = 0; i < ids.length; i++) {
@@ -159,7 +159,7 @@ class GraphQL {
             GraphQL.constructWorkoutQuery, GraphQL.constructReviewQuery, GraphQL.constructEventQuery, GraphQL.constructChallengeQuery,
             GraphQL.constructInviteQuery, GraphQL.constructPostQuery, GraphQL.constructSubmissionQuery, GraphQL.constructGroupQuery,
             GraphQL.constructCommentQuery, GraphQL.constructSponsorQuery, GraphQL.constructMessageQuery, GraphQL.constructStreakQuery,
-            GraphQL.constructDealQuery, "GraphQL get construct Query function not implemented");
+            GraphQL.constructDealQuery, GraphQL.constructProductQuery, "GraphQL get construct Query function not implemented");
         if (func) { return func(variableList, filter, limit, nextToken); }
         else { throw Error("Unrecognized item type"); }
     }
@@ -179,7 +179,7 @@ class GraphQL {
         const func = switchReturnItemType(itemType, GraphQL.queryClients, GraphQL.queryTrainers, GraphQL.queryGyms, GraphQL.queryWorkouts,
             GraphQL.queryReviews, GraphQL.queryEvents, GraphQL.queryChallenges, GraphQL.queryInvites, GraphQL.queryPosts,
             GraphQL.querySubmissions, GraphQL.queryGroups, GraphQL.queryComments, GraphQL.querySponsors, GraphQL.queryMessages,
-            GraphQL.queryStreaks, GraphQL.queryDeals, "GraphQL get Query function function not implemented for type");
+            GraphQL.queryStreaks, GraphQL.queryDeals, GraphQL.queryProducts, "GraphQL get Query function function not implemented for type");
         if (func) { return func(query, successHandler, failureHandler); }
         else { throw Error("Unrecognized item type"); }
     }
@@ -284,6 +284,10 @@ class GraphQL {
     static getDeal(id, variableList, successHandler, failureHandler) {
         return GraphQL.execute(GraphQL.constructQuery("GetDeal", "getDeal", {id}, variableList),
             "getDeal", successHandler, failureHandler);
+    }
+    static getProduct(id, variableList, successHandler, failureHandler) {
+        return GraphQL.execute(GraphQL.constructQuery("GetProduct", "getProduct", {id}, variableList),
+            "getProduct", successHandler, failureHandler);
     }
 
     // ~ Batch Fetch Functions
@@ -431,6 +435,15 @@ class GraphQL {
         return GraphQL.execute(GraphQL.constructQuery("GetDeals", "getDeals", null, variableList, idList, true),
             "getDeals", successHandler, failureHandler);
     }
+    static getProducts(ids, variableList, successHandler, failureHandler) {
+        if (ids && ids.length > GraphQL.batchLimit) {
+            // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
+            log&&console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
+        }
+        const idList = GraphQL.generateIDList(ids);
+        return GraphQL.execute(GraphQL.constructQuery("GetProducts", "getProducts", null, variableList, idList, true),
+            "getProducts", successHandler, failureHandler);
+    }
 
     // ~ Construct Query Functions
     static constructClientQuery(variableList, filter, limit, nextToken) {
@@ -529,6 +542,12 @@ class GraphQL {
         if (nextToken) { inputVariables.nextToken = nextToken; }
         return GraphQL.constructQuery("QueryDeals", "queryDeals", inputVariables, variableList, filter, false, true);
     }
+    static constructProductQuery(variableList, filter, limit, nextToken) {
+        const inputVariables = {};
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QueryProducts", "queryProducts", inputVariables, variableList, filter, false, true);
+    }
 
     // ~ Query Fetch Functions
     static queryClients(query, successHandler, failureHandler) {
@@ -578,6 +597,9 @@ class GraphQL {
     }
     static queryDeals(query, successHandler, failureHandler) {
         return GraphQL.execute(query, "queryDeals", successHandler, failureHandler);
+    }
+    static queryProducts(query, successHandler, failureHandler) {
+        return GraphQL.execute(query, "queryProducts", successHandler, failureHandler);
     }
 
     /**

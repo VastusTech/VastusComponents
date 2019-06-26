@@ -71,6 +71,9 @@ export function fetchStreak(id, variableList, dataHandler, failureHandler) {
 export function fetchDeal(id, variableList, dataHandler, failureHandler) {
     return fetchItem(id, "Deal", variableList, dataHandler, failureHandler);
 }
+export function fetchProduct(id, variableList, dataHandler, failureHandler) {
+    return fetchItem(id, "Product", variableList, dataHandler, failureHandler);
+}
 export function subscribeFetchClient(id, variableList, dataHandler, failureHandler) {
     return subscribeFetchItem(id, "Client", variableList, dataHandler, failureHandler);
 }
@@ -115,6 +118,9 @@ export function subscribeFetchStreak(id, variableList, dataHandler, failureHandl
 }
 export function subscribeFetchDeal(id, variableList, dataHandler, failureHandler) {
     return subscribeFetchItem(id, "Deal", variableList, dataHandler, failureHandler);
+}
+export function subscribeFetchProduct(id, variableList, dataHandler, failureHandler) {
+    return subscribeFetchItem(id, "Product", variableList, dataHandler, failureHandler);
 }
 export function forceFetchClient(id, variableList, dataHandler, failureHandler) {
     return forceFetchItem(id, "Client", variableList, dataHandler, failureHandler);
@@ -161,6 +167,9 @@ export function forceFetchStreak(id, variableList, dataHandler, failureHandler) 
 export function forceFetchDeal(id, variableList, dataHandler, failureHandler) {
     return forceFetchItem(id, "Deal", variableList, dataHandler, failureHandler);
 }
+export function forceFetchProduct(id, variableList, dataHandler, failureHandler) {
+    return forceFetchItem(id, "Product", variableList, dataHandler, failureHandler);
+}
 export function fetchClients(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
     return fetchItems(ids, "Client", variableList, startIndex, maxFetch, dataHandler, failureHandler);
 }
@@ -206,6 +215,9 @@ export function fetchStreaks(ids, variableList, startIndex, maxFetch, dataHandle
 export function fetchDeals(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
     return fetchItems(ids, "Deal", variableList, startIndex, maxFetch, dataHandler, failureHandler);
 }
+export function fetchProducts(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
+    return fetchItems(ids, "Product", variableList, startIndex, maxFetch, dataHandler, failureHandler);
+}
 export function forceFetchClients(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
     return forceFetchItems(ids, "Client", variableList, startIndex, maxFetch, dataHandler, failureHandler);
 }
@@ -250,6 +262,9 @@ export function forceFetchStreaks(ids, variableList, startIndex, maxFetch, dataH
 }
 export function forceFetchDeals(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
     return forceFetchItems(ids, "Deal", variableList, startIndex, maxFetch, dataHandler, failureHandler);
+}
+export function forceFetchProducts(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
+    return forceFetchItems(ids, "Product", variableList, startIndex, maxFetch, dataHandler, failureHandler);
 }
 export function fetchClientQuery(variableList, filter, limit, nextToken, dataHandler, failureHandler) {
     // console.log("fetching clients");
@@ -297,6 +312,9 @@ export function fetchStreakQuery(variableList, filter, limit, nextToken, dataHan
 export function fetchDealQuery(variableList, filter, limit, nextToken, dataHandler, failureHandler) {
     return fetchItemQuery("Deal", variableList, filter, limit, nextToken, dataHandler, failureHandler);
 }
+export function fetchProductQuery(variableList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchItemQuery("Product", variableList, filter, limit, nextToken, dataHandler, failureHandler);
+}
 export function forceFetchClientQuery(variableList, filter, limit, nextToken, dataHandler, failureHandler) {
     return forceFetchItemQuery("Client", variableList, filter, limit, nextToken, dataHandler, failureHandler);
 }
@@ -341,4 +359,7 @@ export function forceFetchStreakQuery(variableList, filter, limit, nextToken, da
 }
 export function forceFetchDealQuery(variableList, filter, limit, nextToken, dataHandler, failureHandler) {
     return forceFetchItemQuery("Deal", variableList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchProductQuery(variableList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchItemQuery("Product", variableList, filter, limit, nextToken, dataHandler, failureHandler);
 }
