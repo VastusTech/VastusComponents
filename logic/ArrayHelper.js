@@ -7,15 +7,15 @@
  * @param minusArray The array from which the remove elements will be taken.
  */
 export function subtractArray(originalArray, minusArray) {
-    for (let i = minusArray.length - 1; i >= 0; i--) {
-        removeFromArray(originalArray, minusArray[i]);
-    }
-    return originalArray;
+  for (let i = minusArray.length - 1; i >= 0; i--) {
+    removeFromArray(originalArray, minusArray[i]);
+  }
+  return originalArray;
 }
 
 // Does the same thing but doesn't affect the array
 export function subtractedArray(array, minusArray) {
-    return subtractArray([...array], minusArray);
+  return subtractArray([...array], minusArray);
 }
 
 /**
@@ -25,11 +25,11 @@ export function subtractedArray(array, minusArray) {
  * @param element The element to remove from the array.
  */
 export function removeFromArray(originalArray, element) {
-    const indexOf = originalArray.indexOf(element);
-    if (indexOf !== -1) {
-        originalArray.splice(indexOf, 1);
-    }
-    return originalArray;
+  const indexOf = originalArray.indexOf(element);
+  if (indexOf !== -1) {
+    originalArray.splice(indexOf, 1);
+  }
+  return originalArray;
 }
 
 /**
@@ -40,11 +40,11 @@ export function removeFromArray(originalArray, element) {
  * @return {[*]} the original array that is updated.
  */
 export function addUniqueToArray(originalArray, newArray) {
-    for (let i = 0; i < newArray.length; i++) {
-        const e = newArray[i];
-        addUniqueElementToArray(originalArray, e);
-    }
-    return originalArray;
+  for (let i = 0; i < newArray.length; i++) {
+    const e = newArray[i];
+    addUniqueElementToArray(originalArray, e);
+  }
+  return originalArray;
 }
 
 /**
@@ -56,7 +56,7 @@ export function addUniqueToArray(originalArray, newArray) {
  * @return {[*]} the new array that is has the unique elements added to it.
  */
 export function withUniqueAdded(originalArray, newArray) {
-    return addUniqueToArray([...originalArray], newArray);
+  return addUniqueToArray([...originalArray], newArray);
 }
 
 /**
@@ -66,8 +66,8 @@ export function withUniqueAdded(originalArray, newArray) {
  * @param {*} element The element to add uniquely.
  */
 export function addUniqueElementToArray(originalArray, element) {
-    // Aborts if index is not -1
-    originalArray.indexOf(element) === -1 && originalArray.push(element);
+  // Aborts if index is not -1
+  originalArray.indexOf(element) === -1 && originalArray.push(element);
 }
 
 /**
@@ -78,12 +78,12 @@ export function addUniqueElementToArray(originalArray, element) {
  * @return {boolean} Whether there is overlap between the two arrays.
  */
 export function arraysIntersect(array1, array2) {
-    for (let i = 0; i < array1.length; i++) {
-        if (array2.indexOf(array1[i]) !== -1) {
-            return true;
-        }
+  for (let i = 0; i < array1.length; i++) {
+    if (array2.indexOf(array1[i]) !== -1) {
+      return true;
     }
-    return false;
+  }
+  return false;
 }
 
 /**
@@ -93,8 +93,8 @@ export function arraysIntersect(array1, array2) {
  * @param array2
  */
 export function arrayIntersection(array1, array2) {
-    const returnArray = [...array1];
-    return returnArray.filter(v => array2.includes(v));
+  const returnArray = [...array1];
+  return returnArray.filter(v => array2.includes(v));
 }
 
 /**
@@ -103,10 +103,10 @@ export function arrayIntersection(array1, array2) {
  * @param array The array to be mutated and shuffled.
  */
 export const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
 };
 
 /**
@@ -117,7 +117,7 @@ export const shuffleArray = (array) => {
  * @return {boolean} Whether the two arrays are set equal.
  */
 export const setEquals = (array1, array2) => {
-    return isSubset(array1, array2) && isSubset(array2, array1);
+  return isSubset(array1, array2) && isSubset(array2, array1);
 };
 
 /**
@@ -129,10 +129,10 @@ export const setEquals = (array1, array2) => {
  * @return {boolean} If the second array is a subset of the first array.
  */
 export const isSubset = (array, subsetArray) => {
-    for (let i = 0; i < subsetArray.length; i++) {
-        if (!array.includes(subsetArray[i])) {
-            return false;
-        }
+  for (let i = 0; i < subsetArray.length; i++) {
+    if (!array.includes(subsetArray[i])) {
+      return false;
     }
-    return true;
+  }
+  return true;
 };

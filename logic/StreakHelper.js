@@ -1,10 +1,10 @@
 import {
-    hourStartsPassed,
-    midnightsPassed,
-    mondaysPassed,
-    parseISOString,
-    startsOfMonthPassed,
-    startsOfYearPassed
+  hourStartsPassed,
+  midnightsPassed,
+  mondaysPassed,
+  parseISOString,
+  startsOfMonthPassed,
+  startsOfYearPassed
 } from "./TimeHelper";
 import {err} from "../../Constants";
 import type Streak from "../types/Streak";
@@ -17,27 +17,27 @@ import type Streak from "../types/Streak";
  * the status of the User's current Streak for the object.
  */
 export const streakInfo = (streak: Streak) => {
-    if (streak) {
-        const spans = numberOfUpdateSpansPassed(streak.lastAttemptStarted, streak.updateSpanType);
-        if (streak.currentN === "0" || streak.currentN === 0) {
-            return "not_started";
-        } else if (spans < parseInt(streak.updateInterval)) {
-            if (streak.currentN >= streak.streakN) {
-                return "completed";
-            } else {
-                return "still_completing";
-            }
-        } else if (spans < (2 * parseInt(streak.updateInterval))) {
-            if (streak.currentN >= streak.streakN) {
-                return "not_completed";
-            } else {
-                return "broken";
-            }
-        } else {
-            return "broken";
-        }
+  if (streak) {
+    const spans = numberOfUpdateSpansPassed(streak.lastAttemptStarted, streak.updateSpanType);
+    if (streak.currentN === "0" || streak.currentN === 0) {
+      return "not_started";
+    } else if (spans < parseInt(streak.updateInterval)) {
+      if (streak.currentN >= streak.streakN) {
+        return "completed";
+      } else {
+        return "still_completing";
+      }
+    } else if (spans < (2 * parseInt(streak.updateInterval))) {
+      if (streak.currentN >= streak.streakN) {
+        return "not_completed";
+      } else {
+        return "broken";
+      }
+    } else {
+      return "broken";
     }
-    return null;
+  }
+  return null;
 };
 
 /**
@@ -48,22 +48,22 @@ export const streakInfo = (streak: Streak) => {
  * @return {number} The number of update spans that have passed thus far.
  */
 export const numberOfUpdateSpansPassed = (lastAttemptStarted, updateSpanType) => {
-    const lastAttemptStartedDate = parseISOString(lastAttemptStarted);
-    switch (updateSpanType) {
-        case "hourly":
-            return hourStartsPassed(lastAttemptStartedDate);
-        case "daily":
-            return midnightsPassed(lastAttemptStartedDate);
-        case "weekly":
-            return mondaysPassed(lastAttemptStartedDate);
-        case "monthly":
-            return startsOfMonthPassed(lastAttemptStartedDate);
-        case "yearly":
-            return startsOfYearPassed(lastAttemptStartedDate);
-        default:
-            err&&console.error("Unrecognized update span type = " + updateSpanType);
-            return -1;
-    }
+  const lastAttemptStartedDate = parseISOString(lastAttemptStarted);
+  switch (updateSpanType) {
+    case "hourly":
+      return hourStartsPassed(lastAttemptStartedDate);
+    case "daily":
+      return midnightsPassed(lastAttemptStartedDate);
+    case "weekly":
+      return mondaysPassed(lastAttemptStartedDate);
+    case "monthly":
+      return startsOfMonthPassed(lastAttemptStartedDate);
+    case "yearly":
+      return startsOfYearPassed(lastAttemptStartedDate);
+    default:
+      err && console.error("Unrecognized update span type = " + updateSpanType);
+      return -1;
+  }
 };
 
 /**
@@ -73,16 +73,15 @@ export const numberOfUpdateSpansPassed = (lastAttemptStarted, updateSpanType) =>
  * @return {boolean} If the Streak has expired.
  */
 export const ifStreakExpired = (streak) => {
-    if (streak.lastUpdated && streak.updateSpanType && streak.updateInterval) {
-        const spansPassed = numberOfUpdateSpansPassed(streak.lastUpdated, streak.updateSpanType);
-        if (spansPassed < 2 * streak.updateInterval) {
-            return false;
-        }
+  if (streak.lastUpdated && streak.updateSpanType && streak.updateInterval) {
+    const spansPassed = numberOfUpdateSpansPassed(streak.lastUpdated, streak.updateSpanType);
+    if (spansPassed < 2 * streak.updateInterval) {
+      return false;
     }
-    else {
-        err&&console.error("Forgot to fetch streak lastUpdated, updateSpanType, and/or updateInterval...");
-    }
-    return true;
+  } else {
+    err && console.error("Forgot to fetch streak lastUpdated, updateSpanType, and/or updateInterval...");
+  }
+  return true;
 };
 
 /**
@@ -94,30 +93,30 @@ export const ifStreakExpired = (streak) => {
  * @return {string} The properly formed description of the meaning of the values.
  */
 export const streakUpdateInfo = (streakN, streakUpdateInterval, streakUpdateSpanType) => {
-    let pluralSubmission = streakN === "1" || streakN === 1 ? "" : "s";
-    let pluralInterval = streakUpdateInterval === "1" || streakUpdateInterval === 1 ? "" : "s";
-    let interval;
-    switch (streakUpdateSpanType) {
-        case "hourly":
-            interval = "hour";
-            break;
-        case "daily":
-            interval = "day";
-            break;
-        case "weekly":
-            interval = "week";
-            break;
-        case "monthly":
-            interval = "month";
-            break;
-        case "yearly":
-            interval = "year";
-            break;
-        default:
-            err&&console.error("Unrecognized streak update interval = " + streakUpdateInterval);
-            interval = "time";
-    }
-    streakUpdateInterval = streakUpdateInterval === "1" || streakUpdateInterval === 1 ? "" : streakUpdateInterval + " ";
-    return "Complete " + streakN + " Submission" + pluralSubmission + " every " + streakUpdateInterval +
-        interval + pluralInterval;
+  let pluralSubmission = streakN === "1" || streakN === 1 ? "" : "s";
+  let pluralInterval = streakUpdateInterval === "1" || streakUpdateInterval === 1 ? "" : "s";
+  let interval;
+  switch (streakUpdateSpanType) {
+    case "hourly":
+      interval = "hour";
+      break;
+    case "daily":
+      interval = "day";
+      break;
+    case "weekly":
+      interval = "week";
+      break;
+    case "monthly":
+      interval = "month";
+      break;
+    case "yearly":
+      interval = "year";
+      break;
+    default:
+      err && console.error("Unrecognized streak update interval = " + streakUpdateInterval);
+      interval = "time";
+  }
+  streakUpdateInterval = streakUpdateInterval === "1" || streakUpdateInterval === 1 ? "" : streakUpdateInterval + " ";
+  return "Complete " + streakN + " Submission" + pluralSubmission + " every " + streakUpdateInterval +
+    interval + pluralInterval;
 };

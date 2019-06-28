@@ -22,18 +22,18 @@ import {debugAlert} from "../../logic/DebuggingHelper";
  * @param {function(string, string)} setBoardRead Message function for updating the read status of a board.
  */
 const clickCard = (userID, board, cacheBoards, setBoardRead) => {
-    debugAlert("Reading boardID = " + board);
-    if (unreadFor(userID, board, cacheBoards)) {
-        debugAlert("Actually Reading boardID = " + board);
-        //alert("SENDING LAMBDA FOR UNREAD");
-        MessageFunctions.addLastSeen(userID, board, cacheBoards[board][0].id, userID, () => {
-            setBoardRead(board, userID);
-            log&&console.log("Updated message board read status successfully!");
-        }, (error) => {
-            err&&console.error("Could not update read status for message board!");
-            err&&console.error(error);
-        });
-    }
+  debugAlert("Reading boardID = " + board);
+  if (unreadFor(userID, board, cacheBoards)) {
+    debugAlert("Actually Reading boardID = " + board);
+    //alert("SENDING LAMBDA FOR UNREAD");
+    MessageFunctions.addLastSeen(userID, board, cacheBoards[board][0].id, userID, () => {
+      setBoardRead(board, userID);
+      log && console.log("Updated message board read status successfully!");
+    }, (error) => {
+      err && console.error("Could not update read status for message board!");
+      err && console.error(error);
+    });
+  }
 };
 
 /**
@@ -44,11 +44,11 @@ const clickCard = (userID, board, cacheBoards, setBoardRead) => {
  * @return {{}} The message last sent to the board.
  */
 const lastMessage = (board, cacheBoards) => {
-    const messages = cacheBoards[board];
-    if (messages && messages.length > 0) {
-        return messages[0].message;
-    }
-    return "";
+  const messages = cacheBoards[board];
+  if (messages && messages.length > 0) {
+    return messages[0].message;
+  }
+  return "";
 };
 
 /**
@@ -60,23 +60,21 @@ const lastMessage = (board, cacheBoards) => {
  * @return {string} The title for the board.
  */
 const boardTitle = (userID, board, cache) => {
-    const ids = getIDsFromMessageBoard(board);
-    if (ids.length === 1) {
-        // challenge / event / group ? Will these be here? Actually totally yes!
+  const ids = getIDsFromMessageBoard(board);
+  if (ids.length === 1) {
+    // challenge / event / group ? Will these be here? Actually totally yes!
+  } else if (ids.length === 2) {
+    // other user(s)
+    // single chat
+    for (const key in ids) {
+      if (ids.hasOwnProperty(key) && userID !== ids[key]) {
+        return getObjectAttribute(ids[key], "name", cache);
+      }
     }
-    else if (ids.length === 2) {
-        // other user(s)
-        // single chat
-        for (const key in ids) {
-            if (ids.hasOwnProperty(key) && userID !== ids[key]) {
-                return getObjectAttribute(ids[key], "name", cache);
-            }
-        }
-    }
-    else {
-        // Multi-group chat
-    }
-    return "";
+  } else {
+    // Multi-group chat
+  }
+  return "";
 };
 
 /**
@@ -88,23 +86,21 @@ const boardTitle = (userID, board, cache) => {
  * @return {*} The profile picture for the board.
  */
 const boardProfilePicture = (userID, board, cache) => {
-    const ids = getIDsFromMessageBoard(board);
-    if (ids.length === 1) {
-        // challenge / event / group ? Will these be here? Actually totally yes!
+  const ids = getIDsFromMessageBoard(board);
+  if (ids.length === 1) {
+    // challenge / event / group ? Will these be here? Actually totally yes!
+  } else if (ids.length === 2) {
+    // other user(s)
+    // single chat
+    for (const key in ids) {
+      if (ids.hasOwnProperty(key) && userID !== ids[key]) {
+        return getObjectAttribute(ids[key], "profileImage", cache);
+      }
     }
-    else if (ids.length === 2) {
-        // other user(s)
-        // single chat
-        for (const key in ids) {
-            if (ids.hasOwnProperty(key) && userID !== ids[key]) {
-                return getObjectAttribute(ids[key], "profileImage", cache);
-            }
-        }
-    }
-    else {
-        // Multi-group chat
-    }
-    return "";
+  } else {
+    // Multi-group chat
+  }
+  return "";
 };
 
 /**
@@ -116,10 +112,10 @@ const boardProfilePicture = (userID, board, cache) => {
  * @return {boolean} If the board has not been read yet.
  */
 const unreadFor = (userID, board, cacheBoards) => {
-    if (board && cacheBoards[board] && cacheBoards[board].length > 0) {
-        return ifMessageUnreadFor(userID, cacheBoards[board][0]);
-    }
-    return false;
+  if (board && cacheBoards[board] && cacheBoards[board].length > 0) {
+    return ifMessageUnreadFor(userID, cacheBoards[board][0]);
+  }
+  return false;
 };
 
 /**
@@ -133,104 +129,102 @@ const unreadFor = (userID, board, cacheBoards) => {
  * @return {*} The React JSX to display the message board cards.
  */
 const messageBoardCards = (userID, messageBoardIDs, cache, cacheBoards, setBoardRead) => {
-    const cards = [];
-    for (let i = 0; i < messageBoardIDs.length; i++) {
-        const board = messageBoardIDs[i];
-        cards.push(
-            <MessageBoardCard
-                messageBoardProPic={boardProfilePicture(userID, board, cache)}
-                messageBoardTitle={boardTitle(userID, board, cache)}
-                messageBoardLastMessage={lastMessage(board, cacheBoards)}
-                messageBoardID={board}
-                unread={unreadFor(userID, board, cacheBoards)}
-                onClickCard={() => clickCard(userID, board, cacheBoards, setBoardRead)}
-            />
-        );
-    }
-    return cards;
+  const cards = [];
+  for (let i = 0; i < messageBoardIDs.length; i++) {
+    const board = messageBoardIDs[i];
+    cards.push(
+      <MessageBoardCard
+        messageBoardProPic={boardProfilePicture(userID, board, cache)}
+        messageBoardTitle={boardTitle(userID, board, cache)}
+        messageBoardLastMessage={lastMessage(board, cacheBoards)}
+        messageBoardID={board}
+        unread={unreadFor(userID, board, cacheBoards)}
+        onClickCard={() => clickCard(userID, board, cacheBoards, setBoardRead)}
+      />
+    );
+  }
+  return cards;
 };
 
 /**
  * This class will display all the Message boards we are currently a part of
  */
 const MessageBoardFeed = (props: Props) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [messageBoards, setMessageBoards] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [messageBoards, setMessageBoards] = useState([]);
 
-    useEffect(() => {
-        setIsLoading(true);
-        props.fetchUserAttributes(["messageBoards"], (user) => {
-            setIsLoading(false);
-        });
-    }, [props.userID]);
+  useEffect(() => {
+    setIsLoading(true);
+    props.fetchUserAttributes(["messageBoards"], (user) => {
+      setIsLoading(false);
+    });
+  }, [props.userID]);
 
-    useEffect(() => {
-        const user = props.user;
-        if (user.messageBoards) {
-            setMessageBoards(user.messageBoards);
-            for (const key in user.messageBoards) {
-                if (user.messageBoards.hasOwnProperty(key)) {
-                    const board = user.messageBoards[key];
-                    const ids = getIDsFromMessageBoard(board);
-                    for (const key in ids) {
-                        if (ids.hasOwnProperty(key) && ids[key] !== props.user.id) {
-                            // fetch the attributes
-                            const id = ids[key];
-                            const itemType = getItemTypeFromID(id);
-                            if (itemType === "Client" || itemType === "Trainer") {
-                                props.fetchItem(id, itemType, ["name", "profileImagePath"]);
-                            }
-                        }
-                    }
-                }
+  useEffect(() => {
+    const user = props.user;
+    if (user.messageBoards) {
+      setMessageBoards(user.messageBoards);
+      for (const key in user.messageBoards) {
+        if (user.messageBoards.hasOwnProperty(key)) {
+          const board = user.messageBoards[key];
+          const ids = getIDsFromMessageBoard(board);
+          for (const key in ids) {
+            if (ids.hasOwnProperty(key) && ids[key] !== props.user.id) {
+              // fetch the attributes
+              const id = ids[key];
+              const itemType = getItemTypeFromID(id);
+              if (itemType === "Client" || itemType === "Trainer") {
+                props.fetchItem(id, itemType, ["name", "profileImagePath"]);
+              }
             }
+          }
         }
-    }, [props.user.messageBoards]);
+      }
+    }
+  }, [props.user.messageBoards]);
 
-    if (isLoading) {
-        return(
-            <Spinner/>
-        )
-    }
-    else if (messageBoards && messageBoards.length > 0) {
-        return (
-            <Grid fluid>
-                <Header> Message Boards: </Header>
-                {messageBoardCards(props.user.id, messageBoards, props.cache, props.message.boards, props.setBoardRead)}
-            </Grid>
-        );
-    }
-    else {
-        return(
-            <div>
-                <Header> No Message Boards Yet! </Header>
-            </div>
-        )
-    }
+  if (isLoading) {
+    return (
+      <Spinner/>
+    )
+  } else if (messageBoards && messageBoards.length > 0) {
+    return (
+      <Grid fluid>
+        <Header> Message Boards: </Header>
+        {messageBoardCards(props.user.id, messageBoards, props.cache, props.message.boards, props.setBoardRead)}
+      </Grid>
+    );
+  } else {
+    return (
+      <div>
+        <Header> No Message Boards Yet! </Header>
+      </div>
+    )
+  }
 };
 
 const mapStateToProps = (state) => ({
-    user: state.user,
-    cache: state.cache,
-    info: state.info,
-    message: state.message
+  user: state.user,
+  cache: state.cache,
+  info: state.info,
+  message: state.message
 });
 
 const mapDispatchToProps = dispatch => {
-    return {
-        fetchUserAttributes: (variableList, dataHandler) => {
-            dispatch(fetchUserAttributes(variableList, dataHandler));
-        },
-        fetchItem: (itemType, id, variableList, dataHandler, failureHandler) => {
-            dispatch(fetchItem(itemType, id, variableList, dataHandler, failureHandler));
-        },
-        queryNextMessagesFromBoard: (board, limit, dataHandler, failureHandler) => {
-            dispatch(queryNextMessagesFromBoard(board, limit, dataHandler, failureHandler));
-        },
-        setBoardRead: (board, userID) => {
-            dispatch(setBoardRead(board, userID));
-        }
-    };
+  return {
+    fetchUserAttributes: (variableList, dataHandler) => {
+      dispatch(fetchUserAttributes(variableList, dataHandler));
+    },
+    fetchItem: (itemType, id, variableList, dataHandler, failureHandler) => {
+      dispatch(fetchItem(itemType, id, variableList, dataHandler, failureHandler));
+    },
+    queryNextMessagesFromBoard: (board, limit, dataHandler, failureHandler) => {
+      dispatch(queryNextMessagesFromBoard(board, limit, dataHandler, failureHandler));
+    },
+    setBoardRead: (board, userID) => {
+      dispatch(setBoardRead(board, userID));
+    }
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessageBoardFeed);

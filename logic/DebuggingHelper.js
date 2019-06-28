@@ -1,10 +1,11 @@
 import {ifAlert} from "../../Constants";
 
 export function debugAlert(message) {
-    if (ifAlert) {
-        alert(message);
-    }
+  if (ifAlert) {
+    alert(message);
+  }
 }
+
 // TODO I forget what this was supposed to be doing?
 // export function getMethods(obj) {
 //     const result = [];

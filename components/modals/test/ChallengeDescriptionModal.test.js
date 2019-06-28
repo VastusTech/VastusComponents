@@ -1,107 +1,100 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import { store, funCompWrapper } from "../../../testing/TestHelper";
+import {shallow} from 'enzyme';
+import {store, funCompWrapper} from "../../../testing/TestHelper";
 import "../../../testing/SetTesting";
 import {expect} from "chai";
 import ChallengeDescriptionModal, {displayTagIcons} from "../ChallengeDescriptionModal";
 
 it('renders without crashing', () => {
-    const component = shallow(<ChallengeDescriptionModal challengeID={null} onClose={() => {}} open={true} store={store()}/>);
-    global.expect(component).toMatchSnapshot();
+  const component = shallow(<ChallengeDescriptionModal challengeID={null} onClose={() => {
+  }} open={true} store={store()}/>);
+  global.expect(component).toMatchSnapshot();
 });
 
 describe("Display Tag Icons", () => {
-    it('If no tag icons are passed in then none are returned', () => {
-        const Wrapper = funCompWrapper(displayTagIcons());
-        const component = shallow(<Wrapper/>);
+  it('If no tag icons are passed in then none are returned', () => {
+    const Wrapper = funCompWrapper(displayTagIcons());
+    const component = shallow(<Wrapper/>);
 
-        expect(component.find("Image")).to.have.lengthOf(0);
-    });
+    expect(component.find("Image")).to.have.lengthOf(0);
+  });
 
-    it('If 1 tag icon is passed in then return 1 tag icon', () => {
-        const Wrapper = funCompWrapper(displayTagIcons(["HIIT"]));
-        const component = shallow(<Wrapper/>);
+  it('If 1 tag icon is passed in then return 1 tag icon', () => {
+    const Wrapper = funCompWrapper(displayTagIcons(["HIIT"]));
+    const component = shallow(<Wrapper/>);
 
-        expect(component.find("Image")).to.have.lengthOf(1);
-    });
+    expect(component.find("Image")).to.have.lengthOf(1);
+  });
 
-    it('If 2 tag icons are passed in then return 2 tag icons', () => {
-        const Wrapper = funCompWrapper(displayTagIcons(["HIIT", "Performance"]));
-        const component = shallow(<Wrapper/>);
+  it('If 2 tag icons are passed in then return 2 tag icons', () => {
+    const Wrapper = funCompWrapper(displayTagIcons(["HIIT", "Performance"]));
+    const component = shallow(<Wrapper/>);
 
-        expect(component.find("Image")).to.have.lengthOf(2);
-    });
+    expect(component.find("Image")).to.have.lengthOf(2);
+  });
 
-    it('If 3 tag icons are passed in then return 3 tag icons', () => {
-        const Wrapper = funCompWrapper(displayTagIcons(["HIIT", "Performance", "Strength"]));
-        const component = shallow(<Wrapper/>);
+  it('If 3 tag icons are passed in then return 3 tag icons', () => {
+    const Wrapper = funCompWrapper(displayTagIcons(["HIIT", "Performance", "Strength"]));
+    const component = shallow(<Wrapper/>);
 
-        expect(component.find("Image")).to.have.lengthOf(3);
-    });
+    expect(component.find("Image")).to.have.lengthOf(3);
+  });
 
-    it('If 4 tag icons are passed in then return 4 tag icons', () => {
-        const Wrapper = funCompWrapper(displayTagIcons(["HIIT", "Performance", "Strength", "Endurance"]));
-        const component = shallow(<Wrapper/>);
+  it('If 4 tag icons are passed in then return 4 tag icons', () => {
+    const Wrapper = funCompWrapper(displayTagIcons(["HIIT", "Performance", "Strength", "Endurance"]));
+    const component = shallow(<Wrapper/>);
 
-        expect(component.find("Image")).to.have.lengthOf(4);
-    });
+    expect(component.find("Image")).to.have.lengthOf(4);
+  });
 });
 
 describe("Create Correct Modal", () => {
-    it('', () => {
+  it('', () => {
 
 
-
-
-
-
-
-
-
-        
-    });
+  });
 });
 
 describe("Select Winner", () => {
-    it('', () => {
+  it('', () => {
 
-    });
+  });
 });
 
 describe("Create Correct Button", () => {
-    it('', () => {
+  it('', () => {
 
-    });
+  });
 });
 
 describe("Display Streak Info", () => {
-    it('', () => {
+  it('', () => {
 
-    });
+  });
 });
 
 describe("Display Error", () => {
-    it('', () => {
+  it('', () => {
 
-    });
+  });
 });
 
 describe("Challenge Deleted", () => {
-    it('', () => {
+  it('', () => {
 
-    });
+  });
 });
 
 describe("Create Correct Settings Button", () => {
-    it('', () => {
+  it('', () => {
 
-    });
+  });
 });
 
 describe("Challenge Description Modal", () => {
-    describe("State", () => {
-        it('', () => {
+  describe("State", () => {
+    it('', () => {
 
-        });
     });
+  });
 });

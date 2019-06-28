@@ -14,8 +14,8 @@ import Spinner from "../props/Spinner";
 import UserCard from "../cards/UserCard";
 
 type Props = {
-    open: boolean,
-    onClose: any
+  open: boolean,
+  onClose: any
 };
 
 /**
@@ -27,16 +27,16 @@ type Props = {
  * @param {function()} onClose Closes the modal.
  */
 const createChat = (userID, selectedIDs, addToUserAttribute, onClose) => {
-    debugAlert("Creating chat with " + JSON.stringify(selectedIDs));
-    const board = getMessageBoardName([userID, ...selectedIDs]);
-    debugAlert(board);
-    UserFunctions.addMessageBoard(userID, userID, board, () => {
-            console.log("Successfully added message board to chat");
-            addToUserAttribute("messageBoards", board);
-            onClose();
-        }, (error) => {
-            err&&console.error(error);
-        });
+  debugAlert("Creating chat with " + JSON.stringify(selectedIDs));
+  const board = getMessageBoardName([userID, ...selectedIDs]);
+  debugAlert(board);
+  UserFunctions.addMessageBoard(userID, userID, board, () => {
+    console.log("Successfully added message board to chat");
+    addToUserAttribute("messageBoards", board);
+    onClose();
+  }, (error) => {
+    err && console.error(error);
+  });
 };
 
 /**
@@ -48,28 +48,27 @@ const createChat = (userID, selectedIDs, addToUserAttribute, onClose) => {
  * @return {*} The React JSX to display the create button.
  */
 const createButton = (friendID, selectedFriends, setSelectedFriends) => {
-    if (selectedFriends.includes(friendID)) {
-        return(
-            <Button negative onClick={() =>
-                setSelectedFriends(p => {
-                    p = [...p];
-                    removeFromArray(p, friendID);
-                    return p;
-                })
-            }> Remove </Button>
-        );
-    }
-    else {
-        return(
-            <Button primary onClick={() =>
-                setSelectedFriends(p => {
-                    p = [...p];
-                    addUniqueElementToArray(p, friendID);
-                    return p;
-                })
-            }> Add </Button>
-        );
-    }
+  if (selectedFriends.includes(friendID)) {
+    return (
+      <Button negative onClick={() =>
+        setSelectedFriends(p => {
+          p = [...p];
+          removeFromArray(p, friendID);
+          return p;
+        })
+      }> Remove </Button>
+    );
+  } else {
+    return (
+      <Button primary onClick={() =>
+        setSelectedFriends(p => {
+          p = [...p];
+          addUniqueElementToArray(p, friendID);
+          return p;
+        })
+      }> Add </Button>
+    );
+  }
 };
 
 /**
@@ -81,20 +80,20 @@ const createButton = (friendID, selectedFriends, setSelectedFriends) => {
  * @return {*} The React JSX to display the select chat ID buttons.
  */
 const selectChatIDButtons = (friends, selectedFriends, setSelectedFriends) => {
-    const cards = [];
-    for (let i = 0; i < friends.length; i++) {
-        cards.push(
-            <Grid key={i} centered>
-                <Grid.Column>
-                    <UserCard user={friends[i]}/>
-                </Grid.Column>
-                <Grid.Column>
-                    {createButton(friends[i].id, selectedFriends, setSelectedFriends)}
-                </Grid.Column>
-            </Grid>
-        )
-    }
-    return cards;
+  const cards = [];
+  for (let i = 0; i < friends.length; i++) {
+    cards.push(
+      <Grid key={i} centered>
+        <Grid.Column>
+          <UserCard user={friends[i]}/>
+        </Grid.Column>
+        <Grid.Column>
+          {createButton(friends[i].id, selectedFriends, setSelectedFriends)}
+        </Grid.Column>
+      </Grid>
+    )
+  }
+  return cards;
 };
 
 /**
@@ -106,79 +105,78 @@ const selectChatIDButtons = (friends, selectedFriends, setSelectedFriends) => {
  * @constructor
  */
 const StartChatModal = (props: Props) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [friends, setFriends] = useState([]);
-    const [selectedFriends, setSelectedFriends] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [friends, setFriends] = useState([]);
+  const [selectedFriends, setSelectedFriends] = useState([]);
 
-    useEffect(() => {
-        setIsLoading(true);
-        props.fetchUserAttributes(["friends"], (user) => {
-            if (user && user.friends) {
-                for (let i = 0; i < user.friends.length; i++) {
-                    const itemType = getItemTypeFromID(user.friends[i]);
-                    props.fetchItem(user.friends[i], itemType, UserCardInfo.fetchList, (friend) => {
-                        if (friend) {
-                            setFriends(p => [...p, friend]);
-                        }
-                    }, (error) => {
-                        err&&console.error(error);
-                    });
-                }
+  useEffect(() => {
+    setIsLoading(true);
+    props.fetchUserAttributes(["friends"], (user) => {
+      if (user && user.friends) {
+        for (let i = 0; i < user.friends.length; i++) {
+          const itemType = getItemTypeFromID(user.friends[i]);
+          props.fetchItem(user.friends[i], itemType, UserCardInfo.fetchList, (friend) => {
+            if (friend) {
+              setFriends(p => [...p, friend]);
             }
-            setIsLoading(false);
-        }, (error) => {
-            err&&console.error(error);
-            setIsLoading(false);
-        });
-    }, [props.user.id]);
+          }, (error) => {
+            err && console.error(error);
+          });
+        }
+      }
+      setIsLoading(false);
+    }, (error) => {
+      err && console.error(error);
+      setIsLoading(false);
+    });
+  }, [props.user.id]);
 
-    // To choose someone to chat with, get the
-    if (isLoading) {
-        return (
-            <Spinner/>
-        )
-    }
-    if (friends && friends.length > 0) {
-        return (
-            <Modal open={props.open} onClose={() => props.onClose()} closeIcon fluid>
-                <Modal.Header> Choose friends to start the chat with! </Modal.Header>
-                <Modal.Content fluid>
-                    {selectChatIDButtons(friends, selectedFriends, setSelectedFriends)}
-                    <Grid fluid centered width={3}>
-                        <Grid.Column>
-                            <Button primary fluid onClick={() => createChat(props.user.id, selectedFriends,
-                                props.addToUserAttribute, props.onClose)}> Create </Button>
-                        </Grid.Column>
-                        <Grid.Column/>
-                        <Grid.Column>
-                            <Button inverted fluid onClick={() => props.onClose()}> Cancel </Button>
-                        </Grid.Column>
-                    </Grid>
-                </Modal.Content>
-            </Modal>
-        );
-    }
-    else {
-        return (<Message color='red'> Add a buddy to start a message board! </Message>);
-    }
+  // To choose someone to chat with, get the
+  if (isLoading) {
+    return (
+      <Spinner/>
+    )
+  }
+  if (friends && friends.length > 0) {
+    return (
+      <Modal open={props.open} onClose={() => props.onClose()} closeIcon fluid>
+        <Modal.Header> Choose friends to start the chat with! </Modal.Header>
+        <Modal.Content fluid>
+          {selectChatIDButtons(friends, selectedFriends, setSelectedFriends)}
+          <Grid fluid centered width={3}>
+            <Grid.Column>
+              <Button primary fluid onClick={() => createChat(props.user.id, selectedFriends,
+                props.addToUserAttribute, props.onClose)}> Create </Button>
+            </Grid.Column>
+            <Grid.Column/>
+            <Grid.Column>
+              <Button inverted fluid onClick={() => props.onClose()}> Cancel </Button>
+            </Grid.Column>
+          </Grid>
+        </Modal.Content>
+      </Modal>
+    );
+  } else {
+    return (<Message color='red'> Add a buddy to start a message board! </Message>);
+  }
 };
 
 const mapStateToProps = state => ({
-    user: state.user
+  user: state.user
 });
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchUserAttributes: (variableList, dataHandler) => {
-            dispatch(fetchUserAttributes(variableList, dataHandler));
-        },
-        addToUserAttribute: (attributeName, attributeValue) => {
-            dispatch(addToUserAttribute(attributeName, attributeValue));
-        },
-        fetchItem: (id, itemType, variableList, dataHandler, failureHandler) => {
-            dispatch(fetchItem(id, itemType, variableList, dataHandler, failureHandler));
-        }
-    };
+  return {
+    fetchUserAttributes: (variableList, dataHandler) => {
+      dispatch(fetchUserAttributes(variableList, dataHandler));
+    },
+    addToUserAttribute: (attributeName, attributeValue) => {
+      dispatch(addToUserAttribute(attributeName, attributeValue));
+    },
+    fetchItem: (id, itemType, variableList, dataHandler, failureHandler) => {
+      dispatch(fetchItem(id, itemType, variableList, dataHandler, failureHandler));
+    }
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(StartChatModal);

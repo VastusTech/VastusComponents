@@ -3,12 +3,12 @@ import GroupCard from "../GroupCard";
 import type Group from "../../../types/Group";
 
 export const GroupDetailCardInfo = {
-    fetchList: ["id", "item_type", "title", "description", "restriction", "members", "owners", "time_created", "access"],
-    ifSubscribe: false
+  fetchList: ["id", "item_type", "title", "description", "restriction", "members", "owners", "time_created", "access"],
+  ifSubscribe: false
 };
 
 type Props = {
-    group: Group
+  group: Group
 };
 
 /**
@@ -19,7 +19,7 @@ type Props = {
  * @constructor
  */
 const GroupDetailCard = (props: Props) => (
-    <GroupCard group={props.group}/>
+  <GroupCard group={props.group}/>
 );
 
 export default GroupDetailCard;

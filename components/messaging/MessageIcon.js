@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {Icon} from 'semantic-ui-react';
 import {
-    peekAtFirstMessageFromBoard,
+  peekAtFirstMessageFromBoard,
 } from "../../redux/actions/messageActions";
 import {connect} from "react-redux";
 import {ifMessageUnreadFor} from "../../logic/MessageHelper";
@@ -15,19 +15,19 @@ import {ifMessageUnreadFor} from "../../logic/MessageHelper";
  * @return {number} The number of unread boards the User has.
  */
 const numUnread = (userID, boardsCache, userBoards) => {
-    let unread = 0;
-    if (userBoards) {
-        const numBoards = userBoards.length;
-        for (let i = 0; i < numBoards; i++) {
-            const board = boardsCache[userBoards[i]];
-            if (board && board.length > 0) {
-                if (ifMessageUnreadFor(userID, board[0])) {
-                    unread++;
-                }
-            }
+  let unread = 0;
+  if (userBoards) {
+    const numBoards = userBoards.length;
+    for (let i = 0; i < numBoards; i++) {
+      const board = boardsCache[userBoards[i]];
+      if (board && board.length > 0) {
+        if (ifMessageUnreadFor(userID, board[0])) {
+          unread++;
         }
+      }
     }
-    return unread;
+  }
+  return unread;
 };
 
 /**
@@ -38,45 +38,44 @@ const numUnread = (userID, boardsCache, userBoards) => {
  * @constructor
  */
 const MessageIcon = (props) => {
-    useEffect(() => {
-        const boards = props.user.messageBoards;
-        if (boards) {
-            const numBoards = boards.length;
-            for (let i = 0; i < numBoards; i++) {
-                const boardID = boards[i];
-                props.peekAtFirstMessageFromBoard(boardID);
-            }
-        }
-    }, []);
+  useEffect(() => {
+    const boards = props.user.messageBoards;
+    if (boards) {
+      const numBoards = boards.length;
+      for (let i = 0; i < numBoards; i++) {
+        const boardID = boards[i];
+        props.peekAtFirstMessageFromBoard(boardID);
+      }
+    }
+  }, []);
 
-    let unread = numUnread(props.user.id, props.message.boards, props.user.messageBoards);
-    if (unread > 0) {
-        return (
-            <div>
-                <Icon name='comment' size='large'/>
-                {unread}
-            </div>
-        );
-    }
-    else {
-        return (
-            <div>
-                <Icon name='comment outline' size='large' />
-            </div>
-        );
-    }
+  let unread = numUnread(props.user.id, props.message.boards, props.user.messageBoards);
+  if (unread > 0) {
+    return (
+      <div>
+        <Icon name='comment' size='large'/>
+        {unread}
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <Icon name='comment outline' size='large'/>
+      </div>
+    );
+  }
 };
 
 const mapStateToProps = state => ({
-    user: state.user,
-    message: state.message,
+  user: state.user,
+  message: state.message,
 });
 
 const mapDispatchToProps = dispatch => {
-    return {
-        peekAtFirstMessageFromBoard: (board) => {
-            dispatch(peekAtFirstMessageFromBoard(board));
-        }
+  return {
+    peekAtFirstMessageFromBoard: (board) => {
+      dispatch(peekAtFirstMessageFromBoard(board));
     }
+  }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(MessageIcon);

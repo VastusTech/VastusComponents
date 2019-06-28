@@ -8,9 +8,9 @@ export const TOGGLE_IS_LOADING = 'TOGGLE_IS_LOADING';
 export const SET_APP_IS_NOT_LOADING = 'SET_APP_IS_NOT_LOADING';
 
 type InfoReducer = {
-    isLoading: boolean,
-    appIsLoading: boolean,
-    error: Error
+  isLoading: boolean,
+  appIsLoading: boolean,
+  error: Error
 };
 
 /**
@@ -19,9 +19,9 @@ type InfoReducer = {
  * @type {InfoReducer}
  */
 const initialState = {
-    isLoading: false,
-    appIsLoading: true,
-    error: null
+  isLoading: false,
+  appIsLoading: true,
+  error: null
 };
 
 /**
@@ -35,48 +35,48 @@ const initialState = {
  * @return {InfoReducer} The next state for the reducer.
  */
 export default (state: InfoReducer = initialState, action) => {
-    switch (action.type) {
-        case SET_ERROR:
-            err&&console.error("Error inside a redux action/reducer! (Leo wrote this) " + action.payload);
-            state = {
-                ...state,
-                error: action.payload
-            };
-            break;
-        case CLEAR_ERROR:
-            state = {
-                ...state,
-                error: null
-            };
-            break;
-        case SET_IS_LOADING:
-            state = {
-                ...state,
-                isLoading: true
-            };
-            break;
-        case SET_IS_NOT_LOADING:
-            state = {
-                ...state,
-                isLoading: false
-            };
-            break;
-        case TOGGLE_IS_LOADING:
-            state = {
-                ...state,
-                isLoading: !state.isLoading
-            };
-            break;
-        case SET_APP_IS_NOT_LOADING:
-            state = {
-                ...state,
-                appIsLoading: false
-            };
-            break;
-        default:
-            break;
-    }
-    // console.log("INFO: Did " + action.type + " and now state is = " + JSON.stringify(state));
-    return state;
+  switch (action.type) {
+    case SET_ERROR:
+      err && console.error("Error inside a redux action/reducer! (Leo wrote this) " + action.payload);
+      state = {
+        ...state,
+        error: action.payload
+      };
+      break;
+    case CLEAR_ERROR:
+      state = {
+        ...state,
+        error: null
+      };
+      break;
+    case SET_IS_LOADING:
+      state = {
+        ...state,
+        isLoading: true
+      };
+      break;
+    case SET_IS_NOT_LOADING:
+      state = {
+        ...state,
+        isLoading: false
+      };
+      break;
+    case TOGGLE_IS_LOADING:
+      state = {
+        ...state,
+        isLoading: !state.isLoading
+      };
+      break;
+    case SET_APP_IS_NOT_LOADING:
+      state = {
+        ...state,
+        appIsLoading: false
+      };
+      break;
+    default:
+      break;
+  }
+  // console.log("INFO: Did " + action.type + " and now state is = " + JSON.stringify(state));
+  return state;
 }
 

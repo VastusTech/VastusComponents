@@ -11,12 +11,12 @@ export const OPEN_FORGOT_PASSWORD_MODAL = 'OPEN_FORGOT_PASSWORD_MODAL';
 export const CLOSE_FORGOT_PASSWORD_MODAL = 'CLOSE_FORGOT_PASSWORD_MODAL';
 
 type AuthReducer = {
-    loggedIn: boolean,
-    confirmingSignUp: boolean,
-    confirmingForgotPassword: boolean,
-    signUpModalOpen: boolean,
-    forgotPasswordModalOpen: boolean,
-    ifFederatedSignIn: boolean
+  loggedIn: boolean,
+  confirmingSignUp: boolean,
+  confirmingForgotPassword: boolean,
+  signUpModalOpen: boolean,
+  forgotPasswordModalOpen: boolean,
+  ifFederatedSignIn: boolean
 };
 
 /**
@@ -25,12 +25,12 @@ type AuthReducer = {
  * @type {AuthReducer}
  */
 const initialState = {
-    loggedIn: false,
-    confirmingSignUp: false,
-    confirmingForgotPassword: false,
-    signUpModalOpen: false,
-    forgotPasswordModalOpen: false,
-    ifFederatedSignIn: false
+  loggedIn: false,
+  confirmingSignUp: false,
+  confirmingForgotPassword: false,
+  signUpModalOpen: false,
+  forgotPasswordModalOpen: false,
+  ifFederatedSignIn: false
 };
 
 /**
@@ -44,103 +44,103 @@ const initialState = {
  * @return {AuthReducer} The next state for the reducer.
  */
 export default (state: AuthReducer = initialState, action) => {
-    switch (action.type) {
-        case LOG_IN:
-            state = {
-                loggedIn: true,
-                confirmingSignUp: false,
-                confirmingForgotPassword: false,
-                signUpModalOpen: false,
-                forgotPasswordModalOpen: false,
-                ifFederatedSignIn: false,
-            };
-            break;
-        case FEDERATED_LOG_IN:
-            state = {
-                loggedIn: true,
-                confirmingSignUp: false,
-                confirmingForgotPassword: false,
-                signUpModalOpen: false,
-                forgotPasswordModalOpen: false,
-                ifFederatedSignIn: true,
-            };
-            break;
-        case LOG_OUT:
-            state = {
-                loggedIn: false,
-                confirmingSignUp: false,
-                confirmingForgotPassword: false,
-                signUpModalOpen: false,
-                forgotPasswordModalOpen: false,
-                ifFederatedSignIn: false
-            };
-            break;
-        case SIGN_UP:
-            state = {
-                loggedIn: false,
-                confirmingSignUp: true,
-                confirmingForgotPassword: false,
-                signUpModalOpen: true,
-                forgotPasswordModalOpen: false,
-                ifFederatedSignIn: false
-            };
-            break;
-        case CONFIRM_SIGNUP:
-            state = {
-                loggedIn: false,
-                confirmingSignUp: false,
-                confirmingForgotPassword: false,
-                signUpModalOpen: false,
-                forgotPasswordModalOpen: false,
-                ifFederatedSignIn: false
-            };
-            break;
-        case FORGOT_PASSWORD:
-            state = {
-                loggedIn: false,
-                confirmingSignUp: false,
-                confirmingForgotPassword: true,
-                signUpModalOpen: false,
-                forgotPasswordModalOpen: true,
-                ifFederatedSignIn: false
-            };
-            break;
-        case CONFIRM_FORGOT_PASSWORD:
-            state = {
-                loggedIn: false,
-                confirmingSignUp: false,
-                confirmingForgotPassword: false,
-                signUpModalOpen: false,
-                forgotPasswordModalOpen: false,
-                ifFederatedSignIn: false
-            };
-            break;
-        case OPEN_SIGN_UP_MODAL:
-            state = {
-                ...state,
-                signUpModalOpen: true
-            };
-            break;
-        case CLOSE_SIGN_UP_MODAL:
-            state = {
-                ...state,
-                signUpModalOpen: false
-            };
-            break;
-        case OPEN_FORGOT_PASSWORD_MODAL:
-            state = {
-                ...state,
-                forgotPasswordModalOpen: true
-            };
-            break;
-        case CLOSE_FORGOT_PASSWORD_MODAL:
-            state = {
-                ...state,
-                forgotPasswordModalOpen: false
-            };
-            break;
-        default:
-            break;
-    }
-    return state;
+  switch (action.type) {
+    case LOG_IN:
+      state = {
+        loggedIn: true,
+        confirmingSignUp: false,
+        confirmingForgotPassword: false,
+        signUpModalOpen: false,
+        forgotPasswordModalOpen: false,
+        ifFederatedSignIn: false,
+      };
+      break;
+    case FEDERATED_LOG_IN:
+      state = {
+        loggedIn: true,
+        confirmingSignUp: false,
+        confirmingForgotPassword: false,
+        signUpModalOpen: false,
+        forgotPasswordModalOpen: false,
+        ifFederatedSignIn: true,
+      };
+      break;
+    case LOG_OUT:
+      state = {
+        loggedIn: false,
+        confirmingSignUp: false,
+        confirmingForgotPassword: false,
+        signUpModalOpen: false,
+        forgotPasswordModalOpen: false,
+        ifFederatedSignIn: false
+      };
+      break;
+    case SIGN_UP:
+      state = {
+        loggedIn: false,
+        confirmingSignUp: true,
+        confirmingForgotPassword: false,
+        signUpModalOpen: true,
+        forgotPasswordModalOpen: false,
+        ifFederatedSignIn: false
+      };
+      break;
+    case CONFIRM_SIGNUP:
+      state = {
+        loggedIn: false,
+        confirmingSignUp: false,
+        confirmingForgotPassword: false,
+        signUpModalOpen: false,
+        forgotPasswordModalOpen: false,
+        ifFederatedSignIn: false
+      };
+      break;
+    case FORGOT_PASSWORD:
+      state = {
+        loggedIn: false,
+        confirmingSignUp: false,
+        confirmingForgotPassword: true,
+        signUpModalOpen: false,
+        forgotPasswordModalOpen: true,
+        ifFederatedSignIn: false
+      };
+      break;
+    case CONFIRM_FORGOT_PASSWORD:
+      state = {
+        loggedIn: false,
+        confirmingSignUp: false,
+        confirmingForgotPassword: false,
+        signUpModalOpen: false,
+        forgotPasswordModalOpen: false,
+        ifFederatedSignIn: false
+      };
+      break;
+    case OPEN_SIGN_UP_MODAL:
+      state = {
+        ...state,
+        signUpModalOpen: true
+      };
+      break;
+    case CLOSE_SIGN_UP_MODAL:
+      state = {
+        ...state,
+        signUpModalOpen: false
+      };
+      break;
+    case OPEN_FORGOT_PASSWORD_MODAL:
+      state = {
+        ...state,
+        forgotPasswordModalOpen: true
+      };
+      break;
+    case CLOSE_FORGOT_PASSWORD_MODAL:
+      state = {
+        ...state,
+        forgotPasswordModalOpen: false
+      };
+      break;
+    default:
+      break;
+  }
+  return state;
 }

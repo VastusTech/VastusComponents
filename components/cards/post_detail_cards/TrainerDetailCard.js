@@ -2,14 +2,14 @@ import React from "react";
 import TrainerCard from "../TrainerCard";
 
 export const TrainerDetailCardInfo = {
-    fetchList: ["id", "name", "profileImagePath"],
-    ifSubscribe: false
+  fetchList: ["id", "name", "profileImagePath"],
+  ifSubscribe: false
 };
 
 type Props = {
-    trainer: {
-        name: string,
-    }
+  trainer: {
+    name: string,
+  }
 };
 
 /**
@@ -20,7 +20,7 @@ type Props = {
  * @constructor
  */
 const TrainerDetailCard = (props: Props) => (
-    <TrainerCard trainer={props.trainer}/>
+  <TrainerCard trainer={props.trainer}/>
 );
 
 export default TrainerDetailCard;

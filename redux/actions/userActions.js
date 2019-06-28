@@ -1,9 +1,9 @@
 import {
-    addToItemAttribute,
-    fetchItem,
-    forceFetchItem, getCache, removeFromItemAttribute, removeFromItemAttributeAtIndex,
-    setItemAttribute, setItemAttributeIndex,
-    subscribeFetchItem
+  addToItemAttribute,
+  fetchItem,
+  forceFetchItem, getCache, removeFromItemAttribute, removeFromItemAttributeAtIndex,
+  setItemAttribute, setItemAttributeIndex,
+  subscribeFetchItem
 } from "./cacheActions";
 import {appUserItemType} from "../../../Constants";
 import {CLEAR_USER, FORCE_SET_USER, SET_USER} from "../reducers/userReducer";
@@ -21,17 +21,17 @@ import {CLEAR_USER, FORCE_SET_USER, SET_USER} from "../reducers/userReducer";
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function fetchUserAttributes(variableList, dataHandler, failureHandler) {
-    return (dispatch, getStore) => {
-        const userID = getStore().user.id;
-        if (userID) {
-            dispatch(fetchItem(userID, appUserItemType, variableList, dataHandler, failureHandler));
-            // dispatch(fetchItem(userID, appUserItemType, variableList, (client) => {
-            //     dispatch(setUser(client));
-            //     dispatch(setIsNotLoading());
-            //     if (dataHandler) { dataHandler(getStore().user); }
-            // }));
-        }
+  return (dispatch, getStore) => {
+    const userID = getStore().user.id;
+    if (userID) {
+      dispatch(fetchItem(userID, appUserItemType, variableList, dataHandler, failureHandler));
+      // dispatch(fetchItem(userID, appUserItemType, variableList, (client) => {
+      //     dispatch(setUser(client));
+      //     dispatch(setIsNotLoading());
+      //     if (dataHandler) { dataHandler(getStore().user); }
+      // }));
     }
+  }
 }
 
 /**
@@ -44,18 +44,18 @@ export function fetchUserAttributes(variableList, dataHandler, failureHandler) {
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function forceFetchUserAttributes(variableList, dataHandler, failureHandler) {
-    return (dispatch, getStore) => {
-        // Just overwrite all the user attributes because we want to process them again
-        const userID = getStore().user.id;
-        if (userID) {
-            dispatch(forceFetchItem(userID, appUserItemType, variableList, dataHandler, failureHandler));
-            // forceFetchItem(appUserItemType, userID, variableList, (user) => {
-            //     dispatch(setUser(user));
-            //     dispatch(setIsNotLoading());
-            //     if (dataHandler) { dataHandler(getStore().user);}
-            // })(dispatch, getStore);
-        }
+  return (dispatch, getStore) => {
+    // Just overwrite all the user attributes because we want to process them again
+    const userID = getStore().user.id;
+    if (userID) {
+      dispatch(forceFetchItem(userID, appUserItemType, variableList, dataHandler, failureHandler));
+      // forceFetchItem(appUserItemType, userID, variableList, (user) => {
+      //     dispatch(setUser(user));
+      //     dispatch(setIsNotLoading());
+      //     if (dataHandler) { dataHandler(getStore().user);}
+      // })(dispatch, getStore);
     }
+  }
 }
 
 
@@ -68,20 +68,19 @@ export function forceFetchUserAttributes(variableList, dataHandler, failureHandl
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function subscribeFetchUserAttributes(variableList, dataHandler, failureHandler) {
-    return (dispatch, getStore) => {
-        const userID = getStore().user.id;
-        if (userID) {
-            dispatch(subscribeFetchItem(userID, appUserItemType, variableList, dataHandler, failureHandler));
-            // dispatch(subscribeFetchItem(userID, appUserItemType, variableList, (client) => {
-            //     dispatch(setUser(client));
-            //     dispatch(setIsNotLoading());
-            //     if (dataHandler) { dataHandler(getStore().user); }
-            // }));
-        }
-        else {
-            dataHandler({});
-        }
+  return (dispatch, getStore) => {
+    const userID = getStore().user.id;
+    if (userID) {
+      dispatch(subscribeFetchItem(userID, appUserItemType, variableList, dataHandler, failureHandler));
+      // dispatch(subscribeFetchItem(userID, appUserItemType, variableList, (client) => {
+      //     dispatch(setUser(client));
+      //     dispatch(setIsNotLoading());
+      //     if (dataHandler) { dataHandler(getStore().user); }
+      // }));
+    } else {
+      dataHandler({});
     }
+  }
 }
 
 /**
@@ -92,13 +91,13 @@ export function subscribeFetchUserAttributes(variableList, dataHandler, failureH
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function setUserAttribute(attributeName, attributeValue) {
-    return (dispatch, getStore) => {
-        const userID = getStore().user.id;
-        if (userID) {
-            dispatch(setItemAttribute(userID, attributeName, attributeValue));
-            // dispatch(updateUserFromCache());
-        }
+  return (dispatch, getStore) => {
+    const userID = getStore().user.id;
+    if (userID) {
+      dispatch(setItemAttribute(userID, attributeName, attributeValue));
+      // dispatch(updateUserFromCache());
     }
+  }
 }
 
 /**
@@ -110,13 +109,13 @@ export function setUserAttribute(attributeName, attributeValue) {
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function setUserAttributeAtIndex(attributeName, index, attributeValue) {
-    return (dispatch, getStore) => {
-        const userID = getStore().user.id;
-        if (userID) {
-            dispatch(setItemAttributeIndex(userID, attributeName, index, attributeValue));
-            // dispatch(updateUserFromCache());
-        }
+  return (dispatch, getStore) => {
+    const userID = getStore().user.id;
+    if (userID) {
+      dispatch(setItemAttributeIndex(userID, attributeName, index, attributeValue));
+      // dispatch(updateUserFromCache());
     }
+  }
 }
 
 /**
@@ -127,13 +126,13 @@ export function setUserAttributeAtIndex(attributeName, index, attributeValue) {
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function addToUserAttribute(attributeName, attributeValue) {
-    return (dispatch, getStore) => {
-        const userID = getStore().user.id;
-        if (userID) {
-            dispatch(addToItemAttribute(userID, attributeName, attributeValue));
-            // dispatch(updateUserFromCache());
-        }
+  return (dispatch, getStore) => {
+    const userID = getStore().user.id;
+    if (userID) {
+      dispatch(addToItemAttribute(userID, attributeName, attributeValue));
+      // dispatch(updateUserFromCache());
     }
+  }
 }
 
 /**
@@ -144,13 +143,13 @@ export function addToUserAttribute(attributeName, attributeValue) {
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function removeFromUserAttribute(attributeName, attributeValue) {
-    return (dispatch, getStore) => {
-        const userID = getStore().user.id;
-        if (userID) {
-            dispatch(removeFromItemAttribute(userID, attributeName, attributeValue));
-            // dispatch(updateUserFromCache());
-        }
+  return (dispatch, getStore) => {
+    const userID = getStore().user.id;
+    if (userID) {
+      dispatch(removeFromItemAttribute(userID, attributeName, attributeValue));
+      // dispatch(updateUserFromCache());
     }
+  }
 }
 
 /**
@@ -161,12 +160,12 @@ export function removeFromUserAttribute(attributeName, attributeValue) {
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function removeFromUserAttributeAtIndex(attributeName, index) {
-    return (dispatch, getStore) => {
-        const userID = getStore().user.id;
-        if (userID) {
-            dispatch(removeFromItemAttributeAtIndex(userID, attributeName, index));
-        }
+  return (dispatch, getStore) => {
+    const userID = getStore().user.id;
+    if (userID) {
+      dispatch(removeFromItemAttributeAtIndex(userID, attributeName, index));
     }
+  }
 }
 
 /**
@@ -175,12 +174,12 @@ export function removeFromUserAttributeAtIndex(attributeName, index) {
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function updateUserFromCache() {
-    return (dispatch, getStore) => {
-        const userID = getStore().user.id;
-        if (userID) {
-            dispatch(setUser(getCache(appUserItemType, getStore)[userID]));
-        }
+  return (dispatch, getStore) => {
+    const userID = getStore().user.id;
+    if (userID) {
+      dispatch(setUser(getCache(appUserItemType, getStore)[userID]));
     }
+  }
 }
 
 // =========================================================================================================
@@ -188,19 +187,21 @@ export function updateUserFromCache() {
 // =========================================================================================================
 
 export function setUser(user) {
-    return {
-        type: SET_USER,
-        payload: user
-    };
+  return {
+    type: SET_USER,
+    payload: user
+  };
 }
+
 export function forceSetUser(user) {
-    return {
-        type: FORCE_SET_USER,
-        payload: user
-    };
+  return {
+    type: FORCE_SET_USER,
+    payload: user
+  };
 }
+
 export function clearUser() {
-    return {
-        type: CLEAR_USER
-    }
+  return {
+    type: CLEAR_USER
+  }
 }

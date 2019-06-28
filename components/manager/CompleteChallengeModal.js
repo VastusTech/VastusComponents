@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Message, Button, Card } from "semantic-ui-react";
-import { connect } from "react-redux";
+import React, {useState, useEffect} from "react";
+import {Modal, Message, Button, Card} from "semantic-ui-react";
+import {connect} from "react-redux";
 import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
 import {err} from "../../../Constants";
 import UserCard, {UserCardInfo} from "../cards/UserCard";
@@ -9,7 +9,7 @@ import {fetchItem} from "../../redux/actions/cacheActions";
 import {getItemTypeFromID} from "../../logic/ItemType";
 
 type Props = {
-    challengeID: string
+  challengeID: string
 }
 
 /**
@@ -21,15 +21,15 @@ type Props = {
  * @param {function()} onClose Closes the modal.
  */
 const declareWinnerButtonHandler = (userID, challengeID, winnerID, onClose) => {
-    if (winnerID && challengeID && userID) {
-        console.log(userID + " " + challengeID + " " + winnerID);
-        ChallengeFunctions.updateWinner(userID, challengeID, winnerID, (data) => {
-            // console.log("Successfully set the event winner!");
-            onClose();
-        }, (error) => {
-            err&&console.error("Event winner setting failed");
-        });
-    }
+  if (winnerID && challengeID && userID) {
+    console.log(userID + " " + challengeID + " " + winnerID);
+    ChallengeFunctions.updateWinner(userID, challengeID, winnerID, (data) => {
+      // console.log("Successfully set the event winner!");
+      onClose();
+    }, (error) => {
+      err && console.error("Event winner setting failed");
+    });
+  }
 };
 
 /**
@@ -41,18 +41,19 @@ const declareWinnerButtonHandler = (userID, challengeID, winnerID, onClose) => {
  * @return {*} The React JSX to display the list of winner buttons.
  */
 export const winnerButtons = (members, userID, challengeID, onClose) => {
-    const rowProps = [];
-    for (let i = 0; i < members.length; i++) {
-        rowProps.push(
-            <Card raised key={members[i]}>
-                <Card.Content>
-                    <UserCard user={members[i]} />
-                    <Button primary fluid onClick={() => declareWinnerButtonHandler(userID, challengeID, members[i].id, onClose)}>Select</Button>
-                </Card.Content>
-            </Card>
-        );
-    }
-    return rowProps;
+  const rowProps = [];
+  for (let i = 0; i < members.length; i++) {
+    rowProps.push(
+      <Card raised key={members[i]}>
+        <Card.Content>
+          <UserCard user={members[i]}/>
+          <Button primary fluid
+                  onClick={() => declareWinnerButtonHandler(userID, challengeID, members[i].id, onClose)}>Select</Button>
+        </Card.Content>
+      </Card>
+    );
+  }
+  return rowProps;
 };
 
 /**
@@ -63,61 +64,60 @@ export const winnerButtons = (members, userID, challengeID, onClose) => {
  * @constructor
  */
 const CompleteChallengeModal = (props: Props) => {
-    const [members, setMembers] = useState([]);
+  const [members, setMembers] = useState([]);
 
-    useEffect(() => {
-        if (props.challengeID) {
-            props.fetchChallenge(props.challengeID, ["members"], (challenge) => {
-                if (challenge.members) {
-                    for (let i = 0; i < challenge.members.length; i++) {
-                        const id = challenge.members[i];
-                        const itemType = getItemTypeFromID(id);
-                        props.fetchItem(itemType, id, UserCardInfo.fetchList, (user) => {
-                            setMembers(p => [...p, user]);
-                        });
-                    }
-                }
-            })
+  useEffect(() => {
+    if (props.challengeID) {
+      props.fetchChallenge(props.challengeID, ["members"], (challenge) => {
+        if (challenge.members) {
+          for (let i = 0; i < challenge.members.length; i++) {
+            const id = challenge.members[i];
+            const itemType = getItemTypeFromID(id);
+            props.fetchItem(itemType, id, UserCardInfo.fetchList, (user) => {
+              setMembers(p => [...p, user]);
+            });
+          }
         }
-    }, [props.challengeID]);
+      })
+    }
+  }, [props.challengeID]);
 
 
-    if (members.length > 0) {
-        return(
-            <Modal centered open={props.open} onClose={() => props.onClose()} closeIcon>
-                <Modal.Header className="u-bg--bg">Select Winner</Modal.Header>
-                <Modal.Content className="u-bg--bg">
-                    <Card.Group itemsPerRow={2}>
-                        {winnerButtons(members, props.user.id, props.challengeID, props.onClose)}
-                    </Card.Group>
-                </Modal.Content>
-            </Modal>
-        );
-    }
-    else {
-        return (
-            <Modal dimmer='blurring' open={props.open} onClose={() => props.onClose()} closeIcon>
-                <Message>No members in the challenge yet!</Message>
-            </Modal>
-        );
-    }
+  if (members.length > 0) {
+    return (
+      <Modal centered open={props.open} onClose={() => props.onClose()} closeIcon>
+        <Modal.Header className="u-bg--bg">Select Winner</Modal.Header>
+        <Modal.Content className="u-bg--bg">
+          <Card.Group itemsPerRow={2}>
+            {winnerButtons(members, props.user.id, props.challengeID, props.onClose)}
+          </Card.Group>
+        </Modal.Content>
+      </Modal>
+    );
+  } else {
+    return (
+      <Modal dimmer='blurring' open={props.open} onClose={() => props.onClose()} closeIcon>
+        <Message>No members in the challenge yet!</Message>
+      </Modal>
+    );
+  }
 };
 
 const mapStateToProps = (state) => ({
-    user: state.user,
-    info: state.info,
-    cache: state.cache
+  user: state.user,
+  info: state.info,
+  cache: state.cache
 });
 
 const mapDispatchToProps = dispatch => {
-    return {
-        fetchChallenge: (id, variableList, dataHandler, failureHandler) => {
-            dispatch(fetchChallenge(id, variableList, dataHandler, failureHandler));
-        },
-        fetchItem: (itemType, id, variableList, dataHandler, failureHandler) => {
-            dispatch(fetchItem(id, itemType, variableList, dataHandler, failureHandler));
-        }
+  return {
+    fetchChallenge: (id, variableList, dataHandler, failureHandler) => {
+      dispatch(fetchChallenge(id, variableList, dataHandler, failureHandler));
+    },
+    fetchItem: (itemType, id, variableList, dataHandler, failureHandler) => {
+      dispatch(fetchItem(id, itemType, variableList, dataHandler, failureHandler));
     }
+  }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CompleteChallengeModal);

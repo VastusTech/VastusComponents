@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, {useState, useEffect, Fragment} from 'react'
 import {Message, Button, Modal, Card} from 'semantic-ui-react';
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import {fetchUserAttributes} from "../../redux/actions/userActions";
 import {fetchChallenges} from "../../redux/convenience/cacheItemTypeActions";
 import InviteFunctions from "../../database_functions/InviteFunctions";
@@ -9,9 +9,9 @@ import {err} from "../../../Constants";
 import {daysLeft, parseISOString} from "../../logic/TimeHelper";
 
 type Props = {
-    friendID: string,
-    onClose: any,
-    open: boolean
+  friendID: string,
+  onClose: any,
+  open: boolean
 };
 
 /**
@@ -25,15 +25,15 @@ type Props = {
  * @param {function(boolean)} setIsDisabled Sets the disabled state.
  */
 const handleInviteToChallenge = (userID, friendID, challengeID, onClose, setIsLoading, setIsDisabled, setError) => {
-    setIsLoading(true);
-    InviteFunctions.createChallengeInvite(userID, userID, friendID, challengeID, (data) => {
-        onClose();
-        setIsLoading(false);
-        setIsDisabled(true);
-    }, (error) => {
-        err&&console.error(error);
-        setIsLoading(false);
-    });
+  setIsLoading(true);
+  InviteFunctions.createChallengeInvite(userID, userID, friendID, challengeID, (data) => {
+    onClose();
+    setIsLoading(false);
+    setIsDisabled(true);
+  }, (error) => {
+    err && console.error(error);
+    setIsLoading(false);
+  });
 };
 
 /**
@@ -50,23 +50,23 @@ const handleInviteToChallenge = (userID, friendID, challengeID, onClose, setIsLo
  * @return {*} The React JSX to display the Challenge buttons.
  */
 export const challengeButtons = (userID, friendID, challenges, isLoading, isDisabled, setIsLoading, setIsDisabled, setError, onClose) => {
-    const rowProps = [];
-    for (let i = 0; i < challenges.length; i++) {
-        rowProps.push(
-            <Fragment key={i+1}>
-                <Card fluid raised>
-                    <Card.Content>
-                        <ChallengeCard challenge={challenges[i]}/>
-                        <Button disabled={isDisabled} loading={isLoading} primary fluid
-                                onClick={() => handleInviteToChallenge(userID, friendID, challenges[i].id, onClose, setIsLoading, setIsDisabled, setError)}>
-                            Invite to Challenge
-                        </Button>
-                    </Card.Content>
-                </Card>
-            </Fragment>
-        );
-    }
-    return rowProps;
+  const rowProps = [];
+  for (let i = 0; i < challenges.length; i++) {
+    rowProps.push(
+      <Fragment key={i + 1}>
+        <Card fluid raised>
+          <Card.Content>
+            <ChallengeCard challenge={challenges[i]}/>
+            <Button disabled={isDisabled} loading={isLoading} primary fluid
+                    onClick={() => handleInviteToChallenge(userID, friendID, challenges[i].id, onClose, setIsLoading, setIsDisabled, setError)}>
+              Invite to Challenge
+            </Button>
+          </Card.Content>
+        </Card>
+      </Fragment>
+    );
+  }
+  return rowProps;
 };
 
 /**
@@ -75,92 +75,90 @@ export const challengeButtons = (userID, friendID, challenges, isLoading, isDisa
  * @return {*}
  */
 export const errorHandler = (error) => {
-    if (error) {
-        return (
-            <Message color='red'>
-                <h1>Error!</h1>
-                <p>{error.substr(102, 50)}</p>
-            </Message>
-        );
-    }
+  if (error) {
+    return (
+      <Message color='red'>
+        <h1>Error!</h1>
+        <p>{error.substr(102, 50)}</p>
+      </Message>
+    );
+  }
 };
 
 const InviteToChallengeModalProp = (props: Props) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [isDisabled, setIsDisabled] = useState(false);
-    const [challenges, setChallenges] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [challenges, setChallenges] = useState([]);
 
-    useEffect(() => {
-        setIsLoading(true);
-        props.fetchUserAttributes(["challenges"], (user) => {
-            if (user.challenges && user.challenges.length > 0) {
-                props.fetchChallenges(user.challenges, ChallengeCardInfo.fetchList, 0, user.challenges.length, (challenges) => {
-                    for (let i = 0; i < challenges.length; i++) {
-                        const challenge = challenges[i];
-                        if (daysLeft(parseISOString(challenge.endTime)) >= 0) {
-                            setChallenges(p => [...p, challenge]);
-                        }
-                    }
-                    setIsLoading(false);
-                }, (error) => {
-                    err&&console.error(error);
-                    setError(error);
-                    setIsLoading(false);
-                });
+  useEffect(() => {
+    setIsLoading(true);
+    props.fetchUserAttributes(["challenges"], (user) => {
+      if (user.challenges && user.challenges.length > 0) {
+        props.fetchChallenges(user.challenges, ChallengeCardInfo.fetchList, 0, user.challenges.length, (challenges) => {
+          for (let i = 0; i < challenges.length; i++) {
+            const challenge = challenges[i];
+            if (daysLeft(parseISOString(challenge.endTime)) >= 0) {
+              setChallenges(p => [...p, challenge]);
             }
-            else {
-                setIsLoading(false);
-            }
+          }
+          setIsLoading(false);
         }, (error) => {
-            err&&console.error(error);
-            setError(error);
-            setIsLoading(false);
+          err && console.error(error);
+          setError(error);
+          setIsLoading(false);
         });
-    }, [props.challengeID]);
+      } else {
+        setIsLoading(false);
+      }
+    }, (error) => {
+      err && console.error(error);
+      setError(error);
+      setIsLoading(false);
+    });
+  }, [props.challengeID]);
 
-    if (isLoading) {
-        return(
-            <Modal dimmer='blurring' open={props.open} onClose={() => props.onClose()}>
-                <Message>Loading...</Message>
-            </Modal>
-        );
-    }
-    if (challenges && challenges.length > 0) {
-        return(
-            <Modal centered dimmer='blurring' size='large' open={props.open} onClose={() => props.onClose()} closeIcon>
-                <Modal.Header className="u-bg--bg">Select Challenge</Modal.Header>
-                <Modal.Content className="u-bg--bg">
-                    {challengeButtons(props.user.id, props.friendID, challenges, isLoading, isDisabled, setIsLoading, setIsDisabled, setError, props.onClose)}
-                </Modal.Content>
-                {errorHandler(error)}
-            </Modal>
-        );
-    }
-    else {
-        return(
-            <Modal dimmer='blurring' open={props.open} onClose={() => props.onClose()}>
-                <Message>No current challenges...</Message>
-            </Modal>
-        );
-    }
+  if (isLoading) {
+    return (
+      <Modal dimmer='blurring' open={props.open} onClose={() => props.onClose()}>
+        <Message>Loading...</Message>
+      </Modal>
+    );
+  }
+  if (challenges && challenges.length > 0) {
+    return (
+      <Modal centered dimmer='blurring' size='large' open={props.open} onClose={() => props.onClose()} closeIcon>
+        <Modal.Header className="u-bg--bg">Select Challenge</Modal.Header>
+        <Modal.Content className="u-bg--bg">
+          {challengeButtons(props.user.id, props.friendID, challenges, isLoading, isDisabled, setIsLoading, setIsDisabled, setError, props.onClose)}
+        </Modal.Content>
+        {errorHandler(error)}
+      </Modal>
+    );
+  } else {
+    return (
+      <Modal dimmer='blurring' open={props.open} onClose={() => props.onClose()}>
+        <Message>No current challenges...</Message>
+      </Modal>
+    );
+  }
 };
 
 const mapStateToProps = (state) => ({
-    user: state.user,
-    info: state.info,
-    cache: state.cache
+  user: state.user,
+  info: state.info,
+  cache: state.cache
 });
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchUserAttributes: (variableList, dataHandler, failureHandler) => {
-            dispatch(fetchUserAttributes(variableList, dataHandler, failureHandler));
-        },
-        fetchChallenges: (ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) => {
-            dispatch(fetchChallenges(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler));
-        }
-    };
+  return {
+    fetchUserAttributes: (variableList, dataHandler, failureHandler) => {
+      dispatch(fetchUserAttributes(variableList, dataHandler, failureHandler));
+    },
+    fetchChallenges: (ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) => {
+      dispatch(fetchChallenges(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler));
+    }
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(InviteToChallengeModalProp);

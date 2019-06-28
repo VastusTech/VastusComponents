@@ -4,14 +4,15 @@ import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
 import {addHandlerAndUnsubscription} from "./ablyActions";
 import {err, log} from "../../../Constants";
 import {
-    getBoardChannel,
-    SET_BOARD_READ,
-    CLEAR_BOARD,
-    ADD_QUERY,
-    ADD_MESSAGE,
-    UNSUBSCRIBE_FROM_BOARD
+  getBoardChannel,
+  SET_BOARD_READ,
+  CLEAR_BOARD,
+  ADD_QUERY,
+  ADD_MESSAGE,
+  UNSUBSCRIBE_FROM_BOARD
 } from "../reducers/messageReducer";
 import {getIDsFromMessageBoard} from "../../logic/MessageHelper";
+
 const notFoundPicture = require('../../img/not_found.png');
 const defaultProfilePicture = require("../../img/roundProfile.png");
 
@@ -28,22 +29,26 @@ const defaultProfilePicture = require("../../img/roundProfile.png");
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 export function peekAtFirstMessageFromBoard(board, dataHandler, failureHandler) {
-    return (dispatch, getStore) => {
-        dispatch(setIsLoading());
-        if (getStore().message.boards[board] && getStore().message.boards[board].length > 0) {
-            if (dataHandler) { dataHandler(getStore().message.boards[board][0]); }
-            dispatch(setIsNotLoading());
+  return (dispatch, getStore) => {
+    dispatch(setIsLoading());
+    if (getStore().message.boards[board] && getStore().message.boards[board].length > 0) {
+      if (dataHandler) {
+        dataHandler(getStore().message.boards[board][0]);
+      }
+      dispatch(setIsNotLoading());
+    } else {
+      // Fetch it
+      dispatch(queryNextMessagesFromBoardOptionalSubscribe(board, 1, false, (messages) => {
+        if (dataHandler) {
+          if (messages && messages.length > 0) {
+            dataHandler(messages[0]);
+          } else {
+            dataHandler(null);
+          }
         }
-        else {
-            // Fetch it
-            dispatch(queryNextMessagesFromBoardOptionalSubscribe(board, 1, false, (messages) => {
-                if (dataHandler) {
-                    if (messages && messages.length > 0) { dataHandler(messages[0]); }
-                    else { dataHandler(null); }
-                }
-            }, failureHandler));
-        }
+      }, failureHandler));
     }
+  }
 }
 
 /**
@@ -56,10 +61,10 @@ export function peekAtFirstMessageFromBoard(board, dataHandler, failureHandler) 
  * @return {function(function(*))} The given function to dispatch a new action in the redux system.
  */
 export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHandler) {
-    return (dispatch) => {
-        dispatch(setIsLoading());
-        dispatch(queryNextMessagesFromBoardOptionalSubscribe(board, limit, true, dataHandler, failureHandler));
-    }
+  return (dispatch) => {
+    dispatch(setIsLoading());
+    dispatch(queryNextMessagesFromBoardOptionalSubscribe(board, limit, true, dataHandler, failureHandler));
+  }
 }
 
 /**
@@ -73,73 +78,83 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
  * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
  */
 function queryNextMessagesFromBoardOptionalSubscribe(board, limit, ifSubscribe, dataHandler, failureHandler) {
-    return (dispatch, getStore) => {
-        let ifFirst = getStore().message.boardIfFirsts[board];
-        if (ifFirst !== false) {
-            ifFirst = true;
+  return (dispatch, getStore) => {
+    let ifFirst = getStore().message.boardIfFirsts[board];
+    if (ifFirst !== false) {
+      ifFirst = true;
+    }
+    // If this is the first time querying the board, Ably subscribe to it.
+    if (ifSubscribe && getStore().message.boardIfSubscribed[board] !== true) {
+      let ifAddMessageFromBoardNotification = false;
+      const boardIDs = getIDsFromMessageBoard(board);
+      if (boardIDs.length === 1) {
+        const boardID = boardIDs[0];
+        const user = getStore().user;
+        // You subscribe to a Challenge/Event/Group only if you're not an owner of that thing.
+        ifAddMessageFromBoardNotification = !((user.ownedEvents && user.ownedEvents.includes(boardID)) ||
+          (user.ownedChallenges && user.ownedChallenges.includes(boardID)) ||
+          (user.ownedGroups && user.ownedGroups.includes(boardID)));
+      }
+      // If the board has more than one ID, then that means that it's a person chat / multiple person chat, and you
+      // don't subscribe to it, because you'll be notified about it anyways.
+      dispatch(addHandlerAndUnsubscription(getBoardChannel(board), (message) => {
+        // Handle event types of message
+        // TODO EVENT TYPES FOR READ AND TYPING
+        if (ifAddMessageFromBoardNotification) {
+          dispatch(addMessageFromNotification(board, message.data));
         }
-        // If this is the first time querying the board, Ably subscribe to it.
-        if (ifSubscribe && getStore().message.boardIfSubscribed[board] !== true) {
-            let ifAddMessageFromBoardNotification = false;
-            const boardIDs = getIDsFromMessageBoard(board);
-            if (boardIDs.length === 1) {
-                const boardID = boardIDs[0];
-                const user = getStore().user;
-                // You subscribe to a Challenge/Event/Group only if you're not an owner of that thing.
-                 ifAddMessageFromBoardNotification = !((user.ownedEvents && user.ownedEvents.includes(boardID)) ||
-                    (user.ownedChallenges && user.ownedChallenges.includes(boardID)) ||
-                    (user.ownedGroups && user.ownedGroups.includes(boardID)));
-            }
-            // If the board has more than one ID, then that means that it's a person chat / multiple person chat, and you
-            // don't subscribe to it, because you'll be notified about it anyways.
-            dispatch(addHandlerAndUnsubscription(getBoardChannel(board), (message) => {
-                // Handle event types of message
-                // TODO EVENT TYPES FOR READ AND TYPING
-                if (ifAddMessageFromBoardNotification) {
-                    dispatch(addMessageFromNotification(board, message.data));
-                }
-            }, (state) => {
-                // When it unsubscribes, we clear the board
-                clearBoard(board, dispatch);
-            }));
-        }
-        let nextToken = getStore().message.boardNextTokens[board];
-        // console.log("IF FIRST = " + ifFirst + ", NEXT TOKEN = " + nextToken);
-        if (ifFirst || nextToken) {
-            // Then you do the query
-            QL.queryMessages(QL.constructMessageQuery(board, ["from", "name", "profileImagePath", "message", "type", "board", "id", "time_created", "lastSeenFor"], null, limit, nextToken), (data) => {
-                if (data) {
-                    // console.log(JSON.stringify(data));
-                    if (!data.items) { data.items = []; }
-                    addURLToMessages(data.items, "message", "messageURL", notFoundPicture, (message) => {return message.type}, (messages) => {
-                        addURLToMessages(messages, "profileImagePath", "profilePicture", defaultProfilePicture, (message) => {return message.profileImagePath}, (messages) => {
-                            dispatch(addQueryToBoard(board, messages, data.nextToken, ifSubscribe, dispatch));
-                            if (dataHandler) {
-                                dataHandler(messages);
-                            }
-                            dispatch(setIsNotLoading());
-                        });
-                    });
-                }
-                else {
-                    const error = new Error("query messages came back with null?");
-                    err&&console.error(JSON.stringify(error));
-                    dispatch(setError(error));
-                    dispatch(setIsNotLoading());
-                    if (failureHandler) { failureHandler(error); }
-                }
-            }, (error) => {
-                err&&console.error("ERROR INSIDE GET NEXT MESSAGES");
-                err&&console.error(JSON.stringify(error));
-                dispatch(setError(error));
-                dispatch(setIsNotLoading());
-                if (failureHandler) { failureHandler(error); }
+      }, (state) => {
+        // When it unsubscribes, we clear the board
+        clearBoard(board, dispatch);
+      }));
+    }
+    let nextToken = getStore().message.boardNextTokens[board];
+    // console.log("IF FIRST = " + ifFirst + ", NEXT TOKEN = " + nextToken);
+    if (ifFirst || nextToken) {
+      // Then you do the query
+      QL.queryMessages(QL.constructMessageQuery(board, ["from", "name", "profileImagePath", "message", "type", "board", "id", "time_created", "lastSeenFor"], null, limit, nextToken), (data) => {
+        if (data) {
+          // console.log(JSON.stringify(data));
+          if (!data.items) {
+            data.items = [];
+          }
+          addURLToMessages(data.items, "message", "messageURL", notFoundPicture, (message) => {
+            return message.type
+          }, (messages) => {
+            addURLToMessages(messages, "profileImagePath", "profilePicture", defaultProfilePicture, (message) => {
+              return message.profileImagePath
+            }, (messages) => {
+              dispatch(addQueryToBoard(board, messages, data.nextToken, ifSubscribe, dispatch));
+              if (dataHandler) {
+                dataHandler(messages);
+              }
+              dispatch(setIsNotLoading());
             });
+          });
+        } else {
+          const error = new Error("query messages came back with null?");
+          err && console.error(JSON.stringify(error));
+          dispatch(setError(error));
+          dispatch(setIsNotLoading());
+          if (failureHandler) {
+            failureHandler(error);
+          }
         }
-        else {
-            if (dataHandler) { dataHandler(null); }
+      }, (error) => {
+        err && console.error("ERROR INSIDE GET NEXT MESSAGES");
+        err && console.error(JSON.stringify(error));
+        dispatch(setError(error));
+        dispatch(setIsNotLoading());
+        if (failureHandler) {
+          failureHandler(error);
         }
-    };
+      });
+    } else {
+      if (dataHandler) {
+        dataHandler(null);
+      }
+    }
+  };
 }
 
 /**
@@ -154,21 +169,21 @@ function queryNextMessagesFromBoardOptionalSubscribe(board, limit, ifSubscribe, 
  * @param {function([{}])} dataHandler The handler that returns the updated messages.
  */
 function addURLToMessages(messages, messagePathField, messageURLField, defaultURL, fetchChecker, dataHandler) {
-    const messagesLength = messages.length;
-    let messagesReturned = 0;
-    const returnMessage = () => {
-        messagesReturned++;
-        if (messagesReturned >= messagesLength) {
-            dataHandler(messages);
-        }
-    };
-    for (let i = 0; i < messagesLength; i++) {
-        const message = messages[i];
-        addURLToMessage(message, messagePathField, messageURLField, defaultURL, fetchChecker, returnMessage);
+  const messagesLength = messages.length;
+  let messagesReturned = 0;
+  const returnMessage = () => {
+    messagesReturned++;
+    if (messagesReturned >= messagesLength) {
+      dataHandler(messages);
     }
-    if (messagesLength === 0) {
-        dataHandler(messages);
-    }
+  };
+  for (let i = 0; i < messagesLength; i++) {
+    const message = messages[i];
+    addURLToMessage(message, messagePathField, messageURLField, defaultURL, fetchChecker, returnMessage);
+  }
+  if (messagesLength === 0) {
+    dataHandler(messages);
+  }
 }
 
 /**
@@ -183,20 +198,19 @@ function addURLToMessages(messages, messagePathField, messageURLField, defaultUR
  * @param {function({})} dataHandler The handler that returns the updated message.
  */
 function addURLToMessage(message, messagePathField, messageURLField, defaultURL, fetchChecker, dataHandler) {
-    if (fetchChecker(message)) {
-        S3.get(message[messagePathField], (url) => {
-            message[messageURLField] = url;
-            dataHandler(message);
-        }, (error) => {
-            err&&console.error("FAILED TO RECEIVE URL FOR MEDIA IN MESSAGE! ERROR = " + JSON.stringify(error));
-            message[messageURLField] = defaultURL;
-            dataHandler(message);
-        });
-    }
-    else {
-        message[messageURLField] = defaultURL;
-        dataHandler(message);
-    }
+  if (fetchChecker(message)) {
+    S3.get(message[messagePathField], (url) => {
+      message[messageURLField] = url;
+      dataHandler(message);
+    }, (error) => {
+      err && console.error("FAILED TO RECEIVE URL FOR MEDIA IN MESSAGE! ERROR = " + JSON.stringify(error));
+      message[messageURLField] = defaultURL;
+      dataHandler(message);
+    });
+  } else {
+    message[messageURLField] = defaultURL;
+    dataHandler(message);
+  }
 }
 
 /**
@@ -209,28 +223,32 @@ function addURLToMessage(message, messagePathField, messageURLField, defaultURL,
  * @return {function(function(*))} The given function to dispatch a new action in the redux system.
  */
 export function addMessageFromNotification(board, message, dataHandler, failureHandler) {
-    return (dispatch) => {
-        dispatch(setIsLoading());
-        addURLToMessage(message, "message", "messageURL", notFoundPicture, (message) => {return message.type}, (message) => {
-            addURLToMessage(message, "profileImagePath", "profilePicture", defaultProfilePicture, (message) => {return message.profileImagePath}, (message) => {
-                dispatch(addMessageToBoard(board, message));
-                log && console.log("Successfully received message from Ably! Message = " + JSON.stringify(message));
-                if (dataHandler) {
-                    dataHandler(message);
-                }
-                dispatch(setIsNotLoading());
-            }, (error) => {
-                message.message = "";
-                err && console.error("Error getting media for message from notification! Error = " + JSON.stringify(error));
-                dispatch(addMessageToBoard(board, message));
-                if (failureHandler) {
-                    failureHandler(error);
-                }
-                dispatch(setError(error));
-                dispatch(setIsNotLoading());
-            });
-        });
-    };
+  return (dispatch) => {
+    dispatch(setIsLoading());
+    addURLToMessage(message, "message", "messageURL", notFoundPicture, (message) => {
+      return message.type
+    }, (message) => {
+      addURLToMessage(message, "profileImagePath", "profilePicture", defaultProfilePicture, (message) => {
+        return message.profileImagePath
+      }, (message) => {
+        dispatch(addMessageToBoard(board, message));
+        log && console.log("Successfully received message from Ably! Message = " + JSON.stringify(message));
+        if (dataHandler) {
+          dataHandler(message);
+        }
+        dispatch(setIsNotLoading());
+      }, (error) => {
+        message.message = "";
+        err && console.error("Error getting media for message from notification! Error = " + JSON.stringify(error));
+        dispatch(addMessageToBoard(board, message));
+        if (failureHandler) {
+          failureHandler(error);
+        }
+        dispatch(setError(error));
+        dispatch(setIsNotLoading());
+      });
+    });
+  };
 }
 
 // =========================================================================================================
@@ -238,54 +256,59 @@ export function addMessageFromNotification(board, message, dataHandler, failureH
 // =========================================================================================================
 
 export function setBoardRead(board, userID) {
-    return {
-        type: SET_BOARD_READ,
-        payload: {
-            board,
-            userID
-        }
+  return {
+    type: SET_BOARD_READ,
+    payload: {
+      board,
+      userID
     }
+  }
 }
+
 export function discardBoard(board) {
-    return (dispatch) => {
-        dispatch(setIsLoading());
-        dispatch(clearBoard(board));
-        dispatch(setIsNotLoading());
-    };
+  return (dispatch) => {
+    dispatch(setIsLoading());
+    dispatch(clearBoard(board));
+    dispatch(setIsNotLoading());
+  };
 }
+
 export function addMessageToBoard(board, message) {
-    return {
-        type: ADD_MESSAGE,
-            payload: {
-                board,
-                message,
-        }
-    };
+  return {
+    type: ADD_MESSAGE,
+    payload: {
+      board,
+      message,
+    }
+  };
 }
+
 function addQueryToBoard(board, messages, nextToken, ifSubscribed) {
-    return {
-        type: ADD_QUERY,
-        payload: {
-            board,
-            nextToken,
-            messages,
-            ifSubscribed,
-        }
-    };
+  return {
+    type: ADD_QUERY,
+    payload: {
+      board,
+      nextToken,
+      messages,
+      ifSubscribed,
+    }
+  };
 }
+
 function clearBoard(board) {
-    return {
-        type: CLEAR_BOARD,
-        payload: {
-            board
-        }
+  return {
+    type: CLEAR_BOARD,
+    payload: {
+      board
     }
+  }
 }
+
 export function unsubscribeFromBoard(board) {
-    return {
-        type: UNSUBSCRIBE_FROM_BOARD,
-        payload: {
-            board
-        }
+  return {
+    type: UNSUBSCRIBE_FROM_BOARD,
+    payload: {
+      board
     }
+  }
 }

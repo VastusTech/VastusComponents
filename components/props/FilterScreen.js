@@ -13,19 +13,19 @@ import {disableType, enableType} from "../../redux/actions/searchActions";
  * @return {[*]} The React JSX components for the check boxes.
  */
 const getCheckBoxes = (filterTypes, setFilterTypes, enableType, disableType) => {
-    const checkBoxes = [];
-    for (const type in filterTypes) {
-        if (filterTypes.hasOwnProperty(type)) {
-            checkBoxes.push(
-                <Grid.Column key={type}>
-                    <Checkbox label={type}
-                              checked={filterTypes[type]}
-                              onChange={() => toggleTypeCheckbox(type, setFilterTypes, enableType, disableType)}/>
-                </Grid.Column>
-            )
-        }
+  const checkBoxes = [];
+  for (const type in filterTypes) {
+    if (filterTypes.hasOwnProperty(type)) {
+      checkBoxes.push(
+        <Grid.Column key={type}>
+          <Checkbox label={type}
+                    checked={filterTypes[type]}
+                    onChange={() => toggleTypeCheckbox(type, setFilterTypes, enableType, disableType)}/>
+        </Grid.Column>
+      )
     }
-    return checkBoxes;
+  }
+  return checkBoxes;
 };
 
 /**
@@ -37,21 +37,20 @@ const getCheckBoxes = (filterTypes, setFilterTypes, enableType, disableType) => 
  * @param {function(string)} disableType Search redux function to disable a type for searching.
  */
 const toggleTypeCheckbox = (type, setFilterTypes, enableType, disableType) => {
-    setFilterTypes(p => {
-        if (p[type]) {
-            // Disable type
-            disableType(type);
-        }
-        else {
-            // Enable type
-            enableType(type);
-        }
-        return {
-            ...p,
-            [type]: !p[type]
-        }
-    });
-    // alert(JSON.stringify(event.target.checked))
+  setFilterTypes(p => {
+    if (p[type]) {
+      // Disable type
+      disableType(type);
+    } else {
+      // Enable type
+      enableType(type);
+    }
+    return {
+      ...p,
+      [type]: !p[type]
+    }
+  });
+  // alert(JSON.stringify(event.target.checked))
 };
 
 /**
@@ -63,54 +62,54 @@ const toggleTypeCheckbox = (type, setFilterTypes, enableType, disableType) => {
  * @constructor
  */
 const FilterScreen = (props) => {
-    const [filterTypes, setFilterTypes] = useState({});
+  const [filterTypes, setFilterTypes] = useState({});
 
-    useEffect(() => {
-        setFilterTypes({});
-        const types = props.search.typeQueries;
-        for (const type in types) {
-            if (types.hasOwnProperty(type)) {
-                if (["Client", "Trainer", "Event", "Challenge", "Group"].includes(type)) {
-                    setFilterTypes(p => ({
-                        ...p,
-                        [type]: types[type].enabled
-                    }));
-                }
-            }
+  useEffect(() => {
+    setFilterTypes({});
+    const types = props.search.typeQueries;
+    for (const type in types) {
+      if (types.hasOwnProperty(type)) {
+        if (["Client", "Trainer", "Event", "Challenge", "Group"].includes(type)) {
+          setFilterTypes(p => ({
+            ...p,
+            [type]: types[type].enabled
+          }));
         }
-    }, [props.search]);
+      }
+    }
+  }, [props.search]);
 
-    return (
-        <Modal.Content>
-            <Grid rows={2}>
-                <Grid.Row>
-                    Choose which item types show up in the search!
-                </Grid.Row>
-                <Grid.Row>
-                    <Fragment>
-                        <Grid centered stackable columns={4}>
-                            {getCheckBoxes(filterTypes, setFilterTypes, props.enableType, props.disableType)}
-                        </Grid>
-                    </Fragment>
-                </Grid.Row>
+  return (
+    <Modal.Content>
+      <Grid rows={2}>
+        <Grid.Row>
+          Choose which item types show up in the search!
+        </Grid.Row>
+        <Grid.Row>
+          <Fragment>
+            <Grid centered stackable columns={4}>
+              {getCheckBoxes(filterTypes, setFilterTypes, props.enableType, props.disableType)}
             </Grid>
-        </Modal.Content>
-    );
+          </Fragment>
+        </Grid.Row>
+      </Grid>
+    </Modal.Content>
+  );
 };
 
 const mapStateToProps = state => ({
-    search: state.search
+  search: state.search
 });
 
 const mapDispatchToProps = dispatch => {
-    return {
-        enableType: (type) => {
-            dispatch(enableType(type));
-        },
-        disableType: (type) => {
-            dispatch(disableType(type));
-        }
-    };
+  return {
+    enableType: (type) => {
+      dispatch(enableType(type));
+    },
+    disableType: (type) => {
+      dispatch(disableType(type));
+    }
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilterScreen);

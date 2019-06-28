@@ -2,12 +2,12 @@ import React from "react";
 import EventCard from "../EventCard";
 
 export const EventDetailCardInfo = {
-    fetchList: ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty", "restriction", "access"],
-    ifSubscribe: false
+  fetchList: ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty", "restriction", "access"],
+  ifSubscribe: false
 };
 
 type Props = {
-    event: Event
+  event: Event
 };
 
 /**
@@ -18,7 +18,7 @@ type Props = {
  * @constructor
  */
 const EventDetailCard = (props: Props) => (
-    <EventCard event={props.event}/>
+  <EventCard event={props.event}/>
 );
 
 export default EventDetailCard;

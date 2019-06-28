@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, {useState, useEffect} from 'react'
 import _ from "lodash";
-import { List, Message, Visibility } from 'semantic-ui-react';
-import { connect } from "react-redux";
+import {List, Message, Visibility} from 'semantic-ui-react';
+import {connect} from "react-redux";
 import {fetchItems} from "../../redux/actions/cacheActions";
 import Spinner from "../props/Spinner";
 import {getItemTypeFromID} from "../../logic/ItemType";
@@ -15,10 +15,10 @@ import {err} from "../../../Constants";
 const numFetch = 5;
 
 type Props = {
-    userIDs: [string],
-    noUsersMessage: string,
-    randomized: boolean,
-    sortFunction?: any
+  userIDs: [string],
+  noUsersMessage: string,
+  randomized: boolean,
+  sortFunction?: any
 }
 
 /**
@@ -28,17 +28,17 @@ type Props = {
  * @return {[*]} The list of React JSX components to display in the list.
  */
 export const objectComponents = (objects) => {
-    const components = [];
-    for (const key in objects) {
-        if (objects.hasOwnProperty(key)) {
-            components.push(
-                <List.Item key={key}>
-                    <UserCard rank={parseInt(key) + 1} user={objects[key]}/>
-                </List.Item>
-            );
-        }
+  const components = [];
+  for (const key in objects) {
+    if (objects.hasOwnProperty(key)) {
+      components.push(
+        <List.Item key={key}>
+          <UserCard rank={parseInt(key) + 1} user={objects[key]}/>
+        </List.Item>
+      );
     }
-    return components;
+  }
+  return components;
 };
 
 /**
@@ -55,29 +55,28 @@ export const objectComponents = (objects) => {
  * function to perform a batch fetch operation.
  */
 export const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, sortFunction, setVisibleObjects, setTypeHiddenIDIndex, setIsLoading, fetchItems) => {
-    setIsLoading(true);
-    const variableList = UserCardInfo.fetchList;
-    for (const itemType in typeIDs) {
-        if (typeIDs.hasOwnProperty(itemType)) {
-            const ids = typeIDs[itemType];
-            const hiddenIndex = typeHiddenIDIndex[itemType];
-            if (ids.length > hiddenIndex) {
-                fetchItems(ids, itemType, variableList, hiddenIndex, numFetch, (items) => {
-                    for (let i = 0; i < items.length; i++) {
-                        addObject(items[i], randomized, sortFunction, setVisibleObjects, setIsLoading);
-                    }
-                    setTypeHiddenIDIndex(p => ({
-                        ...p,
-                        [itemType]: p[itemType] + items.length
-                    }));
-                    setIsLoading(false);
-                });
-            }
-            else {
-                setIsLoading(false);
-            }
-        }
+  setIsLoading(true);
+  const variableList = UserCardInfo.fetchList;
+  for (const itemType in typeIDs) {
+    if (typeIDs.hasOwnProperty(itemType)) {
+      const ids = typeIDs[itemType];
+      const hiddenIndex = typeHiddenIDIndex[itemType];
+      if (ids.length > hiddenIndex) {
+        fetchItems(ids, itemType, variableList, hiddenIndex, numFetch, (items) => {
+          for (let i = 0; i < items.length; i++) {
+            addObject(items[i], randomized, sortFunction, setVisibleObjects, setIsLoading);
+          }
+          setTypeHiddenIDIndex(p => ({
+            ...p,
+            [itemType]: p[itemType] + items.length
+          }));
+          setIsLoading(false);
+        });
+      } else {
+        setIsLoading(false);
+      }
     }
+  }
 };
 
 /**
@@ -90,15 +89,19 @@ export const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, so
  * @param {function(boolean)} setIsLoading Sets the loading state.
  */
 export const addObject = (object, randomized, sortFunction, setVisibleObjects, setIsLoading) => {
-    if (object && object.id) {
-        setVisibleObjects(p => {
-            const a = [...p, object];
-            if (randomized) { shuffleArray(a) }
-            if (sortFunction) { a.sort(sortFunction); }
-            return a;
-        });
-        setIsLoading(false);
-    }
+  if (object && object.id) {
+    setVisibleObjects(p => {
+      const a = [...p, object];
+      if (randomized) {
+        shuffleArray(a)
+      }
+      if (sortFunction) {
+        a.sort(sortFunction);
+      }
+      return a;
+    });
+    setIsLoading(false);
+  }
 };
 
 /**
@@ -109,109 +112,106 @@ export const addObject = (object, randomized, sortFunction, setVisibleObjects, s
  * @constructor
  */
 const UserList = (props: Props) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [ids, setIDs] = useState(null);
-    const [typeIDs, setTypeIDs] = useState({});
-    const [typeHiddenIDIndex, setTypeHiddenIDIndex] = useState({});
-    const [visibleObjects, setVisibleObjects] = useState([]);
-    // const [visibleComponents, setVisibleComponents] = useState({});
-    // const [hiddenIDIndex, setHiddenIDIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [ids, setIDs] = useState(null);
+  const [typeIDs, setTypeIDs] = useState({});
+  const [typeHiddenIDIndex, setTypeHiddenIDIndex] = useState({});
+  const [visibleObjects, setVisibleObjects] = useState([]);
+  // const [visibleComponents, setVisibleComponents] = useState({});
+  // const [hiddenIDIndex, setHiddenIDIndex] = useState(0);
 
-    // Component will receive new props
-    useEffect(() => {
-        if (props.userIDs && JSON.stringify(props.userIDs) !== JSON.stringify(ids)) {
-            setIsLoading(true);
-            const idsTemp = [...props.userIDs];
-            if (props.randomized === true) {
-                shuffleArray(idsTemp)
-            }
-            setIDs(idsTemp);
-            // setHiddenIDIndex(0);
-            setVisibleObjects([]);
-            const typeIDsTemp = {};
-            const typeHiddenIDIndexTemp = {};
-            for (let i = 0; i < idsTemp.length; i++) {
-                const id = idsTemp[i];
-                const itemType = getItemTypeFromID(id);
-                if (itemType === "Client" || itemType === "Trainer" || itemType === "Gym" || itemType === "Sponsor") {
-                    if (typeIDsTemp[itemType]) {
-                        typeIDsTemp[itemType].push(id);
-                    }
-                    else {
-                        typeIDsTemp[itemType] = [id];
-                        typeHiddenIDIndexTemp[itemType] = 0;
-                    }
-                }
-                else {
-                    err&&console.error("Found a non-user item type in a user list = " + itemType);
-                }
-            }
-            setTypeIDs(typeIDsTemp);
-            setTypeHiddenIDIndex(typeHiddenIDIndexTemp);
-            batchFetchMoreObjects(typeIDsTemp, typeHiddenIDIndexTemp, props.randomized === true, props.sortFunction,
-                setVisibleObjects, setTypeHiddenIDIndex, setIsLoading, props.fetchItems);
+  // Component will receive new props
+  useEffect(() => {
+    if (props.userIDs && JSON.stringify(props.userIDs) !== JSON.stringify(ids)) {
+      setIsLoading(true);
+      const idsTemp = [...props.userIDs];
+      if (props.randomized === true) {
+        shuffleArray(idsTemp)
+      }
+      setIDs(idsTemp);
+      // setHiddenIDIndex(0);
+      setVisibleObjects([]);
+      const typeIDsTemp = {};
+      const typeHiddenIDIndexTemp = {};
+      for (let i = 0; i < idsTemp.length; i++) {
+        const id = idsTemp[i];
+        const itemType = getItemTypeFromID(id);
+        if (itemType === "Client" || itemType === "Trainer" || itemType === "Gym" || itemType === "Sponsor") {
+          if (typeIDsTemp[itemType]) {
+            typeIDsTemp[itemType].push(id);
+          } else {
+            typeIDsTemp[itemType] = [id];
+            typeHiddenIDIndexTemp[itemType] = 0;
+          }
+        } else {
+          err && console.error("Found a non-user item type in a user list = " + itemType);
         }
-    }, [props.ids]);
+      }
+      setTypeIDs(typeIDsTemp);
+      setTypeHiddenIDIndex(typeHiddenIDIndexTemp);
+      batchFetchMoreObjects(typeIDsTemp, typeHiddenIDIndexTemp, props.randomized === true, props.sortFunction,
+        setVisibleObjects, setTypeHiddenIDIndex, setIsLoading, props.fetchItems);
+    }
+  }, [props.ids]);
 
-    const handleVisibilityUpdate = (e, {calculations}) => {
-        // alert("hey");
-        // alert(JSON.stringify(calculations));
-        console.log(calculations);
-        if (calculations.bottomVisible) {
-            // alert("Bottom visible");
-            // alert(JSON.stringify(typeHiddenIDIndex));
-            batchFetchMoreObjects(typeIDs, typeHiddenIDIndex, props.randomized === true, props.sortFunction,
-                setVisibleObjects, setTypeHiddenIDIndex, setIsLoading, props.fetchItems);
-        }
-    };
+  const handleVisibilityUpdate = (e, {calculations}) => {
+    // alert("hey");
+    // alert(JSON.stringify(calculations));
+    console.log(calculations);
+    if (calculations.bottomVisible) {
+      // alert("Bottom visible");
+      // alert(JSON.stringify(typeHiddenIDIndex));
+      batchFetchMoreObjects(typeIDs, typeHiddenIDIndex, props.randomized === true, props.sortFunction,
+        setVisibleObjects, setTypeHiddenIDIndex, setIsLoading, props.fetchItems);
+    }
+  };
 
-    if (isLoading) {
-        return(
-            <Spinner/>
-        )
-    }
-    if (ids && ids.length > 0) {
-        return(
-            <div>
-                <Visibility onUpdate={_.debounce(handleVisibilityUpdate, 250)}>
-                    <List relaxed verticalAlign="middle">
-                        {objectComponents(visibleObjects)}
-                        <Spinner loading={
-                            (() => {
-                                for (const itemType in typeIDs) {
-                                    if (typeIDs.hasOwnProperty(itemType)) {
-                                        if (typeIDs[itemType].length !== typeHiddenIDIndex[itemType]) {
-                                            return true
-                                        }
-                                    }
-                                }
-                                return false;
-                            })()
-                        }/>
-                    </List>
-                </Visibility>
-            </div>
-        );
-    }
-    else {
-        return(
-            <Message>{props.noObjectsMessage}</Message>
-        );
-    }
+  if (isLoading) {
+    return (
+      <Spinner/>
+    )
+  }
+  if (ids && ids.length > 0) {
+    return (
+      <div>
+        <Visibility onUpdate={_.debounce(handleVisibilityUpdate, 250)}>
+          <List relaxed verticalAlign="middle">
+            {objectComponents(visibleObjects)}
+            <Spinner loading={
+              (() => {
+                for (const itemType in typeIDs) {
+                  if (typeIDs.hasOwnProperty(itemType)) {
+                    if (typeIDs[itemType].length !== typeHiddenIDIndex[itemType]) {
+                      return true
+                    }
+                  }
+                }
+                return false;
+              })()
+            }/>
+          </List>
+        </Visibility>
+      </div>
+    );
+  } else {
+    return (
+      <Message>{props.noObjectsMessage}</Message>
+    );
+  }
 };
 
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchItems: (ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler) => {
-            dispatch(fetchItems(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler));
-        }
-    };
+  return {
+    fetchItems: (ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler) => {
+      dispatch(fetchItems(ids, itemType, variableList, startIndex, maxFetch, dataHandler, failureHandler));
+    }
+  };
 };
 
 UserList.defaultProps = {
-    randomized: false
+  randomized: false
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserList);

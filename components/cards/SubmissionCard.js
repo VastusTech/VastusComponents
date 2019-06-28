@@ -3,18 +3,18 @@ import {Card} from 'semantic-ui-react';
 import {getAttributeFromObject, getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import {convertFromISO} from "../../logic/TimeHelper";
 import {Player} from "video-react";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import type Submission from "../../types/Submission";
 
 export const SubmissionCardInfo = {
-    fetchList: ["id", "time_created", "by", "item_type", "about", "description", "videoPaths", "picturePaths"],
-    ifSubscribe: false
+  fetchList: ["id", "time_created", "by", "item_type", "about", "description", "videoPaths", "picturePaths"],
+  ifSubscribe: false
 };
 
 
 type Props = {
-    rank?: number,
-    submission: Submission
+  rank?: number,
+  submission: Submission
 }
 
 // TODO Make this look better?
@@ -27,16 +27,16 @@ type Props = {
  * @returns {*} The React JSX used to display the video or image in a post.
  */
 const getDisplayMedia = (pictures, videos, props) => {
-    // TODO How to properly display videos and pictures?
-    if (videos && videos.length > 0) {
-        //console.log("Video URL:" + this.state.videoURL);
-        return (
-            <Player inline={true}>
-                <source src={videos[0]} type="video/mp4"/>
-            </Player>
-        );
-    }
-    return getAttributeFromObject(props.submission, "description");
+  // TODO How to properly display videos and pictures?
+  if (videos && videos.length > 0) {
+    //console.log("Video URL:" + this.state.videoURL);
+    return (
+      <Player inline={true}>
+        <source src={videos[0]} type="video/mp4"/>
+      </Player>
+    );
+  }
+  return getAttributeFromObject(props.submission, "description");
 };
 
 // function createCorrectButton(isOwned, deleteHandler, isDeleteLoading) {
@@ -65,19 +65,19 @@ const getDisplayMedia = (pictures, videos, props) => {
  * @constructor
  */
 const SubmissionCard = (props: Props) => (
-    <Card color='purple'>
-        <Card.Header style={{marginTop: '10px', marginLeft: '10px'}}
-        >{getObjectAttribute(getAttributeFromObject(props.submission, "by"), "name", props.cache)}</Card.Header>
-        <Card.Content>
-            {getDisplayMedia(getAttributeFromObject(props.submission, "pictures"), getAttributeFromObject(props.submission, "videos"), props)}
-        </Card.Content>
-    </Card>
+  <Card color='purple'>
+    <Card.Header style={{marginTop: '10px', marginLeft: '10px'}}
+    >{getObjectAttribute(getAttributeFromObject(props.submission, "by"), "name", props.cache)}</Card.Header>
+    <Card.Content>
+      {getDisplayMedia(getAttributeFromObject(props.submission, "pictures"), getAttributeFromObject(props.submission, "videos"), props)}
+    </Card.Content>
+  </Card>
 );
 
 const mapStateToProps = (state) => ({
-    user: state.user,
-    cache: state.cache,
-    info: state.info
+  user: state.user,
+  cache: state.cache,
+  info: state.info
 });
 
 export default connect(mapStateToProps)(SubmissionCard);

@@ -1,7 +1,7 @@
 import React, {useState, useEffect, Fragment} from 'react'
 import {Message} from 'semantic-ui-react';
 import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import {fetchUserAttributes} from "../../redux/actions/userActions";
 import {fetchChallenges} from "../../redux/convenience/cacheItemTypeActions";
 import {parseISOString, timeLeft} from "../../logic/TimeHelper";
@@ -15,76 +15,73 @@ import Spinner from "../props/Spinner";
  * @constructor
  */
 const NextChallengeProp = props => {
-    const [nextChallenge, setNextChallenge] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+  const [nextChallenge, setNextChallenge] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        setNextChallenge(null);
-        setIsLoading(true);
-        if (props.user.challenges && props.user.challenges.length > 0) {
-            props.fetchChallenges(props.user.challenges, ChallengeCardInfo.fetchList, 0, props.user.challenges.length, (challenges) => {
-                for (let i = 0; i < challenges.length; i++) {
-                    const challenge = challenges[i];
-                    if (challenge && challenge.endTime) {
-                        setNextChallenge(p => {
-                            const challengeTimeLeft = timeLeft(parseISOString(challenge.endTime));
-                            if (p) {
-                                if (timeLeft(parseISOString(p.endTime)) < challengeTimeLeft && challengeTimeLeft > 0) {
-                                    return challenge;
-                                }
-                                return p;
-                            }
-                            return challengeTimeLeft > 0 ? challenge : null;
-                        });
-                    }
+  useEffect(() => {
+    setNextChallenge(null);
+    setIsLoading(true);
+    if (props.user.challenges && props.user.challenges.length > 0) {
+      props.fetchChallenges(props.user.challenges, ChallengeCardInfo.fetchList, 0, props.user.challenges.length, (challenges) => {
+        for (let i = 0; i < challenges.length; i++) {
+          const challenge = challenges[i];
+          if (challenge && challenge.endTime) {
+            setNextChallenge(p => {
+              const challengeTimeLeft = timeLeft(parseISOString(challenge.endTime));
+              if (p) {
+                if (timeLeft(parseISOString(p.endTime)) < challengeTimeLeft && challengeTimeLeft > 0) {
+                  return challenge;
                 }
-                setIsLoading(false);
-            }, (error) => {
-
+                return p;
+              }
+              return challengeTimeLeft > 0 ? challenge : null;
             });
+          }
         }
-        else {
-            setIsLoading(false);
-        }
-    }, [props.user.challenges]);
+        setIsLoading(false);
+      }, (error) => {
 
-    if (isLoading) {
-        return(
-            <Spinner/>
-        );
+      });
+    } else {
+      setIsLoading(false);
     }
-    else if (nextChallenge) {
-        return (
-            <Fragment key={0}>
-                <Message>
-                    <ChallengeCard challenge={nextChallenge}/>
-                </Message>
-            </Fragment>
-        );
-    }
-    else {
-        // Then it's empty, no next scheduled event
-        return(
-            <Message>Join a challenge below!</Message>
-        );
-    }
+  }, [props.user.challenges]);
+
+  if (isLoading) {
+    return (
+      <Spinner/>
+    );
+  } else if (nextChallenge) {
+    return (
+      <Fragment key={0}>
+        <Message>
+          <ChallengeCard challenge={nextChallenge}/>
+        </Message>
+      </Fragment>
+    );
+  } else {
+    // Then it's empty, no next scheduled event
+    return (
+      <Message>Join a challenge below!</Message>
+    );
+  }
 };
 
 const mapStateToProps = (state) => ({
-    user: state.user,
-    cache: state.cache,
-    info: state.info,
+  user: state.user,
+  cache: state.cache,
+  info: state.info,
 });
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchUserAttributes: (attributeList, dataHandler) => {
-            dispatch(fetchUserAttributes(attributeList, dataHandler));
-        },
-        fetchChallenges: (ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) => {
-            dispatch(fetchChallenges(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler));
-        }
-    };
+  return {
+    fetchUserAttributes: (attributeList, dataHandler) => {
+      dispatch(fetchUserAttributes(attributeList, dataHandler));
+    },
+    fetchChallenges: (ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) => {
+      dispatch(fetchChallenges(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler));
+    }
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NextChallengeProp);

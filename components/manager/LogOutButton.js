@@ -11,9 +11,15 @@ import {logOut} from "../../redux/actions/authActions";
  * @constructor
  */
 const LogOutButton = (props) => (
-    <Button circular inverted size="large" onClick={() => props.logOut()} width={5}>Log Out</Button>
+  <Button circular inverted size="large" onClick={() => props.logOut()} width={5}>Log Out</Button>
 );
 
 const mapStateToProps = state => ({});
-const mapDispatchToProps = dispatch => { return { logOut: () => { dispatch(logOut());} } };
+const mapDispatchToProps = dispatch => {
+  return {
+    logOut: () => {
+      dispatch(logOut());
+    }
+  }
+};
 export default connect(mapStateToProps, mapDispatchToProps)(LogOutButton);

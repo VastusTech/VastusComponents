@@ -7,25 +7,24 @@
  * @return {string} The name of the Message Board for those IDs.
  */
 export const getMessageBoardName = (ids) => {
-    // TODO Do some checking?
-    let board = "";
-    // Sort the ids alphabetically
-    ids.sort((a, b) => {
-        if (a > b) {
-            return 1;
-        }
-        else if (a < b) {
-            return -1;
-        }
-        return 0;
-    });
-    for (let i = 0; i < ids.length; i++) {
-        if (i !== 0) {
-            board += "_";
-        }
-        board += ids[i];
+  // TODO Do some checking?
+  let board = "";
+  // Sort the ids alphabetically
+  ids.sort((a, b) => {
+    if (a > b) {
+      return 1;
+    } else if (a < b) {
+      return -1;
     }
-    return board;
+    return 0;
+  });
+  for (let i = 0; i < ids.length; i++) {
+    if (i !== 0) {
+      board += "_";
+    }
+    board += ids[i];
+  }
+  return board;
 };
 /**
  * Gets the IDs associated with a Message Board name.
@@ -34,7 +33,7 @@ export const getMessageBoardName = (ids) => {
  * @return {[string]} The list of IDs associated with the board.
  */
 export const getIDsFromMessageBoard = (board) => {
-    return board.split("_");
+  return board.split("_");
 };
 
 /**
@@ -48,5 +47,5 @@ export const getIDsFromMessageBoard = (board) => {
  * @return {boolean} Whether the message has been seen by the user last at any point.
  */
 export const ifMessageUnreadFor = (userID, message) => {
-    return message.from !== userID && (!message.lastSeenFor || !message.lastSeenFor.includes(userID));
+  return message.from !== userID && (!message.lastSeenFor || !message.lastSeenFor.includes(userID));
 };

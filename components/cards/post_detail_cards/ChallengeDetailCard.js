@@ -1,14 +1,14 @@
-import React  from 'react';
+import React from 'react';
 import ChallengeCard from "../ChallengeCard";
 import type Challenge from "../../../types/Challenge";
 
 export const ChallengeDetailCardInfo = {
-    fetchList: ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "difficulty", "time_created", "capacity", "members", "prize", "goal", "owner", "access", "restriction", "submissions"],
-    ifSubscribe: false,
+  fetchList: ["id", "item_type", "title", "endTime", "ifCompleted", "tags", "difficulty", "time_created", "capacity", "members", "prize", "goal", "owner", "access", "restriction", "submissions"],
+  ifSubscribe: false,
 };
 
 type Props = {
-    challenge: Challenge
+  challenge: Challenge
 };
 
 /**
@@ -19,7 +19,7 @@ type Props = {
  * @constructor
  */
 const ChallengeDetailCard = (props: Props) => (
-    <ChallengeCard challenge={props.challenge}/>
+  <ChallengeCard challenge={props.challenge}/>
 );
 
 export default ChallengeDetailCard;

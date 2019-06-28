@@ -4,46 +4,59 @@ import {getItemTypeFromID} from "./ItemType";
 // This file helps access the cache reducer properly, getting attributes within objects with ease.
 
 export function getClientAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "clients", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "clients", cacheReducer);
 }
+
 export function getTrainerAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "trainers", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "trainers", cacheReducer);
 }
+
 export function getGymAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "gyms", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "gyms", cacheReducer);
 }
+
 export function getWorkoutAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "workouts", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "workouts", cacheReducer);
 }
+
 export function getReviewAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "reviews", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "reviews", cacheReducer);
 }
+
 export function getEventAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "events", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "events", cacheReducer);
 }
+
 export function getChallengeAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "challenges", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "challenges", cacheReducer);
 }
+
 export function getInviteAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "invites", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "invites", cacheReducer);
 }
+
 export function getPostAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "posts", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "posts", cacheReducer);
 }
+
 export function getSubmissionAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "submissions", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "submissions", cacheReducer);
 }
+
 export function getGroupAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "groups", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "groups", cacheReducer);
 }
+
 export function getCommentAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "comments", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "comments", cacheReducer);
 }
+
 export function getSponsorAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "sponsors", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "sponsors", cacheReducer);
 }
+
 export function getStreakAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeFromCache(id, attributeName, "streaks", cacheReducer);
+  return getObjectAttributeFromCache(id, attributeName, "streaks", cacheReducer);
 }
 
 /**
@@ -55,7 +68,7 @@ export function getStreakAttribute(id, attributeName, cacheReducer) {
  * @return {*} The attribute from the object.
  */
 export function getObjectAttribute(id, attributeName, cacheReducer) {
-    return getObjectAttributeWithItemType(id, getItemTypeFromID(id), attributeName, cacheReducer);
+  return getObjectAttributeWithItemType(id, getItemTypeFromID(id), attributeName, cacheReducer);
 }
 
 /**
@@ -69,10 +82,10 @@ export function getObjectAttribute(id, attributeName, cacheReducer) {
  * @return {*} The attribute or the length of the attribute list.
  */
 export function getObjectAttributeWithItemType(id, itemType, attributeName, cacheReducer) {
-    if (itemType) {
-        return getObjectAttributeFromCache(id, attributeName, getCacheName(itemType), cacheReducer);
-    }
-    return null;
+  if (itemType) {
+    return getObjectAttributeFromCache(id, attributeName, getCacheName(itemType), cacheReducer);
+  }
+  return null;
 }
 
 /**
@@ -85,19 +98,19 @@ export function getObjectAttributeWithItemType(id, itemType, attributeName, cach
  * @return {string|number} Either the attribute or the length of the array attribute
  */
 function getObjectAttributeFromCache(id, attributeName, subCacheName, cacheReducer) {
-    if (id && attributeName && cacheReducer && subCacheName) {
-        const object = cacheReducer[subCacheName][id];
-        if (object) {
-            return getAttributeFromObject(object, attributeName);
-        }
-        // else {
-        //     err&&console.error("Object (id: " + id + ") not fetched yet!!");
-        // }
+  if (id && attributeName && cacheReducer && subCacheName) {
+    const object = cacheReducer[subCacheName][id];
+    if (object) {
+      return getAttributeFromObject(object, attributeName);
     }
     // else {
-    //     err&&console.error("No cache from Redux received!!!!");
+    //     err&&console.error("Object (id: " + id + ") not fetched yet!!");
     // }
-    return null;
+  }
+  // else {
+  //     err&&console.error("No cache from Redux received!!!!");
+  // }
+  return null;
 }
 
 /**
@@ -108,10 +121,10 @@ function getObjectAttributeFromCache(id, attributeName, subCacheName, cacheReduc
  * @return {{}} The object from the cache.
  */
 export function getObjectFromCache(id, cacheReducer) {
-    if (id && cacheReducer) {
-        return cacheReducer[getCacheName(getItemTypeFromID(id))][id];
-    }
-    return null;
+  if (id && cacheReducer) {
+    return cacheReducer[getCacheName(getItemTypeFromID(id))][id];
+  }
+  return null;
 }
 
 /**
@@ -122,17 +135,16 @@ export function getObjectFromCache(id, cacheReducer) {
  * @return {string|number} Either the attribute or the length of the array attribute
  */
 export function getAttributeFromObject(object, attributeName) {
-    if (object && attributeName) {
-        if (attributeName.substr(attributeName.length - 6) === "Length") {
-            attributeName = attributeName.substr(0, attributeName.length - 6);
-            if (object[attributeName] && object[attributeName].length) {
-                return object[attributeName].length;
-            }
-            else {
-                return 0;
-            }
-        }
-        return object[attributeName];
+  if (object && attributeName) {
+    if (attributeName.substr(attributeName.length - 6) === "Length") {
+      attributeName = attributeName.substr(0, attributeName.length - 6);
+      if (object[attributeName] && object[attributeName].length) {
+        return object[attributeName].length;
+      } else {
+        return 0;
+      }
     }
-    return null;
+    return object[attributeName];
+  }
+  return null;
 }

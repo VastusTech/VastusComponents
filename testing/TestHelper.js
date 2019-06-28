@@ -8,9 +8,15 @@ import promisify from "../redux/middleware/PromisifyMiddleware";
  * we are automatically running a test.
  */
 export default class TestHelper {
-    static ifTesting = false;
-    static setTest() { TestHelper.ifTesting = true; }
-    static unsetTest() { TestHelper.ifTesting = false; }
+  static ifTesting = false;
+
+  static setTest() {
+    TestHelper.ifTesting = true;
+  }
+
+  static unsetTest() {
+    TestHelper.ifTesting = false;
+  }
 }
 
 /**
@@ -19,12 +25,11 @@ export default class TestHelper {
  * @return {{dispatch: Function, getActions: Function}} The store object for the mock redux store.
  */
 export function store(initialState) {
-    if (initialState) {
-        return configureStore([promisify, thunk, asyncDispatch])(initialState);
-    }
-    else {
-        return configureStore([promisify, thunk, asyncDispatch])({});
-    }
+  if (initialState) {
+    return configureStore([promisify, thunk, asyncDispatch])(initialState);
+  } else {
+    return configureStore([promisify, thunk, asyncDispatch])({});
+  }
 }
 
 export const funCompWrapper = (component) => () => component;
@@ -40,20 +45,20 @@ export const funCompWrapper = (component) => () => component;
  * @return {{ably: *, auth: *, cache: *, info: *, message: *, user: *, search: *}}
  */
 export const getInitialReduxStore = (storeTypes) => {
-    const ably = require("../redux/reducers/ablyReducer");
-    const auth = require("../redux/reducers/authReducer");
-    const cache = require("../redux/reducers/cacheReducer");
-    const info = require("../redux/reducers/infoReducer");
-    const message = require("../redux/reducers/messageReducer");
-    const search = require("../redux/reducers/searchReducer");
-    const user = require("../redux/reducers/userReducer");
-    return {
-        ably: !storeTypes || storeTypes.includes("ably") ? ably.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
-        auth: !storeTypes || storeTypes.includes("auth") ? auth.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
-        cache: !storeTypes || storeTypes.includes("cache") ? cache.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
-        info: !storeTypes || storeTypes.includes("info") ? info.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
-        message: !storeTypes || storeTypes.includes("message") ? message.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
-        user: !storeTypes || storeTypes.includes("user") ? user.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
-        search: !storeTypes || storeTypes.includes("search") ? search.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
-    }
+  const ably = require("../redux/reducers/ablyReducer");
+  const auth = require("../redux/reducers/authReducer");
+  const cache = require("../redux/reducers/cacheReducer");
+  const info = require("../redux/reducers/infoReducer");
+  const message = require("../redux/reducers/messageReducer");
+  const search = require("../redux/reducers/searchReducer");
+  const user = require("../redux/reducers/userReducer");
+  return {
+    ably: !storeTypes || storeTypes.includes("ably") ? ably.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+    auth: !storeTypes || storeTypes.includes("auth") ? auth.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+    cache: !storeTypes || storeTypes.includes("cache") ? cache.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+    info: !storeTypes || storeTypes.includes("info") ? info.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+    message: !storeTypes || storeTypes.includes("message") ? message.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+    user: !storeTypes || storeTypes.includes("user") ? user.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+    search: !storeTypes || storeTypes.includes("search") ? search.default(undefined, {type: "__NOT_A_REAL_ACTION__"}) : null,
+  }
 };

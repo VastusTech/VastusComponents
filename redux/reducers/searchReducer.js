@@ -34,14 +34,14 @@ const queryLimit = 100;
  * @property {[Object]} results The results received from the database for this type.
  */
 type SearchTypeState = {
-    enabled: boolean,
-    variableList: [string],
-    filterJSON: Object,
-    filterParameters: Map<string, string>,
-    nextToken: string|null,
-    ifFirst: boolean,
-    limit: number,
-    results: [Object],
+  enabled: boolean,
+  variableList: [string],
+  filterJSON: Object,
+  filterParameters: Map<string, string>,
+  nextToken: string | null,
+  ifFirst: boolean,
+  limit: number,
+  results: [Object],
 };
 
 /**
@@ -50,14 +50,14 @@ type SearchTypeState = {
  * @type {SearchTypeState}
  */
 const initialTypeState = {
-    enabled: false,
-    variableList: [],
-    filterJSON: {},
-    filterParameters: {},
-    nextToken: null,
-    ifFirst: true,
-    limit: queryLimit,
-    results: [],
+  enabled: false,
+  variableList: [],
+  filterJSON: {},
+  filterParameters: {},
+  nextToken: null,
+  ifFirst: true,
+  limit: queryLimit,
+  results: [],
 };
 
 /**
@@ -67,10 +67,10 @@ const initialTypeState = {
  * @return {SearchTypeState} The copied state to update.
  */
 const copyTypeState = (typeState) => {
-    typeState = { ...typeState };
-    typeState.filterParameters = { ...typeState.filterParameters };
-    typeState.results = [ ...typeState.results ];
-    return typeState;
+  typeState = {...typeState};
+  typeState.filterParameters = {...typeState.filterParameters};
+  typeState.results = [...typeState.results];
+  return typeState;
 };
 
 // Initial states of each kind of search
@@ -80,25 +80,25 @@ const copyTypeState = (typeState) => {
  * @type {SearchTypeState}
  */
 const initialClientState = {
-    ...copyTypeState(initialTypeState),
-    enabled: true,
-    variableList: ["id", "item_type", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", /*"profilePicture"*/ "friendRequests"],
-    filterJSON: {
-        or: [{
-            username: {
-                contains: "$searchQuery"
-            }
-        },{
-            name: {
-                contains: "$searchQuery"
-            }
-        },{
-            email: {
-                contains: "$searchQuery"
-            }
-        }]
-    },
-    limit: queryLimit,
+  ...copyTypeState(initialTypeState),
+  enabled: true,
+  variableList: ["id", "item_type", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", /*"profilePicture"*/ "friendRequests"],
+  filterJSON: {
+    or: [{
+      username: {
+        contains: "$searchQuery"
+      }
+    }, {
+      name: {
+        contains: "$searchQuery"
+      }
+    }, {
+      email: {
+        contains: "$searchQuery"
+      }
+    }]
+  },
+  limit: queryLimit,
 };
 
 /**
@@ -107,26 +107,26 @@ const initialClientState = {
  * @type {SearchTypeState}
  */
 const initialTrainerState = {
-    ...copyTypeState(initialTypeState),
-    enabled: true,
-    variableList: ["id", "name", "username", "item_type", "gender", "birthday", "profileImagePath", /*"profilePicture", */"profileImagePaths", "subscribers", "friendlinessRating", "" +
-    "effectivenessRating", "posts"],
-    filterJSON: {
-        or: [{
-            username: {
-                contains: "$searchQuery"
-            }
-        },{
-            name: {
-                contains: "$searchQuery"
-            }
-        },{
-            email: {
-                contains: "$searchQuery"
-            }
-        }]
-    },
-    limit: queryLimit,
+  ...copyTypeState(initialTypeState),
+  enabled: true,
+  variableList: ["id", "name", "username", "item_type", "gender", "birthday", "profileImagePath", /*"profilePicture", */"profileImagePaths", "subscribers", "friendlinessRating", "" +
+  "effectivenessRating", "posts"],
+  filterJSON: {
+    or: [{
+      username: {
+        contains: "$searchQuery"
+      }
+    }, {
+      name: {
+        contains: "$searchQuery"
+      }
+    }, {
+      email: {
+        contains: "$searchQuery"
+      }
+    }]
+  },
+  limit: queryLimit,
 };
 
 /**
@@ -135,25 +135,25 @@ const initialTrainerState = {
  * @type {SearchTypeState}
  */
 const initialGymState = {
-    ...copyTypeState(initialTypeState),
-    enabled: false,
-    variableList: [],
-    filterJSON: {
-        or: [{
-            username: {
-                contains: "$searchQuery"
-            }
-        },{
-            name: {
-                contains: "$searchQuery"
-            }
-        },{
-            email: {
-                contains: "$searchQuery"
-            }
-        }]
-    },
-    limit: queryLimit,
+  ...copyTypeState(initialTypeState),
+  enabled: false,
+  variableList: [],
+  filterJSON: {
+    or: [{
+      username: {
+        contains: "$searchQuery"
+      }
+    }, {
+      name: {
+        contains: "$searchQuery"
+      }
+    }, {
+      email: {
+        contains: "$searchQuery"
+      }
+    }]
+  },
+  limit: queryLimit,
 };
 
 /**
@@ -162,8 +162,8 @@ const initialGymState = {
  * @type {SearchTypeState}
  */
 const initialWorkoutState = {
-    ...copyTypeState(initialTypeState),
-    enabled: false,
+  ...copyTypeState(initialTypeState),
+  enabled: false,
 };
 
 /**
@@ -172,8 +172,8 @@ const initialWorkoutState = {
  * @type {SearchTypeState}
  */
 const initialReviewState = {
-    ...copyTypeState(initialTypeState),
-    enabled: false,
+  ...copyTypeState(initialTypeState),
+  enabled: false,
 };
 
 /**
@@ -182,30 +182,30 @@ const initialReviewState = {
  * @type {SearchTypeState}
  */
 const initialEventState = {
-    ...copyTypeState(initialTypeState),
-    enabled: false,
-    variableList: [],
-    filterJSON: {
-        and: [{
-            or: [{
-                title: {
-                    contains: "$searchQuery"
-                }
-            },{
-                description: {
-                    contains: "$searchQuery"
-                }
-            }]
-        },{
-            access: {
-                eq: "$access"
-            }
-        }]
-    },
-    filterParameters: {
-        access: "public",
-    },
-    limit: queryLimit,
+  ...copyTypeState(initialTypeState),
+  enabled: false,
+  variableList: [],
+  filterJSON: {
+    and: [{
+      or: [{
+        title: {
+          contains: "$searchQuery"
+        }
+      }, {
+        description: {
+          contains: "$searchQuery"
+        }
+      }]
+    }, {
+      access: {
+        eq: "$access"
+      }
+    }]
+  },
+  filterParameters: {
+    access: "public",
+  },
+  limit: queryLimit,
 };
 
 /**
@@ -214,30 +214,30 @@ const initialEventState = {
  * @type {SearchTypeState}
  */
 const initialChallengeState = {
-    ...copyTypeState(initialTypeState),
-    enabled: true,
-    variableList: ["id", "item_type", "title", "endTime", "time_created", "owner", "ifCompleted", "members", "capacity", "goal", "access", "description", "restriction", "tags", "prize", "submissions"],
-    filterJSON: {
-        and: [{
-            or: [{
-                title: {
-                    contains: "$searchQuery"
-                }
-            },{
-                description: {
-                    contains: "$searchQuery"
-                }
-            }]
-        },{
-            access: {
-                eq: "$access"
-            }
-        }]
-    },
-    filterParameters: {
-        access: "public",
-    },
-    limit: queryLimit,
+  ...copyTypeState(initialTypeState),
+  enabled: true,
+  variableList: ["id", "item_type", "title", "endTime", "time_created", "owner", "ifCompleted", "members", "capacity", "goal", "access", "description", "restriction", "tags", "prize", "submissions"],
+  filterJSON: {
+    and: [{
+      or: [{
+        title: {
+          contains: "$searchQuery"
+        }
+      }, {
+        description: {
+          contains: "$searchQuery"
+        }
+      }]
+    }, {
+      access: {
+        eq: "$access"
+      }
+    }]
+  },
+  filterParameters: {
+    access: "public",
+  },
+  limit: queryLimit,
 };
 
 /**
@@ -246,8 +246,8 @@ const initialChallengeState = {
  * @type {SearchTypeState}
  */
 const initialInviteState = {
-    ...copyTypeState(initialTypeState),
-    enabled: false,
+  ...copyTypeState(initialTypeState),
+  enabled: false,
 };
 
 /**
@@ -256,8 +256,8 @@ const initialInviteState = {
  * @type {SearchTypeState}
  */
 const initialPostState = {
-    ...copyTypeState(initialTypeState),
-    enabled: false,
+  ...copyTypeState(initialTypeState),
+  enabled: false,
 };
 
 /**
@@ -272,23 +272,23 @@ const initialPostState = {
  * @property {Map<string, SearchTypeState>} typeQueries The individual Type settings for searching.
  */
 type SearchReducer = {
-    searchQuery: string,
-    results: [Object],
-    limit: number,
-    numTypesEnabled: number,
-    ifFinished: boolean,
-    searchBarEnabled: boolean,
-    typeQueries: {
-        Client: SearchTypeState,
-        Trainer: SearchTypeState,
-        Gym: SearchTypeState,
-        Workout: SearchTypeState,
-        Review: SearchTypeState,
-        Event: SearchTypeState,
-        Challenge: SearchTypeState,
-        Invite: SearchTypeState,
-        Post: SearchTypeState
-    }
+  searchQuery: string,
+  results: [Object],
+  limit: number,
+  numTypesEnabled: number,
+  ifFinished: boolean,
+  searchBarEnabled: boolean,
+  typeQueries: {
+    Client: SearchTypeState,
+    Trainer: SearchTypeState,
+    Gym: SearchTypeState,
+    Workout: SearchTypeState,
+    Review: SearchTypeState,
+    Event: SearchTypeState,
+    Challenge: SearchTypeState,
+    Invite: SearchTypeState,
+    Post: SearchTypeState
+  }
 };
 
 /**
@@ -297,23 +297,23 @@ type SearchReducer = {
  * @type {SearchReducer}
  */
 const initialState = {
-    searchQuery: "",
-    results: [],
-    limit: 100, // This should be computed dynamically, based on how many types we're querying to maintain a certain number
-    numTypesEnabled: 3,
-    ifFinished: false,
-    searchBarEnabled: true,
-    typeQueries: {
-        Client: initialClientState,
-        Trainer: initialTrainerState,
-        Gym: initialGymState,
-        Workout: initialWorkoutState,
-        Review: initialReviewState,
-        Event: initialEventState,
-        Challenge: initialChallengeState,
-        Invite: initialInviteState,
-        Post: initialPostState
-    }
+  searchQuery: "",
+  results: [],
+  limit: 100, // This should be computed dynamically, based on how many types we're querying to maintain a certain number
+  numTypesEnabled: 3,
+  ifFinished: false,
+  searchBarEnabled: true,
+  typeQueries: {
+    Client: initialClientState,
+    Trainer: initialTrainerState,
+    Gym: initialGymState,
+    Workout: initialWorkoutState,
+    Review: initialReviewState,
+    Event: initialEventState,
+    Challenge: initialChallengeState,
+    Invite: initialInviteState,
+    Post: initialPostState
+  }
 };
 
 /**
@@ -328,133 +328,133 @@ const initialState = {
  * @return {SearchReducer} The next state for the reducer.
  */
 export default (state: SearchReducer = initialState, action) => {
-    switch (action.type) {
-        // TODO Update the retrieval limits based on what is enabled and not
-        case ENABLE_TYPE:
-            state = {
-                ...state,
-                typeQueries: {
-                    ...state.typeQueries,
-                    [action.payload]: {
-                        ...state.typeQueries[action.payload],
-                        enabled: true
-                    }
-                },
-            };
-            state.numTypesEnabled = getNumTypesEnabled(state);
-            break;
-        case DISABLE_TYPE:
-            state = {
-                ...state,
-                typeQueries: {
-                    ...state.typeQueries,
-                    [action.payload]: {
-                        ...state.typeQueries[action.payload],
-                        enabled: false
-                    }
-                },
-            };
-            state.numTypesEnabled = getNumTypesEnabled(state);
-            break;
-        case SET_SEARCH_QUERY:
-            state = {
-                ...state,
-                searchQuery: action.payload
-            };
-            break;
-        case SET_TYPE_FILTER:
-            state = {
-                ...state,
-                typeQueries: {
-                    ...state.typeQueries,
-                    [action.payload.type]: {
-                        ...state.typeQueries[action.payload.type],
-                        filterJSON: action.payload.filterJSON,
-                        filterParameters: action.payload.filterParameters
-                    }
-                },
-            };
-            break;
-        case SET_TYPE_NEXT_TOKEN:
-            state = {
-                ...state,
-                typeQueries: {
-                    ...state.typeQueries,
-                    [action.payload.type]: {
-                        ...state.typeQueries[action.payload.type],
-                        nextToken: action.payload.nextToken,
-                        ifFirst: false
-                    }
-                },
-            };
-            state.ifFinished = getIfFinished(state);
-            break;
-        case ADD_TYPE_RESULTS:
-            const results = action.payload.results ? action.payload.results : [];
-            // console.log(action.payload.type + "\n" + JSON.stringify(results) + "\n" + JSON.stringify(state.typeQueries[action.payload.type].results));
-            // TODO InSERT SORT THESE INTO THE RESULTS?
-            state = {
-                ...state,
-                results: [...state.results, ...results],
-                typeQueries: {
-                    ...state.typeQueries,
-                    [action.payload.type]: {
-                        ...state.typeQueries[action.payload.type],
-                        results: [
-                            ...state.typeQueries[action.payload.type].results,
-                            ...results
-                        ]
-                    }
-                }
-            };
-            state.ifFinished = getIfFinished(state);
-            break;
-        case RESET_QUERY:
-            state = {
-                ...state,
-                results: [],
-                ifFinished: false
-            };
-            for (const type in state.typeQueries) {
-                if (state.typeQueries.hasOwnProperty(type)) {
-                    state.typeQueries[type].results = [];
-                    state.typeQueries[type].nextToken = null;
-                    state.typeQueries[type].ifFirst = true;
-                }
-            }
-            break;
-        case RESET_TYPE_QUERY:
-            state = {
-                ...state,
-                results: subtractedArray(state.results, state.typeQueries[action.payload].results),
-                typeQueries: {
-                    ...state.typeQueries,
-                    [action.payload]: {
-                        ...state.typeQueries[action.payload],
-                        results: [],
-                        nextToken: null,
-                        ifFirst: true,
-                    }
-                }
-            };
-            break;
-        case ENABLE_SEARCH_BAR:
-            state = {
-                ...state,
-                searchBarEnabled: true
-            };
-            break;
-        case DISABLE_SEARCH_BAR:
-            state = {
-                ...state,
-                searchBarEnabled: false
-            };
-            break;
-        default:
-            break;
-    }
-    // console.log("INFO: Did " + action.type + " and now state is = " + JSON.stringify(state));
-    return state;
+  switch (action.type) {
+    // TODO Update the retrieval limits based on what is enabled and not
+    case ENABLE_TYPE:
+      state = {
+        ...state,
+        typeQueries: {
+          ...state.typeQueries,
+          [action.payload]: {
+            ...state.typeQueries[action.payload],
+            enabled: true
+          }
+        },
+      };
+      state.numTypesEnabled = getNumTypesEnabled(state);
+      break;
+    case DISABLE_TYPE:
+      state = {
+        ...state,
+        typeQueries: {
+          ...state.typeQueries,
+          [action.payload]: {
+            ...state.typeQueries[action.payload],
+            enabled: false
+          }
+        },
+      };
+      state.numTypesEnabled = getNumTypesEnabled(state);
+      break;
+    case SET_SEARCH_QUERY:
+      state = {
+        ...state,
+        searchQuery: action.payload
+      };
+      break;
+    case SET_TYPE_FILTER:
+      state = {
+        ...state,
+        typeQueries: {
+          ...state.typeQueries,
+          [action.payload.type]: {
+            ...state.typeQueries[action.payload.type],
+            filterJSON: action.payload.filterJSON,
+            filterParameters: action.payload.filterParameters
+          }
+        },
+      };
+      break;
+    case SET_TYPE_NEXT_TOKEN:
+      state = {
+        ...state,
+        typeQueries: {
+          ...state.typeQueries,
+          [action.payload.type]: {
+            ...state.typeQueries[action.payload.type],
+            nextToken: action.payload.nextToken,
+            ifFirst: false
+          }
+        },
+      };
+      state.ifFinished = getIfFinished(state);
+      break;
+    case ADD_TYPE_RESULTS:
+      const results = action.payload.results ? action.payload.results : [];
+      // console.log(action.payload.type + "\n" + JSON.stringify(results) + "\n" + JSON.stringify(state.typeQueries[action.payload.type].results));
+      // TODO InSERT SORT THESE INTO THE RESULTS?
+      state = {
+        ...state,
+        results: [...state.results, ...results],
+        typeQueries: {
+          ...state.typeQueries,
+          [action.payload.type]: {
+            ...state.typeQueries[action.payload.type],
+            results: [
+              ...state.typeQueries[action.payload.type].results,
+              ...results
+            ]
+          }
+        }
+      };
+      state.ifFinished = getIfFinished(state);
+      break;
+    case RESET_QUERY:
+      state = {
+        ...state,
+        results: [],
+        ifFinished: false
+      };
+      for (const type in state.typeQueries) {
+        if (state.typeQueries.hasOwnProperty(type)) {
+          state.typeQueries[type].results = [];
+          state.typeQueries[type].nextToken = null;
+          state.typeQueries[type].ifFirst = true;
+        }
+      }
+      break;
+    case RESET_TYPE_QUERY:
+      state = {
+        ...state,
+        results: subtractedArray(state.results, state.typeQueries[action.payload].results),
+        typeQueries: {
+          ...state.typeQueries,
+          [action.payload]: {
+            ...state.typeQueries[action.payload],
+            results: [],
+            nextToken: null,
+            ifFirst: true,
+          }
+        }
+      };
+      break;
+    case ENABLE_SEARCH_BAR:
+      state = {
+        ...state,
+        searchBarEnabled: true
+      };
+      break;
+    case DISABLE_SEARCH_BAR:
+      state = {
+        ...state,
+        searchBarEnabled: false
+      };
+      break;
+    default:
+      break;
+  }
+  // console.log("INFO: Did " + action.type + " and now state is = " + JSON.stringify(state));
+  return state;
 }
 
 /**
@@ -464,15 +464,15 @@ export default (state: SearchReducer = initialState, action) => {
  * @return {number} The number of types enabled for search.
  */
 function getNumTypesEnabled(state) {
-    let numTypesEnabled = 0;
-    for (const key in state.typeQueries) {
-        if (state.typeQueries.hasOwnProperty(key)) {
-            if (state.typeQueries[key].enabled === true) {
-                numTypesEnabled++;
-            }
-        }
+  let numTypesEnabled = 0;
+  for (const key in state.typeQueries) {
+    if (state.typeQueries.hasOwnProperty(key)) {
+      if (state.typeQueries[key].enabled === true) {
+        numTypesEnabled++;
+      }
     }
-    return numTypesEnabled;
+  }
+  return numTypesEnabled;
 }
 
 /**
@@ -483,14 +483,14 @@ function getNumTypesEnabled(state) {
  * @return {boolean}
  */
 function getIfFinished(state) {
-    for (const key in state.typeQueries) {
-        if (state.typeQueries.hasOwnProperty(key)) {
-            const query = state.typeQueries[key];
-            // A query is finished if it's not first and and the nextToken is null
-            if (query.enabled && (query.ifFirst === true || query.nextToken !== null)) {
-                return false;
-            }
-        }
+  for (const key in state.typeQueries) {
+    if (state.typeQueries.hasOwnProperty(key)) {
+      const query = state.typeQueries[key];
+      // A query is finished if it's not first and and the nextToken is null
+      if (query.enabled && (query.ifFirst === true || query.nextToken !== null)) {
+        return false;
+      }
     }
-    return true;
+  }
+  return true;
 }
