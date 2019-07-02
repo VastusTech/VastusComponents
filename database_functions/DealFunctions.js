@@ -42,15 +42,15 @@ class DealFunctions {
    * @param {*} productImage The main image to display as the product.
    * @param {string|null} productImagePath The S3 path of the image to display. Actual path will be altered with ID.
    * @param {Object<string, *>} productImages The map of product image paths to the actual product images.
-   * @param {string|null} validTime The time interval ISO string indicating when the Deal will be valid for purchase.
+   * @param {string|null} validUntil The ISO time string indicating until when the Deal will be valid for purchase.
    * @param {string|null} productStoreLink The string URL to the store page to buy it for full price.
    * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
    * returned data from the invocation of the Lambda function.
    * @param {function(error)} failureHandler The function to handle any errors that may occur.
    * @return {*} Debugging info about the Lambda operation.
    */
-  static createDealOptional(fromID, sponsor, productName, productCreditPrice, quantity, productImage, productImagePath, productImages, validTime, productStoreLink, successHandler, failureHandler) {
-    return this.create(fromID, sponsor, productName, productCreditPrice, quantity, productImage, productImagePath, productImages, validTime, productStoreLink, successHandler, failureHandler);
+  static createDealOptional(fromID, sponsor, productName, productCreditPrice, quantity, productImage, productImagePath, productImages, validUntil, productStoreLink, successHandler, failureHandler) {
+    return this.create(fromID, sponsor, productName, productCreditPrice, quantity, productImage, productImagePath, productImages, validUntil, productStoreLink, successHandler, failureHandler);
   }
 
   // Update Functions ============================================================
@@ -374,7 +374,7 @@ class DealFunctions {
    *
    * @param {string} fromID The User invoking the Lambda request.
    * @param {string} dealID The ID of the Deal to update.
-   * @param {string|null} validTime The time interval ISO string indicating when the Deal will be valid for purchase.
+   * @param {string|null} validUntil The time ISO string indicating until when the Deal will be valid for purchase.
    * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
    * returned data from the invocation of the Lambda function.
    * @param {function(error)} failureHandler The function to handle any errors that may occur.
@@ -384,8 +384,8 @@ class DealFunctions {
    * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
    * @return {*} Debugging info about the Lambda operation.
    */
-  static updateValidTime(fromID, dealID, validTime, successHandler, failureHandler, props) {
-    return this.updateSet(fromID, dealID, "validTime", validTime, (data) => {
+  static updateValidUntil(fromID, dealID, validUntil, successHandler, failureHandler, props) {
+    return this.updateSet(fromID, dealID, "validUntil", validUntil, (data) => {
       if (props) {
         if (props.addToUserAttribute && props.addToItemAttribute) {
           // TODO
@@ -415,7 +415,7 @@ class DealFunctions {
    * @param {*} productImage The main image to display as the product.
    * @param {string|null} productImagePath The S3 path of the image to display. Actual path will be altered with ID.
    * @param {Object<string, *>} productImages The map of product image paths to the actual product images.
-   * @param {string|null} validTime The time interval ISO string indicating when the Deal will be valid for purchase.
+   * @param {string|null} validUntil The time ISO string indicating until when the Deal will be valid for purchase.
    * @param {string|null} productStoreLink The string URL to the store page to buy it for full price.
    * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
    * returned data from the invocation of the Lambda function.
@@ -423,7 +423,7 @@ class DealFunctions {
    * @return {*} Debugging info about the Lambda operation.
    */
   static create(fromID, sponsor, productName, productCreditPrice, quantity, productImage, productImagePath,
-                productImages, validTime, productStoreLink, successHandler, failureHandler) {
+                productImages, validUntil, productStoreLink, successHandler, failureHandler) {
     // TODO Handle S3 Path stuff
     let productImagePaths = null;
     if (productImages) {
@@ -443,7 +443,7 @@ class DealFunctions {
       quantity,
       productImagePath,
       productImagePaths,
-      validTime,
+      validUntil,
       productStoreLink,
     }, (data) => {
       if (data) {

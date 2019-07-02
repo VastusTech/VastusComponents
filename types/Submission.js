@@ -16,5 +16,6 @@ type Submission = {
   videoPaths: [string],
   likes: [string],
   comments: [string],
+  approved: string,
 }
 export default Submission;

@@ -14,7 +14,8 @@ type Deal = {
   productImagePath: string,
   productImagePaths: [string],
   productCreditPrice: string,
-  validTime: string,
+  validUntil: string,
   quantity: number,
+  score: number,
 }
 export default Deal;
