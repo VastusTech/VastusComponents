@@ -5,8 +5,8 @@ import {connect} from 'react-redux';
 import {debugAlert} from "../../logic/DebuggingHelper";
 import {log, err} from "../../../Constants";
 import Spinner from "../props/Spinner";
-import {DealCardInfo} from "../cards/DealCard";
 import {fetchDealQuery, fetchSponsor} from "../../redux/convenience/cacheItemTypeActions";
+import DealCard, {DealCardInfo} from "../cards/DealCard";
 
 const dealFeedLength = 5;
 

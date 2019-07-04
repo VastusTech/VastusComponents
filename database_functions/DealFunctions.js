@@ -28,7 +28,7 @@ class DealFunctions {
    * @return {*} Debugging info about the Lambda operation.
    */
   static createDeal(fromID, sponsor, productName, productCreditPrice, quantity, successHandler, failureHandler) {
-    return this.create(fromID, sponsor, productName, productCreditPrice, quantity, null, null, null, null, successHandler, failureHandler);
+    return this.create(fromID, sponsor, productName, productCreditPrice, quantity, null, null, null, null, null, successHandler, failureHandler);
   }
 
   /**
@@ -39,6 +39,7 @@ class DealFunctions {
    * @param {string} productName The name of the product the Deal will sell.
    * @param {string} productCreditPrice The price of the product in credits.
    * @param {string|null} quantity How many of these products are in stock and allowed to sell.
+   * @param {string|null} description The description for how to use this Deal.
    * @param {*} productImage The main image to display as the product.
    * @param {string|null} productImagePath The S3 path of the image to display. Actual path will be altered with ID.
    * @param {Object<string, *>} productImages The map of product image paths to the actual product images.
@@ -49,8 +50,8 @@ class DealFunctions {
    * @param {function(error)} failureHandler The function to handle any errors that may occur.
    * @return {*} Debugging info about the Lambda operation.
    */
-  static createDealOptional(fromID, sponsor, productName, productCreditPrice, quantity, productImage, productImagePath, productImages, validUntil, productStoreLink, successHandler, failureHandler) {
-    return this.create(fromID, sponsor, productName, productCreditPrice, quantity, productImage, productImagePath, productImages, validUntil, productStoreLink, successHandler, failureHandler);
+  static createDealOptional(fromID, sponsor, productName, productCreditPrice, quantity, description, productImage, productImagePath, productImages, validUntil, productStoreLink, successHandler, failureHandler) {
+    return this.create(fromID, sponsor, productName, productCreditPrice, quantity, description, productImage, productImagePath, productImages, validUntil, productStoreLink, successHandler, failureHandler);
   }
 
   // Update Functions ============================================================
@@ -83,7 +84,37 @@ class DealFunctions {
         err && console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
       }
       successHandler && successHandler(data);
-    });
+    }, failureHandler);
+  }
+  /**
+   * Updates the description of how to use the Deal.
+   *
+   * @param {string} fromID The User invoking the Lambda request.
+   * @param {string} dealID The ID of the Deal to update.
+   * @param {string} description The description for how to use the Deal.
+   * @param {function({secretKey: string, timestamp: string})} successHandler The function to handle the
+   * returned data from the invocation of the Lambda function.
+   * @param {function(error)} failureHandler The function to handle any errors that may occur.
+   * @param {{addToItemAttribute: function(string, string, string), addToUserAttribute: function(string, string),
+   * removeFromItemAttribute: function(string, string, string), removeFromUserAttribute: function(string, string),
+   * setItemAttribute: function(string, string, *), setUserAttribute(string, *), removeItem: function(string, string),
+   * clearItemQueryCache: function(string)}} props The component props containing the redux automatic update functions.
+   * @return {*} Debugging info about the Lambda operation.
+   */
+  static updateDescription(fromID, dealID, description, successHandler, failureHandler, props) {
+    return this.updateSet(fromID, dealID, "description", description, (data) => {
+      if (props) {
+        if (props.addToUserAttribute && props.addToItemAttribute) {
+          // TODO
+          err && console.error("UPDATE FUNCTIONS NOT PLACED IN YET FOR THIS FUNCTION!!!");
+        } else {
+          err && console.error("NEED TO ADD UPDATE FUNCTIONS TO MAPDISPATCHTOPROPS");
+        }
+      } else {
+        err && console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
+      }
+      successHandler && successHandler(data);
+    }, failureHandler);
   }
 
   /**
@@ -242,7 +273,7 @@ class DealFunctions {
         err && console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
       }
       successHandler && successHandler(data);
-    });
+    }, failureHandler);
   }
 
   /**
@@ -273,7 +304,7 @@ class DealFunctions {
         err && console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
       }
       successHandler && successHandler(data);
-    });
+    }, failureHandler);
   }
 
   /**
@@ -304,7 +335,7 @@ class DealFunctions {
         err && console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
       }
       successHandler && successHandler(data);
-    });
+    }, failureHandler);
   }
 
   /**
@@ -335,7 +366,7 @@ class DealFunctions {
         err && console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
       }
       successHandler && successHandler(data);
-    });
+    }, failureHandler);
   }
 
   /**
@@ -366,7 +397,7 @@ class DealFunctions {
         err && console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
       }
       successHandler && successHandler(data);
-    });
+    }, failureHandler);
   }
 
   /**
@@ -397,7 +428,7 @@ class DealFunctions {
         err && console.error("ADD PROPS TO DATABASE ACTION CALL IN ORDER TO AUTOMATICALLY UPDATE");
       }
       successHandler && successHandler(data);
-    });
+    }, failureHandler);
   }
 
   // ======================================================================================================
@@ -412,6 +443,7 @@ class DealFunctions {
    * @param {string} productName The name of the product the Deal will sell.
    * @param {string} productCreditPrice The price of the product in credits.
    * @param {string|null} quantity How many of these products are in stock and allowed to sell.
+   * @param {string|null} description The description for how to use this Deal.
    * @param {*} productImage The main image to display as the product.
    * @param {string|null} productImagePath The S3 path of the image to display. Actual path will be altered with ID.
    * @param {Object<string, *>} productImages The map of product image paths to the actual product images.
@@ -422,7 +454,7 @@ class DealFunctions {
    * @param {function(error)} failureHandler The function to handle any errors that may occur.
    * @return {*} Debugging info about the Lambda operation.
    */
-  static create(fromID, sponsor, productName, productCreditPrice, quantity, productImage, productImagePath,
+  static create(fromID, sponsor, productName, productCreditPrice, quantity, description, productImage, productImagePath,
                 productImages, validUntil, productStoreLink, successHandler, failureHandler) {
     // TODO Handle S3 Path stuff
     let productImagePaths = null;
@@ -441,6 +473,7 @@ class DealFunctions {
       productName,
       productCreditPrice,
       quantity,
+      description,
       productImagePath,
       productImagePaths,
       validUntil,

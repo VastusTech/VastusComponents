@@ -14,6 +14,7 @@ type Deal = {
   productImagePath: string,
   productImagePaths: [string],
   productCreditPrice: string,
+  description: string,
   validUntil: string,
   quantity: number,
   score: number,
