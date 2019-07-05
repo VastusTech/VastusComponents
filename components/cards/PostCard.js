@@ -199,13 +199,13 @@ const PostCard = (props: Props) => {
 
   if (!props.post || !getByAttribute("name")) {
     return (
-      <Card color='purple' fluid raised>
+      <Card color='gold' fluid raised>
         <Spinner loading={true}/>
       </Card>
     );
   } else {
     return (
-      <Card color='purple' fluid raised>
+      <Card color='gold' fluid raised>
         {/*this.getPostAttribute("about")*/}
         {/*{openOnce()}*/}
         <Card.Content>
@@ -214,7 +214,7 @@ const PostCard = (props: Props) => {
           </div>
           {/*this.getDisplayMedia()*/}
         </Card.Content>
-        <Card.Content extra onClick={() => postModalOpen || setPostModalOpen(true)}>
+        <Card.Content extra onClick={() => postModalOpen || setPostModalOpen(true)} style={{color: 'purple'}}>
           {/*<Card.Meta textAlign = 'center'>{this.getPostAttribute("description")}</Card.Meta>*/}
           <div align="center">
             {convertFromISO(getPostAttribute("time_created")).substr(5, 12)}

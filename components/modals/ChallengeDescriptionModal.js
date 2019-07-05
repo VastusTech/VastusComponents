@@ -25,6 +25,7 @@ import {err} from "../../../Constants";
 import SubmissionList from "../lists/SubmissionList";
 import UserList from "../lists/UserList";
 import ScrollView from "react-inverted-scrollview";
+import {debugAlert} from "../../logic/DebuggingHelper";
 import {
   addToItemAttribute,
   clearItemQueryCache,
@@ -628,7 +629,7 @@ const ChallengeDescriptionModal = (props: Props) => {
               </Icon.Group> {getChallengeAttribute("goal")}
             </Grid.Row>
             <Grid.Row>
-              {alert("Prize View: " + getChallengeAttribute("prize"))}
+              {debugAlert("Prize View: " + getChallengeAttribute("prize"))}
               Winner Receives:
               <Image src={getChallengeAttribute("prize")} size="large" centered/>
             </Grid.Row>
