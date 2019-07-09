@@ -12,7 +12,7 @@ import {switchReturnItemType} from "../../logic/ItemType";
 import ChallengeDescriptionModal from "../modals/ChallengeDescriptionModal";
 import PostDescriptionModal from "../modals/PostDescriptionModal";
 import GroupDescriptionModal from "../modals/GroupDescriptionModal";
-import Logo from '../../img/vt_gold_even_thicker_border.svg';
+import Logo from '../../img/vt_longer_striped.svg';
 import OriginalLogo from '../../img/vt_new.svg';
 
 
@@ -236,7 +236,7 @@ const SearchBarProp = (props) => {
       />
   </Fragment> */
   return (
-    <Image src={Logo} centered style={{width: '65px', height: '55px'}}/>
+    <Image src={Logo} centered style={{width: '10000px', height: '70px'}}/>
   )
 };
 

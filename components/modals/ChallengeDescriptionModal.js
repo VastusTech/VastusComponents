@@ -608,9 +608,9 @@ const ChallengeDescriptionModal = (props: Props) => {
   }
   return (
     <div>
-      <Modal open={props.open} onClose={() => props.onClose()} closeIcon>
+      <Modal open={props.open} onClose={() => props.onClose()} closeIcon style={{background: '#fff2fe'}}>
         <Icon className='close' onClick={() => props.onClose()}/>
-        <Modal.Header align='center' style={{marginTop: '10px'}}>
+        <Modal.Header align='center' style={{marginTop: '10px', background: 'white'}}>
           <div>
             {getChallengeAttribute("title")}</div>
           {editButton(isEditing, setIsEditing)}
