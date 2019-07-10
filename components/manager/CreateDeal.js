@@ -15,72 +15,52 @@ import {
 import {connect} from "react-redux";
 import {setError} from "../../redux/actions/infoActions";
 import {fetchChallenge} from "../../redux/convenience/cacheItemTypeActions";
-import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
 import {getNowTimeString} from "../../logic/TimeHelper";
 import {addToUserAttribute} from "../../redux/actions/userActions";
 import {clearItemQueryCache} from "../../redux/actions/cacheActions";
 import {Storage} from 'aws-amplify';
 import {err} from "../../../Constants";
+import DealFunctions from "../../database_functions/DealFunctions";
 
 /**
- * Handles the actual creation of the Challenge given the inputted info from the User.
+ * Handles the actual creation of the Deal given the inputted info from the User.
  *
- * @param {string} userID The ID of the User creating the Challenge.
- * @param {string} endDate The ISO string of the date that the Challenge ends.
- * @param {number} capacity The max number of members for the challenge.
- * @param {string} title The display title for the Challenge.
- * @param {string} goal The way for members to win the Challenge.
- * @param {[string]} tagsPressed The tags that are applied to the Challenge.
- * @param {string} access The access string for who can see the Challenge. ("public" or "private").
- * @param {string|null} restriction The restriction string for if Users can join without a request. ("invite" or null).
- * @param {string} prize The prize for winning the Challenge.
- * @param {string|null} challengeType The type of Challenge this will be, how to win it. ("streak" or null).
- * @param {string|null} streakUpdateSpanType The update span type, "hourly", "daily", ...
- * @param {string|null} streakUpdateInterval How many update span types pass for a streak cycle.
- * @param {number|null} streakN The number of submissions to do to maintain the streak.
+ * @param {string} userID The ID of the User creating the Deal.
+ * @param {string} sponsor The ID of the Sponsor to own the Deal.
+ * @param {string} productName The name of the product to display.
+ * @param {number} productCreditPrice The price in credits to buy a single quantity of the Deal.
+ * @param {number|null} quantity The number of available Products to sell for the Deal. Null if indefinite.
+ * @param {string|null} description The description of how to use the Deal's Product.
+ * @param {*|null} productImage The image to display to represent the Product.
+ * @param {[*]|null} productImages The images to display in the gallery for the Product.
+ * @param {string} validUntil The ISO string for when the Deal expires.
+ * @param {string|null} productStoreLink The URL for where someone can buy the Product for full price.
  * @param {function(boolean)} setIsLoading Sets the loading state.
  * @param {function(error)} setError Sets the error state.
  * @param {function(true)} setShowSuccessModal Sets the showing of success modal state.
  * @param {{}} props The props of the component that hold the redux automatic updating functions.
  */
-const handleSubmit = () => {
-  //this.setState({isSubmitLoading: true});
-  alert("Current user: " + userID);
-  const tags = [];
-  for (const key in tagsPressed) {
-    if (tagsPressed.hasOwnProperty(key) && tagsPressed[key]) {
-      tags.push(key);
-    }
-  }
-  // TODO Check to see if valid inputs!
-  if (capacity && title && goal && tags && prize) {
-    if (Number.isInteger(+capacity)) {
-      alert(prize);
-      ChallengeFunctions.createChallengeOptional(userID, userID, endDate, capacity, title, goal, null,
-        null, null, tags, access, restriction, prize, null, null, null,
-        streakN, () => {
-          console.log("Successfully created a challenge!");
+const handleSubmit = (userID, sponsor, productName, productCreditPrice, quantity, description, productImage,
+                      productImages, validUntil, productStoreLink, setIsLoading, setError, setShowSuccessModal, props) => {
+  if (userID && sponsor && productName && productCreditPrice) {
+    const productImagePath = productImage ? "productImage" : null;
+    if (quantity == null || Number.isInteger(+quantity)) {
+      DealFunctions.createDealOptional(userID, sponsor, productName, productCreditPrice, quantity, description,
+        productImage, productImagePath, productImages, validUntil, productStoreLink,() => {
+          console.log("Successfully created a Deal!");
           setIsLoading(false);
           setShowSuccessModal(true);
-          // this.closeModal();
-          // this.setState({showSuccessLabel: true});
-          // this.setState({showModal: false});
         }, (error) => {
-          //console.log(JSON.stringify(error));
           setIsLoading(false);
           setError("*" + JSON.stringify(error))
-          // this.setState({submitError: "*" + JSON.stringify(error)});
-          // this.setState({isSubmitLoading: false});
         }, props);
     } else {
       setIsLoading(false);
-      setError("Capacity needs to be an integer!");
-      // this.setState({isSubmitLoading: false, submitError: "Capacity needs to be an integer!"});
+      setError("Quantity needs to be an integer!");
     }
   } else {
     setIsLoading(false);
     setError("All fields need to be filled out!");
-    // this.setState({isSubmitLoading: false, submitError: "All fields need to be filled out!"});
   }
 };
 
@@ -95,7 +75,7 @@ export const createSuccessLabel = (show) => {
     return (<Message positive>
       <Message.Header>Success!</Message.Header>
       <p>
-        You just created a new Challenge!
+        You just created a new Deal!
       </p>
     </Message>);
   } else {
@@ -143,7 +123,7 @@ const displayCurrentImage = (picture) => {
     );
   }
   return null;
-}
+};
 
 /**
  * This is the modal for creating Challenges. Every input is in the form of a normal text input.
