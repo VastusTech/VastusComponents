@@ -608,9 +608,9 @@ const ChallengeDescriptionModal = (props: Props) => {
   }
   return (
     <div>
-      <Modal open={props.open} onClose={() => props.onClose()} closeIcon style={{background: '#fff2fe'}}>
+      <Modal open={props.open} onClose={() => props.onClose()} closeIcon style={{background: '#FFFFFF'}}>
         <Icon className='close' onClick={() => props.onClose()}/>
-        <Modal.Header align='center' style={{marginTop: '10px', background: 'white'}}>
+        <Modal.Header align='center' style={{marginTop: '10px', background: 'white', color: 'purple'}}>
           <div>
             {getChallengeAttribute("title")}</div>
           {editButton(isEditing, setIsEditing)}
@@ -628,7 +628,7 @@ const ChallengeDescriptionModal = (props: Props) => {
                 <Icon name='bullseye'/>
               </Icon.Group> {getChallengeAttribute("goal")}
             </Grid.Row>
-            <Grid.Row>
+            <Grid.Row style={{color: 'purple'}}>
               {debugAlert("Prize View: " + getChallengeAttribute("prize"))}
               Winner Receives:
               <Image src={getChallengeAttribute("prize")} size="large" centered/>

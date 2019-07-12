@@ -205,7 +205,7 @@ const PostCard = (props: Props) => {
     );
   } else {
     return (
-      <Card color='gold' fluid raised>
+      <Card color='gold' fluid raised style={{border: '2px solid rebeccapurple'}}>
         {/*this.getPostAttribute("about")*/}
         {/*{openOnce()}*/}
         <Card.Content>
