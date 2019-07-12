@@ -22,12 +22,13 @@ type Props = {
  * @param {boolean} isFinished If the querying has finished and there are no more objects to fetch.
  * @param {function([string], {}, number, string, function({}), function(error))} fetchDealQuery The redux function to
  * fetch a Post query.
+ * @param {function} fetchSponsor Redux function to fetch a Sponsor.
  * @param {function(boolean)} setIsLoading Sets the loading state.
  * @param {function(boolean)} setIsFinished Sets the if finished state.
  * @param {function(string)} setNextToken Sets the next token state.
  * @param {function([{}])} setDeals Sets the deals state.
  */
-const queryDeals = (filter, nextToken, fetchDealQuery, isFinished, setIsLoading, setNextToken, setIsFinished, setDeals) => {
+const queryDeals = (filter, nextToken, fetchDealQuery, fetchSponsor, isFinished, setIsLoading, setNextToken, setIsFinished, setDeals) => {
   debugAlert("Querying deals! NT = " + nextToken + ", isFinished = " + isFinished);
   if (!isFinished) {
     setIsLoading(true);
@@ -74,7 +75,7 @@ const DealFeed = (props: Props) => {
       setDeals([]);
       setNextToken(null);
       setIsFinished(false);
-      queryDeals(props.filter, nextToken, props.fetchDealQuery, isFinished, setIsLoading, setNextToken,
+      queryDeals(props.filter, nextToken, props.fetchDealQuery, props.fetchSponsor, isFinished, setIsLoading, setNextToken,
         setIsFinished, setDeals);
     }
   }, [props.user.id]);
@@ -87,7 +88,7 @@ const DealFeed = (props: Props) => {
   const handleUpdate = (e, {calculations}) => {
     if (calculations.bottomVisible && !isLoading) {
       log && console.log("Next Token: " + nextToken);
-      queryDeals(props.filter, nextToken, props.fetchDealQuery, isFinished, setIsLoading, setNextToken,
+      queryDeals(props.filter, nextToken, props.fetchDealQuery, props.fetchSponsor, isFinished, setIsLoading, setNextToken,
         setIsFinished, setDeals);
     }
   };
@@ -116,6 +117,9 @@ const mapDispatchToProps = (dispatch) => {
     fetchDealQuery: (variableList, filter, limit, nextToken, dataHandler, failureHandler) => {
       dispatch(fetchDealQuery(variableList, filter, limit, nextToken, dataHandler, failureHandler))
     },
+    fetchSponsor: (id, variableList, successHandler, failureHandler) => {
+      dispatch(fetchSponsor(id, variableList, successHandler, failureHandler));
+    }
   }
 };
 
