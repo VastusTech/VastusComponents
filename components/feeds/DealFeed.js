@@ -40,9 +40,9 @@ const queryDeals = (filter, nextToken, fetchDealQuery, fetchSponsor, isFinished,
       if (data.items && data.items.length > 0) {
         for (let i = 0; i < data.items.length; i++) {
           const deal = data.items[i];
-          // Fetch the "owner" information
-          const owner = deal.owner;
-          fetchSponsor(owner, ["name", "profileImagePath"]);
+          // Fetch the "sponsor" information
+          const sponsor = deal.sponsor;
+          fetchSponsor(sponsor, ["name", "profileImagePath"]);
           setDeals(p => [...p, deal]);
         }
       }
