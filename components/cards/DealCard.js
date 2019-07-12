@@ -48,8 +48,8 @@ const DealCard = (props: Props) => {
               <Fragment>
                   <Card.Header>
                       <Grid columns={2}>
-                          <Grid.Column style={{color: 'purple'}} width={3}>
-                              {getDealAttribute("productCreditPrice")}
+                          <Grid.Column style={{color: 'purple'}} width={1}>
+                              {getDealAttribute("productCreditPrice") / 1000}
                           </Grid.Column>
                           <Grid.Column>
                               <Image src={Logo} size='mini'/>
