@@ -1,11 +1,12 @@
 import React, {useState, Fragment} from 'react';
 import type Deal from "../../types/Deal";
-import {Card, Dimmer, Grid, Header} from 'semantic-ui-react';
+import {Card, Dimmer, Grid, Header, Image} from 'semantic-ui-react';
 import DealModal from '../modals/DealModal';
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
 import StyledProfileImage from "../props/StyledProfileImage";
 import ProfileImage from "../props/ProfileImage";
 import Spinner from "../props/Spinner";
+import Logo from "../../img/vt_gold_even_thicker_border.svg"
 
 export const DealCardInfo = {
   fetchList: ["id", "sponsor", "quantity", "productImagePath", "productImagePaths", "productName", "productCreditPrice"],
@@ -40,54 +41,30 @@ const DealCard = (props: Props) => {
     );
   }
   return (
-    // This is displays a few important pieces of information about the challenge for the feed view.
-    <Card fluid raised onClick={() => modalOpen || setModalOpen(true)}>
-      <Card.Content>
-        {/* If no rank */}
-        {!props.rank && (
-          <Fragment>
-            <Card.Header>
-              <ProfileImage userID={props.deal.id}
-                            profileImage={getDealAttribute("profileImage")}/>
-              <div className="u-flex u-flex-justify--center u-margin-bottom--2">
-                <StyledProfileImage profileImage={getDealAttribute("profileImage")} type={"Small"}/>
-              </div>
-            </Card.Header>
-            <Card.Header textAlign='center'>
-              {getDealAttribute("name")}
-            </Card.Header>
-          </Fragment>
-        )}
-        {/* If has rank */}
-        {props.rank && (
-          <Grid divided verticalAlign='middle'>
-            <Grid.Row>
-              <Grid.Column width={4}>
-                <Header size='large' textAlign='center'>{props.rank}</Header>
-              </Grid.Column>
-              <Grid.Column width={12}>
-                <div className="u-flex u-flex-align--center">
-                  <StyledProfileImage profileImage={getDealAttribute("profileImage")} type="Small"/>
-                </div>
-              </Grid.Column>
-              <Grid.Column textAlign='center' style={{color: 'purple'}}>
-                {getDealAttribute("name")}
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        )}
-        <DealModal open={modalOpen} onClose={() => {
-          console.log("closing");
-          setModalOpen(false);
-          console.log("closing")
-        }} clientID={props.clientID}/>
-      </Card.Content>
-      <Card.Content extra>
-        <Card.Meta>
-          {getDealAttribute("challengesWonLength")} challenges won
-        </Card.Meta>
-      </Card.Content>
-    </Card>
+
+      // This is displays a few important pieces of information about the challenge for the feed view.
+      <Card fluid raised onClick={() => modalOpen || setModalOpen(true)} style={{border: '2px solid rebeccapurple'}}>
+          <Card.Content>
+              <Fragment>
+                  <Card.Header>
+                      <Grid columns={2}>
+                          <Grid.Column style={{color: 'purple'}} width={3}>
+                              {getDealAttribute("productCreditPrice")}
+                          </Grid.Column>
+                          <Grid.Column>
+                              <Image src={Logo} size='mini'/>
+                          </Grid.Column>
+                      </Grid>
+                      <div className="u-flex u-flex-justify--center u-margin-bottom--2">
+                          <StyledProfileImage profileImage={getDealAttribute("productImagePath")} type={"Small"}/>
+                      </div>
+                  </Card.Header>
+                  <Card.Header textAlign='center' style={{color: 'purple'}}>
+                      {getDealAttribute("productName")}
+                  </Card.Header>
+              </Fragment>
+          </Card.Content>
+      </Card>
   );
 };
 

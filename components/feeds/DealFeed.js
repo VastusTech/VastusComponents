@@ -6,7 +6,8 @@ import {debugAlert} from "../../logic/DebuggingHelper";
 import {log, err} from "../../../Constants";
 import Spinner from "../props/Spinner";
 import {fetchDealQuery, fetchSponsor} from "../../redux/convenience/cacheItemTypeActions";
-import DealCard, {DealCardInfo} from "../cards/DealCard";
+import DealCard from "../cards/DealCard";
+import {DealCardInfo} from "../cards/DealCard";
 
 const dealFeedLength = 5;
 
