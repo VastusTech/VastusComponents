@@ -8,7 +8,7 @@ import ProfileImage from "../props/ProfileImage";
 import Spinner from "../props/Spinner";
 
 export const DealCardInfo = {
-  fetchList: ["id", "owner", "quantity", "productImagePath", "productImagePaths", "productName", "productCreditPrice"],
+  fetchList: ["id", "sponsor", "quantity", "productImagePath", "productImagePaths", "productName", "productCreditPrice"],
   ifSubscribe: false
 };
 
