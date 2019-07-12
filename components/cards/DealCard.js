@@ -56,7 +56,7 @@ const DealCard = (props: Props) => {
                           </Grid.Column>
                       </Grid>
                       <div className="u-flex u-flex-justify--center u-margin-bottom--2">
-                          <StyledProfileImage profileImage={getDealAttribute("productImagePath")} type={"Small"}/>
+                          <StyledProfileImage profileImage={getDealAttribute("productImage")} type={"Small"}/>
                       </div>
                   </Card.Header>
                   <Card.Header textAlign='center' style={{color: 'purple'}}>
