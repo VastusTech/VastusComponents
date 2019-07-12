@@ -62,7 +62,7 @@ const NextChallengeProp = props => {
   } else {
     // Then it's empty, no next scheduled event
     return (
-      <Message>Join a challenge below!</Message>
+      <Message style={{color: 'purple', background: 'white', border: '1px solid purple'}}>Join a challenge below!</Message>
     );
   }
 };

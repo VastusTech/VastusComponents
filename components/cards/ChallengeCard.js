@@ -110,8 +110,8 @@ const ChallengeCard = (props: Props) => {
     // This is displays a few important pieces of information about the challenge for the feed view.
     <Card fluid raised onClick={() => modalOpen || setModalOpen(true)}>
       <Card.Content textAlign='center'>
-        <Card.Header textAlign='center'>{getChallengeAttribute("title")}</Card.Header>
-        <Card.Meta textAlign='center'>{getDaysLeft(getChallengeAttribute("endTime"))}
+        <Card.Header textAlign='center' style={{color: 'purple'}}>{getChallengeAttribute("title")}</Card.Header>
+        <Card.Meta textAlign='center' style={{color: '#D4AF37'}}>{getDaysLeft(getChallengeAttribute("endTime"))}
         </Card.Meta>
         {displayTagIcons(getChallengeAttribute("tags"))}
         <ChallengeDescriptionModal
@@ -122,7 +122,7 @@ const ChallengeCard = (props: Props) => {
         />
       </Card.Content>
       <Card.Content extra>
-        <Card.Meta textAlign='center'>
+        <Card.Meta textAlign='center' style={{color: '#D4AF37'}}>
           {getChallengeAttribute("membersLength")} of {getChallengeAttribute("capacity")} spots taken.
         </Card.Meta>
       </Card.Content>

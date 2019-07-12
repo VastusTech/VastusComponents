@@ -12,7 +12,8 @@ import {switchReturnItemType} from "../../logic/ItemType";
 import ChallengeDescriptionModal from "../modals/ChallengeDescriptionModal";
 import PostDescriptionModal from "../modals/PostDescriptionModal";
 import GroupDescriptionModal from "../modals/GroupDescriptionModal";
-import Logo from '../../img/vt_new.svg';
+import Logo from '../../img/vt_gold_even_thicker_border.svg';
+import OriginalLogo from '../../img/vt_new.svg';
 
 
 const minimumSearchResults = 6;
@@ -235,9 +236,7 @@ const SearchBarProp = (props) => {
       />
   </Fragment> */
   return (
-    <Fragment>
-      <Image src={Logo} size="mini" centered/>
-    </Fragment>
+    <Image src={Logo} centered size='tiny' style={{marginTop: '-10px', marginBottom: '-10px'}}/>
   )
 };
 
