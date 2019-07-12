@@ -139,7 +139,8 @@ const MessageInput = (props: Props) => {
         onSubmit={e => addMessage(e, props.board, props.user.id, props.user.username, props.user.profileImagePath, setIsLoading, setPercent)}
         className='u-margin-top--2'>
         {loadingBar(isLoading, percent)}
-        <Input type='text' action fluid className="textarea" name="message" placeholder="Write Message...">
+        <Input type='text' action fluid className="textarea" name="message" placeholder="Write Message..."
+        style={{border: '1px solid rebeccapurple', background: 'white', color: 'purple'}} color='white'>
           <input/>
           <Button as='label' for='proPicUpload'>
             <Icon name='camera' size="large" style={{marginLeft: '8px'}}/>

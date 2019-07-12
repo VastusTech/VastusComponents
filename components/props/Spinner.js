@@ -15,10 +15,10 @@ type Props = {
 const Spinner = (props: Props) => {
   if (props.loading) {
     return (
-      <Message icon>
-        <Icon name='spinner' size="small" loading/>
+      <Message icon style={{background: 'white'}}>
+        <Icon name='spinner' size="small" loading color='purple'/>
         <Message.Content>
-          <Message.Header>
+          <Message.Header style={{color: 'purple'}}>
             Loading...
           </Message.Header>
         </Message.Content>

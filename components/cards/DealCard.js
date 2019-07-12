@@ -48,7 +48,7 @@ const DealCard = (props: Props) => {
           <Fragment>
             <Card.Header>
               <ProfileImage userID={props.deal.id}
-                            profileImage={props.client.profileImage}/>
+                            profileImage={getDealAttribute("profileImage")}/>
               <div className="u-flex u-flex-justify--center u-margin-bottom--2">
                 <StyledProfileImage profileImage={getDealAttribute("profileImage")} type={"Small"}/>
               </div>
@@ -70,7 +70,7 @@ const DealCard = (props: Props) => {
                   <StyledProfileImage profileImage={getDealAttribute("profileImage")} type="Small"/>
                 </div>
               </Grid.Column>
-              <Grid.Column textAlign='center'>
+              <Grid.Column textAlign='center' style={{color: 'purple'}}>
                 {getDealAttribute("name")}
               </Grid.Column>
             </Grid.Row>
@@ -80,7 +80,7 @@ const DealCard = (props: Props) => {
           console.log("closing");
           setModalOpen(false);
           console.log("closing")
-        }} clientID={props.client.id}/>
+        }} clientID={props.clientID}/>
       </Card.Content>
       <Card.Content extra>
         <Card.Meta>

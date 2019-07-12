@@ -623,9 +623,9 @@ const ChallengeDescriptionModal = (props: Props) => {
         </Modal.Header>
         <Modal.Content align='center'>
           <Grid centered columns='equal'>
-            <Grid.Row>
+            <Grid.Row style={{color: 'purple'}}>
               <Icon.Group size='large'>
-                <Icon name='bullseye'/>
+                <Icon name='bullseye' color='purple'/>
               </Icon.Group> {getChallengeAttribute("goal")}
             </Grid.Row>
             <Grid.Row style={{color: 'purple'}}>
@@ -639,7 +639,7 @@ const ChallengeDescriptionModal = (props: Props) => {
               <Modal trigger={
                 <Button style={{marginTop: '-15px', marginBottom: '20px'}}
                         floated='right' primary className="u-button--flat u-padding-left--1">
-                  <Icon name='users'/> Members</Button>} closeIcon>
+                  <Icon name='users' color='purple'/> Members</Button>} closeIcon>
                 <Modal.Content>
                   <UserList userIDs={getChallengeAttribute("members")}
                             noUsersMessage={"No members yet!"}
