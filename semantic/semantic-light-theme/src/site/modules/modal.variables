@@ -1,0 +1,9 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+@background: @bgcolor;
+@headerColor: @primaryColor;
+@contentBackground: @white;
+@headerBackground: @white;
+@actionBackground: @white;
