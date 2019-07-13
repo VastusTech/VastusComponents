@@ -9,6 +9,7 @@ import {getObjectAttribute} from "../../logic/CacheRetrievalHelper";
 import Spinner from "../props/Spinner";
 import {log} from "../../../Constants";
 import type Deal from "../../types/Deal";
+import SponsorModal from "./SponsorModal";
 
 export const DealModalInfo = {
   // Contains everything that is referenced here
@@ -63,9 +64,7 @@ const userBuyDeal = (userID, dealID, setIsLoading, setError, props) => {
 const DealModal = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [isRequesting, setIsRequesting] = useState(false);
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
-  const [submitModalOpen, setSubmitModalOpen] = useState(false);
   const [deleted, setDeleted] = useState(false);
 
   const getDealAttribute = attribute => getObjectAttribute(props.dealID, attribute, props.cache);
@@ -75,9 +74,8 @@ const DealModal = (props: Props) => {
     if (props.dealID) {
       // TODO Reset state?
       setIsLoading(false);
-      setIsRequesting(false);
+      setError(null);
       setSponsorModalOpen(false);
-      setSubmitModalOpen(false);
       setDeleted(false);
       props.fetchDeal(props.dealID, DealModalInfo.fetchList, (deal: Deal) => {
         if (deal) {
@@ -119,7 +117,11 @@ const DealModal = (props: Props) => {
             <Grid.Row style={{color: 'purple'}}>
               <Icon.Group size='large'>
                 <Icon name='user circle outline' color='purple'/>
-              </Icon.Group> {getSponsorAttribute("name")}
+              </Icon.Group> <div onClick={() => setSponsorModalOpen(true)}>{getSponsorAttribute("name")}</div>
+              <SponsorModal open={sponsorModalOpen}
+                            onClose={() => setSponsorModalOpen(false)}
+                            sponsorID={getSponsorAttribute("id")}
+              />
             </Grid.Row>
             <Grid.Row style={{color: 'purple'}}>
               <Icon.Group size='large'>
@@ -134,6 +136,7 @@ const DealModal = (props: Props) => {
             <Button primary onClick={() => userBuyDeal(props.user.id, getDealAttribute("id"), setIsLoading,
               setError, props)}>Buy</Button>
           </Modal.Description>
+          <Spinner loading={isLoading}/>
         </Modal.Content>
       </Modal>
       {deletedMessage(deleted)}
