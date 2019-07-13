@@ -699,7 +699,7 @@ class UserFunctions {
    * @return {*} Debugging info about the Lambda operation.
    */
   static buyDeal(fromID, userID, dealID, successHandler, failureHandler, props) {
-    return Lambda.process(fromID, userID, getItemTypeFromID(userID), dealID, "buy", (data) => {
+    return this.updateAdd(fromID, userID, "productsOwned", dealID, (data) => {
       if (props) {
         if (props.addToUserAttribute && props.addToItemAttribute) {
           // TODO

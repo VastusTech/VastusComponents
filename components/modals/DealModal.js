@@ -120,7 +120,7 @@ const DealModal = (props: Props) => {
               </Icon.Group> <div onClick={() => setSponsorModalOpen(true)}>{getSponsorAttribute("name")}</div>
               <SponsorModal open={sponsorModalOpen}
                             onClose={() => setSponsorModalOpen(false)}
-                            sponsorID={getSponsorAttribute("id")}
+                            sponsorID={ getSponsorAttribute("id") }
               />
             </Grid.Row>
             <Grid.Row style={{color: 'purple'}}>
@@ -129,7 +129,7 @@ const DealModal = (props: Props) => {
               </Icon.Group> {parseInt(getDealAttribute("productCreditPrice")) / 1000}
             </Grid.Row>
             <Grid.Row style={{color: 'purple'}}>
-              <Image src={getDealAttribute("productImage")} size="large" centered/>
+              <Image src={getDealAttribute("productImage")} centered style={{width: "200px", height: "200px"}}/>
             </Grid.Row>
           </Grid>
           <Modal.Description>

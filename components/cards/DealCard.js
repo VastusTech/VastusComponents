@@ -4,12 +4,11 @@ import {Card, Dimmer, Grid, Header, Image} from 'semantic-ui-react';
 import DealModal from '../modals/DealModal';
 import {getAttributeFromObject} from "../../logic/CacheRetrievalHelper";
 import StyledProfileImage from "../props/StyledProfileImage";
-import ProfileImage from "../props/ProfileImage";
 import Spinner from "../props/Spinner";
 import Logo from "../../img/vt_gold_even_thicker_border.svg"
 
 export const DealCardInfo = {
-  fetchList: ["id", "sponsor", "quantity", "productImagePath", "productImagePaths", "productName", "productCreditPrice"],
+  fetchList: ["id", "sponsor", "productImagePath", "productImagePaths", "productName", "productCreditPrice"],
   ifSubscribe: false
 };
 
