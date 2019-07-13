@@ -53,6 +53,12 @@ const DealCard = (props: Props) => {
               <Grid.Column>
                 <Image src={Logo} size='mini'/>
               </Grid.Column>
+              <Grid.Column style={{color: 'purple'}} width={1}>
+                {getDealAttribute("productsLength") === 0 ?
+                  "Sold Out!" :
+                  `Only ${getDealAttribute("productsLength")} left!`
+                }
+              </Grid.Column>
             </Grid>
             <div className="u-flex u-flex-justify--center u-margin-bottom--2">
               <StyledProfileImage profileImage={getDealAttribute("productImage")} type={"Small"}/>

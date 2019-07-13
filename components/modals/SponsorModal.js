@@ -51,7 +51,7 @@ const SponsorModal = (props: Props) => {
   return (
     <Modal open={props.open} onClose={props.onClose}>
       <Icon className='close' onClick={props.onClose}/>
-      <Modal.Header style={{marginTop: '20px', marginBottom: '20px'}}>
+      <Modal.Header style={{color: 'purple', marginTop: '20px', marginBottom: '20px'}}>
         <Grid centered>{getAttribute("name")}</Grid></Modal.Header>
       <Modal.Content>
         <ProfileImage userID={props.sponsorID}
