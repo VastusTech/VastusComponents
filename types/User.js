@@ -53,5 +53,6 @@ type User = {
   messageBoards: [string],
   streaks: [string],
   credit: number,
+  productsOwned: [string],
 }
 export default User;
