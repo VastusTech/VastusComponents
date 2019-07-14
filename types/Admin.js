@@ -3,7 +3,7 @@ import type User from "./User";
 /**
  * TODO
  */
-type Sponsor = {
+type Admin = {
   ...$Shape<User>,
   id: string,
   item_type: string,
@@ -52,7 +52,6 @@ type Sponsor = {
   messageBoards: [string],
   streaks: [string],
   credit: number,
-  deals: [string],
   productsOwned: [string],
 }
 

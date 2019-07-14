@@ -234,6 +234,31 @@ class AuthAPI {
   }
 
   /**
+   * Changes the password of the current authenticated user.
+   *
+   * @param {string} oldPassword The current password of the User.
+   * @param {string} newPassword The new password for the User.
+   * @param {function(*)} successHandler Handles the received authentication credentials and user.
+   * @param {function(Error)} failureHandler Handles any authentication errors if necessary.
+   * @return {*} Debugging info for the Auth operation.
+   */
+  static changePassword(oldPassword, newPassword, successHandler, failureHandler) {
+    TestHelper.ifTesting || Auth.currentAuthenticatedUser()
+      .then(user => Auth.changePassword(user, oldPassword, newPassword))
+      .then((data) => {
+        log&&console.log("User successfully changed password!");
+        successHandler && successHandler(data);
+      }).catch((error) => {
+        err&&console.error("User failed changed password!");
+        err&&console.error(error);
+        failureHandler && failureHandler(error);
+      });
+    if (TestHelper.ifTesting) {
+      successHandler && successHandler({});
+    }
+  }
+
+  /**
    * Signs out of the Authentication completely, removing all user data from the Auth module.
    *
    * @param {function(*)} successHandler Handles the received authentication data.

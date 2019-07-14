@@ -397,6 +397,27 @@ export function confirmForgotPassword(username, confirmationCode, newPassword) {
   }
 }
 
+/**
+ * Changes the User's password.
+ *
+ * @param {string} oldPassword The old password of the User.
+ * @param {string} newPassword The new password to give to the current User.
+ * @return {function(function(*), function())} The given function to dispatch a new action in the redux system.
+ */
+export function changePassword(oldPassword, newPassword) {
+  return (dispatch) => {
+    dispatch(setIsLoading());
+    Auth.changePassword(oldPassword, newPassword, () => {
+      log&&console.log("REDUX: Successfully changed password!");
+      dispatch(setIsNotLoading());
+    }, (error) => {
+      err && console.error("REDUX: Failed changing password...");
+      dispatch(setError(error));
+      dispatch(setIsNotLoading());
+    });
+  }
+}
+
 // =========================================================================================================
 // ~ Low-Level Auth Actions
 // =========================================================================================================

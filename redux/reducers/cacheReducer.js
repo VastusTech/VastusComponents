@@ -18,6 +18,7 @@ import type Sponsor from "../../types/Sponsor";
 import type Streak from "../../types/Streak";
 import type Deal from "../../types/Deal";
 import type Product from "../../types/Product";
+import type Admin from "../../types/Admin";
 
 /**
  * Gets the object channel Ably name from the given id.
@@ -59,6 +60,7 @@ const sponsorCacheSize = 100;
 const streakCacheSize = 100;
 const dealCacheSize = 100;
 const productCacheSize = 100;
+const adminCacheSize = 100;
 
 // TODO The query cache sizes might be important if the user is searching for a lot
 const clientQueryCacheSize = 5;
@@ -77,19 +79,21 @@ const sponsorQueryCacheSize = 5;
 const streakQueryCacheSize = 10;
 const dealQueryCacheSize = 10;
 const productQueryCacheSize = 10;
+const adminQueryCacheSize = 10;
 
 const getItemCacheSize = (itemType) => {
   return switchReturnItemType(itemType, clientCacheSize, trainerCacheSize, gymCacheSize, workoutCacheSize,
     reviewCacheSize, eventCacheSize, challengeCacheSize, inviteCacheSize, postCacheSize, submissionCacheSize,
     groupCacheSize, commentCacheSize, sponsorCacheSize, null, streakCacheSize, dealCacheSize,
-    productCacheSize, "GET ITEM CACHE SIZE CACHE REDUCER");
+    productCacheSize, adminCacheSize, "GET ITEM CACHE SIZE CACHE REDUCER");
 };
 
 const getItemQueryCacheSize = (itemType) => {
   return switchReturnItemType(itemType, clientQueryCacheSize, trainerQueryCacheSize, gymQueryCacheSize,
     workoutQueryCacheSize, reviewQueryCacheSize, eventQueryCacheSize, challengeQueryCacheSize, inviteQueryCacheSize,
     postQueryCacheSize, submissionQueryCacheSize, groupQueryCacheSize, commentQueryCacheSize, sponsorQueryCacheSize,
-    null, streakQueryCacheSize, dealQueryCacheSize, productQueryCacheSize, "GET ITEM QUERY CACHE SIZE");
+    null, streakQueryCacheSize, dealQueryCacheSize, productQueryCacheSize, adminQueryCacheSize,
+    "GET ITEM QUERY CACHE SIZE");
 };
 
 type CacheReducer = {
@@ -109,6 +113,7 @@ type CacheReducer = {
   streaks: Object<string, Streak>,
   deals: Object<string, Deal>,
   products: Object<string, Product>,
+  admins: Object<String, Admin>
   clientLRUHandler: [string],
   trainerLRUHandler: [string],
   gymLRUHandler: [string],
@@ -125,6 +130,7 @@ type CacheReducer = {
   streakLRUHandler: [string],
   dealLRUHandler: [string],
   productLRUHandler: [string],
+  adminLRUHandler: [string],
   clientQueries: Object<string, string>,
   trainerQueries: Object<string, string>,
   gymQueries: Object<string, string>,
@@ -141,6 +147,7 @@ type CacheReducer = {
   streakQueries: Object<string, string>,
   dealQueries: Object<string, string>,
   productQueries: Object<string, string>,
+  adminQueries: Object<string, string>,
   clientQueryLRUHandler: [string],
   trainerQueryLRUHandler: [string],
   gymQueryLRUHandler: [string],
@@ -157,6 +164,7 @@ type CacheReducer = {
   streakQueryLRUHandler: [string],
   dealQueryLRUHandler: [string],
   productQueryLRUHandler: [string],
+  adminQueryLRUHandler: [string],
 }
 
 /**
@@ -182,6 +190,7 @@ const initialState = {
   streaks: {},
   deals: {},
   products: {},
+  admins: {},
 
   // List of IDs in order of least recently used
   clientLRUHandler: [],
@@ -200,6 +209,7 @@ const initialState = {
   streakLRUHandler: [],
   dealLRUHandler: [],
   productLRUHandler: [],
+  adminLRUHandler: [],
 
   // TODO Consider changing this to be more like the message board queries where they just hold a list of results and
   // TODO there are other objects that hold next tokens / ifFinished's ...
@@ -220,6 +230,7 @@ const initialState = {
   streakQueries: {},
   dealQueries: {},
   productQueries: {},
+  adminQueries: {},
 
   clientQueryLRUHandler: [],
   trainerQueryLRUHandler: [],
@@ -237,6 +248,7 @@ const initialState = {
   streakQueryLRUHandler: [],
   dealQueryLRUHandler: [],
   productQueryLRUHandler: [],
+  adminQueryLRUHandler: [],
 };
 
 /**
@@ -265,6 +277,7 @@ const copyState = (state) => {
     streaks: {...state.streaks},
     deals: {...state.deals},
     products: {...state.products},
+    admins: {...state.admins},
     clientLRUHandler: [...state.clientLRUHandler],
     trainerLRUHandler: [...state.trainerLRUHandler],
     gymLRUHandler: [...state.gymLRUHandler],
@@ -281,6 +294,7 @@ const copyState = (state) => {
     streakLRUHandler: [...state.streakLRUHandler],
     dealLRUHandler: [...state.dealLRUHandler],
     productLRUHandler: [...state.productLRUHandler],
+    adminLRUHandler: [...state.adminLRUHandler],
     clientQueries: {...state.clientQueries},
     trainerQueries: {...state.trainerQueries},
     gymQueries: {...state.gymQueries},
@@ -297,6 +311,7 @@ const copyState = (state) => {
     streakQueries: {...state.streakQueries},
     dealQueries: {...state.dealQueries},
     productQueries: {...state.productQueries},
+    adminQueries: {...state.adminQueries},
     clientQueryLRUHandler: [...state.clientQueryLRUHandler],
     trainerQueryLRUHandler: [...state.trainerQueryLRUHandler],
     gymQueryLRUHandler: [...state.gymQueryLRUHandler],
@@ -313,6 +328,7 @@ const copyState = (state) => {
     streakQueryLRUHandler: [...state.streakQueryLRUHandler],
     dealQueryLRUHandler: [...state.dealQueryLRUHandler],
     productQueryLRUHandler: [...state.productQueryLRUHandler],
+    adminQueryLRUHandler: [...state.adminQueryLRUHandler],
   };
 };
 
@@ -326,7 +342,8 @@ const copyState = (state) => {
 const getItemCache = (state, itemType) => {
   return switchReturnItemType(itemType, state.clients, state.trainers, state.gyms, state.workouts, state.reviews,
     state.events, state.challenges, state.invites, state.posts, state.submissions, state.groups, state.comments,
-    state.sponsors, null, state.streaks, state.deals, state.products, "GET ITEM CACHE CACHE REDUCER");
+    state.sponsors, null, state.streaks, state.deals, state.products, state.admins,
+    "GET ITEM CACHE CACHE REDUCER");
 };
 
 /**
@@ -341,7 +358,7 @@ const getItemLRUHandler = (state, itemType) => {
     state.workoutLRUHandler, state.reviewLRUHandler, state.eventLRUHandler, state.challengeLRUHandler,
     state.inviteLRUHandler, state.postLRUHandler, state.submissionLRUHandler, state.groupLRUHandler,
     state.commentLRUHandler, state.sponsorLRUHandler, null, state.streakLRUHandler, state.dealLRUHandler,
-    state.productLRUHandler, "GET ITEM LRU HANDLER");
+    state.productLRUHandler, state.adminLRUHandler, "GET ITEM LRU HANDLER");
 };
 
 /**
@@ -355,7 +372,8 @@ const getItemQueryCache = (state, itemType) => {
   return switchReturnItemType(itemType, state.clientQueries, state.trainerQueries, state.gymQueries,
     state.workoutQueries, state.reviewQueries, state.eventQueries, state.challengeQueries, state.inviteQueries,
     state.postQueries, state.submissionQueries, state.groupQueries, state.commentQueries, state.sponsorQueries,
-    null, state.streakQueries, state.dealQueries, state.productQueries, "GET ITEM QUERY CACHE CACHE REDUCER");
+    null, state.streakQueries, state.dealQueries, state.productQueries, state.adminQueries,
+    "GET ITEM QUERY CACHE CACHE REDUCER");
 };
 
 /**
@@ -370,7 +388,8 @@ const getItemQueryCacheName = (state, itemType) => {
     "workoutQueries", "reviewQueries", "eventQueries", "challengeQueries",
     "inviteQueries", "postQueries", "submissionQueries", "groupQueries",
     "commentQueries", "sponsorQueries", null, "streakQueries",
-    "dealQueries", "productQueries", "GET ITEM QUERY CACHE CACHE REDUCER");
+    "dealQueries", "productQueries", "adminQueries",
+    "GET ITEM QUERY CACHE CACHE REDUCER");
 };
 
 /**
@@ -386,7 +405,7 @@ const getItemQueryLRUHandler = (state, itemType) => {
     state.challengeQueryLRUHandler, state.inviteQueryLRUHandler, state.postQueryLRUHandler,
     state.submissionQueryLRUHandler, state.groupQueryLRUHandler, state.commentQueryLRUHandler,
     state.sponsorQueryLRUHandler, null, state.streakQueryLRUHandler, state.dealQueryLRUHandler,
-    state.productQueryLRUHandler, "GET ITEM QUERY LRU HANDLER CACHE REDUCER");
+    state.productQueryLRUHandler, state.adminQueryLRUHandler, "GET ITEM QUERY LRU HANDLER CACHE REDUCER");
 };
 
 /**
@@ -403,7 +422,7 @@ const getItemQueryLRUHandlerName = (state, itemType) => {
     "postQueryLRUHandler", "submissionQueryLRUHandler", "groupQueryLRUHandler",
     "commentQueryLRUHandler", "sponsorQueryLRUHandler", null,
     "streakQueryLRUHandler", "dealQueryLRUHandler", "productQueryLRUHandler",
-    "GET ITEM QUERY LRU HANDLER CACHE REDUCER");
+    "adminQueryLRUHandler", "GET ITEM QUERY LRU HANDLER CACHE REDUCER");
 };
 
 /**
