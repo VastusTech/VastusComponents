@@ -17,6 +17,8 @@ import EventCard from "../cards/EventCard";
 import ChallengeCard from "../cards/ChallengeCard";
 import PostCard from "../cards/PostCard";
 import Spinner from "../props/Spinner";
+import {DealCardInfo} from "../cards/DealCard";
+import {SponsorCardInfo} from "../cards/SponsorCard";
 
 // TODO Don't use this for Posts or anything that needs to fetch with more depth.
 
@@ -42,7 +44,8 @@ const queryObjects = (itemType, filter, filterFunction, nextToken, isFinished, f
       null,
       PostCardInfo.fetchList,
       GroupCardInfo.fetchList,
-      null, null, null, null, "Could not retrieve for Database Object Feed");
+      null, null, SponsorCardInfo.fetchList, null, null, DealCardInfo.fetchList,
+      "Could not retrieve for Database Object Feed");
     fetchItemQuery(itemType, fetchList, filter, objectFeedLength, nextToken, (data) => {
       if (!data.nextToken) {
         setIsFinished(true);
@@ -91,7 +94,7 @@ const queryObjects = (itemType, filter, filterFunction, nextToken, isFinished, f
  * This is the main feed in the home page, it currently displays all public events inside of the database for
  * the user to see.
  */
-const GroupFeed = (props: Props) => {
+const DatabaseObjectFeed = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [nextToken, setNextToken] = useState(null);
@@ -147,4 +150,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(GroupFeed);
+export default connect(mapStateToProps, mapDispatchToProps)(DatabaseObjectFeed);

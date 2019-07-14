@@ -20,8 +20,10 @@ const ItemType = {
   Streak: "Streak",
   Deal: "Deal",
   Product: "Product",
+  Admin: "Admin",
 };
 
+// Construct the prefixes object to get O(1) prefix item type
 const numPrefix = 2;
 const prefixes = {};
 for (const key in ItemType) {
@@ -67,12 +69,14 @@ export function getItemTypeFromID(id) {
  * @param {string} streakValue The Streak value.
  * @param {string} dealValue The Deal value.
  * @param {string} productValue The Product value.
+ * @param {string} adminValue The Admin value.
  * @param {string} errorMessage The error message to console if the item is unrecognized.
  * @return {*} The specific item type value.
  */
-export function switchReturnItemType(itemType, clientValue, trainerValue, gymValue, workoutValue, reviewValue, eventValue,
-                                     challengeValue, inviteValue, postValue, submissionValue, groupValue, commentValue,
-                                     sponsorValue, messageValue, streakValue, dealValue, productValue, errorMessage) {
+export function switchReturnItemType(itemType, clientValue, trainerValue, gymValue, workoutValue, reviewValue,
+                                     eventValue, challengeValue, inviteValue, postValue, submissionValue, groupValue,
+                                     commentValue, sponsorValue, messageValue, streakValue, dealValue, productValue,
+                                     adminValue, errorMessage) {
   let returnValue = null;
   switch (itemType) {
     case "Client":
@@ -126,6 +130,9 @@ export function switchReturnItemType(itemType, clientValue, trainerValue, gymVal
     case "Product":
       returnValue = dealValue;
       break;
+    case "Admin":
+      returnValue = adminValue;
+      break;
     default:
       returnValue = null;
       break;
@@ -160,12 +167,13 @@ export function switchReturnItemType(itemType, clientValue, trainerValue, gymVal
  * @param {string} streakHandler The Streak value.
  * @param {string} dealHandler The Deal value.
  * @param {string} productHandler The Product value.
+ * @param {string} adminHandler The Admin value.
  * @param errorMessage The error message to console if the item type is unrecognized.
  */
 export function switchHandleItemType(itemType, clientHandler, trainerHandler, gymHandler, workoutHandler, reviewHandler,
                                      eventHandler, challengeHandler, inviteHandler, postHandler, submissionHandler,
                                      groupHandler, commentHandler, sponsorHandler, messageHandler, streakHandler,
-                                     dealHandler, productHandler, errorMessage) {
+                                     dealHandler, productHandler, adminHandler, errorMessage) {
   let itemHandler = null;
   switch (itemType) {
     case "Client":
@@ -218,6 +226,9 @@ export function switchHandleItemType(itemType, clientHandler, trainerHandler, gy
       break;
     case "Product":
       itemHandler = productHandler;
+      break;
+    case "Admin":
+      itemHandler = adminHandler;
       break;
     default:
       itemHandler = null;

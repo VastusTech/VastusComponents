@@ -53,6 +53,7 @@ type Sponsor = {
   streaks: [string],
   credit: number,
   deals: [string],
+  productsOwned: [string],
 }
 
 export default Sponsor;

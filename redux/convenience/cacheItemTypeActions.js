@@ -5,8 +5,6 @@ import {
   forceFetchItems,
   subscribeFetchItem
 } from "../actions/cacheActions";
-// import type Client from "../../types/Client";
-// import type Trainer from "../../types/Trainer";
 
 /**
  * Fetches a Client from the database, making sure that it hasn't already fetched the attributes in the list before.
@@ -90,6 +88,10 @@ export function fetchProduct(id, variableList, dataHandler, failureHandler) {
   return fetchItem(id, "Product", variableList, dataHandler, failureHandler);
 }
 
+export function fetchAdmin(id, variableList, dataHandler, failureHandler) {
+  return fetchItem(id, "Admin", variableList, dataHandler, failureHandler);
+}
+
 export function subscribeFetchClient(id, variableList, dataHandler, failureHandler) {
   return subscribeFetchItem(id, "Client", variableList, dataHandler, failureHandler);
 }
@@ -152,6 +154,10 @@ export function subscribeFetchDeal(id, variableList, dataHandler, failureHandler
 
 export function subscribeFetchProduct(id, variableList, dataHandler, failureHandler) {
   return subscribeFetchItem(id, "Product", variableList, dataHandler, failureHandler);
+}
+
+export function subscribeFetchAdmin(id, variableList, dataHandler, failureHandler) {
+  return subscribeFetchItem(id, "Admin", variableList, dataHandler, failureHandler);
 }
 
 export function forceFetchClient(id, variableList, dataHandler, failureHandler) {
@@ -218,6 +224,10 @@ export function forceFetchProduct(id, variableList, dataHandler, failureHandler)
   return forceFetchItem(id, "Product", variableList, dataHandler, failureHandler);
 }
 
+export function forceFetchAdmin(id, variableList, dataHandler, failureHandler) {
+  return forceFetchItem(id, "Admin", variableList, dataHandler, failureHandler);
+}
+
 export function fetchClients(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
   return fetchItems(ids, "Client", variableList, startIndex, maxFetch, dataHandler, failureHandler);
 }
@@ -282,6 +292,10 @@ export function fetchProducts(ids, variableList, startIndex, maxFetch, dataHandl
   return fetchItems(ids, "Product", variableList, startIndex, maxFetch, dataHandler, failureHandler);
 }
 
+export function fetchAdmins(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
+  return fetchItems(ids, "Admin", variableList, startIndex, maxFetch, dataHandler, failureHandler);
+}
+
 export function forceFetchClients(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
   return forceFetchItems(ids, "Client", variableList, startIndex, maxFetch, dataHandler, failureHandler);
 }
@@ -344,6 +358,10 @@ export function forceFetchDeals(ids, variableList, startIndex, maxFetch, dataHan
 
 export function forceFetchProducts(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
   return forceFetchItems(ids, "Product", variableList, startIndex, maxFetch, dataHandler, failureHandler);
+}
+
+export function forceFetchAdmins(ids, variableList, startIndex, maxFetch, dataHandler, failureHandler) {
+  return forceFetchItems(ids, "Admin", variableList, startIndex, maxFetch, dataHandler, failureHandler);
 }
 
 export function fetchClientQuery(variableList, filter, limit, nextToken, dataHandler, failureHandler) {
@@ -411,6 +429,10 @@ export function fetchProductQuery(variableList, filter, limit, nextToken, dataHa
   return fetchItemQuery("Product", variableList, filter, limit, nextToken, dataHandler, failureHandler);
 }
 
+export function fetchAdminQuery(variableList, filter, limit, nextToken, dataHandler, failureHandler) {
+  return fetchItemQuery("Admin", variableList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+
 export function forceFetchClientQuery(variableList, filter, limit, nextToken, dataHandler, failureHandler) {
   return forceFetchItemQuery("Client", variableList, filter, limit, nextToken, dataHandler, failureHandler);
 }
@@ -473,4 +495,8 @@ export function forceFetchDealQuery(variableList, filter, limit, nextToken, data
 
 export function forceFetchProductQuery(variableList, filter, limit, nextToken, dataHandler, failureHandler) {
   return forceFetchItemQuery("Product", variableList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+
+export function forceFetchAdminQuery(variableList, filter, limit, nextToken, dataHandler, failureHandler) {
+  return forceFetchItemQuery("Admin", variableList, filter, limit, nextToken, dataHandler, failureHandler);
 }

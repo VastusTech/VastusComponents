@@ -12,6 +12,7 @@ import ChallengeCard, {ChallengeCardInfo} from "../cards/ChallengeCard";
 import PostCard, {PostCardInfo} from "../cards/PostCard";
 import {shuffleArray} from "../../logic/ArrayHelper";
 import ProductCard, {ProductCardInfo} from "../cards/ProductCard";
+import DealCard, {DealCardInfo} from "../cards/DealCard";
 
 // TODO Don't use this with items that have depth to what they need to grab!!! (i.e Posts with "about" info)
 
@@ -63,7 +64,8 @@ export const getObjectComponent = (key, object) => (
     <ChallengeCard challenge={object}/>,
     null,
     <PostCard postID={object.id}/>,
-    null, null, null, null, null, null, null,
+    null, null, null, null, null, null,
+    <DealCard deal={object}/>,
     <ProductCard product={object}/>, "Get database object list object not implemented for item type"
   )
 );
@@ -96,7 +98,7 @@ export const batchFetchMoreObjects = (typeIDs, typeHiddenIDIndex, randomized, so
         null,
         PostCardInfo.fetchList,
         null, null, null, null, null,
-        null, null, ProductCardInfo.fetchList,
+        null, DealCardInfo.fetchList, ProductCardInfo.fetchList,
         "Get variable list from item type not implemented!");
       // alert(ids.length + " vs " + hiddenIndex);
       if (ids.length > hiddenIndex) {

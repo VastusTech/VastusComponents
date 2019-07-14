@@ -982,13 +982,14 @@ export function getCache(itemType, getStore) {
   const cache = getStore().cache;
   return switchReturnItemType(itemType, cache.clients, cache.trainers, cache.gyms, cache.workouts, cache.reviews,
     cache.events, cache.challenges, cache.invites, cache.posts, cache.submissions, cache.groups, cache.comments,
-    cache.sponsors, null, cache.streaks, cache.deals, cache.products, "Retrieve cache not implemented");
+    cache.sponsors, null, cache.streaks, cache.deals, cache.products, cache.admins,
+    "Retrieve cache not implemented");
 }
 
 export function getCacheName(itemType) {
   return switchReturnItemType(itemType, "clients", "trainers", "gyms", "workouts", "reviews", "events", "challenges",
     "invites", "posts", "submissions", "groups", "comments", "sponsors", null, "streaks",
-    "deals", "products", "Retrieve cache not implemented");
+    "deals", "products", "admins", "Retrieve cache not implemented");
 }
 
 export function getQueryCache(itemType, getStore) {
@@ -996,5 +997,6 @@ export function getQueryCache(itemType, getStore) {
   return switchReturnItemType(itemType, cache.clientQueries, cache.trainerQueries, cache.gymQueries,
     cache.workoutQueries, cache.reviewQueries, cache.eventQueries, cache.challengeQueries, cache.inviteQueries,
     cache.postQueries, cache.submissionQueries, cache.groupQueries, cache.commentQueries, cache.sponsorQueries,
-    null, cache.streakQueries, cache.dealQueries, cache.productQueries, "Retrieve query cache not implemented");
+    null, cache.streakQueries, cache.dealQueries, cache.productQueries, cache.adminQueries,
+    "Retrieve query cache not implemented");
 }

@@ -38,7 +38,7 @@ class GraphQL {
     const func = switchReturnItemType(itemType, GraphQL.getClient, GraphQL.getTrainer, GraphQL.getGym, GraphQL.getWorkout, GraphQL.getReview,
       GraphQL.getEvent, GraphQL.getChallenge, GraphQL.getInvite, GraphQL.getPost, GraphQL.getSubmission,
       GraphQL.getGroup, GraphQL.getComment, GraphQL.getSponsor, GraphQL.getMessage, GraphQL.getStreak, GraphQL.getDeal,
-      GraphQL.getProduct, "GraphQL get Fetch function function not implemented");
+      GraphQL.getProduct, GraphQL.getAdmin, "GraphQL get Fetch function function not implemented");
     if (func) {
       return func(id, variableList, successHandler, failureHandler);
     } else {
@@ -66,7 +66,8 @@ class GraphQL {
     const func = switchReturnItemType(itemType, GraphQL.getClientByUsername, GraphQL.getTrainerByUsername,
       GraphQL.getGymByUsername, null, null, null, null, null,
       null, null, null, null, GraphQL.getSponsorByUsername,
-      null, null, null, "GraphQL get Fetch Username function function not implemented");
+      null, null, null, null, GraphQL.getAdminByUsername,
+      "GraphQL get Fetch Username function function not implemented");
     if (func) {
       return func(username, variableList, successHandler, failureHandler);
     } else {
@@ -95,7 +96,8 @@ class GraphQL {
     const func = switchReturnItemType(itemType, GraphQL.getClientByFederatedID, GraphQL.getTrainerByFederatedID,
       GraphQL.getGymByFederatedID, null, null, null, null, null,
       null, null, null, null, GraphQL.getSponsorByFederatedID,
-      null, null, null, "GraphQL get Fetch Username function function not implemented");
+      null, null, null, null, GraphQL.getAdminByFederatedID,
+      "GraphQL get Fetch Username function function not implemented");
     if (func) {
       return func(federatedID, variableList, successHandler, failureHandler);
     } else {
@@ -127,7 +129,7 @@ class GraphQL {
     const func = switchReturnItemType(itemType, GraphQL.getClients, GraphQL.getTrainers, GraphQL.getGyms, GraphQL.getWorkouts,
       GraphQL.getReviews, GraphQL.getEvents, GraphQL.getChallenges, GraphQL.getInvites, GraphQL.getPosts,
       GraphQL.getSubmissions, GraphQL.getGroups, GraphQL.getComments, GraphQL.getSponsors, GraphQL.getMessages, GraphQL.getStreaks,
-      GraphQL.getDeals, GraphQL.getProducts, "GraphQL get Batch Fetch function function not implemented");
+      GraphQL.getDeals, GraphQL.getProducts, GraphQL.getAdmins, "GraphQL get Batch Fetch function function not implemented");
     if (TestHelper.ifTesting && successHandler) {
       const items = [];
       for (let i = 0; i < ids.length; i++) {
@@ -171,7 +173,7 @@ class GraphQL {
       GraphQL.constructWorkoutQuery, GraphQL.constructReviewQuery, GraphQL.constructEventQuery, GraphQL.constructChallengeQuery,
       GraphQL.constructInviteQuery, GraphQL.constructPostQuery, GraphQL.constructSubmissionQuery, GraphQL.constructGroupQuery,
       GraphQL.constructCommentQuery, GraphQL.constructSponsorQuery, GraphQL.constructMessageQuery, GraphQL.constructStreakQuery,
-      GraphQL.constructDealQuery, GraphQL.constructProductQuery, "GraphQL get construct Query function not implemented");
+      GraphQL.constructDealQuery, GraphQL.constructProductQuery, GraphQL.constructAdminQuery, "GraphQL get construct Query function not implemented");
     if (func) {
       return func(variableList, filter, limit, nextToken);
     } else {
@@ -194,7 +196,8 @@ class GraphQL {
     const func = switchReturnItemType(itemType, GraphQL.queryClients, GraphQL.queryTrainers, GraphQL.queryGyms, GraphQL.queryWorkouts,
       GraphQL.queryReviews, GraphQL.queryEvents, GraphQL.queryChallenges, GraphQL.queryInvites, GraphQL.queryPosts,
       GraphQL.querySubmissions, GraphQL.queryGroups, GraphQL.queryComments, GraphQL.querySponsors, GraphQL.queryMessages,
-      GraphQL.queryStreaks, GraphQL.queryDeals, GraphQL.queryProducts, "GraphQL get Query function function not implemented for type");
+      GraphQL.queryStreaks, GraphQL.queryDeals, GraphQL.queryProducts, GraphQL.queryAdmins,
+      "GraphQL get Query function function not implemented for type");
     if (func) {
       return func(query, successHandler, failureHandler);
     } else {
@@ -330,6 +333,21 @@ class GraphQL {
   static getProduct(id, variableList, successHandler, failureHandler) {
     return GraphQL.execute(GraphQL.constructQuery("GetProduct", "getProduct", {id}, variableList),
       "getProduct", successHandler, failureHandler);
+  }
+
+  static getAdmin(id, variableList, successHandler, failureHandler) {
+    return GraphQL.execute(GraphQL.constructQuery("GetAdmin", "getAdmin", {id}, variableList),
+      "getAdmin", successHandler, failureHandler);
+  }
+
+  static getAdminByUsername(username, variableList, successHandler, failureHandler) {
+    return GraphQL.execute(GraphQL.constructQuery("GetAdminByUsername", "getAdminByUsername", {username}, variableList),
+      "getAdminByUsername", successHandler, failureHandler);
+  }
+
+  static getAdminByFederatedID(federatedID, variableList, successHandler, failureHandler) {
+    return GraphQL.execute(GraphQL.constructQuery("GetAdminByFederatedID", "getAdminByFederatedID", {federatedID}, variableList),
+      "getAdminByFederatedID", successHandler, failureHandler);
   }
 
   // ~ Batch Fetch Functions
@@ -501,6 +519,16 @@ class GraphQL {
     const idList = GraphQL.generateIDList(ids);
     return GraphQL.execute(GraphQL.constructQuery("GetProducts", "getProducts", null, variableList, idList, true),
       "getProducts", successHandler, failureHandler);
+  }
+
+  static getAdmins(ids, variableList, successHandler, failureHandler) {
+    if (ids && ids.length > GraphQL.batchLimit) {
+      // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
+      log && console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
+    }
+    const idList = GraphQL.generateIDList(ids);
+    return GraphQL.execute(GraphQL.constructQuery("GetAdmins", "getAdmins", null, variableList, idList, true),
+      "getAdmins", successHandler, failureHandler);
   }
 
   // ~ Construct Query Functions
@@ -691,6 +719,17 @@ class GraphQL {
     return GraphQL.constructQuery("QueryProducts", "queryProducts", inputVariables, variableList, filter, false, true);
   }
 
+  static constructAdminQuery(variableList, filter, limit, nextToken) {
+    const inputVariables = {};
+    if (limit) {
+      inputVariables.limit = limit;
+    }
+    if (nextToken) {
+      inputVariables.nextToken = nextToken;
+    }
+    return GraphQL.constructQuery("QueryAdmins", "queryAdmins", inputVariables, variableList, filter, false, true);
+  }
+
   // ~ Query Fetch Functions
   static queryClients(query, successHandler, failureHandler) {
     return GraphQL.execute(query, "queryClients", successHandler, failureHandler);
@@ -758,6 +797,10 @@ class GraphQL {
 
   static queryProducts(query, successHandler, failureHandler) {
     return GraphQL.execute(query, "queryProducts", successHandler, failureHandler);
+  }
+
+  static queryAdmins(query, successHandler, failureHandler) {
+    return GraphQL.execute(query, "queryAdmins", successHandler, failureHandler);
   }
 
   /**

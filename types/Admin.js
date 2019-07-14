@@ -1,11 +1,10 @@
-import type DatabaseObject from "./DatabaseObject";
+import type User from "./User";
 
 /**
- * Flow Type Annotation for the User object. Represents a User in the database, which can interact with the app and has
- * its own User Pool user object.
+ * TODO
  */
-type User = {
-  ...$Shape<DatabaseObject>,
+type Admin = {
+  ...$Shape<User>,
   id: string,
   item_type: string,
   marker: number,
@@ -55,4 +54,5 @@ type User = {
   credit: number,
   productsOwned: [string],
 }
-export default User;
+
+export default Sponsor;
