@@ -49,18 +49,18 @@ const SponsorModal = (props: Props) => {
   }, [props.open]);
 
   return (
-    <Modal open={props.open} onClose={props.onClose}>
+    <Modal open={props.open} onClose={props.onClose} style={{background: 'white'}}>
       <Icon className='close' onClick={props.onClose}/>
-      <Modal.Header style={{color: 'purple', marginTop: '20px', marginBottom: '20px'}}>
+      <Modal.Header style={{color: 'purple', marginTop: '20px', marginBottom: '20px', background: 'white'}}>
         <Grid centered>{getAttribute("name")}</Grid></Modal.Header>
-      <Modal.Content>
+      <Modal.Content style={{background: 'white'}}>
         <ProfileImage userID={props.sponsorID}
                       profileImage={getAttribute("profileImage")}
                       profileImages={getAttribute("profileImages")}
                       editable={false}
                       style={{marginTop: '20px'}}
         />
-        <Header>Deals:</Header>
+        <Header style={{background: 'white', color: 'purple'}}>Deals:</Header>
         <DatabaseObjectList ids={getAttribute("deals")}
                             noObjectsMessage="No Deals Yet..."
                             acceptedItemTypes={["Deal"]}

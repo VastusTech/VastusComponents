@@ -140,8 +140,9 @@ const MessageInput = (props: Props) => {
         className='u-margin-top--2'>
         {loadingBar(isLoading, percent)}
         <Input type='text' action fluid className="textarea" name="message" placeholder="Write Message..."
-        style={{border: '1px solid rebeccapurple', background: 'white', color: 'purple'}} color='white'>
-          <input/>
+        style={{border: '1px solid rebeccapurple', background: 'white', color: 'purple',
+            borderRadius: '50px, 50px, 50px, 50px'}} color='white'>
+          <input style={{background: 'white', border: 'none'}}/>
           <Button as='label' for='proPicUpload'>
             <Icon name='camera' size="large" style={{marginLeft: '8px'}}/>
             <input type="file" accept="image/*;video/*;capture=camcorder" id="proPicUpload" hidden='true'

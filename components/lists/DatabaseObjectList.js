@@ -233,7 +233,7 @@ const DatabaseObjectList = (props: Props) => {
     );
   } else {
     return (
-      <Message>{props.noObjectsMessage}</Message>
+      <Message style={{background: 'white', color: 'purple'}}>{props.noObjectsMessage}</Message>
     );
   }
 };

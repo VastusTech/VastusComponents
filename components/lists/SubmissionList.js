@@ -26,7 +26,7 @@ function submissionComponents(submissions) {
   for (const key in submissions) {
     if (submissions.hasOwnProperty(key)) {
       components.push(
-        <List.Item key={key}>
+        <List.Item key={key} style={{background: 'white', color: 'purple'}}>
           <SubmissionCard submission={submissions[key]}/>
         </List.Item>
       );
@@ -107,14 +107,14 @@ const SubmissionList = (props: Props) => {
   if (visibleSubmissions && visibleSubmissions.length > 0) {
     return (
       <div>
-        <List relaxed verticalAlign="middle">
+        <List relaxed verticalAlign="middle" >
           {submissionComponents(visibleSubmissions)}
         </List>
       </div>
     );
   } else {
     return (
-      <Message>{props.noSubmissionsMessage}</Message>
+      <Message style={{background: 'white', color: 'purple'}}>{props.noSubmissionsMessage}</Message>
     );
   }
 };

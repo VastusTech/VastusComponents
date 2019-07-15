@@ -93,40 +93,42 @@ const PostDescriptionModal = (props: Props) => {
   }
   //log&&console.log("Challenge Info: " + JSON.stringify(this.state.event));
   return (
-    <Modal closeIcon open={props.open} onClose={() => props.onClose()}>
-      <Modal.Header>{convertFromISO(getAttribute("time_created"))}</Modal.Header>
-      <Modal.Content>
+    <Modal closeIcon open={props.open} onClose={() => props.onClose()} style={{background: 'white', color: 'purple'}}>
+      <Modal.Header style={{background: 'white', color: 'purple'}}>
+        {convertFromISO(getAttribute("time_created"))}
+      </Modal.Header>
+      <Modal.Content style={{background: 'white', color: 'purple'}}>
         <Modal.Description>
           <ClientModal open={clientModalOpen} onClose={() => setClientModalOpen(false)} clientID={getAttribute("by")}/>
           <List relaxed>
             <List.Item>
-              <List.Icon name='user'/>
+              <List.Icon name='user' color='purple'/>
               <List.Content>
                 Created by <Button className="u-button--flat"
                                    onClick={() => clientModalOpen || setClientModalOpen(true)}>{getByAttribute("name")}</Button>
               </List.Content>
             </List.Item>
             <List.Item>
-              <List.Icon name='calendar'/>
+              <List.Icon name='calendar' color='purple'/>
               <List.Content>
                 {convertFromISO(getAttribute("time_created"))}
               </List.Content>
             </List.Item>
             <List.Item>
-              <List.Icon name='description'/>
+              <List.Icon name='description' color='purple'/>
               <List.Content>
                 {getAttribute("description")}
               </List.Content>
             </List.Item>
             <List.Item>
-              <List.Icon name='access'/>
+              <List.Icon name='access' color='purple'/>
               <List.Content>
                 {getAttribute("access")}
               </List.Content>
             </List.Item>
             {/*TODO This is going to be where we show the DETAIL CARD (or some equivalent)*/}
             <List.Item>
-              <List.Icon name='users'/>
+              <List.Icon name='users' color='purple'/>
               <List.Content>
                 <Modal trigger={<Button className="u-button--flat u-padding-left--1">About</Button>} closeIcon>
                   <Modal.Content>

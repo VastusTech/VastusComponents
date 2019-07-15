@@ -9,19 +9,22 @@
 .ui.menu .active.item,
 .ui.menu a.item:hover,
 .ui.menu .active.item:hover  {
-  color: white;
+  color: purple;
 }
 
 .ui.menu .item {
-  color: white;
+  color: purple;
+  text-color: purple;
 }
 
 .ui.menu.fixed.top {
   box-shadow: none;
+  color: purple;
 }
 
 .ui.menu.fixed.bottom {
   box-shadow: none;
   border: 1px solid rebeccapurple;
   background: white;
+  color: purple;
 }

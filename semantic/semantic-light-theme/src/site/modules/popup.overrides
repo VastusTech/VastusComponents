@@ -1,3 +1,7 @@
 /*******************************
         User Overrides
 *******************************/
+.ui.popup {
+  color: white;
+  background: white;
+}

@@ -113,7 +113,7 @@ type CacheReducer = {
   streaks: Object<string, Streak>,
   deals: Object<string, Deal>,
   products: Object<string, Product>,
-  admins: Object<String, Admin>
+  admins: Object<string, Admin>,
   clientLRUHandler: [string],
   trainerLRUHandler: [string],
   gymLRUHandler: [string],

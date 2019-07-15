@@ -5,4 +5,16 @@
 .ui.tab.segment {
   margin-top: 72px; // Temp fix for top nav
   margin-bottom: 60px; // Temp fix for bottom nav
+  background: white;
+  border: 1px solid rebeccapurple;
 }
+
+ui.tab.pane {
+  background: white;
+  border: 1px solid rebeccapurple;
+}
+
+ui.tab.navbar {
+  color: purple;
+}
+

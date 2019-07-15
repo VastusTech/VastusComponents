@@ -238,8 +238,9 @@ class CreateSubmissionModal extends Component<Props> {
       );
     }
     return (
-      <Modal centered open={this.props.open} onClose={this.props.onClose.bind(this)} closeIcon>
-        <Modal.Content>
+      <Modal centered open={this.props.open} onClose={this.props.onClose.bind(this)} closeIcon
+             style={{background: 'white'}}>
+        <Modal.Content style={{background: 'white'}}>
           {this.loadingBar()}
           {this.displayVideo()}
           <Grid centered>

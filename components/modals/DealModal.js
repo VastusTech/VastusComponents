@@ -10,6 +10,8 @@ import Spinner from "../props/Spinner";
 import {log} from "../../../Constants";
 import type Deal from "../../types/Deal";
 import SponsorModal from "./SponsorModal";
+import Logo from "../../img/VC_logo.svg";
+import Breakpoint from 'react-socks';
 
 export const DealModalInfo = {
   // Contains everything that is referenced here
@@ -105,6 +107,7 @@ const DealModal = (props: Props) => {
   }
   return (
     <div>
+      <Breakpoint medium up>
       <Modal open={props.open} onClose={() => props.onClose()} closeIcon style={{background: '#FFFFFF'}}>
         <Icon className='close' onClick={() => props.onClose()}/>
         <Modal.Header align='center' style={{marginTop: '10px', background: 'white', color: 'purple'}}>
@@ -112,34 +115,81 @@ const DealModal = (props: Props) => {
             {getDealAttribute("productName")}
           </div>
         </Modal.Header>
-        <Modal.Content align='center'>
+        <Modal.Content align='center' style={{background: 'white'}}>
           <Grid centered columns='equal'>
-            <Grid.Row style={{color: 'purple'}}>
-              <Icon.Group size='large'>
-                <Icon name='user circle outline' color='purple'/>
-              </Icon.Group> <div onClick={() => setSponsorModalOpen(true)}>{getSponsorAttribute("name")}</div>
-              <SponsorModal open={sponsorModalOpen}
-                            onClose={() => setSponsorModalOpen(false)}
-                            sponsorID={ getSponsorAttribute("id") }
-              />
-            </Grid.Row>
-            <Grid.Row style={{color: 'purple'}}>
-              <Icon.Group size='large'>
-                <Icon name='money bill alternate outline' color='purple'/>
-              </Icon.Group> {parseInt(getDealAttribute("productCreditPrice")) / 1000}
-            </Grid.Row>
-            <Grid.Row style={{color: 'purple'}}>
-              <Image src={getDealAttribute("productImage")} centered style={{width: "200px", height: "200px"}}/>
-            </Grid.Row>
+            <Grid.Column floated='left'>
+                <Image src={Logo} size='mini' style={{color: 'purple', marginLeft: '30px'}}/>
+                <Grid style={{color: 'purple', marginLeft: '70px', marginTop: '-30px'}}>
+                  {getDealAttribute("productCreditPrice") / 1000}
+                </Grid>
+            </Grid.Column>
+            <Grid.Column style={{color: 'purple'}}>
+                <SponsorModal open={sponsorModalOpen}
+                              onClose={() => setSponsorModalOpen(false)}
+                              sponsorID={ getSponsorAttribute("id")}
+                />
+                <Image src={getDealAttribute("productImage")} centered
+                       style={{width: "200px", height: "200px"}} rounded/>
+            </Grid.Column>
+            <Grid.Column style={{color: 'purple'}}>
+                <Icon.Group size='large' style={{marginLeft: '80px'}} onClick={() => setSponsorModalOpen(true)}>
+                    <Icon name='user circle outline' color='purple'/>
+                </Icon.Group>
+                <div onClick={() => setSponsorModalOpen(true)}
+                     style={{marginLeft: '110px', marginTop: '-20px'}}>{getSponsorAttribute("name")}</div>
+            </Grid.Column>
           </Grid>
           <Modal.Description>
             <Button primary onClick={() => userBuyDeal(props.user.id, getDealAttribute("id"), setIsLoading,
-              setError, props)}>Buy</Button>
+              setError, props)} style={{marginTop: '10px'}}>Buy</Button>
           </Modal.Description>
           <Spinner loading={isLoading}/>
         </Modal.Content>
       </Modal>
       {deletedMessage(deleted)}
+      </Breakpoint>
+
+      <Breakpoint medium down>
+          <Modal open={props.open} onClose={() => props.onClose()} closeIcon style={{background: '#FFFFFF'}}>
+              <Icon className='close' onClick={() => props.onClose()}/>
+              <Modal.Header align='center' style={{marginTop: '10px', background: 'white', color: 'purple'}}>
+                  <div>
+                      {getDealAttribute("productName")}
+                  </div>
+              </Modal.Header>
+              <Modal.Content align='center' style={{background: 'white'}}>
+                  <Grid centered columns='equal'>
+                      <Grid.Column floated='left'>
+                          <Image src={Logo} size='mini'/>
+                          <Grid style={{color: 'purple', marginLeft: '40px', marginTop: '-30px'}}>
+                              {getDealAttribute("productCreditPrice") / 1000}
+                          </Grid>
+                      </Grid.Column>
+                      <Grid.Column style={{color: 'purple'}}>
+                          <SponsorModal open={sponsorModalOpen}
+                                        onClose={() => setSponsorModalOpen(false)}
+                                        sponsorID={ getSponsorAttribute("id")}
+                          />
+                          <Image src={getDealAttribute("productImage")} centered
+                                 style={{width: "200px", height: "200px"}} rounded/>
+                      </Grid.Column>
+                      <Grid.Column style={{color: 'purple'}}>
+                          <Icon.Group size='large' style={{marginLeft: '5px'}} onClick={() => setSponsorModalOpen(true)}>
+                              <Icon name='user circle outline' color='purple'/>
+                          </Icon.Group>
+                          <div onClick={() => setSponsorModalOpen(true)}
+                               style={{marginLeft: '35px', marginTop: '-20px'}}>{getSponsorAttribute("name")}</div>
+                      </Grid.Column>
+                  </Grid>
+                  <Modal.Description>
+                      <Button primary onClick={() => userBuyDeal(props.user.id, getDealAttribute("id"), setIsLoading,
+                          setError, props)} style={{marginTop: '10px'}}>Buy</Button>
+                  </Modal.Description>
+                  <Spinner loading={isLoading}/>
+              </Modal.Content>
+          </Modal>
+          {deletedMessage(deleted)}
+      </Breakpoint>
     </div>
   );
 };

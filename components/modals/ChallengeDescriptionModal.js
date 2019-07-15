@@ -1,5 +1,5 @@
 import React, {useState, useEffect, Fragment} from 'react';
-import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Progress, Popup} from 'semantic-ui-react';
+import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Menu, Popup} from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 import {connect} from 'react-redux';
 import {
@@ -257,8 +257,8 @@ export const createCorrectButton = (userID, challengeID, submissions, isLoading,
                                     isRequesting, setIsLoading, setSubmitModalOpen, openCompleteModal, props) => {
   const panes = [
     {
-      menuItem: 'Submissions', render: () => [
-        <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
+      menuItem: (<Menu.Item key={0} style={{color: 'purple'}}>Submissions</Menu.Item>), render: () => [
+        <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3' style={{background: 'white'}}>
           <ScrollView
             class='chat'
             width='100%'
@@ -281,8 +281,8 @@ export const createCorrectButton = (userID, challengeID, submissions, isLoading,
       ]
     },
     {
-      menuItem: 'Challenge Chat', render: () => (
-        <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
+        menuItem: (<Menu.Item key={1} style={{color: 'purple'}}>Challenge Chat</Menu.Item>), render: () => (
+        <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3' style={{background: 'white'}}>
           <CommentScreen board={challengeID}/>
         </Tab.Pane>
       )
@@ -299,15 +299,17 @@ export const createCorrectButton = (userID, challengeID, submissions, isLoading,
     // TODO This should also link the choose winner button
     return (
       <Fragment>
-        <Divider className='u-margin-top--4'/>
-        <Tab menu={{widths: 2, inverted: true}} panes={panes} className='u-challenge u-margin-top--2'/>
+        <Divider className='u-margin-top--4' color='purple'/>
+        <Tab menu={{widths: 2, color: 'purple'}} color='purple' panes={panes} className='u-challenge u-margin-top--2'
+             style={{background: 'white', color: 'purple'}}/>
       </Fragment>
     )
   } else if (isJoined) {
     return (
       <Fragment>
         <Divider className='u-margin-top--4'/>
-        <Tab menu={{widths: 2, inverted: true}} panes={panes} className='u-challenge u-margin-top--2'/>
+        <Tab menu={{widths: 2, inverted: true}} panes={panes} className='u-challenge u-margin-top--2'
+             style={{background: 'white', color: '#ca6dff'}}/>
       </Fragment>
     )
   } else if (isRestricted) {
@@ -464,7 +466,7 @@ export function editButton(isEditing, setIsEditing) {
 export function createCorrectSettingsButton(isOwned, isJoined, challengeID, setIsLoading, isLoading, userID, setCompleteModalOpen, onClose, props) {
   if (isOwned) {
     return (<Popup
-      trigger={<Button floated='right' circular icon color={'purple'}>
+      trigger={<Button floated='right' circular icon color={'purple'} style={{marginLeft: '-30px'}}>
         <Icon name='cog'/>
       </Button>}
       content={<Button loading={isLoading} fluid negative size="large" disabled={isLoading}
@@ -475,7 +477,7 @@ export function createCorrectSettingsButton(isOwned, isJoined, challengeID, setI
     />);
   } else if (isJoined) {
     return (<Popup
-      trigger={<Button floated='right' circular icon color={'purple'}>
+      trigger={<Button floated='right' circular icon color={'purple'} style={{marginLeft: '-30px'}}>
         <Icon name='cog'/>
       </Button>}
       content={<Button loading={isLoading} fluid inverted size="large" disabled={isLoading}
@@ -612,8 +614,8 @@ const ChallengeDescriptionModal = (props: Props) => {
         <Icon className='close' onClick={() => props.onClose()}/>
         <Modal.Header align='center' style={{marginTop: '10px', background: 'white', color: 'purple'}}>
           <div>
-            {getChallengeAttribute("title")}</div>
-          {editButton(isEditing, setIsEditing)}
+            {getChallengeAttribute("title")}
+          </div>
           {createCorrectSettingsButton(isOwned, true, props.challengeID, setIsLoading, isLoading,
             props.user.id, setCompleteModalOpen, props.onClose, props)}
           <div>{displayTagIcons(getChallengeAttribute("tags"))}</div>
@@ -621,7 +623,7 @@ const ChallengeDescriptionModal = (props: Props) => {
             {getDaysLeft(getChallengeAttribute("endTime"))}
           </div>
         </Modal.Header>
-        <Modal.Content align='center'>
+        <Modal.Content align='center' style={{background: 'white'}}>
           <Grid centered columns='equal'>
             <Grid.Row style={{color: 'purple'}}>
               <Icon.Group size='large'>
@@ -629,13 +631,11 @@ const ChallengeDescriptionModal = (props: Props) => {
               </Icon.Group> {getChallengeAttribute("goal")}
             </Grid.Row>
             <Grid.Row style={{color: 'purple'}}>
-              {debugAlert("Prize View: " + getChallengeAttribute("prize"))}
-              Winner Receives:
-              <Image src={getChallengeAttribute("prize")} size="large" centered/>
+                <Icon.Group size='large'>
+                    <Icon name='trophy' color='purple'/>
+                </Icon.Group> {getChallengeAttribute("prize")}
             </Grid.Row>
             <Grid.Row>
-
-
               <Modal trigger={
                 <Button style={{marginTop: '-15px', marginBottom: '20px'}}
                         floated='right' primary className="u-button--flat u-padding-left--1">
@@ -649,7 +649,7 @@ const ChallengeDescriptionModal = (props: Props) => {
               </Modal>
             </Grid.Row>
           </Grid>
-          <Modal.Description>
+          <Modal.Description style={{background: 'white'}}>
             {createCorrectModal(getChallengeAttribute("owner"), ownerModalOpen, setOwnerModalOpen)}
             <CompleteChallengeModal open={completeModalOpen} onClose={() => setCompleteModalOpen(false)}
                                     challengeID={props.challengeID}/>

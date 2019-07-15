@@ -11,7 +11,7 @@ import {logOut} from "../../redux/actions/authActions";
  * @constructor
  */
 const LogOutButton = (props) => (
-  <Button circular inverted size="large" onClick={() => props.logOut()} width={5}>Log Out</Button>
+  <Button circular primary style={{color: 'white'}} size="large" onClick={() => props.logOut()} width={5}>Log Out</Button>
 );
 
 const mapStateToProps = state => ({});
