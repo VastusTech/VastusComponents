@@ -1,13 +1,13 @@
 import * as AWS from "aws-sdk";
 import {Storage} from "aws-amplify";
-import {err, log} from "../../Constants";
+import {err, getEnvironmentType, log} from "../../Constants";
 import TestHelper from "../testing/TestHelper";
 
 /**
  * Class for handling all the interactions with our S3 Bucket files.
  */
 class S3Storage {
-  static bucketName = process.env.NODE_ENV === "production" ? 'vastusofficial' : 'vastusdevelopmentofficial';
+  static bucketName = getEnvironmentType() === "production" ? 'vastusofficial' : 'vastusdevelopmentofficial';
   static multipartSize = 10 * 1024 * 1024;
   static multipartQueueSize = 8;
 

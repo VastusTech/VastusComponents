@@ -1,5 +1,6 @@
 import Lambda from "../api/Lambda";
 import S3 from "../api/S3Storage";
+import {getEnvironmentType} from "../../Constants";
 
 const itemType = "Message";
 
@@ -138,7 +139,7 @@ class MessageFunctions {
 
   static updateAdd(fromID, board, messageID, attributeName, attributeValue, successHandler, failureHandler) {
     return Lambda.invokeDatabaseLambda({
-      environmentType: process.env.NODE_ENV,
+      environmentType: getEnvironmentType(),
       fromID,
       action: "UPDATEADD",
       itemType,
@@ -151,7 +152,7 @@ class MessageFunctions {
 
   static updateRemove(fromID, board, messageID, attributeName, attributeValue, successHandler, failureHandler) {
     return Lambda.invokeDatabaseLambda({
-      environmentType: process.env.NODE_ENV,
+      environmentType: getEnvironmentType(),
       fromID,
       action: "UPDATEREMOVE",
       itemType,
@@ -164,7 +165,7 @@ class MessageFunctions {
 
   static updateSet(fromID, board, messageID, attributeName, attributeValue, successHandler, failureHandler) {
     return Lambda.invokeDatabaseLambda({
-      environmentType: process.env.NODE_ENV,
+      environmentType: getEnvironmentType(),
       fromID,
       action: "UPDATESET",
       itemType,
@@ -188,7 +189,7 @@ class MessageFunctions {
    */
   static delete(fromID, board, messageID, successHandler, failureHandler) {
     return Lambda.invokeDatabaseLambda({
-      environmentType: process.env.NODE_ENV,
+      environmentType: getEnvironmentType(),
       fromID,
       action: "DELETE",
       itemType,

@@ -1,4 +1,4 @@
-import {err, ifDebug, log} from "../../Constants";
+import {err, ifDebug, log, lambdaFunctionName, getEnvironmentType} from "../../Constants";
 import TestHelper from "../testing/TestHelper";
 import {debugAlert} from "../logic/DebuggingHelper";
 import {getAWS} from "../../AppConfig";
@@ -39,7 +39,7 @@ class Lambda {
       fromID: fromID ? fromID : "unauthenticated",
       action: "CREATE",
       itemType: itemType,
-      environmentType: process.env.NODE_ENV,
+      environmentType: getEnvironmentType(),
       [Lambda.getCreateRequestName(itemType)]: createRequest,
     }, successHandler, failureHandler);
   }
@@ -69,7 +69,7 @@ class Lambda {
       attributeValues: [
         attributeValue
       ],
-      environmentType: process.env.NODE_ENV
+      environmentType: getEnvironmentType()
     }, successHandler, failureHandler);
   }
 
@@ -98,7 +98,7 @@ class Lambda {
       attributeValues: [
         attributeValue
       ],
-      environmentType: process.env.NODE_ENV
+      environmentType: getEnvironmentType()
     }, successHandler, failureHandler);
   }
 
@@ -127,7 +127,7 @@ class Lambda {
       attributeValues: [
         attributeValue
       ],
-      environmentType: process.env.NODE_ENV
+      environmentType: getEnvironmentType()
     }, successHandler, failureHandler);
   }
 
@@ -154,7 +154,7 @@ class Lambda {
         objectID
       ],
       secondaryIdentifier,
-      environmentType: process.env.NODE_ENV
+      environmentType: getEnvironmentType()
     }, successHandler, failureHandler);
   }
 
@@ -177,7 +177,7 @@ class Lambda {
       identifiers: [
         objectID
       ],
-      environmentType: process.env.NODE_ENV
+      environmentType: getEnvironmentType()
     }, successHandler, failureHandler)
   }
 
@@ -198,7 +198,7 @@ class Lambda {
   // Specific Lambda Function Calls
 
   static invokeDatabaseLambda(payload, successHandler, failureHandler) {
-    return Lambda.invokeLambda("VastusDatabaseLambdaFunction", payload, successHandler, failureHandler);
+    return Lambda.invokeLambda(lambdaFunctionName, payload, successHandler, failureHandler);
   }
 
   // static invokePaymentLambda(payload, successHandler, failureHandler) {
